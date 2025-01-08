@@ -1,7 +1,6 @@
 package frc.robot.subsystems.swerve.io;
 
 import java.util.function.DoubleSupplier;
-import java.util.function.Supplier;
 
 import frc.lib.logfields.LogFieldsTable;
 import frc.lib.logfields.IOBase;
@@ -11,8 +10,6 @@ public abstract class SwerveModuleIO extends IOBase {
             this::getAbsoluteAngleRotations);
     public final DoubleSupplier integratedEncoderAngleRotations = fields.addDouble("integratedEncoderAngleRotations",
             this::getIntegratedAngleEncoderRotations);
-    public final Supplier statusAngelMotorName = fields.addString("module status angle error",
-            this::getstatusAngelMotorName);
     public final DoubleSupplier driveSpeedRPS = fields.addDouble("driveSpeedRPS", this::getDriveSpeedRPS);
     public final DoubleSupplier driveMotorRotations = fields.addDouble("driveMotorRotations",
             this::getDriveMotorRotations);
@@ -29,8 +26,6 @@ public abstract class SwerveModuleIO extends IOBase {
     protected abstract double getAbsoluteAngleRotations();
 
     protected abstract double getDriveSpeedRPS();
-
-    protected abstract String getstatusAngelMotorName();
 
     protected abstract double getIntegratedAngleEncoderRotations();
 

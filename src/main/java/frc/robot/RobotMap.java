@@ -1,12 +1,13 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
-import edu.wpi.first.wpilibj.SPI;
+
+import com.studica.frc.AHRS.NavXComType;
 
 public class RobotMap {
     public static final ModuleType POWER_DISTRIBUATION_TYPE = ModuleType.kRev;
 
-    public static final SPI.Port NAVX_PORT = SPI.Port.kMXP;
+    public static final NavXComType NAVX_PORT = NavXComType.kMXP_SPI;
     public static final String FRONT_PHOTON_CAMERA_NAME = "FrontCam";
     public static final String BACK_LIMELIGHT_CAMERA_NAME = "limelight-back";
 

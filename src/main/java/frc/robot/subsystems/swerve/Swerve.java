@@ -12,13 +12,11 @@ import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.subsystems.swerve.SwerveContants.PathPlanner;
 import frc.robot.subsystems.swerve.io.GyroIO;
 import frc.robot.subsystems.swerve.io.GyroIONavX;
 import frc.robot.subsystems.swerve.io.GyroIOSim;
 import frc.robot.subsystems.swerve.poseEstimator.PoseEstimatorWithVision;
 import frc.robot.utils.BuiltInAccelerometerLogged;
-import frc.robot.utils.LocalADStarAK;
 import frc.robot.utils.RotationalSensorHelper;
 import frc.lib.logfields.LogFieldsTable;
 import frc.lib.tuneables.SendableType;
@@ -36,13 +34,6 @@ import java.util.List;
 import java.util.function.BiConsumer;
 
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
-
-import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.pathfinding.Pathfinding;
-import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
-import com.pathplanner.lib.util.PIDConstants;
-import com.pathplanner.lib.util.PathPlannerLogging;
-import com.pathplanner.lib.util.ReplanningConfig;
 
 public class Swerve extends SubsystemBase implements Tuneable {
     private final LogFieldsTable fieldsTable = new LogFieldsTable(getName());
@@ -112,34 +103,6 @@ public class Swerve extends SubsystemBase implements Tuneable {
         resetYaw();
 
         queueResetModulesToAbsolute();
-
-        Pathfinding.setPathfinder(new LocalADStarAK());
-
-        HolonomicPathFollowerConfig pathFollowerConfigs = new HolonomicPathFollowerConfig(
-                new PIDConstants(PathPlanner.TRANSLATION_KP, PathPlanner.TRANSLATION_KI, PathPlanner.TRANSLATION_KD),
-                new PIDConstants(PathPlanner.ROTATION_KP, PathPlanner.ROTATION_KI, PathPlanner.ROTATION_KD),
-                MAX_MODULE_SPEED_MPS,
-                TRACK_RADIUS_M,
-                new ReplanningConfig());
-
-        AutoBuilder.configureHolonomic(
-                this::getPose,
-                this::resetPose,
-                this::getRobotRelativeSpeeds,
-                this::driveVoltageChassisSpeed,
-                pathFollowerConfigs,
-                this::getIsRedAlliance,
-                this);
-
-        PathPlannerLogging.setLogActivePathCallback(
-                (activePath) -> {
-                    fieldsTable.recordOutput(
-                            "PathPlanner/Trajectory", activePath.toArray(new Pose2d[activePath.size()]));
-                });
-        PathPlannerLogging.setLogTargetPoseCallback(
-                (targetPose) -> {
-                    fieldsTable.recordOutput("PathPlanner/TrajectorySetpoint", targetPose);
-                });
     }
 
     @Override

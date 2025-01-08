@@ -1,11 +1,10 @@
 package frc.robot.subsystems.swerve.io;
 
-import com.kauailabs.navx.frc.AHRS;
-
 import frc.lib.logfields.LogFieldsTable;
 
 import static frc.robot.RobotMap.*;
 
+import com.studica.frc.AHRS;
 
 public class GyroIONavX extends GyroIO{
     private final AHRS navX = new AHRS(NAVX_PORT);

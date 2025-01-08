@@ -8,7 +8,6 @@ import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.hardware.CANcoder;
-import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.Slot0Configs;
 
@@ -24,7 +23,6 @@ public class SwerveModuleIOFalcon extends SwerveModuleIO {
     private final PositionVoltage angleVoltagePositionControl = new PositionVoltage(0).withSlot(0);
     private final VoltageOut driveVoltageControl = new VoltageOut(0);
     private final DutyCycleOut drivePrecentageControl = new DutyCycleOut(0);
-    private final StatusCode statusAngelMotor;
 
     private final Slot0Configs slot0ConfigsAngle;
 
@@ -42,9 +40,9 @@ public class SwerveModuleIOFalcon extends SwerveModuleIO {
         driveMotorConfiguration.CurrentLimits.StatorCurrentLimit = 50;
         driveMotorConfiguration.CurrentLimits.StatorCurrentLimitEnable = true;
         driveMotorConfiguration.CurrentLimits.SupplyCurrentLimitEnable = true;
-        driveMotorConfiguration.CurrentLimits.SupplyCurrentLimit = 35;
-        driveMotorConfiguration.CurrentLimits.SupplyCurrentThreshold = 45;
-        driveMotorConfiguration.CurrentLimits.SupplyTimeThreshold = 0.1;
+        driveMotorConfiguration.CurrentLimits.SupplyCurrentLimit = 60;
+        driveMotorConfiguration.CurrentLimits.SupplyCurrentLowerLimit = 35;
+        driveMotorConfiguration.CurrentLimits.SupplyCurrentLowerTime = 0.5;
 
         driveMotor.getVelocity().setUpdateFrequency(100);
         driveMotor.getPosition().setUpdateFrequency(100);
@@ -57,9 +55,9 @@ public class SwerveModuleIOFalcon extends SwerveModuleIO {
         angleMotorConfiguration.Feedback.SensorToMechanismRatio = GEAR_RATIO_ANGLE;
         angleMotorConfiguration.ClosedLoopGeneral.ContinuousWrap = true;
         angleMotorConfiguration.CurrentLimits.SupplyCurrentLimitEnable = true;
-        angleMotorConfiguration.CurrentLimits.SupplyCurrentLimit = 25;
-        angleMotorConfiguration.CurrentLimits.SupplyCurrentThreshold = 30;
-        angleMotorConfiguration.CurrentLimits.SupplyTimeThreshold = 0.1;
+        angleMotorConfiguration.CurrentLimits.SupplyCurrentLimit = 30;
+        angleMotorConfiguration.CurrentLimits.SupplyCurrentLowerLimit = 25;
+        angleMotorConfiguration.CurrentLimits.SupplyCurrentLowerTime = 0.5;
         angleMotorConfiguration.CurrentLimits.StatorCurrentLimitEnable = true;
         angleMotorConfiguration.CurrentLimits.StatorCurrentLimit = 30;
 
@@ -69,7 +67,6 @@ public class SwerveModuleIOFalcon extends SwerveModuleIO {
         slot0ConfigsAngle.kD = MODULE_ANGLE_KD;
 
         angleMotor.getPosition().setUpdateFrequency(100);
-        statusAngelMotor = angleMotor.getConfigurator().apply(angleMotorConfiguration);
 
         // cancoder configs
         CANcoderConfiguration canCoderConfiguration = new CANcoderConfiguration();
@@ -109,11 +106,6 @@ public class SwerveModuleIOFalcon extends SwerveModuleIO {
     @Override
     protected double getD() {
         return slot0ConfigsAngle.kD;
-    }
-
-    @Override
-    protected String getstatusAngelMotorName() {
-        return statusAngelMotor.getName();
     }
 
     @Override

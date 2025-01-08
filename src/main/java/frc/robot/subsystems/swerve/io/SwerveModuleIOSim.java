@@ -3,6 +3,7 @@ package frc.robot.subsystems.swerve.io;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.system.plant.DCMotor;
+import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.wpilibj.simulation.FlywheelSim;
 import frc.lib.logfields.LogFieldsTable;
 import static frc.robot.subsystems.swerve.SwerveContants.*;
@@ -21,8 +22,11 @@ public class SwerveModuleIOSim extends SwerveModuleIO {
 
         simEncoderAbsoluteRotations = calculateAbsolute(absoluteAngleOffsetDegrees / 360);
 
-        driveMotorSim = new FlywheelSim(DCMotor.getFalcon500(1), GEAR_RATIO_DRIVE, 0.05);
-        angleMotorSim = new FlywheelSim(DCMotor.getFalcon500(1), GEAR_RATIO_ANGLE, 0.004);
+        DCMotor driveMotorModel = DCMotor.getFalcon500(1);
+        DCMotor angleMotorModel = DCMotor.getFalcon500(1);      
+
+        driveMotorSim = new FlywheelSim(LinearSystemId.createFlywheelSystem(driveMotorModel, 0.025, GEAR_RATIO_DRIVE), driveMotorModel);
+        angleMotorSim = new FlywheelSim(LinearSystemId.createFlywheelSystem(angleMotorModel, 0.004, GEAR_RATIO_ANGLE), angleMotorModel);
         pidControllerAngle.enableContinuousInput(-0.5, 0.5);
     }
 
@@ -131,11 +135,4 @@ public class SwerveModuleIOSim extends SwerveModuleIO {
     public void setD(double d) {
         pidControllerAngle.setD(d);
     }
-
-    @Override
-    protected String getstatusAngelMotorName() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getstatusAngelMotorName'");
-    }
-
 }

@@ -81,9 +81,7 @@ public class SwerveModule implements Tuneable {
         }
 
         if (optimizeState) {
-            desiredState = SwerveModuleState.optimize(
-                    desiredState,
-                    Rotation2d.fromDegrees(currentAngleDegrees));
+            desiredState.optimize(Rotation2d.fromDegrees(currentAngleDegrees));
         }
 
         if (useVoltage) {
