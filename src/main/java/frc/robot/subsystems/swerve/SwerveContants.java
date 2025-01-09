@@ -4,11 +4,11 @@ import edu.wpi.first.math.util.Units;
 
 public class SwerveContants {
     public final static double GEAR_RATIO_DRIVE = 6.75;
-    public final static double GEAR_RATIO_ANGLE = 12.8;
+    public final static double GEAR_RATIO_TURN = 12.8;
     public final static double WHEEL_RADIUS_METERS = Units.inchesToMeters(2);
 
     public final static double MAX_VOLTAGE = 11;
-    public final static double MAX_MODULE_SPEED_MPS = 5; // for the max voltage
+    public final static double MAX_MODULE_VELOCITY_MPS = 5; // for the max voltage
 
     public final static double TRACK_WIDTH_M = 0.518;
     public final static double TRACK_LENGTH_M = 0.518;
@@ -19,9 +19,9 @@ public class SwerveContants {
     public final static double MODULE_BL_ABSOLUTE_ANGLE_OFFSET_DEGREES = -53.96484375;
     public final static double MODULE_BR_ABSOLUTE_ANGLE_OFFSET_DEGREES = -10.8984375 + 180;
 
-    public final static double MODULE_ANGLE_KP = 1.8 * 12;
-    public final static double MODULE_ANGLE_KI = 0;
-    public final static double MODULE_ANGLE_KD = 0;
+    public final static double MODULE_TURN_KP = 1.8 * 12;
+    public final static double MODULE_TURN_KI = 0;
+    public final static double MODULE_TURN_KD = 0;
 
     public static class DriverController {
         public final static double DRIVER_ACCELERATION_LIMIT_MPS = 8;

@@ -5,8 +5,6 @@ import static frc.robot.subsystems.swerve.SwerveContants.*;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
-import org.littletonrobotics.junction.Logger;
-
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
@@ -43,31 +41,32 @@ public class SwerveCommands {
         return TuneableCommand.wrap(swerve.runOnce(() -> {
             pidController.reset();
         }).andThen(swerve.run(() -> {
-            swerve.drive(0, 0, pidController.calculate(swerve.getYawCCW().getDegrees(), targetAngleDegreesCCW.getAsDouble()), false, true);
+            swerve.drive(0, 0, pidController.calculate(swerve.getYawDegreesCCW().getDegrees(),
+                    targetAngleDegreesCCW.getAsDouble()), false, true);
         })), (builder) -> {
             builder.addChild("PIDController", pidController);
         });
     }
 
-    public TuneableCommand controlModules(DoubleSupplier steerXSupplier, DoubleSupplier steerYSupplier,
+    public TuneableCommand controlModules(DoubleSupplier turnXSupplier, DoubleSupplier turnYSupplier,
             DoubleSupplier speedSupplier) {
         return TuneableCommand.wrap(tuneableBuilder -> {
             BooleanHolder optimizeState = tuneableBuilder.addBoolean("optimize state", true);
             return new RunCommand(() -> {
-                double steerY = steerYSupplier.getAsDouble();
-                double steerX = steerXSupplier.getAsDouble();
+                double turnY = turnYSupplier.getAsDouble();
+                double turnX = turnXSupplier.getAsDouble();
                 double speed = speedSupplier.getAsDouble();
-                Logger.recordOutput("angle", steerX != 0 || steerY != 0
-                        ? Math.atan2(steerY, steerX) - Math.toRadians(90)
-                        : 0);
+
                 SwerveModuleState[] moduleStates = new SwerveModuleState[4];
                 for (int i = 0; i < moduleStates.length; i++) {
+
+                    double turnAngleRadians = turnX != 0 || turnY != 0
+                            ? Math.atan2(turnY, turnX) - Math.toRadians(90)
+                            : 0;
+
                     moduleStates[i] = new SwerveModuleState(
-                            speed * SwerveContants.MAX_MODULE_SPEED_MPS,
-                            new Rotation2d(
-                                    steerX != 0 || steerY != 0
-                                            ? Math.atan2(steerY, steerX) - Math.toRadians(90)
-                                            : 0));
+                            speed * SwerveContants.MAX_MODULE_VELOCITY_MPS,
+                            new Rotation2d(turnAngleRadians));
                 }
                 swerve.setModulesState(moduleStates, false, optimizeState.get(), false);
             }, swerve);
@@ -82,7 +81,7 @@ public class SwerveCommands {
             moduleStates[2] = new SwerveModuleState(0, Rotation2d.fromDegrees(135));
             moduleStates[3] = new SwerveModuleState(0, Rotation2d.fromDegrees(-135));
 
-            swerve.setModulesState(moduleStates, false, false, false);
+            swerve.setModulesState(moduleStates, false, true, false);
         });
     }
 

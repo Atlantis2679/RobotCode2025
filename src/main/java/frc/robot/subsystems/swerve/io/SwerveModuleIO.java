@@ -6,16 +6,16 @@ import frc.lib.logfields.LogFieldsTable;
 import frc.lib.logfields.IOBase;
 
 public abstract class SwerveModuleIO extends IOBase {
-    public final DoubleSupplier absoluteAngleRotations = fields.addDouble("absoluteAngleRotations",
-            this::getAbsoluteAngleRotations);
-    public final DoubleSupplier integratedEncoderAngleRotations = fields.addDouble("integratedEncoderAngleRotations",
-            this::getIntegratedAngleEncoderRotations);
+    public final DoubleSupplier absoluteTurnAngleRotations = fields.addDouble("absoluteTurnAngleRotations",
+            this::getAbsoluteTurnAngleRotations);
+    public final DoubleSupplier integratedTurnAngleRotations = fields.addDouble("integratedTurnAngleRotations",
+            this::getIntegratedTurnAngleRotations);
     public final DoubleSupplier driveSpeedRPS = fields.addDouble("driveSpeedRPS", this::getDriveSpeedRPS);
-    public final DoubleSupplier driveMotorRotations = fields.addDouble("driveMotorRotations",
-            this::getDriveMotorRotations);
-    public final DoubleSupplier kP = fields.addDouble("kP", this::getP);
-    public final DoubleSupplier kI = fields.addDouble("kI", this::getI);
-    public final DoubleSupplier kD = fields.addDouble("kD", this::getD);
+    public final DoubleSupplier driveDistanceRotations = fields.addDouble("driveDistanceRotations",
+            this::getDriveDistanceRotations);
+    public final DoubleSupplier TurnKP = fields.addDouble("Turn kP", this::getTurnKP);
+    public final DoubleSupplier TurnKI = fields.addDouble("Turn kI", this::getTurnKI);
+    public final DoubleSupplier TurnKD = fields.addDouble("Turn kD", this::getTurnKD);
 
     public SwerveModuleIO(LogFieldsTable fieldsTable) {
         super(fieldsTable);
@@ -23,19 +23,19 @@ public abstract class SwerveModuleIO extends IOBase {
 
     // inputs
 
-    protected abstract double getAbsoluteAngleRotations();
+    protected abstract double getAbsoluteTurnAngleRotations();
 
     protected abstract double getDriveSpeedRPS();
 
-    protected abstract double getIntegratedAngleEncoderRotations();
+    protected abstract double getIntegratedTurnAngleRotations();
 
-    protected abstract double getDriveMotorRotations();
+    protected abstract double getDriveDistanceRotations();
 
-    protected abstract double getP();
+    protected abstract double getTurnKP();
 
-    protected abstract double getI();
+    protected abstract double getTurnKI();
 
-    protected abstract double getD();
+    protected abstract double getTurnKD();
 
     // Outputs
 
@@ -43,15 +43,15 @@ public abstract class SwerveModuleIO extends IOBase {
 
     public abstract void setDriveSpeedVoltage(double voltageDemand);
 
-    public abstract void setAngleMotorPositionRotations(double angle);
+    public abstract void setTurnAngleRotations(double angleRotations);
 
-    public abstract void setIntegratedEncoderAngleEncoderRotations(double degrees);
+    public abstract void resetIntegratedTurnAngleRotations(double angleRotations);
 
     public abstract void coastAll();
 
-    public abstract void setP(double p);
+    public abstract void setTurnKP(double p);
 
-    public abstract void setI(double I);
+    public abstract void setTurnKI(double I);
 
-    public abstract void setD(double d);
+    public abstract void setTurnKD(double d);
 }

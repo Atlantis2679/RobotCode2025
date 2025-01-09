@@ -17,28 +17,31 @@ import frc.lib.logfields.LogFieldsTable;
 
 public class SwerveModuleIOFalcon extends SwerveModuleIO {
     private final TalonFX driveMotor;
-    private final TalonFX angleMotor;
+    private final TalonFX turnMotor;
     private final CANcoder canCoder;
 
-    private final PositionVoltage angleVoltagePositionControl = new PositionVoltage(0).withSlot(0);
+    private final PositionVoltage turnPositionVoltageControl = new PositionVoltage(0).withSlot(0);
     private final VoltageOut driveVoltageControl = new VoltageOut(0);
     private final DutyCycleOut drivePrecentageControl = new DutyCycleOut(0);
 
-    private final Slot0Configs slot0ConfigsAngle;
+    private final Slot0Configs turnSlotConfigs;
 
-    public SwerveModuleIOFalcon(LogFieldsTable fieldsTable, int driveMotorID, int angleMotorID, int encoderID) {
+    public SwerveModuleIOFalcon(LogFieldsTable fieldsTable, int driveMotorID, int turnMotorID, int encoderID) {
         super(fieldsTable);
 
         driveMotor = new TalonFX(driveMotorID);
-        angleMotor = new TalonFX(angleMotorID);
+        turnMotor = new TalonFX(turnMotorID);
         canCoder = new CANcoder(encoderID);
 
         // drive motor configs
         TalonFXConfiguration driveMotorConfiguration = new TalonFXConfiguration();
+
         driveMotorConfiguration.MotorOutput.NeutralMode = NeutralModeValue.Brake;
         driveMotorConfiguration.Feedback.SensorToMechanismRatio = GEAR_RATIO_DRIVE;
-        driveMotorConfiguration.CurrentLimits.StatorCurrentLimit = 50;
+
         driveMotorConfiguration.CurrentLimits.StatorCurrentLimitEnable = true;
+        driveMotorConfiguration.CurrentLimits.StatorCurrentLimit = 50;
+
         driveMotorConfiguration.CurrentLimits.SupplyCurrentLimitEnable = true;
         driveMotorConfiguration.CurrentLimits.SupplyCurrentLimit = 60;
         driveMotorConfiguration.CurrentLimits.SupplyCurrentLowerLimit = 35;
@@ -48,25 +51,22 @@ public class SwerveModuleIOFalcon extends SwerveModuleIO {
         driveMotor.getPosition().setUpdateFrequency(100);
         driveMotor.getConfigurator().apply(driveMotorConfiguration);
 
-        // angle motor configs
-        TalonFXConfiguration angleMotorConfiguration = new TalonFXConfiguration();
+        // turn motor configs
+        TalonFXConfiguration turnMotorConfiguration = new TalonFXConfiguration();
 
-        angleMotorConfiguration.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-        angleMotorConfiguration.Feedback.SensorToMechanismRatio = GEAR_RATIO_ANGLE;
-        angleMotorConfiguration.ClosedLoopGeneral.ContinuousWrap = true;
-        angleMotorConfiguration.CurrentLimits.SupplyCurrentLimitEnable = true;
-        angleMotorConfiguration.CurrentLimits.SupplyCurrentLimit = 30;
-        angleMotorConfiguration.CurrentLimits.SupplyCurrentLowerLimit = 25;
-        angleMotorConfiguration.CurrentLimits.SupplyCurrentLowerTime = 0.5;
-        angleMotorConfiguration.CurrentLimits.StatorCurrentLimitEnable = true;
-        angleMotorConfiguration.CurrentLimits.StatorCurrentLimit = 30;
+        turnMotorConfiguration.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+        turnMotorConfiguration.Feedback.SensorToMechanismRatio = GEAR_RATIO_TURN;
+        turnMotorConfiguration.ClosedLoopGeneral.ContinuousWrap = true;
 
-        slot0ConfigsAngle = angleMotorConfiguration.Slot0;
-        slot0ConfigsAngle.kP = MODULE_ANGLE_KP;
-        slot0ConfigsAngle.kI = MODULE_ANGLE_KI;
-        slot0ConfigsAngle.kD = MODULE_ANGLE_KD;
+        turnMotorConfiguration.CurrentLimits.StatorCurrentLimitEnable = true;
+        turnMotorConfiguration.CurrentLimits.StatorCurrentLimit = 30;
 
-        angleMotor.getPosition().setUpdateFrequency(100);
+        turnSlotConfigs = turnMotorConfiguration.Slot0;
+        turnSlotConfigs.kP = MODULE_TURN_KP;
+        turnSlotConfigs.kI = MODULE_TURN_KI;
+        turnSlotConfigs.kD = MODULE_TURN_KD;
+
+        turnMotor.getPosition().setUpdateFrequency(100);
 
         // cancoder configs
         CANcoderConfiguration canCoderConfiguration = new CANcoderConfiguration();
@@ -74,7 +74,7 @@ public class SwerveModuleIOFalcon extends SwerveModuleIO {
     }
 
     @Override
-    protected double getAbsoluteAngleRotations() {
+    protected double getAbsoluteTurnAngleRotations() {
         return canCoder.getAbsolutePosition().getValueAsDouble();
     }
 
@@ -84,71 +84,71 @@ public class SwerveModuleIOFalcon extends SwerveModuleIO {
     }
 
     @Override
-    protected double getDriveMotorRotations() {
+    protected double getDriveDistanceRotations() {
         return driveMotor.getPosition().getValueAsDouble();
     }
 
     @Override
-    protected double getIntegratedAngleEncoderRotations() {
-        return angleMotor.getPosition().getValueAsDouble();
+    protected double getIntegratedTurnAngleRotations() {
+        return turnMotor.getPosition().getValueAsDouble();
     }
 
     @Override
-    protected double getP() {
-        return slot0ConfigsAngle.kP;
+    protected double getTurnKP() {
+        return turnSlotConfigs.kP;
     }
 
     @Override
-    protected double getI() {
-        return slot0ConfigsAngle.kI;
+    protected double getTurnKI() {
+        return turnSlotConfigs.kI;
     }
 
     @Override
-    protected double getD() {
-        return slot0ConfigsAngle.kD;
+    protected double getTurnKD() {
+        return turnSlotConfigs.kD;
     }
 
     @Override
-    public void setDriveSpeedPrecentage(double demandPrcentOutput) {
-        driveMotor.setControl(drivePrecentageControl.withOutput(demandPrcentOutput));
+    public void setDriveSpeedPrecentage(double demand) {
+        driveMotor.setControl(drivePrecentageControl.withOutput(demand));
     }
 
     @Override
-    public void setDriveSpeedVoltage(double voltage) {
-        driveMotor.setControl(driveVoltageControl.withOutput(voltage));
+    public void setDriveSpeedVoltage(double demandVoltage) {
+        driveMotor.setControl(driveVoltageControl.withOutput(demandVoltage));
     }
 
     @Override
-    public void setAngleMotorPositionRotations(double rotations) {
-        angleMotor.setControl(angleVoltagePositionControl.withPosition(rotations));
+    public void setTurnAngleRotations(double angleRotations) {
+        turnMotor.setControl(turnPositionVoltageControl.withPosition(angleRotations));
     }
 
     @Override
-    public void setIntegratedEncoderAngleEncoderRotations(double angleRotations) {
-        angleMotor.setPosition(angleRotations);
+    public void resetIntegratedTurnAngleRotations(double angleRotations) {
+        turnMotor.setPosition(angleRotations);
     }
 
     @Override
     public void coastAll() {
         driveMotor.setControl(new CoastOut());
-        angleMotor.setControl(new CoastOut());
+        turnMotor.setControl(new CoastOut());
     }
 
     @Override
-    public void setP(double p) {
-        slot0ConfigsAngle.kP = p;
-        angleMotor.getConfigurator().apply(slot0ConfigsAngle);
+    public void setTurnKP(double p) {
+        turnSlotConfigs.kP = p;
+        turnMotor.getConfigurator().apply(turnSlotConfigs);
     }
 
     @Override
-    public void setI(double i) {
-        slot0ConfigsAngle.kI = i;
-        angleMotor.getConfigurator().apply(slot0ConfigsAngle);
+    public void setTurnKI(double i) {
+        turnSlotConfigs.kI = i;
+        turnMotor.getConfigurator().apply(turnSlotConfigs);
     }
 
     @Override
-    public void setD(double d) {
-        slot0ConfigsAngle.kD = d;
-        angleMotor.getConfigurator().apply(slot0ConfigsAngle);
+    public void setTurnKD(double d) {
+        turnSlotConfigs.kD = d;
+        turnMotor.getConfigurator().apply(turnSlotConfigs);
     }
 }

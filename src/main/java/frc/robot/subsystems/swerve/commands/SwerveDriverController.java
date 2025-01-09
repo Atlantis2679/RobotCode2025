@@ -46,9 +46,9 @@ public class SwerveDriverController extends TuneableCommand {
         this.isSensetiveMode = isSensetiveMode;
 
         velocityMultiplierChooser.setDefaultOption("REGULAR (100%)", 1.0);
-        velocityMultiplierChooser.addOption("CHILD (70%)", 0.7);
-        velocityMultiplierChooser.addOption("BABY (50%)", 0.5);
-        velocityMultiplierChooser.addOption("EGG (30%)", 0.3);
+        velocityMultiplierChooser.addOption("CHILD (50%)", 0.5);
+        velocityMultiplierChooser.addOption("BABY (30%)", 0.3);
+        velocityMultiplierChooser.addOption("EGG (10%)", 0.1);
 
         tuneablesTable.addChild("velocity chooser", velocityMultiplierChooser);
     }
@@ -72,8 +72,8 @@ public class SwerveDriverController extends TuneableCommand {
         }
 
         swerve.drive(
-                forwardSlewRateLimiter.calculate(precentageForward * MAX_MODULE_SPEED_MPS),
-                sidewaysSlewRateLimiter.calculate(precentageSideways * MAX_MODULE_SPEED_MPS),
+                forwardSlewRateLimiter.calculate(precentageForward * MAX_MODULE_VELOCITY_MPS),
+                sidewaysSlewRateLimiter.calculate(precentageSideways * MAX_MODULE_VELOCITY_MPS),
                 rotationSlewRateLimiter.calculate(precentageRotation * maxAngularVelocityRPS.get()),
                 isFieldRelative.getAsBoolean(),
                 false);

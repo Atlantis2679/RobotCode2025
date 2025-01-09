@@ -47,10 +47,6 @@ public class PoseEstimatorWithVision {
                     new VisionAprilTagsIOPhoton(
                             fieldsTable.getSubTable("Front Photon"),
                             FRONT_PHOTON_CAMERA_NAME, tagsLayout));
-            visionCameras.put("Back Limelight",
-                    new VisionAprilTagsIOLimelight(
-                            fieldsTable.getSubTable("Back Limelight"),
-                            BACK_LIMELIGHT_CAMERA_NAME));
         } catch (IOException e) {
             DriverStation.reportError("AprilTagFieldLayout blew up", e.getStackTrace());
             throw new RuntimeException(e);
