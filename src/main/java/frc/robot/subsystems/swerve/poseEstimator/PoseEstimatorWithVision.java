@@ -35,22 +35,18 @@ public class PoseEstimatorWithVision {
             SwerveModulePosition[] positions, SwerveDriveKinematics swerveKinematics) {
         new Trigger(DriverStation::isDisabled)
                 .onTrue(Commands.runOnce(() -> ignoreFarEstimates = false).ignoringDisable(true));
-        // new Trigger(DriverStation::isEnabled)
-        // .whileTrue(Commands.runOnce(() -> ignoreFarEstimates =
-        // true).ignoringDisable(true));
+        new Trigger(DriverStation::isEnabled).whileTrue(Commands.runOnce(() -> ignoreFarEstimates = true).ignoringDisable(true));
 
+        AprilTagFieldLayout fieldLayout;
         try {
-            AprilTagFieldLayout tagsLayout = AprilTagFieldLayout
-                    .loadFromResource(AprilTagFields.k2024Crescendo.m_resourceFile);
-
-            visionCameras.put("Front Photon",
-                    new VisionAprilTagsIOPhoton(
-                            fieldsTable.getSubTable("Front Photon"),
-                            FRONT_PHOTON_CAMERA_NAME, tagsLayout));
+            fieldLayout = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2024Crescendo.m_resourceFile);
         } catch (IOException e) {
-            DriverStation.reportError("AprilTagFieldLayout blew up", e.getStackTrace());
-            throw new RuntimeException(e);
+            e.printStackTrace();
+            throw new RuntimeException();
         }
+
+        visionCameras.put(FRONT_PHOTON_CAMERA_NAME,
+                new VisionAprilTagsIOPhoton(fieldsTable, FRONT_PHOTON_CAMERA_NAME, fieldLayout));
 
         this.fieldsTable = fieldsTable;
 

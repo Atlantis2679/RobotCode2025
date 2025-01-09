@@ -48,13 +48,13 @@ public class Swerve extends SubsystemBase implements Tuneable {
 
     // Should be FL, FR, BL, BR
     private final SwerveModule[] modules = {
-            new SwerveModule(0, "FL", ModuleFL.DRIVE_MOTOR_ID, ModuleFL.ANGLE_MOTOR_ID, ModuleFL.ENCODER_ID,
+            new SwerveModule(0, "FL", ModuleFL.DRIVE_MOTOR_ID, ModuleFL.TURN_MOTOR_ID, ModuleFL.ENCODER_ID,
                     MODULE_FL_ABSOLUTE_ANGLE_OFFSET_DEGREES, fieldsTable),
-            new SwerveModule(1, "FR", ModuleFR.DRIVE_MOTOR_ID, ModuleFR.ANGLE_MOTOR_ID, ModuleFR.ENCODER_ID,
+            new SwerveModule(1, "FR", ModuleFR.DRIVE_MOTOR_ID, ModuleFR.TURN_MOTOR_ID, ModuleFR.ENCODER_ID,
                     MODULE_FR_ABSOLUTE_ANGLE_OFFSET_DEGREES, fieldsTable),
-            new SwerveModule(2, "BL", ModuleBL.DRIVE_MOTOR_ID, ModuleBL.ANGLE_MOTOR_ID, ModuleBL.ENCODER_ID,
+            new SwerveModule(2, "BL", ModuleBL.DRIVE_MOTOR_ID, ModuleBL.TURN_MOTOR_ID, ModuleBL.ENCODER_ID,
                     MODULE_BL_ABSOLUTE_ANGLE_OFFSET_DEGREES, fieldsTable),
-            new SwerveModule(3, "BR", ModuleBR.DRIVE_MOTOR_ID, ModuleBR.ANGLE_MOTOR_ID, ModuleBR.ENCODER_ID,
+            new SwerveModule(3, "BR", ModuleBR.DRIVE_MOTOR_ID, ModuleBR.TURN_MOTOR_ID, ModuleBR.ENCODER_ID,
                     MODULE_BR_ABSOLUTE_ANGLE_OFFSET_DEGREES, fieldsTable)
     };
 

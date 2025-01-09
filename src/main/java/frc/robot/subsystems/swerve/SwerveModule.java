@@ -55,6 +55,7 @@ public class SwerveModule implements Tuneable {
         absoluteAngleHelperDegrees.update(io.absoluteTurnAngleRotations.getAsDouble() * 360);
         lastDriveDistanceMeters = currDriveDistanceMeters;
         currDriveDistanceMeters = getDriveDistanceMeters();
+        fieldsTable.recordOutput("module " + moduleNumber +" drive distance meters", getDriveDistanceMeters());
     }
 
     public void setDesiredState(SwerveModuleState desiredState, boolean preventJittering, boolean optimizeState,
