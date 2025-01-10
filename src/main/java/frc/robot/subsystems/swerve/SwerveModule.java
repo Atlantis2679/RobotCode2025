@@ -90,7 +90,7 @@ public class SwerveModule implements Tuneable {
     public void queueResetToAbsolute() {
         encoderResetToAbsoluteQueued = true;
     }
-
+    
     public void enableCoastMode() {
         io.coastAll();
     }

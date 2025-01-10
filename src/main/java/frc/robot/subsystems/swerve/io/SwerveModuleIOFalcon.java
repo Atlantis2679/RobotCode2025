@@ -67,6 +67,7 @@ public class SwerveModuleIOFalcon extends SwerveModuleIO {
         turnSlotConfigs.kD = MODULE_TURN_KD;
 
         turnMotor.getPosition().setUpdateFrequency(100);
+        turnMotor.getConfigurator().apply(turnMotorConfiguration);
 
         // cancoder configs
         CANcoderConfiguration canCoderConfiguration = new CANcoderConfiguration();
