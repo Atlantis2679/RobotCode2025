@@ -123,6 +123,7 @@ public class SwerveModuleIOSim extends SwerveModuleIO {
 
     @Override
     public void coastAll() {
+        driveMotorSim.setInputVoltage(0);
     }
 
     @Override

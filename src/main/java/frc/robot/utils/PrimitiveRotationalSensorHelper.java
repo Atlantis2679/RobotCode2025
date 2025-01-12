@@ -24,6 +24,7 @@ public class PrimitiveRotationalSensorHelper implements Tuneable {
         measuredAngle = initialMeasuredAngle;
         offset = initialOffset;
         prevTimeSec = Timer.getFPGATimestamp();
+        recalculateAngle();
     }
 
     public PrimitiveRotationalSensorHelper(double initalMeasuredAngle) {

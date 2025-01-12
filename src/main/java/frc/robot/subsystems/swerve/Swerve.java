@@ -257,6 +257,12 @@ public class Swerve extends SubsystemBase implements Tuneable {
         return isRedAlliance.get() != null && isRedAlliance.get().booleanValue();
     }
 
+    public void enableCoast() {
+        for (SwerveModule module : modules) {
+            module.enableCoastMode();
+        }
+    }
+
     @Override
     public void initTuneable(TuneableBuilder builder) {
         builder.addChild("Swerve Subsystem", (Sendable) this);
@@ -298,12 +304,6 @@ public class Swerve extends SubsystemBase implements Tuneable {
             }).ignoringDisable(true));
         });
 
-        builder.addChild("coast mode", run(() -> {
-            for (SwerveModule module : modules) {
-                module.enableCoastMode();
-            }
-        }).ignoringDisable(true));
-
-        builder.addChild("reset to absolute", new InstantCommand(this::queueResetModulesToAbsolute));
+        builder.addChild("reset to absolute", new InstantCommand(this::queueResetModulesToAbsolute).ignoringDisable(true));
     }
 }

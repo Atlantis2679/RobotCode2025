@@ -20,7 +20,7 @@ public class RobotContainer {
     private final SwerveCommands swerveCommands = new SwerveCommands(swerve);
 
     public RobotContainer() {
-        new Trigger(DriverStation::isDisabled).whileTrue(swerveCommands.stop());
+        new Trigger(DriverStation::isDisabled).onTrue(swerveCommands.stop().repeatedly().withTimeout(0.5));
 
         configureDriverBindings();
     }
@@ -43,6 +43,10 @@ public class RobotContainer {
                         driverController::getLeftX,
                         driverController::getLeftY,
                         driverController::getRightY).fullTuneable());
+    }
+
+    public void setSubsystemsInTestModeState() {
+        swerve.enableCoast();
     }
 
     public Command getAutonomousCommand() {
