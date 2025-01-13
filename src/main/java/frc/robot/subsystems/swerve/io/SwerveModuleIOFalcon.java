@@ -40,12 +40,12 @@ public class SwerveModuleIOFalcon extends SwerveModuleIO {
         driveMotorConfiguration.Feedback.SensorToMechanismRatio = GEAR_RATIO_DRIVE;
 
         driveMotorConfiguration.CurrentLimits.StatorCurrentLimitEnable = true;
-        driveMotorConfiguration.CurrentLimits.StatorCurrentLimit = 50;
+        driveMotorConfiguration.CurrentLimits.StatorCurrentLimit = 90;
 
         driveMotorConfiguration.CurrentLimits.SupplyCurrentLimitEnable = true;
-        driveMotorConfiguration.CurrentLimits.SupplyCurrentLimit = 60;
-        driveMotorConfiguration.CurrentLimits.SupplyCurrentLowerLimit = 35;
-        driveMotorConfiguration.CurrentLimits.SupplyCurrentLowerTime = 0.5;
+        driveMotorConfiguration.CurrentLimits.SupplyCurrentLimit = 70;
+        driveMotorConfiguration.CurrentLimits.SupplyCurrentLowerLimit = 40;
+        driveMotorConfiguration.CurrentLimits.SupplyCurrentLowerTime = 1;
 
         driveMotor.getVelocity().setUpdateFrequency(100);
         driveMotor.getPosition().setUpdateFrequency(100);
@@ -151,5 +151,25 @@ public class SwerveModuleIOFalcon extends SwerveModuleIO {
     public void setTurnKD(double d) {
         turnSlotConfigs.kD = d;
         turnMotor.getConfigurator().apply(turnSlotConfigs);
+    }
+
+    @Override
+    protected double getDriveSupplyCurrent() {
+        return driveMotor.getSupplyCurrent().getValueAsDouble();
+    }
+
+    @Override
+    protected double getDriveStatorCurrent() {
+        return driveMotor.getStatorCurrent().getValueAsDouble();
+    }
+
+    @Override
+    protected double getTurnSupplyCurrent() {
+        return turnMotor.getSupplyCurrent().getValueAsDouble();
+    }
+
+    @Override
+    protected double getTurnStatorCurrent() {
+        return turnMotor.getStatorCurrent().getValueAsDouble();
     }
 }
