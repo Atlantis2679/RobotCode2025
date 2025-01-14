@@ -36,18 +36,18 @@ public class PoseEstimatorWithVision {
             SwerveModulePosition[] positions, SwerveDriveKinematics swerveKinematics) {
         new Trigger(DriverStation::isDisabled)
                 .onTrue(Commands.runOnce(() -> ignoreFarEstimates = false).ignoringDisable(true));
-        // new Trigger(DriverStation::isEnabled).whileTrue(Commands.runOnce(() -> ignoreFarEstimates = true).ignoringDisable(true));
+        new Trigger(DriverStation::isEnabled).onTrue(Commands.runOnce(() -> ignoreFarEstimates = true).ignoringDisable(true));
 
         AprilTagFieldLayout fieldLayout;
         try {
-            fieldLayout = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2024Crescendo.m_resourceFile);
+            fieldLayout = AprilTagFieldLayout.loadFromResource(AprilTagFields.kDefaultField.m_resourceFile);
         } catch (IOException e) {
             e.printStackTrace();
             throw new RuntimeException();
         }
 
         visionCameras.put(FRONT_PHOTON_CAMERA_NAME,
-                new VisionAprilTagsIOPhoton(fieldsTable, FRONT_PHOTON_CAMERA_NAME, fieldLayout));
+                new VisionAprilTagsIOPhoton(fieldsTable, FRONT_PHOTON_CAMERA_NAME, fieldLayout, PoseEstimatorConstants.ROBOT_TO_CAMERA_TRANSFORM_PHOTON_FRONT));
 
         this.fieldsTable = fieldsTable;
 
@@ -64,12 +64,15 @@ public class PoseEstimatorWithVision {
         poseEstimator.update(gyroMeasurmentCCW, modulesPositions);
 
         visionCameras.forEach((cameraName, visionIO) -> {
-            LogFieldsTable cameraFieldsTable = fieldsTable.getSubTable(cameraName);
-            Pose3d[] poses = visionIO.poseEstimate.get();
+            new Pose2d();
+            Pose3d[] poses = visionIO.poseEstimates.get();
             for (int i = 0; i < poses.length; i++) {
+                LogFieldsTable cameraFieldsTable = fieldsTable.getSubTable(cameraName);
                 Pose3d poseEstimate = poses[i];
                 cameraFieldsTable.recordOutput("Pose3d", poseEstimate);
                 cameraFieldsTable.recordOutput("Pose2d", poseEstimate.toPose2d());
+                cameraFieldsTable.recordOutput("tagsPoses", visionIO.tagsPoses.get()[i]);
+                cameraFieldsTable.recordOutput("tagsAmbiguitys", visionIO.tagsAmbiguitys.get()[i]);
 
                 double visionToEstimateDifference = PhotonUtils.getDistanceToPose(
                         poseEstimate.toPose2d(),
@@ -82,11 +85,10 @@ public class PoseEstimatorWithVision {
                         || visionToEstimateDifference < PoseEstimatorConstants.VISION_THRESHOLD_DISTANCE_M) {
                     poseEstimator.addVisionMeasurement(
                             poseEstimate.toPose2d(),
-                            visionIO.cameraTimestampSeconds.get()[i]);
+                            visionIO.cameraTimestampsSeconds.get()[i]);
                 }
             }
         });
-
     }
 
     public void resetPosition(Rotation2d gyroMeasurmentCCW, SwerveModulePosition[] modulesPositions, Pose2d newPose) {

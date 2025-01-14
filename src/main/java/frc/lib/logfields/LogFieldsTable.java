@@ -31,7 +31,6 @@ public class LogFieldsTable implements LoggableInputs {
     public LogFieldsTable(String name) {
         this.name = name;
         prefix = name + "/";
-        createdTables.add(this);
     }
 
     public static void updateAllTables() {
@@ -70,6 +69,12 @@ public class LogFieldsTable implements LoggableInputs {
     }
 
     private <T extends LoggableInputs> T registerField(T field) {
+        if (fields.isEmpty()) {
+            // only add the table when it has fields, to not save each subTable created in
+            // periodic for outputs recording (because that leads to saving tons of unneeded
+            // fields table that doesn't have any fields).
+            createdTables.add(this);
+        }
         fields.add(field);
         return field;
     }
