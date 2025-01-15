@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems.swerve.poseEstimator;
 
+import static edu.wpi.first.units.Units.Degrees;
+
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
@@ -11,13 +13,9 @@ import edu.wpi.first.math.geometry.Translation3d;
 public class PoseEstimatorConstants {
     public final static Transform3d ROBOT_TO_CAMERA_TRANSFORM_PHOTON_FRONT = new Transform3d(
             new Translation3d(0.245, 0.13, 0.51),
-            new Rotation3d(0, Math.toRadians(-28.6), 0));
+            new Rotation3d(Degrees.of(0), Degrees.of(-28.6), Degrees.of(180)));
 
-    public final static Transform3d ROBOT_TO_CAMERA_TRANSFORM_LIMELIGHT_BACK = new Transform3d(
-            new Translation3d(-0.40, 0, 0.27),
-            new Rotation3d(0, Math.toRadians(32.2), Math.toRadians(180)));
-
-    public final static double VISION_THRESHOLD_DISTANCE_M = 3;
+    public final static double VISION_THRESHOLD_DISTANCE_M = 1.5;
 
     public final static double STATE_TRUST_LEVEL_X = 0.9;
     public final static double STATE_TRUST_LEVEL_Y = 0.9;

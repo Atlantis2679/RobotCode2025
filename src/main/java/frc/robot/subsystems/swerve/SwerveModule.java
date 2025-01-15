@@ -20,9 +20,6 @@ public class SwerveModule implements Tuneable {
     private final LogFieldsTable fieldsTable;
     private final SwerveModuleIO io;
 
-    private final int driveMotorID;
-    private final int angleMotorID;
-    private final int encoderID;
     private PrimitiveRotationalSensorHelper absoluteAngleHelperDegrees;
 
     private double lastDriveDistanceMeters;
@@ -31,41 +28,41 @@ public class SwerveModule implements Tuneable {
 
     private final double WHEEL_CIRCUMFERENCE_METERS = 2 * Math.PI * WHEEL_RADIUS_METERS;
 
-    public SwerveModule(int moduleNumber, int driveMotorID, int angleMotorID, int encoderID,
+    public SwerveModule(int moduleNumber, String positionName, int driveMotorID, int turnMotorID, int encoderID,
             double absoluteAngleOffSetDegrees, LogFieldsTable swerveFieldsTable) {
         this.moduleNumber = moduleNumber;
-        this.driveMotorID = driveMotorID;
-        this.angleMotorID = angleMotorID;
-        this.encoderID = encoderID;
 
-        fieldsTable = swerveFieldsTable.getSubTable("Module " + moduleNumber);
+        fieldsTable = swerveFieldsTable.getSubTable("Module " + moduleNumber + " " + positionName);
 
         io = Robot.isSimulation()
-                ? new SwerveModuleIOSim(fieldsTable, this.driveMotorID, this.angleMotorID, this.encoderID,
+                ? new SwerveModuleIOSim(fieldsTable, driveMotorID, turnMotorID, encoderID,
                         absoluteAngleOffSetDegrees)
-                : new SwerveModuleIOFalcon(fieldsTable, this.driveMotorID, this.angleMotorID, this.encoderID);
+                : new SwerveModuleIOFalcon(fieldsTable, driveMotorID, turnMotorID, encoderID);
 
         fieldsTable.update();
 
         absoluteAngleHelperDegrees = new PrimitiveRotationalSensorHelper(
-                io.absoluteAngleRotations.getAsDouble() * 360,
+                io.absoluteTurnAngleRotations.getAsDouble() * 360,
                 absoluteAngleOffSetDegrees);
 
         lastDriveDistanceMeters = getDriveDistanceMeters();
         currDriveDistanceMeters = getDriveDistanceMeters();
 
-        io.setIntegratedEncoderAngleEncoderRotations(getAbsoluteAngleDegrees() / 360);
+        io.resetIntegratedTurnAngleRotations(getAbsoluteAngleDegrees() / 360);
     }
 
     public void periodic() {
-        absoluteAngleHelperDegrees.update(io.absoluteAngleRotations.getAsDouble() * 360);
+        absoluteAngleHelperDegrees.update(io.absoluteTurnAngleRotations.getAsDouble() * 360);
         lastDriveDistanceMeters = currDriveDistanceMeters;
         currDriveDistanceMeters = getDriveDistanceMeters();
+        fieldsTable.recordOutput("module " + moduleNumber +" drive distance meters", getDriveDistanceMeters());
+        fieldsTable.recordOutput("AbsoluteAngleDegrees", getAbsoluteAngleDegrees());
+        fieldsTable.recordOutput("IntegratedAngleDegrees", getIntegratedAngleDegrees());
     }
 
     public void setDesiredState(SwerveModuleState desiredState, boolean preventJittering, boolean optimizeState,
             boolean useVoltage) {
-        if (preventJittering && Math.abs(desiredState.speedMetersPerSecond) < MAX_MODULE_SPEED_MPS * 0.01) {
+        if (preventJittering && Math.abs(desiredState.speedMetersPerSecond) < MAX_MODULE_VELOCITY_MPS * 0.01) {
             io.setDriveSpeedPrecentage(0);
             return;
         }
@@ -73,31 +70,29 @@ public class SwerveModule implements Tuneable {
         final double currentAngleDegrees;
 
         if (encoderResetToAbsoluteQueued) {
-            io.setIntegratedEncoderAngleEncoderRotations(getAbsoluteAngleDegrees() / 360);
+            io.resetIntegratedTurnAngleRotations(getAbsoluteAngleDegrees() / 360);
             currentAngleDegrees = getAbsoluteAngleDegrees();
             encoderResetToAbsoluteQueued = false;
         } else {
-            currentAngleDegrees = getIntegratedEncoderAngleDegrees();
+            currentAngleDegrees = getIntegratedAngleDegrees();
         }
 
         if (optimizeState) {
-            desiredState = SwerveModuleState.optimize(
-                    desiredState,
-                    Rotation2d.fromDegrees(currentAngleDegrees));
+            desiredState.optimize(Rotation2d.fromDegrees(currentAngleDegrees));
         }
 
         if (useVoltage) {
-            io.setDriveSpeedVoltage((desiredState.speedMetersPerSecond / MAX_MODULE_SPEED_MPS) * MAX_VOLTAGE);
+            io.setDriveSpeedVoltage((desiredState.speedMetersPerSecond / MAX_MODULE_VELOCITY_MPS) * MAX_VOLTAGE);
         } else {
-            io.setDriveSpeedPrecentage(desiredState.speedMetersPerSecond / MAX_MODULE_SPEED_MPS);
+            io.setDriveSpeedPrecentage(desiredState.speedMetersPerSecond / MAX_MODULE_VELOCITY_MPS);
         }
-        io.setAngleMotorPositionRotations(desiredState.angle.getRotations());
+        io.setTurnAngleRotations(desiredState.angle.getRotations());
     }
 
     public void queueResetToAbsolute() {
         encoderResetToAbsoluteQueued = true;
     }
-
+    
     public void enableCoastMode() {
         io.coastAll();
     }
@@ -111,22 +106,22 @@ public class SwerveModule implements Tuneable {
     }
 
     public double getDriveDistanceMeters() {
-        return io.driveMotorRotations.getAsDouble() * WHEEL_CIRCUMFERENCE_METERS;
+        return io.driveDistanceRotations.getAsDouble() * WHEEL_CIRCUMFERENCE_METERS;
     }
 
-    public double getIntegratedEncoderAngleDegrees() {
-        return io.integratedEncoderAngleRotations.getAsDouble() * 360;
+    public double getIntegratedAngleDegrees() {
+        return io.integratedTurnAngleRotations.getAsDouble() * 360;
     }
 
     public SwerveModuleState getModuleState() {
-        return new SwerveModuleState(getModuleMPS(), getRotation2d());
+        return new SwerveModuleState(getVelocityMPS(), getRotation2d());
     }
 
-    public SwerveModuleState getModuleStateIntegreated() {
-        return new SwerveModuleState(getModuleMPS(), Rotation2d.fromDegrees(getIntegratedEncoderAngleDegrees()));
+    public SwerveModuleState getModuleStateIntegrated() {
+        return new SwerveModuleState(getVelocityMPS(), Rotation2d.fromDegrees(getIntegratedAngleDegrees()));
     }
 
-    public double getModuleMPS() {
+    public double getVelocityMPS() {
         return io.driveSpeedRPS.getAsDouble() * WHEEL_CIRCUMFERENCE_METERS;
     }
 
@@ -135,53 +130,52 @@ public class SwerveModule implements Tuneable {
     }
 
     public SwerveModulePosition getModulePosition() {
-        return new SwerveModulePosition(currDriveDistanceMeters, getRotation2d());
+        return new SwerveModulePosition(getDriveDistanceMeters(), getRotation2d());
     }
 
     public SwerveModulePosition getModulePositionDelta() {
         return new SwerveModulePosition(
-                currDriveDistanceMeters - lastDriveDistanceMeters,
+                getDriveDistanceMeters() - lastDriveDistanceMeters,
                 getRotation2d());
     }
 
-    public void setAbsoluteEncoderAngleDegrees(double degrees) {
+    public void resetAbsoluteAngleDegrees(double degrees) {
         absoluteAngleHelperDegrees.resetAngle(degrees);
         queueResetToAbsolute();
     }
 
-    public double getP() {
-        return io.kP.getAsDouble();
+    public double getTurnKP() {
+        return io.TurnKP.getAsDouble();
     }
 
-    public double getI() {
-        return io.kI.getAsDouble();
+    public double getTurnKI() {
+        return io.TurnKI.getAsDouble();
     }
 
-    public double getD() {
-        return io.kD.getAsDouble();
+    public double getTurnKD() {
+        return io.TurnKD.getAsDouble();
     }
 
-    public void setP(double p) {
-        io.setP(p);
+    public void setTurnKP(double p) {
+        io.setTurnKP(p);
     }
 
-    public void setI(double i) {
-        io.setI(i);
+    public void setTurnKI(double i) {
+        io.setTurnKI(i);
     }
 
-    public void setD(double d) {
-        io.setD(d);
+    public void setTurnKD(double d) {
+        io.setTurnKD(d);
     }
 
     @Override
     public void initTuneable(TuneableBuilder builder) {
-        builder.addDoubleProperty("Integrated Angle Degrees", this::getIntegratedEncoderAngleDegrees, null);
+        builder.addDoubleProperty("Integrated Angle Degrees", this::getIntegratedAngleDegrees, null);
         builder.addDoubleProperty("Absolute Angle Degrees", this::getAbsoluteAngleDegrees, null);
         builder.addDoubleProperty("Tuneable Offset",
                 absoluteAngleHelperDegrees::getOffset,
                 val -> {
                     absoluteAngleHelperDegrees.setOffset(val);
-                    ;
                     queueResetToAbsolute();
                 });
     }
