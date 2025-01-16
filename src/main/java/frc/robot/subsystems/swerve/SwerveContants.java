@@ -34,13 +34,17 @@ public class SwerveContants {
     }
 
     public class PathPlanner {
-        public final static double TRANSLATION_KP = 1;
-        public final static double TRANSLATION_KI = 0;
-        public final static double TRANSLATION_KD = 0.027;
+        public final static double FRICTION_WITH_CARPET = 1;//couldn't find it
+        public final static double ROBOT_MASS_KG =  50;
+        public final static double MOMENT_OF_INERTIA =  0;//no idea
 
-        public final static double ROTATION_KP = 0.1;
+        public final static double TRANSLATION_KP = 0.8;
+        public final static double TRANSLATION_KI = 0;
+        public final static double TRANSLATION_KD = 0.5;
+
+        public final static double ROTATION_KP = 0.5;
         public final static double ROTATION_KI = 0;
-        public final static double ROTATION_KD = 0.001;
+        public final static double ROTATION_KD = 0;
     }
 
     public class RotateToAngle {
