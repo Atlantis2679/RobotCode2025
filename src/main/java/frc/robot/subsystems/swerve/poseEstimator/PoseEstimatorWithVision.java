@@ -83,6 +83,10 @@ public class PoseEstimatorWithVision {
                 cameraFieldsTable.recordOutput("diff",
                         PoseEstimatorConstants.VISION_THRESHOLD_DISTANCE_M - visionToEstimateDifference);
                     
+                double visionRotationTrustLevel = poseAmbiguity * VISION_ROTATION_TRUST_LEVEL_MULTIPLAYER;
+                double visionTranslationTrustLevel = poseAmbiguity * VISION_TRANSLATION_TRUST_LEVEL_MULTIPLAYER;
+                poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(visionTranslationTrustLevel, visionTranslationTrustLevel, visionRotationTrustLevel));
+        
                 if (!ignoreFarEstimates
                         || visionToEstimateDifference < PoseEstimatorConstants.VISION_THRESHOLD_DISTANCE_M) {
                     poseEstimator.addVisionMeasurement(
