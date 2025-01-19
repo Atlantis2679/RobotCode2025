@@ -20,8 +20,7 @@ public class PoseEstimatorConstants {
     public final static double STATE_TRUST_LEVEL_X = 0.9;
     public final static double STATE_TRUST_LEVEL_Y = 0.9;
     public final static double STATE_TRUST_LEVEL_Z = 0.9;
-    // was 0.1, 0.9
-    public final static double VISION_TRUST_LEVEL_X = 0.05;
-    public final static double VISION_TRUST_LEVEL_Y = 0.05;
-    public final static double VISION_TRUST_LEVEL_Z = 0.05;
+
+    public final static double VISION_ROTATION_TRUST_LEVEL_MULTIPLAYER = 1;
+    public final static double VISION_TRANSLATION_TRUST_LEVEL_MULTIPLAYER = 1;
 }

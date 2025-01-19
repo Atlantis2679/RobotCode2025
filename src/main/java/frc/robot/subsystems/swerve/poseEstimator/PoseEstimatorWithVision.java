@@ -57,7 +57,7 @@ public class PoseEstimatorWithVision {
                 positions,
                 new Pose2d(),
                 VecBuilder.fill(STATE_TRUST_LEVEL_X, STATE_TRUST_LEVEL_Y, STATE_TRUST_LEVEL_Z),
-                VecBuilder.fill(VISION_TRUST_LEVEL_X, VISION_TRUST_LEVEL_Y, VISION_TRUST_LEVEL_Z));
+                VecBuilder.fill(1, 1, 1));
     }
 
     public void update(Rotation2d gyroMeasurmentCCW, SwerveModulePosition[] modulesPositions) {
@@ -69,10 +69,12 @@ public class PoseEstimatorWithVision {
             for (int i = 0; i < poses.length; i++) {
                 LogFieldsTable cameraFieldsTable = fieldsTable.getSubTable(cameraName);
                 Pose3d poseEstimate = poses[i];
+                double poseAmbiguity = caculatePoseAmbiguitys(visionIO.tagsAmbiguitys.get()[i]);
                 cameraFieldsTable.recordOutput("Pose3d", poseEstimate);
                 cameraFieldsTable.recordOutput("Pose2d", poseEstimate.toPose2d());
                 cameraFieldsTable.recordOutput("tagsPoses", visionIO.tagsPoses.get()[i]);
                 cameraFieldsTable.recordOutput("tagsAmbiguitys", visionIO.tagsAmbiguitys.get()[i]);
+                cameraFieldsTable.recordOutput("poseAmbiguity", poseAmbiguity);
 
                 double visionToEstimateDifference = PhotonUtils.getDistanceToPose(
                         poseEstimate.toPose2d(),
@@ -80,7 +82,7 @@ public class PoseEstimatorWithVision {
 
                 cameraFieldsTable.recordOutput("diff",
                         PoseEstimatorConstants.VISION_THRESHOLD_DISTANCE_M - visionToEstimateDifference);
-
+                    
                 if (!ignoreFarEstimates
                         || visionToEstimateDifference < PoseEstimatorConstants.VISION_THRESHOLD_DISTANCE_M) {
                     poseEstimator.addVisionMeasurement(
@@ -97,5 +99,13 @@ public class PoseEstimatorWithVision {
 
     public Pose2d getPose() {
         return poseEstimator.getEstimatedPosition();
+    }
+
+    private static double caculatePoseAmbiguitys(double[] tagsAmbiguitys) {
+        double multiplay = 1;
+        for(double tagAmbiguity : tagsAmbiguitys) {
+            multiplay *= tagAmbiguity;
+        }
+        return Math.sqrt(multiplay);
     }
 }
