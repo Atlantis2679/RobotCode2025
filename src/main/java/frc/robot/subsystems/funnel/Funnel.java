@@ -29,4 +29,8 @@ public class Funnel extends SubsystemBase {
     public boolean getIsCoralIn() {
         return io.isCoralIn.getAsBoolean();
     }
+
+    public void stop() {
+        io.setPercentageSpeed(0);
+    }
 }
