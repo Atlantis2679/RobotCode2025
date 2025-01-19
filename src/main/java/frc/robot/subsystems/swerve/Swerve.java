@@ -97,6 +97,7 @@ public class Swerve extends SubsystemBase implements Tuneable {
     private final LoggedDashboardChooser<Boolean> isRedAlliance = new LoggedDashboardChooser<>("alliance");
 
     public Swerve() {
+        
         fieldsTable.update();
 
         isRedAlliance.addDefaultOption("blue", false);

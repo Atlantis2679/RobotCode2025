@@ -44,6 +44,8 @@ public class RobotContainer {
         TuneablesManager.add("Swerve/drive command", driveCommand.fullTuneable());
         driverController.a().onTrue(new InstantCommand(swerve::resetYaw));
         driverController.x().onTrue(swerveCommands.xWheelLock());
+        driverController.y().onTrue(swerveCommands.driveForwardVoltage(()-> 1));
+        driverController.b().onTrue(swerveCommands.driveForwardVoltage(()-> 0));
 
         TuneablesManager.add("Swerve/modules control mode",
                 swerveCommands.controlModules(
