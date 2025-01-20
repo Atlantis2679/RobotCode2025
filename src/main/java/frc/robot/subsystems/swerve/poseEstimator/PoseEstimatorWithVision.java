@@ -107,9 +107,17 @@ public class PoseEstimatorWithVision {
 
     private static double caculatePoseAmbiguitys(double[] tagsAmbiguitys) {
         double multiplay = 1;
+        int lowestAmbiguityTagIndex = 0;
+        for (int i = 1; i < tagsAmbiguitys.length; i++) {
+            if(tagsAmbiguitys[i] < tagsAmbiguitys[lowestAmbiguityTagIndex]) {
+                lowestAmbiguityTagIndex = i;
+            }
+        }
+        double lowestAmbiguityTag = tagsAmbiguitys[lowestAmbiguityTagIndex];
+        tagsAmbiguitys[lowestAmbiguityTagIndex] = 1;
         for(double tagAmbiguity : tagsAmbiguitys) {
             multiplay *= tagAmbiguity;
         }
-        return Math.sqrt(multiplay);
+        return lowestAmbiguityTag - Math.sqrt(multiplay);
     }
 }
