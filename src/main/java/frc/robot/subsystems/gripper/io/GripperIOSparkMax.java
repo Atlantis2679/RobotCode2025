@@ -12,11 +12,11 @@ import static frc.robot.RobotMap.*;
 public class GripperIOSparkMax extends GripperIO {
     private final SparkMax rightOutTakeMotor = new SparkMax(GRIPPER_RIGHT_OUTTAKE_MOTOR_ID, MotorType.kBrushless);
     private final SparkMax leftOutTakeMotor = new SparkMax(GRIPPER_LEFT_OUTTAKE_MOTOR_ID, MotorType.kBrushless);
-    private final SparkMax intakeOutTakeMotor = new SparkMax(GRIPPER_INTAKE_OUTTAKE_MOTOR_ID, MotorType.kBrushless);
+    private final SparkMax backMotor = new SparkMax(GRIPPER_IBACK_MOTOR_ID, MotorType.kBrushless);
     
-    private final RelativeEncoder rightOutTakeEncoder = rightOutTakeMotor.getEncoder();
-    private final RelativeEncoder leftOutTakeEncoder = leftOutTakeMotor.getEncoder();
-    private final RelativeEncoder intakeOutTakeEncoder = intakeOutTakeMotor.getEncoder();
+    private final RelativeEncoder rightOutTakeMotorEncoder = rightOutTakeMotor.getEncoder();
+    private final RelativeEncoder leftOutTakeMotorEncoder = leftOutTakeMotor.getEncoder();
+    private final RelativeEncoder backMotorEncoder = backMotor.getEncoder();
 
     private final DigitalInput beamBrake = new DigitalInput(GRIPPER_BEAM_BRAKE_ID); 
 
@@ -33,48 +33,48 @@ public class GripperIOSparkMax extends GripperIO {
 
     @Override
     protected double getRightOutTakeMotorSpeedRPM() {
-        return rightOutTakeEncoder.getVelocity();
+        return rightOutTakeMotorEncoder.getVelocity();
     }
 
     @Override
     protected double getLeftOutTakeMotorSpeedRPM() {
-        return leftOutTakeEncoder.getVelocity();
+        return leftOutTakeMotorEncoder.getVelocity();
     }
 
     @Override
-    protected double getIntakeOutTakeMotorSpeedRPM() {
-        return intakeOutTakeEncoder.getVelocity();
+    protected double getBackMotorSpeedRPM() {
+        return backMotorEncoder.getVelocity();
     }
 
     // Outputs:
 
     @Override
-    public void setVoltageRightOutTake(double voltage) {
+    public void setRightOutTakeMotorVoltage(double voltage) {
         rightOutTakeMotor.setVoltage(voltage);
     }
 
     @Override
-    public void setPrecentageSpeedRightOutTake(double precentageSpeed) {
+    public void setRightOutTakeMotorPrecentageSpeed(double precentageSpeed) {
         rightOutTakeMotor.set(precentageSpeed);
     }
 
     @Override
-    public void setVoltageLeftOutTake(double voltage) {
+    public void setLeftOutTakeMotorVoltage(double voltage) {
         leftOutTakeMotor.setVoltage(voltage);
     }
 
     @Override
-    public void setPrecentageSpeedLeftOutTake(double precentageSpeed) {
+    public void setLeftOutTakeMotorPrecentageSpeed(double precentageSpeed) {
         leftOutTakeMotor.set(precentageSpeed);
     }
 
     @Override
-    public void setVoltageIntakeOutTake(double voltage) {
-        intakeOutTakeMotor.setVoltage(voltage);
+    public void setBackMotorVoltage(double voltage) {
+        backMotor.setVoltage(voltage);
     }
 
     @Override
-    public void setPrecentageSpeedIntakeOutTake(double precentageSpeed) {
-        intakeOutTakeMotor.set(precentageSpeed);
+    public void setBackMotorPrecentageSpeed(double precentageSpeed) {
+        backMotor.set(precentageSpeed);
     }
 }

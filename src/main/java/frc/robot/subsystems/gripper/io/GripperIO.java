@@ -10,7 +10,7 @@ public abstract class GripperIO extends IOBase {
     public final BooleanSupplier isCoraIn = fields.addBoolean("isCoraIn", this::getIsCoralIn);
     public final DoubleSupplier leftOutTakeMotorSpeedRPM = fields.addDouble("leftOutTakeMotorSpeedRPM", this::getLeftOutTakeMotorSpeedRPM);
     public final DoubleSupplier rightOutTakeMotorSpeedRPM = fields.addDouble("rightOutTakeMotorSpeedRPM", this::getRightOutTakeMotorSpeedRPM);
-    public final DoubleSupplier intakeOutTakeMotorSpeedRPM = fields.addDouble("intakeOutTakeMotorSpeedRPM", this::getIntakeOutTakeMotorSpeedRPM);
+    public final DoubleSupplier backMotorSpeedRPM = fields.addDouble("backMotorSpeedRPM", this::getBackMotorSpeedRPM);
 
     public GripperIO(LogFieldsTable fieldsTable) {
         super(fieldsTable);
@@ -20,14 +20,14 @@ public abstract class GripperIO extends IOBase {
     protected abstract boolean getIsCoralIn();
     protected abstract double getRightOutTakeMotorSpeedRPM();
     protected abstract double getLeftOutTakeMotorSpeedRPM();
-    protected abstract double getIntakeOutTakeMotorSpeedRPM();
+    protected abstract double getBackMotorSpeedRPM();
 
     // Outputs:
-    public abstract void setVoltageRightOutTake(double voltage);
-    public abstract void setPrecentageSpeedRightOutTake(double precentageSpeed);
-    public abstract void setVoltageLeftOutTake(double voltage);
-    public abstract void setPrecentageSpeedLeftOutTake(double precentageSpeed);
-    public abstract void setVoltageIntakeOutTake(double voltage);
-    public abstract void setPrecentageSpeedIntakeOutTake(double precentageSpeed);
+    public abstract void setRightOutTakeMotorVoltage(double voltage);
+    public abstract void setRightOutTakeMotorPrecentageSpeed(double precentageSpeed);
+    public abstract void setLeftOutTakeMotorVoltage(double voltage);
+    public abstract void setLeftOutTakeMotorPrecentageSpeed(double precentageSpeed);
+    public abstract void setBackMotorVoltage(double voltage);
+    public abstract void setBackMotorPrecentageSpeed(double precentageSpeed);
 
 }

@@ -13,7 +13,7 @@ public class RobotMap {
 
     public static final int GRIPPER_LEFT_OUTTAKE_MOTOR_ID = 0;
     public static final int GRIPPER_RIGHT_OUTTAKE_MOTOR_ID = 0;
-    public static final int GRIPPER_INTAKE_OUTTAKE_MOTOR_ID = 0;
+    public static final int GRIPPER_IBACK_MOTOR_ID = 0;
     public static final int GRIPPER_BEAM_BRAKE_ID = 0;
 
     public static class Controllers {
