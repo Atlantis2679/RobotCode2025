@@ -24,10 +24,29 @@ public class GripperIOSparkMax extends GripperIO {
         super(fieldsTable);
     }
 
+    // Inputs:
+
     @Override
     protected boolean getIsCoralIn() {
         return beamBrake.get();
     }
+
+    @Override
+    protected double getRightOutTakeMotorSpeedRPM() {
+        return rightOutTakeEncoder.getVelocity();
+    }
+
+    @Override
+    protected double getLeftOutTakeMotorSpeedRPM() {
+        return leftOutTakeEncoder.getVelocity();
+    }
+
+    @Override
+    protected double getIntakeOutTakeMotorSpeedRPM() {
+        return intakeOutTakeEncoder.getVelocity();
+    }
+
+    // Outputs:
 
     @Override
     public void setVoltageRightOutTake(double voltage) {
@@ -57,20 +76,5 @@ public class GripperIOSparkMax extends GripperIO {
     @Override
     public void setPrecentageSpeedIntakeOutTake(double precentageSpeed) {
         intakeOutTakeMotor.set(precentageSpeed);
-    }
-
-    @Override
-    protected double getRightOutTakeMotorSpeedRPM() {
-        return rightOutTakeEncoder.getVelocity();
-    }
-
-    @Override
-    protected double getLeftOutTakeMotorSpeedRPM() {
-        return leftOutTakeEncoder.getVelocity();
-    }
-
-    @Override
-    protected double getIntakeOutTakeMotorSpeedRPM() {
-        return intakeOutTakeEncoder.getVelocity();
     }
 }
