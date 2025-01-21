@@ -21,6 +21,7 @@ public class PoseEstimatorConstants {
     public final static double STATE_TRUST_LEVEL_Y = 0.9;
     public final static double STATE_TRUST_LEVEL_Z = 0.9;
 
+    public final static double VISION_TAG_AMBIGUITY_MIN_VALUE = 0.00005;
     public final static double VISION_ROTATION_TRUST_LEVEL_MULTIPLAYER = 1;
     public final static double VISION_TRANSLATION_TRUST_LEVEL_MULTIPLAYER = 1;
 }
