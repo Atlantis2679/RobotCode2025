@@ -1,7 +1,7 @@
 package frc.robot.subsystems.gripper;
 
 public class GripperConstants {
-    // Gripper:
+    /* Gripper: */
     public static final double OUTTAKE_MOTORS_MAX_VOLTAGE = 0;
     public static final double BACK_MOTOR_MAX_VOLTAGE = 0;
     public static final double DEBOUNCER_SECONDS = 0;
@@ -21,6 +21,7 @@ public class GripperConstants {
     public static final double OUTTAKE_MOTORS_PERCENT_SPEED_FOR_L3 = 0;
     public static final double BACK_MOTOR_PERCENT_SPEED_FOR_L3 = 0;
     
+    /* Sim: */
     public static class GripperSim {
         public static final double OUTTAKE_MOTORS_GEAR_RATIO = 0;
         public static final double OUTTAKE_MOTORS_MOMENT_OF_INERTIA = 0;

@@ -13,7 +13,7 @@ import static frc.robot.subsystems.gripper.GripperConstants.*;
 
 public class Gripper extends SubsystemBase {
     private final LogFieldsTable fieldsTable = new LogFieldsTable(getName());
-    private final Debouncer isCoralIDebouncer = new Debouncer(DEBOUNCER_SECONDS);
+    private final Debouncer isCoralInDebouncer = new Debouncer(DEBOUNCER_SECONDS);
 
     private final GripperIO io = Robot.isReal() ? 
         new GripperIOSparkMax(fieldsTable.getSubTable("io")) : 
@@ -23,7 +23,7 @@ public class Gripper extends SubsystemBase {
     }
 
     public boolean getIsCoralIn() {
-        return isCoralIDebouncer.calculate(io.isCoraIn.getAsBoolean());
+        return isCoralInDebouncer.calculate(io.isCoraIn.getAsBoolean());
     }
 
     public double getRightOutTakeMotorSpeedRPM() {
