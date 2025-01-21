@@ -15,17 +15,17 @@ public class FunnelCommands {
 
     public Command loadCoral() {
         return funnel.run(() -> funnel.setMotorPercentageSpeed(MOTOR_PERCENTAGE_SPEED_LOADING))
-            .until(() -> funnel.getIsCoralIn()).finallyDo(() -> funnel.stop()).withName("loadCoral");
+            .until(funnel::getIsCoralIn).finallyDo(funnel::stop).withName("loadCoral");
     }
 
     public Command passCoral() {
         return funnel.run(() -> funnel.setMotorPercentageSpeed(MOTOR_PERCENTAGE_SPEED_LOADING))
-                .until(() -> funnel.getIsCoralIn()).andThen(funnel.run(() -> funnel.setMotorPercentageSpeed(MOTOR_PERCENTAGE_SPEED_PASSING))
-                .until(() -> funnel.getIsCoralIn()).finallyDo(() -> funnel.stop())).withName("passCoral");
+                .until(funnel::getIsCoralIn).andThen(funnel.run(() -> funnel.setMotorPercentageSpeed(MOTOR_PERCENTAGE_SPEED_PASSING))
+                .until(() -> !funnel.getIsCoralIn())).finallyDo(funnel::stop).withName("passCoral");
     }
 
     public Command manualController(DoubleSupplier funnelPercentageSpeed) {
         return funnel.run(() -> funnel.setMotorPercentageSpeed(funnelPercentageSpeed.getAsDouble()))
-            .finallyDo(() -> funnel.stop()).withName("manualController");
+            .finallyDo(funnel::stop).withName("manualController");
     }
 }
