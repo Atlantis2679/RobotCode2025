@@ -9,9 +9,6 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.lib.logfields.LogFieldsTable;
 import frc.robot.subsystems.swerve.poseEstimator.io.VisionAprilTagsIO;
 import frc.robot.subsystems.swerve.poseEstimator.io.VisionAprilTagsIOPhoton;
@@ -30,13 +27,8 @@ public class PoseEstimatorWithVision {
     private final SwerveDrivePoseEstimator poseEstimator;
     private final LogFieldsTable fieldsTable;
 
-    private boolean ignoreFarEstimates = false;
-
     public PoseEstimatorWithVision(LogFieldsTable fieldsTable, Rotation2d currentAngle,
             SwerveModulePosition[] positions, SwerveDriveKinematics swerveKinematics) {
-        new Trigger(DriverStation::isDisabled)
-                .onTrue(Commands.runOnce(() -> ignoreFarEstimates = false).ignoringDisable(true));
-        new Trigger(DriverStation::isEnabled).onTrue(Commands.runOnce(() -> ignoreFarEstimates = true).ignoringDisable(true));
 
         AprilTagFieldLayout fieldLayout;
         try {
@@ -69,30 +61,25 @@ public class PoseEstimatorWithVision {
             for (int i = 0; i < poses.length; i++) {
                 LogFieldsTable cameraFieldsTable = fieldsTable.getSubTable(cameraName);
                 Pose3d poseEstimate = poses[i];
-                double poseAmbiguity = caculatePoseAmbiguitys(visionIO.tagsAmbiguitys.get()[i]);
+                double trustLevel = caculatePoseTrustLevel(
+                    visionIO.tagsPoses.get()[i],
+                    visionIO.tagsAmbiguitys.get()[i],
+                    visionIO.posesEstimates.get()[i]
+                );
+                if(trustLevel == -1) continue;
                 cameraFieldsTable.recordOutput("Pose3d", poseEstimate);
                 cameraFieldsTable.recordOutput("Pose2d", poseEstimate.toPose2d());
                 cameraFieldsTable.recordOutput("tagsPoses", visionIO.tagsPoses.get()[i]);
                 cameraFieldsTable.recordOutput("tagsAmbiguitys", visionIO.tagsAmbiguitys.get()[i]);
-                cameraFieldsTable.recordOutput("poseAmbiguity", poseAmbiguity);
-
-                double visionToEstimateDifference = PhotonUtils.getDistanceToPose(
-                        poseEstimate.toPose2d(),
-                        poseEstimator.getEstimatedPosition());
-
-                cameraFieldsTable.recordOutput("diff",
-                        PoseEstimatorConstants.VISION_THRESHOLD_DISTANCE_M - visionToEstimateDifference);
+                cameraFieldsTable.recordOutput("trustLevel", trustLevel);
                     
-                double visionRotationTrustLevel = poseAmbiguity * VISION_ROTATION_TRUST_LEVEL_MULTIPLAYER;
-                double visionTranslationTrustLevel = poseAmbiguity * VISION_TRANSLATION_TRUST_LEVEL_MULTIPLAYER;
+                double visionRotationTrustLevel = trustLevel * VISION_ROTATION_TRUST_LEVEL_MULTIPLAYER;
+                double visionTranslationTrustLevel = trustLevel * VISION_TRANSLATION_TRUST_LEVEL_MULTIPLAYER;
                 poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(visionTranslationTrustLevel, visionTranslationTrustLevel, visionRotationTrustLevel));
         
-                if (!ignoreFarEstimates
-                        || visionToEstimateDifference < PoseEstimatorConstants.VISION_THRESHOLD_DISTANCE_M) {
-                    poseEstimator.addVisionMeasurement(
-                            poseEstimate.toPose2d(),
-                            visionIO.cameraTimestampsSeconds.get()[i]);
-                }
+                poseEstimator.addVisionMeasurement(
+                        poseEstimate.toPose2d(),
+                        visionIO.cameraTimestampsSeconds.get()[i]);
             }
         });
     }
@@ -105,15 +92,17 @@ public class PoseEstimatorWithVision {
         return poseEstimator.getEstimatedPosition();
     }
 
-    private static double caculatePoseAmbiguitys(double[] tagsAmbiguitys) {
-        double multiplay = 1;
-        for(double tagAmbiguity : tagsAmbiguitys) {
-            if(tagAmbiguity == -1) continue; // Not accont for invalid tags
-            if(tagAmbiguity < VISION_TAG_AMBIGUITY_MIN_VALUE) {
-                tagAmbiguity = VISION_TAG_AMBIGUITY_MIN_VALUE;
+    private static double caculatePoseTrustLevel(Pose3d[] tagsPoses, double[] tagsAmbiguitys, Pose3d estimatedRobotPose) {
+        double trustLevel = 0;
+        for (int i = 0; i < tagsPoses.length; i++) {
+            if(tagsAmbiguitys[i] <= VISION_MAX_TAG_ANBIGUITY_THRESHOLD && tagsAmbiguitys[i] >= 0) {
+                double tagEstimatedDistanceToPose = PhotonUtils.getDistanceToPose(estimatedRobotPose.toPose2d(), tagsPoses[i].toPose2d());
+                if(tagEstimatedDistanceToPose < VISION_MIN_TAG_DISTANCE_TO_POSE_METERS) {
+                    tagEstimatedDistanceToPose = VISION_MIN_TAG_DISTANCE_TO_POSE_METERS;
+                }
+                trustLevel += (1 / tagEstimatedDistanceToPose);
             }
-            multiplay *= tagAmbiguity;
         }
-        return Math.sqrt(multiplay);
+        return trustLevel != 0 ? 1 / trustLevel : -1;
     }
 }
