@@ -1,6 +1,7 @@
 package frc.robot.subsystems.gripper;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.logfields.LogFieldsTable;
 import frc.robot.Robot;
@@ -12,6 +13,7 @@ import static frc.robot.subsystems.gripper.GripperConstants.*;
 
 public class Gripper extends SubsystemBase {
     private final LogFieldsTable fieldsTable = new LogFieldsTable(getName());
+    private final Debouncer isCoralIDebouncer = new Debouncer(DEBOUNCER_SECONDS);
 
     private final GripperIO io = Robot.isReal() ? 
         new GripperIOSparkMax(fieldsTable.getSubTable("io")) : 
@@ -21,7 +23,7 @@ public class Gripper extends SubsystemBase {
     }
 
     public boolean getIsCoralIn() {
-        return io.isCoraIn.getAsBoolean();
+        return isCoralIDebouncer.calculate(io.isCoraIn.getAsBoolean());
     }
 
     public double getRightOutTakeMotorSpeedRPM() {
@@ -41,16 +43,30 @@ public class Gripper extends SubsystemBase {
         io.setLeftOutTakeMotorVoltage(MathUtil.clamp(leftOutTakeVoltage, -OUTTAKE_MOTORS_MAX_VOLTAGE, OUTTAKE_MOTORS_MAX_VOLTAGE));
     }
 
-    public void setOuttakeMotorsPrecentageSpeed(double rightOutTakePrecentageSpeed, double leftOutTakePrecentageSpeed) {
-        io.setRightOutTakeMotorVoltage(MathUtil.clamp(rightOutTakePrecentageSpeed, -1, 1));
-        io.setLeftOutTakeMotorVoltage(MathUtil.clamp(leftOutTakePrecentageSpeed, -1, 1));
+    public void setOutTakeMotorsPercentSpeed(double rightOutTakePercentSpeed, double leftOutTakePercentSpeed) {
+        io.setRightOutTakeMotorVoltage(MathUtil.clamp(rightOutTakePercentSpeed, -1, 1));
+        io.setLeftOutTakeMotorVoltage(MathUtil.clamp(leftOutTakePercentSpeed, -1, 1));
     }
 
-    public void setBackMotorVoltage(double intakeOutTakeVoltage) {
-        io.setBackMotorVoltage(MathUtil.clamp(intakeOutTakeVoltage, -BACK_MOTOR_MAX_VOLTAGE, BACK_MOTOR_MAX_VOLTAGE));
+    public void setBackMotorVoltage(double backMotorVoltage) {
+        io.setBackMotorVoltage(MathUtil.clamp(backMotorVoltage, -BACK_MOTOR_MAX_VOLTAGE, BACK_MOTOR_MAX_VOLTAGE));
     }
 
-    public void setBackMotorPrecentageSpeed(double intakeOutTakePrecentageSpeed) {
-        io.setBackMotorVoltage(MathUtil.clamp(intakeOutTakePrecentageSpeed, -1, 1));
+    public void setBackMotorPercentSpeed(double backOutTakePercentSpeed) {
+        io.setBackMotorVoltage(MathUtil.clamp(backOutTakePercentSpeed, -1, 1));
+    }
+
+    public boolean isOutTakeMotorsAtSpeed(double rightOutTakeMotorSpeedRPM, double leftOutTakeMotorSpeedRPM) {
+        return getRightOutTakeMotorSpeedRPM() >= rightOutTakeMotorSpeedRPM &&
+            getLeftOutTakeMotorSpeedRPM() >= leftOutTakeMotorSpeedRPM;
+    }
+
+    public boolean isBackMotorAtSpeed(double backMotorSpeedRPM) {
+        return getBackMotorSpeedRPM() >= backMotorSpeedRPM;
+    }
+
+    public void stop() {
+        setOuttakeMotorsVoltage(0, 0);
+        setBackMotorVoltage(0);
     }
 }
