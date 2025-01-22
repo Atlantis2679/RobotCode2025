@@ -9,12 +9,12 @@ public class GripperConstants {
     /* Gripper Commands: */
 
     // Loading:
-    public static final double OUTTAKE_MOTORS_PERCENT_SPEED_FOR_LOADING = 0;
-    public static final double BACK_MOTOR_PERCENT_SPEED_FOR_LOADING = 0;
+    public static final double OUTTAKE_MOTORS_VOLTAGE_FOR_LOADING = 0;
+    public static final double BACK_MOTOR_VOLTAGE_FOR_LOADING = 0;
 
     // Score L1:
-    public static final double RIGHT_OUTTAKE_MOTOR_PERCENT_SPEED_FOR_L1 = 0;
-    public static final double LEFT_OUTTAKE_MOTOR_PERCENT_SPEED_FOR_L1 = 0;
+    public static final double RIGHT_OUTTAKE_MOTOR_VOLTAGE_FOR_L1 = 0;
+    public static final double LEFT_OUTTAKE_MOTOR_VOLTAGE_FOR_L1 = 0;
     public static final double BACK_MOTOR_PERCENT_SPEED_FOR_L1 = 0;
 
     // Score L3:

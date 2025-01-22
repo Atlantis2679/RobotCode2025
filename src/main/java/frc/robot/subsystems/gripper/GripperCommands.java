@@ -14,27 +14,27 @@ public class GripperCommands {
     }
 
     public Command loadCoral() {
-        return gripper.run(() -> gripper.setOutTakeMotorsPercentSpeed(
-            OUTTAKE_MOTORS_PERCENT_SPEED_FOR_LOADING, OUTTAKE_MOTORS_PERCENT_SPEED_FOR_LOADING))
-            .alongWith(gripper.run(() -> gripper.setBackMotorPercentSpeed(BACK_MOTOR_PERCENT_SPEED_FOR_LOADING)))
+        return gripper.run(() -> gripper.setOuttakeMotorsVoltage(
+            OUTTAKE_MOTORS_VOLTAGE_FOR_LOADING, OUTTAKE_MOTORS_VOLTAGE_FOR_LOADING))
+            .alongWith(gripper.run(() -> gripper.setBackMotorVoltage(BACK_MOTOR_VOLTAGE_FOR_LOADING)))
             .until(gripper::getIsCoralIn).andThen(gripper::stop).withName("loadCoral");
     }
 
     public Command scoreL1() {
-        return gripper.run(() -> gripper.setOutTakeMotorsPercentSpeed(
-            OUTTAKE_MOTORS_PERCENT_SPEED_FOR_LOADING, OUTTAKE_MOTORS_PERCENT_SPEED_FOR_LOADING))
-            .alongWith(gripper.run(() -> gripper.setBackMotorPercentSpeed(BACK_MOTOR_PERCENT_SPEED_FOR_LOADING)))
+        return gripper.run(() -> gripper.setOuttakeMotorsVoltage(
+            OUTTAKE_MOTORS_VOLTAGE_FOR_LOADING, OUTTAKE_MOTORS_VOLTAGE_FOR_LOADING))
+            .alongWith(gripper.run(() -> gripper.setBackMotorVoltage(BACK_MOTOR_VOLTAGE_FOR_LOADING)))
             .until(gripper::getIsCoralIn)
             .andThen(manualController(
-                () -> RIGHT_OUTTAKE_MOTOR_PERCENT_SPEED_FOR_L1, () -> LEFT_OUTTAKE_MOTOR_PERCENT_SPEED_FOR_L1,
+                () -> RIGHT_OUTTAKE_MOTOR_VOLTAGE_FOR_L1, () -> LEFT_OUTTAKE_MOTOR_VOLTAGE_FOR_L1,
                 () -> BACK_MOTOR_PERCENT_SPEED_FOR_L3))
             .until(() -> !gripper.getIsCoralIn()).finallyDo(gripper::stop).withName("scoreL1");
     }
 
     public Command scoreL3() {
         return gripper.run(() -> gripper.setOutTakeMotorsPercentSpeed(
-            OUTTAKE_MOTORS_PERCENT_SPEED_FOR_LOADING, OUTTAKE_MOTORS_PERCENT_SPEED_FOR_LOADING))
-            .alongWith(gripper.run(() -> gripper.setBackMotorPercentSpeed(BACK_MOTOR_PERCENT_SPEED_FOR_LOADING)))
+            OUTTAKE_MOTORS_VOLTAGE_FOR_LOADING, OUTTAKE_MOTORS_VOLTAGE_FOR_LOADING))
+            .alongWith(gripper.run(() -> gripper.setBackMotorPercentSpeed(BACK_MOTOR_VOLTAGE_FOR_LOADING)))
             .until(gripper::getIsCoralIn)
             .andThen(manualController(
                 () -> OUTTAKE_MOTORS_PERCENT_SPEED_FOR_L3, () -> OUTTAKE_MOTORS_PERCENT_SPEED_FOR_L3,
