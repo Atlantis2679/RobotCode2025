@@ -56,7 +56,6 @@ public class PoseEstimatorWithVision {
         poseEstimator.update(gyroMeasurmentCCW, modulesPositions);
 
         visionCameras.forEach((cameraName, visionIO) -> {
-            new Pose2d();
             Pose3d[] poses = visionIO.posesEstimates.get();
             for (int i = 0; i < poses.length; i++) {
                 LogFieldsTable cameraFieldsTable = fieldsTable.getSubTable(cameraName);
@@ -64,7 +63,7 @@ public class PoseEstimatorWithVision {
                 double trustLevel = caculatePoseTrustLevel(
                     visionIO.tagsPoses.get()[i],
                     visionIO.tagsAmbiguitys.get()[i],
-                    visionIO.posesEstimates.get()[i]
+                    poseEstimate
                 );
                 if(trustLevel == -1) continue;
                 cameraFieldsTable.recordOutput("Pose3d", poseEstimate);
