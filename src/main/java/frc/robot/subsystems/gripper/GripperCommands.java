@@ -27,25 +27,25 @@ public class GripperCommands {
             .until(gripper::getIsCoralIn)
             .andThen(manualController(
                 () -> RIGHT_OUTTAKE_MOTOR_VOLTAGE_FOR_L1, () -> LEFT_OUTTAKE_MOTOR_VOLTAGE_FOR_L1,
-                () -> BACK_MOTOR_PERCENT_SPEED_FOR_L3))
+                () -> BACK_MOTOR_VOLTAGE_FOR_L3))
             .until(() -> !gripper.getIsCoralIn()).finallyDo(gripper::stop).withName("scoreL1");
     }
 
     public Command scoreL3() {
-        return gripper.run(() -> gripper.setOutTakeMotorsPercentSpeed(
+        return gripper.run(() -> gripper.setOuttakeMotorsVoltage(
             OUTTAKE_MOTORS_VOLTAGE_FOR_LOADING, OUTTAKE_MOTORS_VOLTAGE_FOR_LOADING))
-            .alongWith(gripper.run(() -> gripper.setBackMotorPercentSpeed(BACK_MOTOR_VOLTAGE_FOR_LOADING)))
+            .alongWith(gripper.run(() -> gripper.setBackMotorVoltage(BACK_MOTOR_VOLTAGE_FOR_LOADING)))
             .until(gripper::getIsCoralIn)
             .andThen(manualController(
-                () -> OUTTAKE_MOTORS_PERCENT_SPEED_FOR_L3, () -> OUTTAKE_MOTORS_PERCENT_SPEED_FOR_L3,
-                () -> BACK_MOTOR_PERCENT_SPEED_FOR_L3))
+                () -> OUTTAKE_MOTORS_VOLTAGE_FOR_L3, () -> OUTTAKE_MOTORS_VOLTAGE_FOR_L3,
+                () -> BACK_MOTOR_VOLTAGE_FOR_L3))
             .until(() -> !gripper.getIsCoralIn()).finallyDo(gripper::stop).withName("scoreL3");
     }
 
-    public Command manualController(DoubleSupplier rightOutTakeMotorPercentSpeed, DoubleSupplier leftOutTakeMotorPercentSpeed, DoubleSupplier backMotorPercentSpeed) {
+    public Command manualController(DoubleSupplier rightOutTakeMotorVoltage, DoubleSupplier leftOutTakeMotorVoltage, DoubleSupplier backMotorVoltage) {
         return gripper.run(() -> 
-            gripper.setOutTakeMotorsPercentSpeed(rightOutTakeMotorPercentSpeed.getAsDouble(), leftOutTakeMotorPercentSpeed.getAsDouble()))
-            .alongWith(gripper.run(() -> gripper.setBackMotorPercentSpeed(backMotorPercentSpeed.getAsDouble())))
+            gripper.setOuttakeMotorsVoltage(rightOutTakeMotorVoltage.getAsDouble(), leftOutTakeMotorVoltage.getAsDouble()))
+            .alongWith(gripper.run(() -> gripper.setBackMotorVoltage(backMotorVoltage.getAsDouble())))
             .finallyDo(gripper::stop).withName("manualController");
     }
 }

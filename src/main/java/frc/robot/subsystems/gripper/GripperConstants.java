@@ -18,8 +18,8 @@ public class GripperConstants {
     public static final double BACK_MOTOR_PERCENT_SPEED_FOR_L1 = 0;
 
     // Score L3:
-    public static final double OUTTAKE_MOTORS_PERCENT_SPEED_FOR_L3 = 0;
-    public static final double BACK_MOTOR_PERCENT_SPEED_FOR_L3 = 0;
+    public static final double OUTTAKE_MOTORS_VOLTAGE_FOR_L3 = 0;
+    public static final double BACK_MOTOR_VOLTAGE_FOR_L3 = 0;
     
     /* Sim: */
     public static class GripperSim {
