@@ -32,7 +32,7 @@ public class PoseEstimatorWithVision {
 
         AprilTagFieldLayout fieldLayout;
         try {
-            fieldLayout = AprilTagFieldLayout.loadFromResource(AprilTagFields.kDefaultField.m_resourceFile);
+            fieldLayout = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2025Reefscape.m_resourceFile);
         } catch (IOException e) {
             e.printStackTrace();
             throw new RuntimeException();
