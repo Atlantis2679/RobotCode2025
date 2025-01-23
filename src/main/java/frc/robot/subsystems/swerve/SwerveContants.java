@@ -10,9 +10,9 @@ public class SwerveContants {
     public final static double MAX_VOLTAGE = 11;
     public final static double MAX_MODULE_VELOCITY_MPS = 3.84; // for the max voltage
 
-    public final static double TRACK_WIDTH_M = 0.518;
-    public final static double TRACK_LENGTH_M = 0.518;
-    public final static double TRACK_RADIUS_M = 0.366;
+    public final static double TRACK_WIDTH_METERS = 0.518;
+    public final static double TRACK_LENGTH_METERS = 0.518;
+    public final static double TRACK_RADIUS_METERS = 0.366;
 
     public final static double MODULE_FL_ABSOLUTE_ANGLE_OFFSET_DEGREES = 149.94140625;
     public final static double MODULE_FR_ABSOLUTE_ANGLE_OFFSET_DEGREES = 123.662109375;
@@ -35,8 +35,8 @@ public class SwerveContants {
 
     public class PathPlanner {
         public final static double FRICTION_WITH_CARPET = 1;//couldn't find it
-        public final static double ROBOT_MASS_KG =  50;
-        public final static double MOMENT_OF_INERTIA =  (1/12)*ROBOT_MASS_KG*(TRACK_LENGTH_M*TRACK_LENGTH_M+TRACK_WIDTH_M*TRACK_WIDTH_M);
+        public final static double ROBOT_MASS_KG = 40;
+        public final static double MOMENT_OF_INERTIA =  (1/12)*ROBOT_MASS_KG*(TRACK_LENGTH_METERS*TRACK_LENGTH_METERS+TRACK_WIDTH_METERS*TRACK_WIDTH_METERS);
 
         public final static double TRANSLATION_KP = 0;
         public final static double TRANSLATION_KI = 0;

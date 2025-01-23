@@ -3,10 +3,12 @@ package frc.robot.subsystems.swerve;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.sysid.SysIdRoutineLog;
 import frc.lib.logfields.LogFieldsTable;
 import frc.lib.tuneables.Tuneable;
 import frc.lib.tuneables.TuneableBuilder;
 import frc.robot.Robot;
+import edu.wpi.first.units.Units;
 import frc.robot.subsystems.swerve.io.SwerveModuleIO;
 import frc.robot.subsystems.swerve.io.SwerveModuleIOFalcon;
 import frc.robot.subsystems.swerve.io.SwerveModuleIOSim;
@@ -16,6 +18,7 @@ import static frc.robot.subsystems.swerve.SwerveContants.*;
 
 public class SwerveModule implements Tuneable {
     private final int moduleNumber;
+    private final String positionName;
 
     private final LogFieldsTable fieldsTable;
     private final SwerveModuleIO io;
@@ -31,6 +34,7 @@ public class SwerveModule implements Tuneable {
     public SwerveModule(int moduleNumber, String positionName, int driveMotorID, int turnMotorID, int encoderID,
             double absoluteAngleOffSetDegrees, LogFieldsTable swerveFieldsTable) {
         this.moduleNumber = moduleNumber;
+        this.positionName = positionName;
 
         fieldsTable = swerveFieldsTable.getSubTable("Module " + moduleNumber + " " + positionName);
 
@@ -105,6 +109,10 @@ public class SwerveModule implements Tuneable {
         return this.moduleNumber;
     }
 
+    public String getName() {
+        return this.positionName;
+    }
+
     public double getDriveDistanceMeters() {
         return io.driveDistanceRotations.getAsDouble() * WHEEL_CIRCUMFERENCE_METERS;
     }
@@ -144,6 +152,10 @@ public class SwerveModule implements Tuneable {
         queueResetToAbsolute();
     }
 
+    public double getSupplyVoltage(){
+        return io.voltage.getAsDouble();
+    }
+
     public double getTurnKP() {
         return io.TurnKP.getAsDouble();
     }
@@ -178,5 +190,12 @@ public class SwerveModule implements Tuneable {
                     absoluteAngleHelperDegrees.setOffset(val);
                     queueResetToAbsolute();
                 });
+    }
+    public void driveMotorUpdateLog(SysIdRoutineLog log) {
+        log.motor("Module" + moduleNumber + "Drive")
+                .angularPosition(Units.Rotations.of(getAbsoluteAngleDegrees()))
+                .angularVelocity(Units.RotationsPerSecond.of(getVelocityMPS()))
+                .voltage(Units.Volts.of(getSupplyVoltage()));
+
     }
 }

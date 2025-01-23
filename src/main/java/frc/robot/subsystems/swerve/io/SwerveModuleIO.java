@@ -21,6 +21,8 @@ public abstract class SwerveModuleIO extends IOBase {
                         this::getTurnSupplyCurrent);
         public final DoubleSupplier turnStatorCurrent = fields.addDouble("turnStatorCurrent",
                         this::getTurnStatorCurrent);
+        public final DoubleSupplier voltage = fields.addDouble("voltage",
+                        this::getVoltage);
         public final DoubleSupplier TurnKP = fields.addDouble("Turn kP", this::getTurnKP);
         public final DoubleSupplier TurnKI = fields.addDouble("Turn kI", this::getTurnKI);
         public final DoubleSupplier TurnKD = fields.addDouble("Turn kD", this::getTurnKD);
@@ -46,6 +48,8 @@ public abstract class SwerveModuleIO extends IOBase {
         protected abstract double getTurnSupplyCurrent();
 
         protected abstract double getTurnStatorCurrent();
+
+        protected abstract double getVoltage();
 
         protected abstract double getTurnKP();
 

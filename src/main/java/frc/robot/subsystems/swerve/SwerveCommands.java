@@ -11,6 +11,7 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.lib.tuneables.extensions.TuneableCommand;
 import frc.lib.valueholders.BooleanHolder;
 import frc.robot.subsystems.swerve.SwerveContants.RotateToAngle;
@@ -83,6 +84,13 @@ public class SwerveCommands {
 
             swerve.setModulesState(moduleStates, false, true, false);
         });
+    }
+
+    public Command sysID(boolean driveForward, boolean useQuasistatic) {
+        if(useQuasistatic){
+            return swerve.getSysIdRoutine().quasistatic(driveForward ? SysIdRoutine.Direction.kForward : SysIdRoutine.Direction.kReverse);
+        }
+        return swerve.getSysIdRoutine().dynamic(driveForward ? SysIdRoutine.Direction.kForward : SysIdRoutine.Direction.kReverse);
     }
 
     public Command stop() {

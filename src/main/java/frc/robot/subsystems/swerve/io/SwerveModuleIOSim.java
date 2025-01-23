@@ -160,4 +160,10 @@ public class SwerveModuleIOSim extends SwerveModuleIO {
     protected double getTurnStatorCurrent() {
         return turnMotorSim.getCurrentDrawAmps();
     }
+
+    @Override
+    protected double getVoltage() {
+        // TODO Auto-generated method stub
+        return 0;
+    }
 }

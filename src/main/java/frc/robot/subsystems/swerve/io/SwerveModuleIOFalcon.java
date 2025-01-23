@@ -172,4 +172,8 @@ public class SwerveModuleIOFalcon extends SwerveModuleIO {
     protected double getTurnStatorCurrent() {
         return turnMotor.getStatorCurrent().getValueAsDouble();
     }
+    @Override
+    protected double getVoltage() {
+        return driveMotor.getSupplyVoltage().getValueAsDouble();
+    }
 }
