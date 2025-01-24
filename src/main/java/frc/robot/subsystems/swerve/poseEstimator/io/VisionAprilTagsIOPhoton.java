@@ -80,7 +80,7 @@ public class VisionAprilTagsIOPhoton extends VisionAprilTagsIO {
     }
 
     @Override
-    protected double[][] getTagsAmbiguitys() {
+    protected double[][] getTagsAmbiguities() {
         double[][] ambiguitys = new double[photonEstimatorResults.size()][];
         for (int i = 0; i < photonEstimatorResults.size(); i++) {
             List<PhotonTrackedTarget> targets = photonEstimatorResults.get(i).targetsUsed;

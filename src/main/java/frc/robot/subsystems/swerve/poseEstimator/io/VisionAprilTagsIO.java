@@ -11,7 +11,7 @@ public abstract class VisionAprilTagsIO extends IOBase {
     public final Supplier<double[]> cameraTimestampsSeconds = fields.addDoubleArray("cameraTimestampsSeconds",
             this::getCameraTimestampsSeconds);
     public final Supplier<Pose3d[][]> tagsPoses = fields.addObjectMatrix("tagsPoses", this::getTagsPoses, new Pose3d[0][0]);
-    public final Supplier<double[][]> tagsAmbiguitys = fields.addDoubleMatrix("tagsAmbiguitys", this::getTagsAmbiguitys);
+    public final Supplier<double[][]> tagsAmbiguities = fields.addDoubleMatrix("tagsAmbiguities", this::getTagsAmbiguities);
 
     protected VisionAprilTagsIO(LogFieldsTable fieldsTable) {
         super(fieldsTable);
@@ -23,5 +23,5 @@ public abstract class VisionAprilTagsIO extends IOBase {
 
     protected abstract Pose3d[][] getTagsPoses();
 
-    protected abstract double[][] getTagsAmbiguitys();
+    protected abstract double[][] getTagsAmbiguities();
 }

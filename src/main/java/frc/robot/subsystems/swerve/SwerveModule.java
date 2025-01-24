@@ -55,7 +55,7 @@ public class SwerveModule implements Tuneable {
         absoluteAngleHelperDegrees.update(io.absoluteTurnAngleRotations.getAsDouble() * 360);
         lastDriveDistanceMeters = currDriveDistanceMeters;
         currDriveDistanceMeters = getDriveDistanceMeters();
-        fieldsTable.recordOutput("module " + moduleNumber +" drive distance meters", getDriveDistanceMeters());
+        fieldsTable.recordOutput("module " + moduleNumber + " drive distance meters", getDriveDistanceMeters());
         fieldsTable.recordOutput("AbsoluteAngleDegrees", getAbsoluteAngleDegrees());
         fieldsTable.recordOutput("IntegratedAngleDegrees", getIntegratedAngleDegrees());
     }
@@ -92,7 +92,7 @@ public class SwerveModule implements Tuneable {
     public void queueResetToAbsolute() {
         encoderResetToAbsoluteQueued = true;
     }
-    
+
     public void enableCoastMode() {
         io.coastAll();
     }

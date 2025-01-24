@@ -39,7 +39,8 @@ public class PoseEstimatorWithVision {
         }
 
         visionCameras.put(FRONT_PHOTON_CAMERA_NAME,
-                new VisionAprilTagsIOPhoton(fieldsTable, FRONT_PHOTON_CAMERA_NAME, fieldLayout, PoseEstimatorConstants.ROBOT_TO_CAMERA_TRANSFORM_PHOTON_FRONT));
+                new VisionAprilTagsIOPhoton(fieldsTable, FRONT_PHOTON_CAMERA_NAME, fieldLayout,
+                        PoseEstimatorConstants.ROBOT_TO_CAMERA_TRANSFORM_PHOTON_FRONT));
 
         this.fieldsTable = fieldsTable;
 
@@ -60,25 +61,31 @@ public class PoseEstimatorWithVision {
             for (int i = 0; i < poses.length; i++) {
                 LogFieldsTable cameraFieldsTable = fieldsTable.getSubTable(cameraName);
                 Pose3d poseEstimate = poses[i];
+                Pose3d[] tagsPoses = visionIO.tagsPoses.get()[i];
+                double[] tagsAmbiguities = visionIO.tagsAmbiguities.get()[i];
+                double cameraTimestampSeconds = visionIO.cameraTimestampsSeconds.get()[i];
+
                 double trustLevel = caculatePoseTrustLevel(
-                    visionIO.tagsPoses.get()[i],
-                    visionIO.tagsAmbiguitys.get()[i],
-                    poseEstimate
-                );
-                if(trustLevel == -1) continue;
+                        tagsPoses,
+                        tagsAmbiguities,
+                        poseEstimate);
+                if (trustLevel == -1)
+                    continue;
+
                 cameraFieldsTable.recordOutput("Pose3d", poseEstimate);
                 cameraFieldsTable.recordOutput("Pose2d", poseEstimate.toPose2d());
-                cameraFieldsTable.recordOutput("tagsPoses", visionIO.tagsPoses.get()[i]);
-                cameraFieldsTable.recordOutput("tagsAmbiguitys", visionIO.tagsAmbiguitys.get()[i]);
+                cameraFieldsTable.recordOutput("tagsPoses", tagsPoses);
+                cameraFieldsTable.recordOutput("tagsAmbiguities", tagsAmbiguities);
                 cameraFieldsTable.recordOutput("trustLevel", trustLevel);
-                    
+
                 double visionRotationTrustLevel = trustLevel * VISION_ROTATION_TRUST_LEVEL_MULTIPLAYER;
                 double visionTranslationTrustLevel = trustLevel * VISION_TRANSLATION_TRUST_LEVEL_MULTIPLAYER;
-                poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(visionTranslationTrustLevel, visionTranslationTrustLevel, visionRotationTrustLevel));
-        
-                poseEstimator.addVisionMeasurement(
-                        poseEstimate.toPose2d(),
-                        visionIO.cameraTimestampsSeconds.get()[i]);
+                poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(
+                        visionTranslationTrustLevel,
+                        visionTranslationTrustLevel,
+                        visionRotationTrustLevel));
+
+                poseEstimator.addVisionMeasurement(poseEstimate.toPose2d(), cameraTimestampSeconds);
             }
         });
     }
@@ -91,14 +98,14 @@ public class PoseEstimatorWithVision {
         return poseEstimator.getEstimatedPosition();
     }
 
-    private static double caculatePoseTrustLevel(Pose3d[] tagsPoses, double[] tagsAmbiguitys, Pose3d estimatedRobotPose) {
+    private static double caculatePoseTrustLevel(Pose3d[] tagsPoses, double[] tagsAmbiguitys,
+            Pose3d estimatedRobotPose) {
         double trustLevel = 0;
         for (int i = 0; i < tagsPoses.length; i++) {
-            if(tagsAmbiguitys[i] <= VISION_MAX_TAG_ANBIGUITY_THRESHOLD && tagsAmbiguitys[i] >= 0) {
-                double tagEstimatedDistanceToPose = PhotonUtils.getDistanceToPose(estimatedRobotPose.toPose2d(), tagsPoses[i].toPose2d());
-                if(tagEstimatedDistanceToPose < VISION_MIN_TAG_DISTANCE_TO_POSE_METERS) {
-                    tagEstimatedDistanceToPose = VISION_MIN_TAG_DISTANCE_TO_POSE_METERS;
-                }
+            if (tagsAmbiguitys[i] <= VISION_MAX_TAG_ANBIGUITY_THRESHOLD && tagsAmbiguitys[i] >= 0) {
+                double tagEstimatedDistanceToPose = Math.max(
+                        PhotonUtils.getDistanceToPose(estimatedRobotPose.toPose2d(), tagsPoses[i].toPose2d()),
+                        VISION_MIN_TAG_DISTANCE_TO_POSE_METERS);
                 trustLevel += (1 / tagEstimatedDistanceToPose);
             }
         }
