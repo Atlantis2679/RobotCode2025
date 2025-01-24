@@ -15,13 +15,13 @@ public class PoseEstimatorConstants {
             new Translation3d(0.245, 0.13, 0.51),
             new Rotation3d(Degrees.of(0), Degrees.of(-28.6), Degrees.of(180)));
 
-    public final static double VISION_THRESHOLD_DISTANCE_M = 1.5;
+    public final static double VISION_MAX_TAG_ANBIGUITY_THRESHOLD = 0.7; // Need to check
+    public final static double VISION_MIN_TAG_DISTANCE_TO_POSE_METERS = 0.05; // Need to check
+    
+    public final static double VISION_ROTATION_TRUST_LEVEL_MULTIPLAYER = 1; // Need to check
+    public final static double VISION_TRANSLATION_TRUST_LEVEL_MULTIPLAYER = 1; // Need to check
 
-    public final static double STATE_TRUST_LEVEL_X = 0.9;
-    public final static double STATE_TRUST_LEVEL_Y = 0.9;
-    public final static double STATE_TRUST_LEVEL_Z = 0.9;
-    // was 0.1, 0.9
-    public final static double VISION_TRUST_LEVEL_X = 0.05;
-    public final static double VISION_TRUST_LEVEL_Y = 0.05;
-    public final static double VISION_TRUST_LEVEL_Z = 0.05;
+    public final static double STATE_TRUST_LEVEL_X = 0.9; // Need to check
+    public final static double STATE_TRUST_LEVEL_Y = 0.9; // Need to check
+    public final static double STATE_TRUST_LEVEL_Z = 0.9; // Need to check
 }
