@@ -27,24 +27,32 @@ public class NaturalXboxController extends CommandXboxController {
         this.deadband = deadband;
     }
 
+    public double[] getRight() {
+        return convertToPolar(super.getRightX(), super.getRightY());
+    }
+
+    public double[] getLeft() {
+        return convertToPolar(super.getLeftX(), super.getLeftY());
+    }
+
     @Override
     public double getRightX() {
-        return applyDeadband(super.getRightX());
+        return getRight()[0];
     }
 
     @Override
     public double getRightY() {
-        return -1 * applyDeadband(super.getRightY());
+        return -1 * getRight()[1];
     }
 
     @Override
     public double getLeftX() {
-        return applyDeadband(super.getLeftX());
+        return getLeft()[0];
     }
 
     @Override
     public double getLeftY() {
-        return -1 * applyDeadband(super.getLeftY());
+        return -1 * getLeft()[1];
     }
 
     @Override
@@ -90,6 +98,18 @@ public class NaturalXboxController extends CommandXboxController {
      *                 the new zero.
      * @return The adjusted value after applying the deadband.
      */
+    public double[] convertToPolar(double x, double y) {
+        double radius = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
+        double theta = Math.atan2(y, x);
+
+        if (radius >= 1) {
+            return new double[] {Math.cos(theta), Math.sin(theta)};
+        }
+
+        radius = applyDeadband(radius);
+        return new double[] {radius * Math.cos(theta), radius * Math.sin(theta)};
+    }
+
     public double applyDeadband(double value) {
         return Math.abs(value) < deadband
                 ? 0
