@@ -15,7 +15,7 @@ public class GripperConstants {
     // Score L1:
     public static final double RIGHT_OUTTAKE_MOTOR_VOLTAGE_FOR_L1 = 0;
     public static final double LEFT_OUTTAKE_MOTOR_VOLTAGE_FOR_L1 = 0;
-    public static final double BACK_MOTOR_PERCENT_SPEED_FOR_L1 = 0;
+    public static final double BACK_MOTOR_VOLTAGE_FOR_L1 = 0;
 
     // Score L3:
     public static final double OUTTAKE_MOTORS_VOLTAGE_FOR_L3 = 0;
