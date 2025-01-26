@@ -16,26 +16,14 @@ public class Gripper extends SubsystemBase {
     private final Debouncer isCoralInDebouncer = new Debouncer(DEBOUNCER_SECONDS);
 
     private final GripperIO io = Robot.isReal() ? 
-        new GripperIOSparkMax(fieldsTable.getSubTable("io")) : 
-        new GripperIOSim(fieldsTable.getSubTable("io"));
+        new GripperIOSparkMax(fieldsTable) : 
+        new GripperIOSim(fieldsTable);
 
     public Gripper() {
     }
 
     public boolean getIsCoralIn() {
         return isCoralInDebouncer.calculate(io.isCoraIn.getAsBoolean());
-    }
-
-    public double getRightOutTakeMotorSpeedRPM() {
-        return io.rightOutTakeMotorSpeedRPM.getAsDouble();
-    }
-
-    public double getLeftOutTakeMotorSpeedRPM() {
-        return io.leftOutTakeMotorSpeedRPM.getAsDouble();
-    }
-
-    public double getBackMotorSpeedRPM() {
-        return io.backMotorSpeedRPM.getAsDouble();
     }
 
     public void setOuttakeMotorsVoltage(double rightOutTakeVoltage, double leftOutTakeVoltage) {
@@ -45,15 +33,6 @@ public class Gripper extends SubsystemBase {
 
     public void setBackMotorVoltage(double backMotorVoltage) {
         io.setBackMotorVoltage(MathUtil.clamp(backMotorVoltage, -BACK_MOTOR_MAX_VOLTAGE, BACK_MOTOR_MAX_VOLTAGE));
-    }
-
-    public boolean isOutTakeMotorsAtSpeed(double rightOutTakeMotorSpeedRPM, double leftOutTakeMotorSpeedRPM) {
-        return getRightOutTakeMotorSpeedRPM() >= rightOutTakeMotorSpeedRPM &&
-            getLeftOutTakeMotorSpeedRPM() >= leftOutTakeMotorSpeedRPM;
-    }
-
-    public boolean isBackMotorAtSpeed(double backMotorSpeedRPM) {
-        return getBackMotorSpeedRPM() >= backMotorSpeedRPM;
     }
 
     public void stop() {
