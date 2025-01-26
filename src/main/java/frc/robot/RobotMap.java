@@ -11,17 +11,18 @@ public class RobotMap {
     public static final String FRONT_PHOTON_CAMERA_NAME = "FrontCam";
     public static final String BACK_LIMELIGHT_CAMERA_NAME = "limelight-back";
 
-    public static final int GRIPPER_LEFT_OUTTAKE_MOTOR_ID = 0;
-    public static final int GRIPPER_RIGHT_OUTTAKE_MOTOR_ID = 0;
-    public static final int GRIPPER_IBACK_MOTOR_ID = 0;
-    public static final int GRIPPER_BEAM_BRAKE_ID = 0;
 
     public static class Controllers {
         public static final int DRIVER_PORT = 0;
         public static final int OPERATOR_PORT = 1;
     }
        
-    public static class CANBUS {      
+    public static class CANBUS {
+        public static final int GRIPPER_LEFT_OUTTAKE_MOTOR_ID = 0;
+        public static final int GRIPPER_RIGHT_OUTTAKE_MOTOR_ID = 0;
+        public static final int GRIPPER_IBACK_MOTOR_ID = 0;
+        public static final int GRIPPER_BEAM_BRAKE_ID = 0;
+    
         public class ModuleFL {
             public final static int DRIVE_MOTOR_ID = 20;
             public final static int TURN_MOTOR_ID = 21;
