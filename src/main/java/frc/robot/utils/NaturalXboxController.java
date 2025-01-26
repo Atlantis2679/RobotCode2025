@@ -89,17 +89,8 @@ public class NaturalXboxController extends CommandXboxController {
         return square(getRightTriggerAxis());
     }
 
-    /**
-     * Applies a deadband by considering values within the deadband as the new zero.
-     * Values outside the deadband are adjusted to be relative to the new range.
-     *
-     * @param value    The input value to apply the deadband to.
-     * @param deadband The deadband range. Values within this range are considered
-     *                 the new zero.
-     * @return The adjusted value after applying the deadband.
-     */
     public double[] convertToPolar(double x, double y) {
-        double radius = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
+        double radius = Math.pow(x, 2) + Math.pow(y, 2);
         double theta = Math.atan2(y, x);
 
         if (radius >= 1) {
@@ -110,6 +101,15 @@ public class NaturalXboxController extends CommandXboxController {
         return new double[] {radius * Math.cos(theta), radius * Math.sin(theta)};
     }
 
+    /**
+     * Applies a deadband by considering values within the deadband as the new zero.
+     * Values outside the deadband are adjusted to be relative to the new range.
+     *
+     * @param value    The input value to apply the deadband to.
+     * @param deadband The deadband range. Values within this range are considered
+     *                 the new zero.
+     * @return The adjusted value after applying the deadband.
+     */
     public double applyDeadband(double value) {
         return Math.abs(value) < deadband
                 ? 0
