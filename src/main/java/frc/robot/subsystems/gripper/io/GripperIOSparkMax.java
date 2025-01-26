@@ -1,13 +1,12 @@
 package frc.robot.subsystems.gripper.io;
 
-import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import frc.lib.logfields.LogFieldsTable;
 
-import static frc.robot.RobotMap.*;
+import static frc.robot.RobotMap.CANBUS.*;
 
 public class GripperIOSparkMax extends GripperIO {
     private final SparkMax rightOutTakeMotor = new SparkMax(GRIPPER_RIGHT_OUTTAKE_MOTOR_ID, MotorType.kBrushless);
