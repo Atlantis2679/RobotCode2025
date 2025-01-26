@@ -26,33 +26,25 @@ public class NaturalXboxController extends CommandXboxController {
     public void setDeadband(double deadband) {
         this.deadband = deadband;
     }
-
-    public double[] getRight() {
-        return convertToPolar(super.getRightX(), super.getRightY());
-    }
-
-    public double[] getLeft() {
-        return convertToPolar(super.getLeftX(), super.getLeftY());
-    }
-
+    
     @Override
     public double getRightX() {
-        return getRight()[0];
+        return convertToPolar(super.getRightX(), super.getRightY())[0];
     }
 
     @Override
     public double getRightY() {
-        return -1 * getRight()[1];
+        return -1 * convertToPolar(super.getRightX(), super.getRightY())[1];
     }
 
     @Override
     public double getLeftX() {
-        return getLeft()[0];
+        return convertToPolar(super.getLeftX(), super.getLeftY())[0];
     }
 
     @Override
     public double getLeftY() {
-        return -1 * getLeft()[1];
+        return -1 * convertToPolar(super.getLeftX(), super.getLeftY())[1];
     }
 
     @Override
