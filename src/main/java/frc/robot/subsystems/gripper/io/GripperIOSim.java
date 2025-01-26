@@ -38,21 +38,6 @@ public class GripperIOSim extends GripperIO {
         return false;
     }
 
-    @Override
-    protected double getRightOutTakeMotorSpeedRPM() {
-        return rightOutTakeMotor.getAngularVelocityRPM();
-    }
-
-    @Override
-    protected double getLeftOutTakeMotorSpeedRPM() {
-        return leftOutTakeMotor.getAngularVelocityRPM();
-    }
-
-    @Override
-    protected double getBackMotorSpeedRPM() {
-        return backMotor.getAngularVelocityRPM();
-    }
-
     // Outputs:
 
     @Override

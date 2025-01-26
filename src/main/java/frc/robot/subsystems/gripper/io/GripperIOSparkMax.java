@@ -13,10 +13,6 @@ public class GripperIOSparkMax extends GripperIO {
     private final SparkMax rightOutTakeMotor = new SparkMax(GRIPPER_RIGHT_OUTTAKE_MOTOR_ID, MotorType.kBrushless);
     private final SparkMax leftOutTakeMotor = new SparkMax(GRIPPER_LEFT_OUTTAKE_MOTOR_ID, MotorType.kBrushless);
     private final SparkMax backMotor = new SparkMax(GRIPPER_IBACK_MOTOR_ID, MotorType.kBrushless);
-    
-    private final RelativeEncoder rightOutTakeMotorEncoder = rightOutTakeMotor.getEncoder();
-    private final RelativeEncoder leftOutTakeMotorEncoder = leftOutTakeMotor.getEncoder();
-    private final RelativeEncoder backMotorEncoder = backMotor.getEncoder();
 
     private final DigitalInput beamBrake = new DigitalInput(GRIPPER_BEAM_BRAKE_ID); 
 
@@ -29,21 +25,6 @@ public class GripperIOSparkMax extends GripperIO {
     @Override
     protected boolean getIsCoralIn() {
         return beamBrake.get();
-    }
-
-    @Override
-    protected double getRightOutTakeMotorSpeedRPM() {
-        return rightOutTakeMotorEncoder.getVelocity();
-    }
-
-    @Override
-    protected double getLeftOutTakeMotorSpeedRPM() {
-        return leftOutTakeMotorEncoder.getVelocity();
-    }
-
-    @Override
-    protected double getBackMotorSpeedRPM() {
-        return backMotorEncoder.getVelocity();
     }
 
     // Outputs:
