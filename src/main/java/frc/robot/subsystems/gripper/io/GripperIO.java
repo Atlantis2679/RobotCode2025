@@ -1,7 +1,6 @@
 package frc.robot.subsystems.gripper.io;
 
 import java.util.function.BooleanSupplier;
-import java.util.function.DoubleSupplier;
 
 import frc.lib.logfields.IOBase;
 import frc.lib.logfields.LogFieldsTable;
