@@ -9,11 +9,13 @@ import frc.lib.tuneables.Tuneable;
 import frc.lib.tuneables.TuneableBuilder;
 import frc.robot.Robot;
 import edu.wpi.first.units.Units;
+import edu.wpi.first.units.measure.Voltage;
 import frc.robot.subsystems.swerve.io.SwerveModuleIO;
 import frc.robot.subsystems.swerve.io.SwerveModuleIOFalcon;
 import frc.robot.subsystems.swerve.io.SwerveModuleIOSim;
 import frc.robot.utils.PrimitiveRotationalSensorHelper;
 
+import static edu.wpi.first.units.Units.Volts;
 import static frc.robot.subsystems.swerve.SwerveContants.*;
 
 public class SwerveModule implements Tuneable {
@@ -91,6 +93,11 @@ public class SwerveModule implements Tuneable {
             io.setDriveSpeedPrecentage(desiredState.speedMetersPerSecond / MAX_MODULE_VELOCITY_MPS);
         }
         io.setTurnAngleRotations(desiredState.angle.getRotations());
+    }
+    
+    public void setDesiredStateVoltage(Voltage voltage) {
+        //Multipling MAX_MODULE_VELOCITY_MPS and deviding by MAX_VOLTAGE to get a pure voltage result
+        setDesiredState(new SwerveModuleState((voltage.in(Volts)*MAX_MODULE_VELOCITY_MPS)/MAX_VOLTAGE, new Rotation2d()), true, true, true);
     }
 
     public void queueResetToAbsolute() {

@@ -35,7 +35,7 @@ public class SwerveContants {
 
     public class PathPlanner {
         public final static double FRICTION_WITH_CARPET = 1;//couldn't find it
-        public final static double ROBOT_MASS_KG = 40;
+        public final static double ROBOT_MASS_KG = 47;
         public final static double MOMENT_OF_INERTIA =  (1/12)*ROBOT_MASS_KG*(TRACK_LENGTH_METERS*TRACK_LENGTH_METERS+TRACK_WIDTH_METERS*TRACK_WIDTH_METERS);
 
         public final static double TRANSLATION_KP = 0;

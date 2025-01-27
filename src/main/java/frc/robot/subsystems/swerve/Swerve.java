@@ -9,15 +9,10 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.system.plant.DCMotor;
-import edu.wpi.first.units.measure.Distance;
-import edu.wpi.first.units.measure.LinearVelocity;
-import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.sysid.SysIdRoutineLog;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.subsystems.swerve.io.GyroIO;
 import frc.robot.subsystems.swerve.io.GyroIONavX;
 import frc.robot.subsystems.swerve.io.GyroIOSim;
@@ -33,9 +28,6 @@ import frc.lib.valueholders.DoubleHolder;
 import frc.robot.Robot;
 import frc.robot.RobotMap.CANBUS.*;
 
-import static edu.wpi.first.units.Units.Meters;
-import static edu.wpi.first.units.Units.MetersPerSecond;
-import static edu.wpi.first.units.Units.Volts;
 import static frc.robot.subsystems.swerve.SwerveContants.*;
 
 import java.util.ArrayList;
@@ -103,24 +95,6 @@ public class Swerve extends SubsystemBase implements Tuneable {
     private final PoseEstimatorWithVision poseEstimator;
 
     private final LoggedDashboardChooser<Boolean> isRedAlliance = new LoggedDashboardChooser<>("alliance");
-    private final SysIdRoutine routine = new SysIdRoutine(
-        new SysIdRoutine.Config(),
-        new SysIdRoutine.Mechanism(voltage -> {
-            for(SwerveModule module : modules){
-                //Multipling MAX_MODULE_VELOCITY_MPS and deviding by MAX_VOLTAGE to get a pure voltage result
-                module.setDesiredState(new SwerveModuleState((voltage.in(Volts)*MAX_MODULE_VELOCITY_MPS)/MAX_VOLTAGE, new Rotation2d()), true, true, true);
-            }
-        },  log -> {
-                for(SwerveModule module : modules){
-                    log.motor(module.getName())
-                    .voltage(
-                        Voltage.ofBaseUnits(module.getSupplyVoltage(), Volts))
-                    .linearPosition(Distance.ofBaseUnits(module.getDriveDistanceMeters(), Meters))
-                    .linearVelocity(LinearVelocity.ofBaseUnits(module.getVelocityMPS(), MetersPerSecond));
-                }
-        },
-        this));
-
 
     public Swerve() {
         fieldsTable.update();
@@ -234,10 +208,6 @@ public class Swerve extends SubsystemBase implements Tuneable {
 
         driveChassisSpeed(desiredChassisSpeeds, useVoltage);
     }
-    public void updateLog(SysIdRoutineLog log) {
-        for (SwerveModule swerveModule : modules)
-            swerveModule.driveMotorUpdateLog(log);
-    }
     public void stop() {
         drive(0, 0, 0, false, false);
     }
@@ -322,10 +292,6 @@ public class Swerve extends SubsystemBase implements Tuneable {
         for (SwerveModule module : modules) {
             module.enableCoastMode();
         }
-    }
-
-    public SysIdRoutine getSysIdRoutine() {
-        return routine;
     }
 
     @Override
