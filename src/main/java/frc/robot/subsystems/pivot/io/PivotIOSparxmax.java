@@ -10,9 +10,11 @@ import frc.robot.RobotMap.CANBUS;
 public class PivotIOSparxmax extends PivotIO{
         private final SparkMax pivotMotor = new SparkMax(CANBUS.PIVOT_MOTOR_ID, MotorType.kBrushless);
         private final DutyCycleEncoder encoder = new DutyCycleEncoder(CANBUS.PIVOT_ENCODER_ID);
-
+        
         public PivotIOSparxmax(LogFieldsTable fieldsTable) {
             super(fieldsTable);
+
+            encoder.get();
         }
 
         //inputs
@@ -25,6 +27,7 @@ public class PivotIOSparxmax extends PivotIO{
         protected double getPivotAngleDegrees() {
             return encoder.get();
         }
+
         //outputs
         @Override
         public void setSpeed(double speed) {
