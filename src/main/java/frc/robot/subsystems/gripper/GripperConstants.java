@@ -9,17 +9,17 @@ public class GripperConstants {
     /* Gripper Commands: */
 
     // Loading:
-    public static final double OUTTAKE_MOTORS_VOLTAGE_FOR_LOADING = 0;
-    public static final double BACK_MOTOR_VOLTAGE_FOR_LOADING = 0;
+    public static final double LODING_OUTTAKE_MOTORS_VOLTAGE = 0;
+    public static final double LOADING_BACK_MOTOR_VOLTAGE = 0;
 
     // Score L1:
-    public static final double RIGHT_OUTTAKE_MOTOR_VOLTAGE_FOR_L1 = 0;
-    public static final double LEFT_OUTTAKE_MOTOR_VOLTAGE_FOR_L1 = 0;
-    public static final double BACK_MOTOR_VOLTAGE_FOR_L1 = 0;
+    public static final double L1_RIGHT_OUTTAKE_MOTOR_VOLTAGE = 0;
+    public static final double L1_LEFT_OUTTAKE_MOTOR_VOLTAGE = 0;
+    public static final double L1_BACK_MOTOR_VOLTAGE = 0;
 
     // Score L3:
-    public static final double OUTTAKE_MOTORS_VOLTAGE_FOR_L3 = 0;
-    public static final double BACK_MOTOR_VOLTAGE_FOR_L3 = 0;
+    public static final double L3_OUTTAKE_MOTORS_VOLTAGE = 0;
+    public static final double L3_BACK_MOTOR_VOLTAGE = 0;
     
     /* Sim: */
     public static class GripperSim {

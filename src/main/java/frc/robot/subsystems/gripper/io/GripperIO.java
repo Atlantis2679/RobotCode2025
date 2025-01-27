@@ -17,10 +17,7 @@ public abstract class GripperIO extends IOBase {
 
     // Outputs:
     public abstract void setRightOutTakeMotorVoltage(double voltage);
-    public abstract void setRightOutTakeMotorPrecentageSpeed(double precentageSpeed);
     public abstract void setLeftOutTakeMotorVoltage(double voltage);
-    public abstract void setLeftOutTakeMotorPrecentageSpeed(double precentageSpeed);
     public abstract void setBackMotorVoltage(double voltage);
-    public abstract void setBackMotorPrecentageSpeed(double precentageSpeed);
 
 }

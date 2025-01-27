@@ -46,27 +46,12 @@ public class GripperIOSim extends GripperIO {
     }
 
     @Override
-    public void setRightOutTakeMotorPrecentageSpeed(double precentageSpeed) {
-        rightOutTakeMotor.setInputVoltage(precentageSpeed * OUTTAKE_MOTORS_MAX_VOLTAGE);
-    }
-
-    @Override
     public void setLeftOutTakeMotorVoltage(double voltage) {
         leftOutTakeMotor.setInputVoltage(voltage);
     }
 
     @Override
-    public void setLeftOutTakeMotorPrecentageSpeed(double precentageSpeed) {
-        leftOutTakeMotor.setInputVoltage(precentageSpeed * OUTTAKE_MOTORS_MAX_VOLTAGE);
-    }
-
-    @Override
     public void setBackMotorVoltage(double voltage) {
         backMotor.setInputVoltage(voltage);
-    }
-
-    @Override
-    public void setBackMotorPrecentageSpeed(double precentageSpeed) {
-        backMotor.setInputVoltage(precentageSpeed * BACK_MOTOR_MAX_VOLTAGE);
     }
 }
