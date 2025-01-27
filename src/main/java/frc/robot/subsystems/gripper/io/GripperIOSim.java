@@ -8,11 +8,11 @@ import frc.lib.logfields.LogFieldsTable;
 import static frc.robot.subsystems.gripper.GripperConstants.*;
 
 public class GripperIOSim extends GripperIO {
-    private final FlywheelSim rightOutTakeMotor = new FlywheelSim(
+    private final FlywheelSim rightOuttakeMotor = new FlywheelSim(
         LinearSystemId.createFlywheelSystem(DCMotor.getNeo550(1), GripperSim.OUTTAKE_MOTORS_MOMENT_OF_INERTIA,
         GripperSim.OUTTAKE_MOTORS_GEAR_RATIO), DCMotor.getNeo550(1));
     
-    private final FlywheelSim leftOutTakeMotor = new FlywheelSim(
+    private final FlywheelSim leftOuttakeMotor = new FlywheelSim(
         LinearSystemId.createFlywheelSystem(DCMotor.getNeo550(1), GripperSim.OUTTAKE_MOTORS_MOMENT_OF_INERTIA,
         GripperSim.OUTTAKE_MOTORS_GEAR_RATIO), DCMotor.getNeo550(1));
     
@@ -26,8 +26,8 @@ public class GripperIOSim extends GripperIO {
 
     @Override
     protected void periodicBeforeFields() {
-        rightOutTakeMotor.update(0.02);
-        leftOutTakeMotor.update(0.02);
+        rightOuttakeMotor.update(0.02);
+        leftOuttakeMotor.update(0.02);
         backMotor.update(0.02);
     }
 
@@ -41,13 +41,13 @@ public class GripperIOSim extends GripperIO {
     // Outputs:
 
     @Override
-    public void setRightOutTakeMotorVoltage(double voltage) {
-        rightOutTakeMotor.setInputVoltage(voltage);
+    public void setRightOuttakeMotorVoltage(double voltage) {
+        rightOuttakeMotor.setInputVoltage(voltage);
     }
 
     @Override
-    public void setLeftOutTakeMotorVoltage(double voltage) {
-        leftOutTakeMotor.setInputVoltage(voltage);
+    public void setLeftOuttakeMotorVoltage(double voltage) {
+        leftOuttakeMotor.setInputVoltage(voltage);
     }
 
     @Override

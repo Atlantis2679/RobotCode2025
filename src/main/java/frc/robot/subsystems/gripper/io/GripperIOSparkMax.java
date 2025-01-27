@@ -9,8 +9,8 @@ import frc.lib.logfields.LogFieldsTable;
 import static frc.robot.RobotMaps.*;
 
 public class GripperIOSparkMax extends GripperIO {
-    private final SparkMax rightOutTakeMotor = new SparkMax(CANBUS.GRIPPER_RIGHT_OUTTAKE_MOTOR_ID, MotorType.kBrushless);
-    private final SparkMax leftOutTakeMotor = new SparkMax(CANBUS.GRIPPER_LEFT_OUTTAKE_MOTOR_ID, MotorType.kBrushless);
+    private final SparkMax rightOuttakeMotor = new SparkMax(CANBUS.GRIPPER_RIGHT_OUTTAKE_MOTOR_ID, MotorType.kBrushless);
+    private final SparkMax leftOuttakeMotor = new SparkMax(CANBUS.GRIPPER_LEFT_OUTTAKE_MOTOR_ID, MotorType.kBrushless);
     private final SparkMax backMotor = new SparkMax(CANBUS.GRIPPER_IBACK_MOTOR_ID, MotorType.kBrushless);
 
     private final DigitalInput beamBrake = new DigitalInput(GRIPPER_BEAM_BRAKE_ID); 
@@ -29,13 +29,13 @@ public class GripperIOSparkMax extends GripperIO {
     // Outputs:
 
     @Override
-    public void setRightOutTakeMotorVoltage(double voltage) {
-        rightOutTakeMotor.setVoltage(voltage);
+    public void setRightOuttakeMotorVoltage(double voltage) {
+        rightOuttakeMotor.setVoltage(voltage);
     }
 
     @Override
-    public void setLeftOutTakeMotorVoltage(double voltage) {
-        leftOutTakeMotor.setVoltage(voltage);
+    public void setLeftOuttakeMotorVoltage(double voltage) {
+        leftOuttakeMotor.setVoltage(voltage);
     }
 
     @Override

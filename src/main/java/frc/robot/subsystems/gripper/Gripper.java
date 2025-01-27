@@ -26,17 +26,17 @@ public class Gripper extends SubsystemBase {
         return isCoralInDebouncer.calculate(io.isCoraIn.getAsBoolean());
     }
 
-    public void setOuttakeMotorsVoltage(double rightOutTakeVoltage, double leftOutTakeVoltage) {
-        io.setRightOutTakeMotorVoltage(MathUtil.clamp(rightOutTakeVoltage, -OUTTAKE_MOTORS_MAX_VOLTAGE, OUTTAKE_MOTORS_MAX_VOLTAGE));
-        io.setLeftOutTakeMotorVoltage(MathUtil.clamp(leftOutTakeVoltage, -OUTTAKE_MOTORS_MAX_VOLTAGE, OUTTAKE_MOTORS_MAX_VOLTAGE));
+    public void setOuttakeMotorsVoltage(double rightOuttakeVoltage, double leftOuttakeVoltage) {
+        io.setRightOuttakeMotorVoltage(MathUtil.clamp(rightOuttakeVoltage, -OUTTAKE_MOTORS_MAX_VOLTAGE, OUTTAKE_MOTORS_MAX_VOLTAGE));
+        io.setLeftOuttakeMotorVoltage(MathUtil.clamp(leftOuttakeVoltage, -OUTTAKE_MOTORS_MAX_VOLTAGE, OUTTAKE_MOTORS_MAX_VOLTAGE));
     }
 
     public void setBackMotorVoltage(double backMotorVoltage) {
         io.setBackMotorVoltage(MathUtil.clamp(backMotorVoltage, -BACK_MOTOR_MAX_VOLTAGE, BACK_MOTOR_MAX_VOLTAGE));
     }
 
-    public void setMotorsVoltage(double rightOutTakeVoltage, double leftOutTakeVoltage, double backMotorVoltage) {
-        setOuttakeMotorsVoltage(rightOutTakeVoltage, leftOutTakeVoltage);
+    public void setMotorsVoltage(double rightOuttakeVoltage, double leftOuttakeVoltage, double backMotorVoltage) {
+        setOuttakeMotorsVoltage(rightOuttakeVoltage, leftOuttakeVoltage);
         setBackMotorVoltage(backMotorVoltage);
     }
 

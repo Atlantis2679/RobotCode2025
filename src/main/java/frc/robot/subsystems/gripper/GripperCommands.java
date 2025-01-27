@@ -37,9 +37,9 @@ public class GripperCommands {
             .until(() -> !gripper.getIsCoralIn()).finallyDo(gripper::stop).withName("scoreL3");
     }
 
-    public Command manualController(DoubleSupplier rightOutTakeMotorVoltage, DoubleSupplier leftOutTakeMotorVoltage, DoubleSupplier backMotorVoltage) {
+    public Command manualController(DoubleSupplier rightOuttakeMotorVoltage, DoubleSupplier leftOuttakeMotorVoltage, DoubleSupplier backMotorVoltage) {
         return gripper.run(() -> 
-            gripper.setMotorsVoltage(rightOutTakeMotorVoltage.getAsDouble(), leftOutTakeMotorVoltage.getAsDouble(), backMotorVoltage.getAsDouble()))
+            gripper.setMotorsVoltage(rightOuttakeMotorVoltage.getAsDouble(), leftOuttakeMotorVoltage.getAsDouble(), backMotorVoltage.getAsDouble()))
             .finallyDo(gripper::stop).withName("manualController");
     }
 }
