@@ -9,6 +9,8 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
+import edu.wpi.first.wpilibj.Alert;
+import edu.wpi.first.wpilibj.Alert.AlertType;
 import frc.lib.logfields.LogFieldsTable;
 import frc.robot.subsystems.swerve.poseEstimator.io.VisionAprilTagsIO;
 import frc.robot.subsystems.swerve.poseEstimator.io.VisionAprilTagsIOPhoton;
@@ -16,6 +18,7 @@ import frc.robot.subsystems.swerve.poseEstimator.io.VisionAprilTagsIOPhoton;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.BooleanSupplier;
 
 import org.photonvision.PhotonUtils;
 
@@ -26,6 +29,8 @@ public class PoseEstimatorWithVision {
     private final Map<String, VisionAprilTagsIO> visionCameras = new HashMap<>();
     private final SwerveDrivePoseEstimator poseEstimator;
     private final LogFieldsTable fieldsTable;
+
+    private final Map<Alert, BooleanSupplier> networkAlerts = new HashMap<>();
 
     public PoseEstimatorWithVision(LogFieldsTable fieldsTable, Rotation2d currentAngle,
             SwerveModulePosition[] positions, SwerveDriveKinematics swerveKinematics) {
@@ -41,7 +46,7 @@ public class PoseEstimatorWithVision {
         visionCameras.put(FRONT_PHOTON_CAMERA_NAME,
                 new VisionAprilTagsIOPhoton(fieldsTable, FRONT_PHOTON_CAMERA_NAME, fieldLayout,
                         PoseEstimatorConstants.ROBOT_TO_CAMERA_TRANSFORM_PHOTON_FRONT));
-
+        
         this.fieldsTable = fieldsTable;
 
         poseEstimator = new SwerveDrivePoseEstimator(
@@ -51,10 +56,18 @@ public class PoseEstimatorWithVision {
                 new Pose2d(),
                 VecBuilder.fill(STATE_TRUST_LEVEL_X, STATE_TRUST_LEVEL_Y, STATE_TRUST_LEVEL_Z),
                 VecBuilder.fill(1, 1, 1));
+
+        visionCameras.forEach((cameraName, visionIO) -> {
+            networkAlerts.put(new Alert(cameraName + " Camera Is Disconnected!", AlertType.kWarning), () -> !visionIO.isCameraConnected.getAsBoolean());
+        });
     }
 
     public void update(Rotation2d gyroMeasurmentCCW, SwerveModulePosition[] modulesPositions) {
         poseEstimator.update(gyroMeasurmentCCW, modulesPositions);
+
+        networkAlerts.forEach((alert, isActive) -> {
+            alert.set(isActive.getAsBoolean());
+        });
 
         visionCameras.forEach((cameraName, visionIO) -> {
             Pose3d[] poses = visionIO.posesEstimates.get();
