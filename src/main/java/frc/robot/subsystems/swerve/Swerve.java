@@ -12,6 +12,7 @@ import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.subsystems.NetworkAlerts;
 import frc.robot.subsystems.swerve.io.GyroIO;
 import frc.robot.subsystems.swerve.io.GyroIONavX;
 import frc.robot.subsystems.swerve.io.GyroIOSim;
@@ -87,6 +88,8 @@ public class Swerve extends SubsystemBase implements Tuneable {
 
     private final LoggedDashboardChooser<Boolean> isRedAlliance = new LoggedDashboardChooser<>("alliance");
 
+    private final NetworkAlerts networkAlerts = new NetworkAlerts("Swerve");
+
     public Swerve() {
         fieldsTable.update();
 
@@ -100,6 +103,8 @@ public class Swerve extends SubsystemBase implements Tuneable {
                 getModulesPositions(), swerveKinematics);
 
         TuneablesManager.add("Swerve", (Tuneable) this);
+
+        networkAlerts.addInfoErrorSwitchAlert("Gyro Is Connected", "Gyro Is Disconnected!", gyroIO.isConnected);
 
         resetYaw();
         
