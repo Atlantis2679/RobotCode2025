@@ -3,6 +3,8 @@ package frc.robot.subsystems.swerve;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.Alert;
+import edu.wpi.first.wpilibj.Alert.AlertType;
 import frc.lib.logfields.LogFieldsTable;
 import frc.lib.tuneables.Tuneable;
 import frc.lib.tuneables.TuneableBuilder;
@@ -13,6 +15,12 @@ import frc.robot.subsystems.swerve.io.SwerveModuleIOSim;
 import frc.robot.utils.PrimitiveRotationalSensorHelper;
 
 import static frc.robot.subsystems.swerve.SwerveContants.*;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.BooleanSupplier;
+
+import com.ctre.phoenix6.StatusCode;
 
 public class SwerveModule implements Tuneable {
     private final int moduleNumber;
@@ -28,6 +36,8 @@ public class SwerveModule implements Tuneable {
 
     private final double WHEEL_CIRCUMFERENCE_METERS = 2 * Math.PI * WHEEL_RADIUS_METERS;
 
+    private final Map<Alert, BooleanSupplier> networkAlerts = new HashMap<>();
+
     public SwerveModule(int moduleNumber, String positionName, int driveMotorID, int turnMotorID, int encoderID,
             double absoluteAngleOffSetDegrees, LogFieldsTable swerveFieldsTable) {
         this.moduleNumber = moduleNumber;
@@ -40,6 +50,8 @@ public class SwerveModule implements Tuneable {
                 : new SwerveModuleIOFalcon(fieldsTable, driveMotorID, turnMotorID, encoderID);
 
         fieldsTable.update();
+
+        setNetworkAlerts();
 
         absoluteAngleHelperDegrees = new PrimitiveRotationalSensorHelper(
                 io.absoluteTurnAngleRotations.getAsDouble() * 360,
@@ -166,6 +178,23 @@ public class SwerveModule implements Tuneable {
 
     public void setTurnKD(double d) {
         io.setTurnKD(d);
+    }
+
+    private void setNetworkAlerts() {
+        StatusCode driveMotorStatusCode = StatusCode.valueOf((int) io.driveMotorStatusCodeValue.getAsLong());
+        networkAlerts.put(new Alert("Drive Motor Status Code " + driveMotorStatusCode.value + ": " + driveMotorStatusCode.getName(), AlertType.kInfo), driveMotorStatusCode::isOK);
+        networkAlerts.put(new Alert("Drive Motor Status Code " + driveMotorStatusCode.value + ": " + driveMotorStatusCode.getName(), AlertType.kWarning), driveMotorStatusCode::isWarning);
+        networkAlerts.put(new Alert("Drive Motor Status Code " + driveMotorStatusCode.value + ": " + driveMotorStatusCode.getName(), AlertType.kError), driveMotorStatusCode::isError);
+
+        StatusCode turnMotorStatusCode = StatusCode.valueOf((int) io.turnMotorStatusCodeValue.getAsLong());
+        networkAlerts.put(new Alert("Turn Motor Status Code " + turnMotorStatusCode.value + ": " + turnMotorStatusCode.getName(), AlertType.kInfo), turnMotorStatusCode::isOK);
+        networkAlerts.put(new Alert("Turn Motor Status Code " + turnMotorStatusCode.value + ": " + turnMotorStatusCode.getName(), AlertType.kWarning), turnMotorStatusCode::isWarning);
+        networkAlerts.put(new Alert("Turn Motor Status Code " + turnMotorStatusCode.value + ": " + turnMotorStatusCode.getName(), AlertType.kError), turnMotorStatusCode::isError);
+
+        StatusCode canCoderStatusCode = StatusCode.valueOf((int) io.canCoderStatusCodeValue.getAsLong());
+        networkAlerts.put(new Alert("CanCoder Status Code " + canCoderStatusCode.value + ": " + canCoderStatusCode.getName(), AlertType.kInfo), canCoderStatusCode::isOK);
+        networkAlerts.put(new Alert("CanCoder Status Code " + canCoderStatusCode.value + ": " + canCoderStatusCode.getName(), AlertType.kWarning), canCoderStatusCode::isWarning);
+        networkAlerts.put(new Alert("CanCoder Status Code " + canCoderStatusCode.value + ": " + canCoderStatusCode.getName(), AlertType.kError), canCoderStatusCode::isError);
     }
 
     @Override
