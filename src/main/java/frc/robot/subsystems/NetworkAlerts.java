@@ -59,48 +59,48 @@ public class NetworkAlerts {
         addAlert(name, message, AlertType.kError, isActive);
     }
 
-    public void addSwitchAlert(String unactiveMessage, String activeMessage, AlertType unactiveAlertType, AlertType activeAlertType,
+    public void addSwitchAlert(String activeMessage, String unactiveMessage, AlertType unactiveAlertType, AlertType activeAlertType,
             BooleanSupplier isActive) {
-        addAlert(unactiveMessage, unactiveAlertType, () -> !isActive.getAsBoolean());
         addAlert(activeMessage, activeAlertType, isActive);
+        addAlert(unactiveMessage, unactiveAlertType, () -> !isActive.getAsBoolean());
     }
 
-    public void addSwitchAlert(String name, String unactiveMessage, String activeMessage, AlertType unactiveAlertType,
+    public void addSwitchAlert(String name, String activeMessage, String unactiveMessage, AlertType unactiveAlertType,
             AlertType activeAlertType, BooleanSupplier isActive) {
-        addAlert(unactiveMessage, unactiveAlertType, () -> !isActive.getAsBoolean());
         addAlert(activeMessage, activeAlertType, isActive);
+        addAlert(unactiveMessage, unactiveAlertType, () -> !isActive.getAsBoolean());
     }
 
-    public void addInfoInfoSwitchAlert(String firstInfoMessage, String secondInfoMessage, BooleanSupplier isSecondActive) {
-        addSwitchAlert(firstInfoMessage, secondInfoMessage, AlertType.kInfo, AlertType.kInfo, isSecondActive);
+    public void addInfoInfoSwitchAlert(String firstInfoMessage, String secondInfoMessage, BooleanSupplier isFirstActive) {
+        addSwitchAlert(firstInfoMessage, secondInfoMessage, AlertType.kInfo, AlertType.kInfo, isFirstActive);
     }
 
-    public void addInfoInfoSwitchAlert(String name, String firstInfoMessage, String secondInfoMessage, BooleanSupplier isSecondActive) {
-        addSwitchAlert(name, firstInfoMessage, secondInfoMessage, AlertType.kInfo, AlertType.kInfo, isSecondActive);
+    public void addInfoInfoSwitchAlert(String name, String firstInfoMessage, String secondInfoMessage, BooleanSupplier isFirstActive) {
+        addSwitchAlert(name, firstInfoMessage, secondInfoMessage, AlertType.kInfo, AlertType.kInfo, isFirstActive);
     }
 
-    public void addInfoWarningSwitchAlert(String infoMessage, String warningMessage, BooleanSupplier isWarningActive) {
-        addSwitchAlert(infoMessage, warningMessage, AlertType.kInfo, AlertType.kWarning, isWarningActive);
+    public void addInfoWarningSwitchAlert(String infoMessage, String warningMessage, BooleanSupplier isInfoActive) {
+        addSwitchAlert(infoMessage, warningMessage, AlertType.kInfo, AlertType.kWarning, isInfoActive);
     }
 
-    public void addInfoWarningSwitchAlert(String name, String infoMessage, String warningMessage, BooleanSupplier isWarningActive) {
-        addSwitchAlert(name, infoMessage, warningMessage, AlertType.kInfo, AlertType.kWarning, isWarningActive);
+    public void addInfoWarningSwitchAlert(String name, String infoMessage, String warningMessage, BooleanSupplier isInfoActive) {
+        addSwitchAlert(name, infoMessage, warningMessage, AlertType.kInfo, AlertType.kWarning, isInfoActive);
     }
 
-    public void addInfoErrorSwitchAlert(String infoMessage, String errorMessage, BooleanSupplier isErrorActive) {
-        addSwitchAlert(infoMessage, errorMessage, AlertType.kInfo, AlertType.kError, isErrorActive);
+    public void addInfoErrorSwitchAlert(String infoMessage, String errorMessage, BooleanSupplier isInfoActive) {
+        addSwitchAlert(infoMessage, errorMessage, AlertType.kInfo, AlertType.kError, isInfoActive);
     }
 
-    public void addInfoErrorSwitchAlert(String name, String infoMessage, String errorMessage, BooleanSupplier isErrorActive) {
-        addSwitchAlert(name, infoMessage, errorMessage, AlertType.kInfo, AlertType.kError, isErrorActive);
+    public void addInfoErrorSwitchAlert(String name, String infoMessage, String errorMessage, BooleanSupplier isInfoActive) {
+        addSwitchAlert(name, infoMessage, errorMessage, AlertType.kInfo, AlertType.kError, isInfoActive);
     }
 
-    public void addWarningErrorSwitchAlert(String warningMessage, String errorMessage, BooleanSupplier isErrorActive) {
-        addSwitchAlert(warningMessage, errorMessage, AlertType.kWarning, AlertType.kError, isErrorActive);
+    public void addWarningErrorSwitchAlert(String warningMessage, String errorMessage, BooleanSupplier isWarningActive) {
+        addSwitchAlert(warningMessage, errorMessage, AlertType.kWarning, AlertType.kError, isWarningActive);
     }
 
-    public void addWarningErrorSwitchAlert(String name, String warningMessage, String errorMessage, BooleanSupplier isErrorActive) {
-        addSwitchAlert(name, warningMessage, errorMessage, AlertType.kWarning, AlertType.kError, isErrorActive);
+    public void addWarningErrorSwitchAlert(String name, String warningMessage, String errorMessage, BooleanSupplier isWarningActive) {
+        addSwitchAlert(name, warningMessage, errorMessage, AlertType.kWarning, AlertType.kError, isWarningActive);
     }
 
     public void addStatusAlert(String message, BooleanSupplier isInfoActive, BooleanSupplier isWarningActive, BooleanSupplier isErrorActive) {
