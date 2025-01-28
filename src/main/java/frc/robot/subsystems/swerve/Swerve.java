@@ -194,7 +194,7 @@ public class Swerve extends SubsystemBase implements Tuneable {
         fieldsTable.recordOutput("Module Desired States", moduleStates);
 
         for (SwerveModule module : modules) {
-            module.setDesiredState(moduleStates[module.getModuleNumber()], preventJittering, optimizeState, useVoltage);
+            module.setDesiredState(moduleStates[module.moduleNumber], preventJittering, optimizeState, useVoltage);
         }
     }
 
@@ -234,7 +234,7 @@ public class Swerve extends SubsystemBase implements Tuneable {
         SwerveModulePosition[] modulePosition = new SwerveModulePosition[4];
 
         for (SwerveModule module : modules) {
-            modulePosition[module.getModuleNumber()] = module.getModulePosition();
+            modulePosition[module.moduleNumber] = module.getModulePosition();
         }
 
         return modulePosition;

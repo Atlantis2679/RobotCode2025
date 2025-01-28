@@ -23,7 +23,8 @@ import java.util.function.BooleanSupplier;
 import com.ctre.phoenix6.StatusCode;
 
 public class SwerveModule implements Tuneable {
-    private final int moduleNumber;
+    public final int moduleNumber;
+    public final String moduleName;
 
     private final LogFieldsTable fieldsTable;
     private final SwerveModuleIO io;
@@ -41,6 +42,7 @@ public class SwerveModule implements Tuneable {
     public SwerveModule(int moduleNumber, String positionName, int driveMotorID, int turnMotorID, int encoderID,
             double absoluteAngleOffSetDegrees, LogFieldsTable swerveFieldsTable) {
         this.moduleNumber = moduleNumber;
+        this.moduleName = positionName;
 
         fieldsTable = swerveFieldsTable.getSubTable("Module " + moduleNumber + " " + positionName);
 
@@ -51,7 +53,7 @@ public class SwerveModule implements Tuneable {
 
         fieldsTable.update();
 
-        setNetworkAlerts();
+        initNetworkAlerts();
 
         absoluteAngleHelperDegrees = new PrimitiveRotationalSensorHelper(
                 io.absoluteTurnAngleRotations.getAsDouble() * 360,
@@ -117,10 +119,6 @@ public class SwerveModule implements Tuneable {
         return absoluteAngleHelperDegrees.getAngle();
     }
 
-    public int getModuleNumber() {
-        return this.moduleNumber;
-    }
-
     public double getDriveDistanceMeters() {
         return io.driveDistanceRotations.getAsDouble() * WHEEL_CIRCUMFERENCE_METERS;
     }
@@ -184,21 +182,22 @@ public class SwerveModule implements Tuneable {
         io.setTurnKD(d);
     }
 
-    private void setNetworkAlerts() {
+    private void initNetworkAlerts() {
+        String groupName = moduleName + " Module";
         StatusCode driveMotorStatusCode = StatusCode.valueOf((int) io.driveMotorStatusCodeValue.getAsLong());
-        networkAlerts.put(new Alert("Drive Motor Status Code " + driveMotorStatusCode.value + ": " + driveMotorStatusCode.getName(), AlertType.kInfo), driveMotorStatusCode::isOK);
-        networkAlerts.put(new Alert("Drive Motor Status Code " + driveMotorStatusCode.value + ": " + driveMotorStatusCode.getName(), AlertType.kWarning), driveMotorStatusCode::isWarning);
-        networkAlerts.put(new Alert("Drive Motor Status Code " + driveMotorStatusCode.value + ": " + driveMotorStatusCode.getName(), AlertType.kError), driveMotorStatusCode::isError);
+        networkAlerts.put(new Alert(groupName, "Drive Motor Status Code " + driveMotorStatusCode.value + ": " + driveMotorStatusCode.getName(), AlertType.kInfo), driveMotorStatusCode::isOK);
+        networkAlerts.put(new Alert(groupName, "Drive Motor Status Code " + driveMotorStatusCode.value + ": " + driveMotorStatusCode.getName(), AlertType.kWarning), driveMotorStatusCode::isWarning);
+        networkAlerts.put(new Alert(groupName, "Drive Motor Status Code " + driveMotorStatusCode.value + ": " + driveMotorStatusCode.getName(), AlertType.kError), driveMotorStatusCode::isError);
 
         StatusCode turnMotorStatusCode = StatusCode.valueOf((int) io.turnMotorStatusCodeValue.getAsLong());
-        networkAlerts.put(new Alert("Turn Motor Status Code " + turnMotorStatusCode.value + ": " + turnMotorStatusCode.getName(), AlertType.kInfo), turnMotorStatusCode::isOK);
-        networkAlerts.put(new Alert("Turn Motor Status Code " + turnMotorStatusCode.value + ": " + turnMotorStatusCode.getName(), AlertType.kWarning), turnMotorStatusCode::isWarning);
-        networkAlerts.put(new Alert("Turn Motor Status Code " + turnMotorStatusCode.value + ": " + turnMotorStatusCode.getName(), AlertType.kError), turnMotorStatusCode::isError);
+        networkAlerts.put(new Alert(groupName, "Turn Motor Status Code " + turnMotorStatusCode.value + ": " + turnMotorStatusCode.getName(), AlertType.kInfo), turnMotorStatusCode::isOK);
+        networkAlerts.put(new Alert(groupName, "Turn Motor Status Code " + turnMotorStatusCode.value + ": " + turnMotorStatusCode.getName(), AlertType.kWarning), turnMotorStatusCode::isWarning);
+        networkAlerts.put(new Alert(groupName, "Turn Motor Status Code " + turnMotorStatusCode.value + ": " + turnMotorStatusCode.getName(), AlertType.kError), turnMotorStatusCode::isError);
 
         StatusCode canCoderStatusCode = StatusCode.valueOf((int) io.canCoderStatusCodeValue.getAsLong());
-        networkAlerts.put(new Alert("CanCoder Status Code " + canCoderStatusCode.value + ": " + canCoderStatusCode.getName(), AlertType.kInfo), canCoderStatusCode::isOK);
-        networkAlerts.put(new Alert("CanCoder Status Code " + canCoderStatusCode.value + ": " + canCoderStatusCode.getName(), AlertType.kWarning), canCoderStatusCode::isWarning);
-        networkAlerts.put(new Alert("CanCoder Status Code " + canCoderStatusCode.value + ": " + canCoderStatusCode.getName(), AlertType.kError), canCoderStatusCode::isError);
+        networkAlerts.put(new Alert(groupName, "CanCoder Status Code " + canCoderStatusCode.value + ": " + canCoderStatusCode.getName(), AlertType.kInfo), canCoderStatusCode::isOK);
+        networkAlerts.put(new Alert(groupName, "CanCoder Status Code " + canCoderStatusCode.value + ": " + canCoderStatusCode.getName(), AlertType.kWarning), canCoderStatusCode::isWarning);
+        networkAlerts.put(new Alert(groupName, "CanCoder Status Code " + canCoderStatusCode.value + ": " + canCoderStatusCode.getName(), AlertType.kError), canCoderStatusCode::isError);
     }
 
     @Override
