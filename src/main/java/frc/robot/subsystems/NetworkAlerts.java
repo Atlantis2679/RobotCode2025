@@ -13,18 +13,24 @@ public class NetworkAlerts {
     private final static List<NetworkAlerts> createdNetworksAlerts = new ArrayList<>();
     private final static String parentGroupName = "networkAlerts/";
 
-    private final static NetworkAlerts generalNetworkAlerts = new NetworkAlerts("General Status");
+    private final static NetworkAlerts generalNetworkAlerts = new NetworkAlerts("General Status", false);
 
     private final Map<Alert, BooleanSupplier> alerts = new HashMap<>();
 
     private final String groupName;
 
-    public NetworkAlerts(String groupName) {
+    private NetworkAlerts(String groupName, boolean addToGeneral) {
         this.groupName = parentGroupName + groupName;
-        generalNetworkAlerts.addInfoAlert(groupName + " Is OK", this::isOK);
-        generalNetworkAlerts.addWarningAlert(groupName + " Has Warnings!", this::hasWarnings);
-        generalNetworkAlerts.addErrorAlert(groupName + " Has Errors!", this::hasErrors);
+        if (addToGeneral) {
+            generalNetworkAlerts.addInfoAlert(groupName + " Is OK", this::isOK);
+            generalNetworkAlerts.addWarningAlert(groupName + " Has Warnings!", this::hasWarnings);
+            generalNetworkAlerts.addErrorAlert(groupName + " Has Errors!", this::hasErrors);
+        }
         createdNetworksAlerts.add(this);
+    }
+    
+    public NetworkAlerts(String groupName) {
+        this(groupName, true);
     }
 
     public void addAlert(String message, AlertType alertType, BooleanSupplier isActive) {
