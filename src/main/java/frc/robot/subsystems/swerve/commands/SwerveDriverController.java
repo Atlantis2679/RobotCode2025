@@ -61,8 +61,10 @@ public class SwerveDriverController extends TuneableCommand {
     public void execute() {
         double velocityMultiplier = velocityMultiplierChooser.getSelected();
 
-        double precentageForward = forwardSupplier.getAsDouble() * velocityMultiplier;
-        double precentageSideways = sidewaysSupplier.getAsDouble() * velocityMultiplier;
+        double[] pollarPrecentageSpeeds = convertToPolar(
+            forwardSupplier.getAsDouble() * velocityMultiplier, sidewaysSupplier.getAsDouble() * velocityMultiplier);
+        double precentageForward = pollarPrecentageSpeeds[0];
+        double precentageSideways = pollarPrecentageSpeeds[1];
         double precentageRotation = rotationsSupplier.getAsDouble() * velocityMultiplier;
 
         if (isSensetiveMode.getAsBoolean()) {
@@ -77,6 +79,19 @@ public class SwerveDriverController extends TuneableCommand {
                 rotationSlewRateLimiter.calculate(precentageRotation * maxAngularVelocityRPS.get()),
                 isFieldRelative.getAsBoolean(),
                 false);
+    }
+
+    private static double[] convertToPolar(double y, double x) {
+        double radius = Math.pow(x, 2) + Math.pow(y, 2);
+        double theta = Math.atan2(y, x);
+
+        if (radius >= 1) {
+            return new double[] {Math.sin(theta), Math.cos(theta)};
+        }
+
+        radius = Math.abs(radius) < POLLAR_RADIUS_DEADBAND ? 0 : (radius - (Math.signum(radius) * radius)) / (1 - radius);
+;
+        return new double[] {radius * Math.sin(theta), radius * Math.cos(theta)};
     }
 
     @Override
