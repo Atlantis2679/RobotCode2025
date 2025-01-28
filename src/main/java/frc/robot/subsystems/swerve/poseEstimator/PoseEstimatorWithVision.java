@@ -58,7 +58,7 @@ public class PoseEstimatorWithVision {
                 VecBuilder.fill(1, 1, 1));
 
         visionCameras.forEach((cameraName, visionIO) -> {
-            networkAlerts.put(new Alert("vision", cameraName + "Camera Is Disconnected!", AlertType.kWarning), () -> !visionIO.isCameraConnected.getAsBoolean());
+            networkAlerts.put(new Alert("Swerve/vision", cameraName + "Camera Is Disconnected!", AlertType.kWarning), () -> !visionIO.isCameraConnected.getAsBoolean());
         });
     }
 

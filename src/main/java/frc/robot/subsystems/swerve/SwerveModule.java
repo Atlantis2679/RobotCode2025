@@ -183,7 +183,7 @@ public class SwerveModule implements Tuneable {
     }
 
     private void initNetworkAlerts() {
-        String groupName = moduleName + " Module";
+        String groupName = "Swerve/networkAlerts/" + moduleName + " Module";
         StatusCode driveMotorStatusCode = StatusCode.valueOf((int) io.driveMotorStatusCodeValue.getAsLong());
         networkAlerts.put(new Alert(groupName, "Drive Motor Status Code " + driveMotorStatusCode.value + ": " + driveMotorStatusCode.getName(), AlertType.kInfo), driveMotorStatusCode::isOK);
         networkAlerts.put(new Alert(groupName, "Drive Motor Status Code " + driveMotorStatusCode.value + ": " + driveMotorStatusCode.getName(), AlertType.kWarning), driveMotorStatusCode::isWarning);
