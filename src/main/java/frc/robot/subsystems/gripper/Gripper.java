@@ -41,8 +41,8 @@ public class Gripper extends SubsystemBase {
     }
 
     public void stop() {
-        io.setRightOutTakeMotorVoltage(0);
-        io.setLeftOutTakeMotorVoltage(0);
+        io.setRightOuttakeMotorVoltage(0);
+        io.setLeftOuttakeMotorVoltage(0);
         io.setBackMotorVoltage(0);
     }
 }

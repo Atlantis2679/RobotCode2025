@@ -15,13 +15,13 @@ public class GripperCommands {
 
     public Command loadCoral() {
         return gripper.run(() -> gripper.setMotorsVoltage(
-            LODING_OUTTAKE_MOTORS_VOLTAGE, LODING_OUTTAKE_MOTORS_VOLTAGE, LODING_BACK_MOTOR_VOLTAGE))
+            LODING_OUTTAKE_MOTORS_VOLTAGE, LODING_OUTTAKE_MOTORS_VOLTAGE, LOADING_BACK_MOTOR_VOLTAGE))
             .until(gripper::getIsCoralIn).finallyDo(gripper::stop).withName("loadCoral");
     }
 
     public Command scoreL1() {
         return gripper.run(() -> gripper.setMotorsVoltage(
-            LODING_OUTTAKE_MOTORS_VOLTAGE, LODING_OUTTAKE_MOTORS_VOLTAGE, LODING_BACK_MOTOR_VOLTAGE))
+            LODING_OUTTAKE_MOTORS_VOLTAGE, LODING_OUTTAKE_MOTORS_VOLTAGE, LOADING_BACK_MOTOR_VOLTAGE))
             .until(gripper::getIsCoralIn)
             .andThen(gripper.run(() -> gripper.setMotorsVoltage(
                 L1_RIGHT_OUTTAKE_MOTOR_VOLTAGE, L1_LEFT_OUTTAKE_MOTOR_VOLTAGE, L1_BACK_MOTOR_VOLTAGE)))
@@ -30,7 +30,7 @@ public class GripperCommands {
 
     public Command scoreL3() {
         return gripper.run(() -> gripper.setMotorsVoltage(
-            LODING_OUTTAKE_MOTORS_VOLTAGE, LODING_OUTTAKE_MOTORS_VOLTAGE, LODING_BACK_MOTOR_VOLTAGE))
+            LODING_OUTTAKE_MOTORS_VOLTAGE, LODING_OUTTAKE_MOTORS_VOLTAGE, LOADING_BACK_MOTOR_VOLTAGE))
             .until(gripper::getIsCoralIn)
             .andThen(gripper.run(() -> gripper.setMotorsVoltage(
                 L3_OUTTAKE_MOTORS_VOLTAGE, L3_OUTTAKE_MOTORS_VOLTAGE, L3_BACK_MOTOR_VOLTAGE)))

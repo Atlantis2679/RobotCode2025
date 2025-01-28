@@ -6,7 +6,7 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import edu.wpi.first.wpilibj.DigitalInput;
 import frc.lib.logfields.LogFieldsTable;
 
-import static frc.robot.RobotMaps.*;
+import static frc.robot.RobotMap.*;
 
 public class GripperIOSparkMax extends GripperIO {
     private final SparkMax rightOuttakeMotor = new SparkMax(CANBUS.GRIPPER_RIGHT_OUTTAKE_MOTOR_ID, MotorType.kBrushless);
