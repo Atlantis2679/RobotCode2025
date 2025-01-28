@@ -20,6 +20,10 @@ public class SwerveModuleIOFalcon extends SwerveModuleIO {
     private final TalonFX turnMotor;
     private final CANcoder canCoder;
 
+    private final int driveMotorStatusCodeValue;
+    private final int turnMotorStatusCodeValue;
+    private final int canCoderStatusCodeValue;
+
     private final PositionVoltage turnPositionVoltageControl = new PositionVoltage(0).withSlot(0);
     private final VoltageOut driveVoltageControl = new VoltageOut(0);
     private final DutyCycleOut drivePrecentageControl = new DutyCycleOut(0);
@@ -49,7 +53,7 @@ public class SwerveModuleIOFalcon extends SwerveModuleIO {
 
         driveMotor.getVelocity().setUpdateFrequency(100);
         driveMotor.getPosition().setUpdateFrequency(100);
-        driveMotor.getConfigurator().apply(driveMotorConfiguration);
+        driveMotorStatusCodeValue = driveMotor.getConfigurator().apply(driveMotorConfiguration).value;
 
         // turn motor configs
         TalonFXConfiguration turnMotorConfiguration = new TalonFXConfiguration();
@@ -67,11 +71,11 @@ public class SwerveModuleIOFalcon extends SwerveModuleIO {
         turnSlotConfigs.kD = MODULE_TURN_KD;
 
         turnMotor.getPosition().setUpdateFrequency(100);
-        turnMotor.getConfigurator().apply(turnMotorConfiguration);
+        turnMotorStatusCodeValue = turnMotor.getConfigurator().apply(turnMotorConfiguration).value;
 
         // cancoder configs
         CANcoderConfiguration canCoderConfiguration = new CANcoderConfiguration();
-        canCoder.getConfigurator().apply(canCoderConfiguration);
+        canCoderStatusCodeValue = canCoder.getConfigurator().apply(canCoderConfiguration).value;
     }
 
     @Override
@@ -171,5 +175,20 @@ public class SwerveModuleIOFalcon extends SwerveModuleIO {
     @Override
     protected double getTurnStatorCurrent() {
         return turnMotor.getStatorCurrent().getValueAsDouble();
+    }
+
+    @Override
+    protected int getDriveMotorStatusCodeValue() {
+        return driveMotorStatusCodeValue;
+    }
+
+    @Override
+    protected int getTurnMotorStatusCodeValue() {
+        return turnMotorStatusCodeValue;
+    }
+
+    @Override
+    protected int getCanCoderStatusCodeValue() {
+        return canCoderStatusCodeValue;
     }
 }
