@@ -9,6 +9,8 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.util.sendable.Sendable;
+import edu.wpi.first.wpilibj.Alert;
+import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -87,6 +89,8 @@ public class Swerve extends SubsystemBase implements Tuneable {
 
     private final LoggedDashboardChooser<Boolean> isRedAlliance = new LoggedDashboardChooser<>("alliance");
 
+    private final Alert isGyroConnectedAlert = new Alert("Swerve/networkAlerts", "Gyro Not Connected!", AlertType.kError);
+
     public Swerve() {
         fieldsTable.update();
 
@@ -112,6 +116,8 @@ public class Swerve extends SubsystemBase implements Tuneable {
         for (SwerveModule module : modules) {
             module.periodic();
         }
+
+        isGyroConnectedAlert.set(gyroIO.isConnected.getAsBoolean());
 
         if (gyroIO.isConnected.getAsBoolean()) {
             gyroYawHelperDegreesCCW.update(Rotation2d.fromDegrees(-gyroIO.yawDegreesCW.getAsDouble()));
