@@ -7,6 +7,7 @@ import frc.lib.logfields.LogFieldsTable;
 import frc.lib.tuneables.Tuneable;
 import frc.lib.tuneables.TuneableBuilder;
 import frc.robot.Robot;
+import frc.robot.subsystems.NetworkAlerts;
 import frc.robot.subsystems.swerve.io.SwerveModuleIO;
 import frc.robot.subsystems.swerve.io.SwerveModuleIOFalcon;
 import frc.robot.subsystems.swerve.io.SwerveModuleIOSim;
@@ -14,11 +15,14 @@ import frc.robot.utils.PrimitiveRotationalSensorHelper;
 
 import static frc.robot.subsystems.swerve.SwerveContants.*;
 
+import com.ctre.phoenix6.StatusCode;
+
 public class SwerveModule implements Tuneable {
     private final int moduleNumber;
 
     private final LogFieldsTable fieldsTable;
     private final SwerveModuleIO io;
+    private final NetworkAlerts networkAlerts = new NetworkAlerts("Swerve/Modules");
 
     private PrimitiveRotationalSensorHelper absoluteAngleHelperDegrees;
 
@@ -40,6 +44,21 @@ public class SwerveModule implements Tuneable {
                 : new SwerveModuleIOFalcon(fieldsTable, driveMotorID, turnMotorID, encoderID);
 
         fieldsTable.update();
+        
+        StatusCode driveMotorStatusCode = StatusCode.valueOf((int) io.driveMotorStatusCodeValue.getAsLong());
+        networkAlerts.addStatusAlert(positionName + " module",
+            "Drive Motor Status Code " + driveMotorStatusCode.value + ": "+ driveMotorStatusCode.getName(),
+            driveMotorStatusCode::isOK, driveMotorStatusCode::isWarning, driveMotorStatusCode::isError);
+
+        StatusCode turnMotorStatusCode = StatusCode.valueOf((int) io.turnMotorStatusCodeValue.getAsLong());
+        networkAlerts.addStatusAlert(positionName + " module",
+            "Drive Motor Status Code " + turnMotorStatusCode.value + ": " + turnMotorStatusCode.getName(),
+            turnMotorStatusCode::isOK, turnMotorStatusCode::isWarning, turnMotorStatusCode::isError);
+
+        StatusCode canCoderStatusCode = StatusCode.valueOf((int) io.canCoderStatusCodeValue.getAsLong());
+        networkAlerts.addStatusAlert(positionName + " module",
+            "Drive Motor Status Code " + canCoderStatusCode.value + ": " + canCoderStatusCode.getName(),
+            canCoderStatusCode::isOK, canCoderStatusCode::isWarning, canCoderStatusCode::isError);
 
         absoluteAngleHelperDegrees = new PrimitiveRotationalSensorHelper(
                 io.absoluteTurnAngleRotations.getAsDouble() * 360,
