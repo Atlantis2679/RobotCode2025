@@ -27,7 +27,7 @@ public class Funnel extends SubsystemBase {
 
     @Override
     public void periodic() {
-        isCoralInAlert.set(io.isCoralIn.getAsBoolean());
+        isCoralInAlert.set(getIsCoralIn());
     }
 
     public void setMotorVoltage(double voltageDemand) {
