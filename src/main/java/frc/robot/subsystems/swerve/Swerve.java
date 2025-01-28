@@ -89,7 +89,8 @@ public class Swerve extends SubsystemBase implements Tuneable {
 
     private final LoggedDashboardChooser<Boolean> isRedAlliance = new LoggedDashboardChooser<>("alliance");
 
-    private final Alert isGyroConnectedAlert = new Alert("Swerve/networkAlerts", "Gyro Not Connected!", AlertType.kError);
+    private final Alert gyroDisconnectedAlert = new Alert("Swerve/networkAlerts/Gyro", "Gyro Is Disconnected!", AlertType.kError);
+    private final Alert gyroConnectedAlert = new Alert("Swerve/networkAlerts/Gyro", "Gyro Is Connected!", AlertType.kInfo);
 
     public Swerve() {
         fieldsTable.update();
@@ -117,7 +118,8 @@ public class Swerve extends SubsystemBase implements Tuneable {
             module.periodic();
         }
 
-        isGyroConnectedAlert.set(gyroIO.isConnected.getAsBoolean());
+        gyroDisconnectedAlert.set(!gyroIO.isConnected.getAsBoolean());
+        gyroConnectedAlert.set(gyroIO.isConnected.getAsBoolean());
 
         if (gyroIO.isConnected.getAsBoolean()) {
             gyroYawHelperDegreesCCW.update(Rotation2d.fromDegrees(-gyroIO.yawDegreesCW.getAsDouble()));

@@ -19,7 +19,8 @@ public class Funnel extends SubsystemBase {
     private final LogFieldsTable fieldsTable = new LogFieldsTable(getName());
     private final Debouncer isCoralInDebouncer = new Debouncer(DEBOUNCER_SECONDS, DebounceType.kBoth);
 
-    private final Alert isCoralInAlert = new Alert("Funnel", "Coral Not Inside", AlertType.kWarning);
+    private final Alert isCoralInAlert = new Alert("Funnel/networkAlerts", "Coral Not Inside", AlertType.kInfo);
+    private final Alert isCoralNotInAlert = new Alert("Funnel/nerworkAlerts", "Coral Not Inside", AlertType.kInfo);
 
     public Funnel() {
         io = Robot.isReal() ? new FunnelIOSparksMax(this.fieldsTable) : new FunnelIOSim(this.fieldsTable);
@@ -28,6 +29,7 @@ public class Funnel extends SubsystemBase {
     @Override
     public void periodic() {
         isCoralInAlert.set(getIsCoralIn());
+        isCoralNotInAlert.set(!getIsCoralIn());
     }
 
     public void setMotorVoltage(double voltageDemand) {
