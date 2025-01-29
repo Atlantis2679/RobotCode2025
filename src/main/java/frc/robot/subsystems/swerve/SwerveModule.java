@@ -51,12 +51,12 @@ public class SwerveModule implements Tuneable {
 
         StatusCode turnMotorStatusCode = StatusCode.valueOf((int) io.turnMotorStatusCodeValue.getAsLong());
         networkAlerts.addStatusAlert(positionName + " module",
-            "Drive Motor Status Code " + turnMotorStatusCode.value + ": " + turnMotorStatusCode.getName(),
+            "Turn Motor Status Code " + turnMotorStatusCode.value + ": " + turnMotorStatusCode.getName(),
             turnMotorStatusCode::isOK, turnMotorStatusCode::isWarning, turnMotorStatusCode::isError);
 
         StatusCode canCoderStatusCode = StatusCode.valueOf((int) io.canCoderStatusCodeValue.getAsLong());
         networkAlerts.addStatusAlert(positionName + " module",
-            "Drive Motor Status Code " + canCoderStatusCode.value + ": " + canCoderStatusCode.getName(),
+            "Can coder Status Code " + canCoderStatusCode.value + ": " + canCoderStatusCode.getName(),
             canCoderStatusCode::isOK, canCoderStatusCode::isWarning, canCoderStatusCode::isError);
 
         absoluteAngleHelperDegrees = new PrimitiveRotationalSensorHelper(
