@@ -9,11 +9,11 @@ import java.util.function.BooleanSupplier;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 
-public class NetworkAlerts {
-    private final static List<NetworkAlerts> createdNetworksAlerts = new ArrayList<>();
+public class NetworkAlertsGroup {
+    private final static List<NetworkAlertsGroup> createdGroups = new ArrayList<>();
     private final static String parentFolder = "networkAlerts";
 
-    private final static NetworkAlerts robotStatusNetworkAlerts = new NetworkAlerts(
+    private final static NetworkAlerts robotStatusGroup = new NetworkAlertsGroup(
         parentFolder, "Robot Status", false);
 
     private final Map<Alert, BooleanSupplier> alerts = new HashMap<>();
@@ -24,18 +24,18 @@ public class NetworkAlerts {
     private boolean hasWarnings = false;
     private boolean hasErrors = false;
 
-    private NetworkAlerts(String parentGroupFolder, String groupName, boolean addToRobotStatus) {
+    private NetworkAlertsGroup(String parentGroupFolder, String groupName, boolean addToRobotStatusGroup) {
         this.groupName = groupName;
         this.groupFolder = parentGroupFolder + "/" + groupName;
-        if (addToRobotStatus) {
+        if (addToRobotStatusGroup) {
             robotStatusNetworkAlerts.addInfoAlert(groupName + " Is OK", this::getIsOK);
             robotStatusNetworkAlerts.addWarningAlert(groupName + " Has Warnings!", this::getHasWarnings);
             robotStatusNetworkAlerts.addErrorAlert(groupName + " Has Errors!", this::getHasErrors);
-            createdNetworksAlerts.add(this);
+            createdGroups.add(this);
         }
     }
     
-    public NetworkAlerts(String groupName) {
+    public NetworkAlertsGroup(String groupName) {
         this(parentFolder, groupName, true);
     }
 
@@ -60,8 +60,8 @@ public class NetworkAlerts {
     }
 
     /* A sub group is recorded seperatly from it's parent in the robot status alerts */
-    public NetworkAlerts getSubGroup(String subGroupName) {
-        return new NetworkAlerts(groupFolder, subGroupName, true);
+    public NetworkAlertsGroup getSubGroup(String subGroupName) {
+        return new NetworkAlertsGroup(groupFolder, subGroupName, true);
     }
     
     public void addAlert(String message, AlertType alertType, BooleanSupplier isActive) {
@@ -171,31 +171,31 @@ public class NetworkAlerts {
     }
 
     public static void update() {
-        for (NetworkAlerts networkAlerts : createdNetworksAlerts) {
-            networkAlerts.alerts.forEach((alert, isActive) -> {
+        for (NetworkAlertsGroup networkAlertsGroup : createdGroups) {
+            networkAlertsGroup.alerts.forEach((alert, isActive) -> {
                 alert.set(isActive.getAsBoolean());
                 if(alert.get() && alert.getType() == AlertType.kWarning)
-                    networkAlerts.hasWarnings = true;
+                    networkAlertsGroup.hasWarnings = true;
                 if(alert.get() && alert.getType() == AlertType.kError)
-                    networkAlerts.hasErrors = true;
+                    networkAlertsGroup.hasErrors = true;
             });
         }
         /* Done seperatly in order that the robot status will be synchronized with */
         /* the hasWarnings and hasErrors.                                          */
-        robotStatusNetworkAlerts.forEach((alert, isActive) -> {
+        robotStatusGroup.forEach((alert, isActive) -> {
                 alert.set(isActive.getAsBoolean());
         });
     }
 
     /* static methods to make the alerts data more accesible */
 
-    public static NetworkAlerts getGroupByName(String groupName) {
-        for(NetworkAlerts networkAlerts : createdNetworksAlerts) {
-            if(networkAlerts.getGroupName().equals(groupName))
-                return networkAlerts;
+    public static NetworkAlertsGroup getGroupByName(String groupName) {
+        for(NetworkAlertsGroup networkAlertsGroup : createdGroup) {
+            if(networkAlertsGroup.getGroupName().equals(groupName))
+                return networkAlertsGroup;
         }
-        if(robotStatusNetworkAlerts.getGroupName().eqals(groupName)
-           return robotStatusNetworkAlerts;
+        if(robotStatusGroup.getGroupName().eqals(groupName)
+           return robotStatusGroup;
         return null;
     }
 }
