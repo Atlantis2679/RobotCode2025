@@ -48,17 +48,18 @@ public class Swerve extends SubsystemBase implements Tuneable {
             fieldsTable.getSubTable("RoboRio Accelerometer"));
 
     private final NetworkAlertsGroup networkAlerts = new NetworkAlertsGroup("Swerve");
+    private final NetworkAlertsGroup modulesNetworkAlerts = networkAlerts.getSubGroup("Modules");
     
     // Should be FL, FR, BL, BR
     private final SwerveModule[] modules = {
             new SwerveModule(0, "FL", ModuleFL.DRIVE_MOTOR_ID, ModuleFL.TURN_MOTOR_ID, ModuleFL.ENCODER_ID,
-                    MODULE_FL_ABSOLUTE_ANGLE_OFFSET_DEGREES, fieldsTable, networkAlerts),
+                    MODULE_FL_ABSOLUTE_ANGLE_OFFSET_DEGREES, fieldsTable, modulesNetworkAlerts),
             new SwerveModule(1, "FR", ModuleFR.DRIVE_MOTOR_ID, ModuleFR.TURN_MOTOR_ID, ModuleFR.ENCODER_ID,
-                    MODULE_FR_ABSOLUTE_ANGLE_OFFSET_DEGREES, fieldsTable, networkAlerts),
+                    MODULE_FR_ABSOLUTE_ANGLE_OFFSET_DEGREES, fieldsTable, modulesNetworkAlerts),
             new SwerveModule(2, "BL", ModuleBL.DRIVE_MOTOR_ID, ModuleBL.TURN_MOTOR_ID, ModuleBL.ENCODER_ID,
-                    MODULE_BL_ABSOLUTE_ANGLE_OFFSET_DEGREES, fieldsTable, networkAlerts),
+                    MODULE_BL_ABSOLUTE_ANGLE_OFFSET_DEGREES, fieldsTable, modulesNetworkAlerts),
             new SwerveModule(3, "BR", ModuleBR.DRIVE_MOTOR_ID, ModuleBR.TURN_MOTOR_ID, ModuleBR.ENCODER_ID,
-                    MODULE_BR_ABSOLUTE_ANGLE_OFFSET_DEGREES, fieldsTable, networkAlerts)
+                    MODULE_BR_ABSOLUTE_ANGLE_OFFSET_DEGREES, fieldsTable, modulesNetworkAlerts)
     };
 
     // The x and y might seem a bit weird, but this is how they are defined in
@@ -99,8 +100,8 @@ public class Swerve extends SubsystemBase implements Tuneable {
         gyroYawHelperDegreesCCW = new RotationalSensorHelper(
                 Rotation2d.fromDegrees(gyroIO.isConnected.getAsBoolean() ? -gyroIO.yawDegreesCW.getAsDouble() : 0));
 
-        poseEstimator = new PoseEstimatorWithVision(fieldsTable.getSubTable("poseEstimator"), getYawDegreesCCW(),
-                getModulesPositions(), swerveKinematics);
+        poseEstimator = new PoseEstimatorWithVision(fieldsTable.getSubTable("poseEstimator"), networkAlerts.getSubGroup("Vision"),
+                getYawDegreesCCW(), getModulesPositions(), swerveKinematics);
 
         TuneablesManager.add("Swerve", (Tuneable) this);
 

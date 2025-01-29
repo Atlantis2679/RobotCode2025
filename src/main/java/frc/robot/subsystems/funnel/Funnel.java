@@ -6,7 +6,7 @@ import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.logfields.LogFieldsTable;
 import frc.robot.Robot;
-import frc.robot.subsystems.NetworkAlerts;
+import frc.robot.subsystems.NetworkAlertsGroup;
 import frc.robot.subsystems.funnel.io.FunnelIO;
 import frc.robot.subsystems.funnel.io.FunnelIOSim;
 import frc.robot.subsystems.funnel.io.FunnelIOSparksMax;
@@ -17,7 +17,7 @@ public class Funnel extends SubsystemBase {
     private final FunnelIO io = Robot.isReal() ? new FunnelIOSparksMax(this.fieldsTable) : new FunnelIOSim(this.fieldsTable);;
     private final LogFieldsTable fieldsTable = new LogFieldsTable(getName());
     private final Debouncer isCoralInDebouncer = new Debouncer(DEBOUNCER_SECONDS, DebounceType.kBoth);
-    private final NetworkAlerts networkAlerts = new NetworkAlerts("Funnel");
+    private final NetworkAlertsGroup networkAlerts = new NetworkAlertsGroup("Funnel");
 
     public Funnel() {
         networkAlerts.addInfoInfoSwitchAlert("Coral Inside", "Coral Not Inside", io.isCoralIn);

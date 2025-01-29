@@ -20,7 +20,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.lib.logfields.LogFieldsTable;
 import frc.lib.tuneables.TuneablesManager;
-import frc.robot.subsystems.NetworkAlerts;
+import frc.robot.subsystems.NetworkAlertsGroup;
 
 public class Robot extends LoggedRobot {
     private Command autonomousCommand;
@@ -106,7 +106,7 @@ public class Robot extends LoggedRobot {
         LogFieldsTable.updateAllTables();
         TuneablesManager.update();
         CommandScheduler.getInstance().run();
-        NetworkAlerts.update();
+        NetworkAlertsGroup.update();
         Logger.recordOutput("Tuning Mode", TuneablesManager.isEnabled());
     }
 

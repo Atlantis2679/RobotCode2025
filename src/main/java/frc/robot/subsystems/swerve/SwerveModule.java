@@ -22,7 +22,6 @@ public class SwerveModule implements Tuneable {
 
     private final LogFieldsTable fieldsTable;
     private final SwerveModuleIO io;
-    private final NetworkAlerts networkAlerts;
 
     private PrimitiveRotationalSensorHelper absoluteAngleHelperDegrees;
 
@@ -38,7 +37,6 @@ public class SwerveModule implements Tuneable {
 
         fieldsTable = swerveFieldsTable.getSubTable("Module " + moduleNumber + " " + positionName);
 
-        this.networkAlerts = networkAlerts.getSubTable("Modules");
 
         io = Robot.isSimulation()
                 ? new SwerveModuleIOSim(fieldsTable, driveMotorID, turnMotorID, encoderID,

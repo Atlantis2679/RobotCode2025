@@ -13,7 +13,7 @@ public class NetworkAlertsGroup {
     private final static List<NetworkAlertsGroup> createdGroups = new ArrayList<>();
     private final static String parentFolder = "networkAlerts";
 
-    private final static NetworkAlerts robotStatusGroup = new NetworkAlertsGroup(
+    private final static NetworkAlertsGroup robotStatusGroup = new NetworkAlertsGroup(
         parentFolder, "Robot Status", false);
 
     private final Map<Alert, BooleanSupplier> alerts = new HashMap<>();
@@ -28,9 +28,9 @@ public class NetworkAlertsGroup {
         this.groupName = groupName;
         this.groupFolder = parentGroupFolder + "/" + groupName;
         if (addToRobotStatusGroup) {
-            robotStatusNetworkAlerts.addInfoAlert(groupName + " Is OK", this::getIsOK);
-            robotStatusNetworkAlerts.addWarningAlert(groupName + " Has Warnings!", this::getHasWarnings);
-            robotStatusNetworkAlerts.addErrorAlert(groupName + " Has Errors!", this::getHasErrors);
+            robotStatusGroup.addInfoAlert(groupName + " Is OK", this::getIsOK);
+            robotStatusGroup.addWarningAlert(groupName + " Has Warnings!", this::getHasWarnings);
+            robotStatusGroup.addErrorAlert(groupName + " Has Errors!", this::getHasErrors);
             createdGroups.add(this);
         }
     }
@@ -147,12 +147,12 @@ public class NetworkAlertsGroup {
 
     public void addWarningErrorSwitchAlert(String warningMessage, String errorMessage, 
                                            BooleanSupplier isWarningActive) {
-        addSwitchAlert(warningMessage, errorMessage, AlertType.kWarnng, AlertType.kError, isWarningActive);
+        addSwitchAlert(warningMessage, errorMessage, AlertType.kWarning, AlertType.kError, isWarningActive);
     }
 
     public void addWarningErrorSwitchAlert(String subGroupName, String warningMessage, String errorMessage, 
                                            BooleanSupplier isWarningActive) {
-        addSwitchAlert(subGroupName, warningMessage, errorMessage, AlertType.kWarnng, 
+        addSwitchAlert(subGroupName, warningMessage, errorMessage, AlertType.kWarning, 
                        AlertType.kError, isWarningActive);
     }
 
@@ -182,7 +182,7 @@ public class NetworkAlertsGroup {
         }
         /* Done seperatly in order that the robot status will be synchronized with */
         /* the hasWarnings and hasErrors.                                          */
-        robotStatusGroup.forEach((alert, isActive) -> {
+        robotStatusGroup.alerts.forEach((alert, isActive) -> {
                 alert.set(isActive.getAsBoolean());
         });
     }
@@ -190,11 +190,11 @@ public class NetworkAlertsGroup {
     /* static methods to make the alerts data more accesible */
 
     public static NetworkAlertsGroup getGroupByName(String groupName) {
-        for(NetworkAlertsGroup networkAlertsGroup : createdGroup) {
+        for(NetworkAlertsGroup networkAlertsGroup : createdGroups) {
             if(networkAlertsGroup.getGroupName().equals(groupName))
                 return networkAlertsGroup;
         }
-        if(robotStatusGroup.getGroupName().eqals(groupName)
+        if(robotStatusGroup.getGroupName().equals(groupName))
            return robotStatusGroup;
         return null;
     }
