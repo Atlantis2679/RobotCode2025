@@ -7,7 +7,7 @@ import frc.lib.logfields.LogFieldsTable;
 import frc.lib.tuneables.Tuneable;
 import frc.lib.tuneables.TuneableBuilder;
 import frc.robot.Robot;
-import frc.robot.subsystems.NetworkAlerts;
+import frc.robot.subsystems.NetworkAlertsGroup;
 import frc.robot.subsystems.swerve.io.SwerveModuleIO;
 import frc.robot.subsystems.swerve.io.SwerveModuleIOFalcon;
 import frc.robot.subsystems.swerve.io.SwerveModuleIOSim;
@@ -22,7 +22,7 @@ public class SwerveModule implements Tuneable {
 
     private final LogFieldsTable fieldsTable;
     private final SwerveModuleIO io;
-    private final NetworkAlerts networkAlerts = new NetworkAlerts("Swerve/Modules");
+    private final NetworkAlerts networkAlerts;
 
     private PrimitiveRotationalSensorHelper absoluteAngleHelperDegrees;
 
@@ -33,10 +33,12 @@ public class SwerveModule implements Tuneable {
     private final double WHEEL_CIRCUMFERENCE_METERS = 2 * Math.PI * WHEEL_RADIUS_METERS;
 
     public SwerveModule(int moduleNumber, String positionName, int driveMotorID, int turnMotorID, int encoderID,
-            double absoluteAngleOffSetDegrees, LogFieldsTable swerveFieldsTable) {
+            double absoluteAngleOffSetDegrees, LogFieldsTable swerveFieldsTable, NetworkAlertsGroup networkAlerts) {
         this.moduleNumber = moduleNumber;
 
         fieldsTable = swerveFieldsTable.getSubTable("Module " + moduleNumber + " " + positionName);
+
+        this.networkAlerts = networkAlerts.getSubTable("Modules");
 
         io = Robot.isSimulation()
                 ? new SwerveModuleIOSim(fieldsTable, driveMotorID, turnMotorID, encoderID,
