@@ -10,7 +10,6 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import frc.lib.logfields.LogFieldsTable;
-import frc.robot.subsystems.NetworkAlerts;
 import frc.robot.subsystems.NetworkAlertsGroup;
 import frc.robot.subsystems.swerve.poseEstimator.io.VisionAprilTagsIO;
 import frc.robot.subsystems.swerve.poseEstimator.io.VisionAprilTagsIOPhoton;
@@ -28,16 +27,15 @@ public class PoseEstimatorWithVision {
     private final Map<String, VisionAprilTagsIO> visionCameras = new HashMap<>();
     private final SwerveDrivePoseEstimator poseEstimator;
     private final LogFieldsTable fieldsTable;
-    private final NetworkAlertsGroup networkAlerts;
 
     public PoseEstimatorWithVision(LogFieldsTable fieldsTable, NetworkAlertsGroup networkAlerts, Rotation2d currentAngle,
             SwerveModulePosition[] positions, SwerveDriveKinematics swerveKinematics) {
-        this.networkAlerts = networkAlerts;
 
         AprilTagFieldLayout fieldLayout;
         try {
             fieldLayout = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2025Reefscape.m_resourceFile);
         } catch (IOException e) {
+            networkAlerts.addErrorAlert("AprilTagField Cannot be Loaded From Rescore", () -> true);
             e.printStackTrace();
             throw new RuntimeException();
         }

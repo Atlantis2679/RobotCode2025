@@ -37,7 +37,6 @@ public class SwerveModule implements Tuneable {
 
         fieldsTable = swerveFieldsTable.getSubTable("Module " + moduleNumber + " " + positionName);
 
-
         io = Robot.isSimulation()
                 ? new SwerveModuleIOSim(fieldsTable, driveMotorID, turnMotorID, encoderID,
                         absoluteAngleOffSetDegrees)
