@@ -12,7 +12,7 @@ import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.subsystems.NetworkAlerts;
+import frc.robot.subsystems.NetworkAlertsGroup;
 import frc.robot.subsystems.swerve.io.GyroIO;
 import frc.robot.subsystems.swerve.io.GyroIONavX;
 import frc.robot.subsystems.swerve.io.GyroIOSim;
@@ -47,16 +47,18 @@ public class Swerve extends SubsystemBase implements Tuneable {
     private final BuiltInAccelerometerLogged builtInAccelerometer = new BuiltInAccelerometerLogged(
             fieldsTable.getSubTable("RoboRio Accelerometer"));
 
+    private final NetworkAlertsGroup networkAlerts = new NetworkAlertsGroup("Swerve");
+    
     // Should be FL, FR, BL, BR
     private final SwerveModule[] modules = {
             new SwerveModule(0, "FL", ModuleFL.DRIVE_MOTOR_ID, ModuleFL.TURN_MOTOR_ID, ModuleFL.ENCODER_ID,
-                    MODULE_FL_ABSOLUTE_ANGLE_OFFSET_DEGREES, fieldsTable),
+                    MODULE_FL_ABSOLUTE_ANGLE_OFFSET_DEGREES, fieldsTable, networkAlerts),
             new SwerveModule(1, "FR", ModuleFR.DRIVE_MOTOR_ID, ModuleFR.TURN_MOTOR_ID, ModuleFR.ENCODER_ID,
-                    MODULE_FR_ABSOLUTE_ANGLE_OFFSET_DEGREES, fieldsTable),
+                    MODULE_FR_ABSOLUTE_ANGLE_OFFSET_DEGREES, fieldsTable, networkAlerts),
             new SwerveModule(2, "BL", ModuleBL.DRIVE_MOTOR_ID, ModuleBL.TURN_MOTOR_ID, ModuleBL.ENCODER_ID,
-                    MODULE_BL_ABSOLUTE_ANGLE_OFFSET_DEGREES, fieldsTable),
+                    MODULE_BL_ABSOLUTE_ANGLE_OFFSET_DEGREES, fieldsTable, networkAlerts),
             new SwerveModule(3, "BR", ModuleBR.DRIVE_MOTOR_ID, ModuleBR.TURN_MOTOR_ID, ModuleBR.ENCODER_ID,
-                    MODULE_BR_ABSOLUTE_ANGLE_OFFSET_DEGREES, fieldsTable)
+                    MODULE_BR_ABSOLUTE_ANGLE_OFFSET_DEGREES, fieldsTable, networkAlerts)
     };
 
     // The x and y might seem a bit weird, but this is how they are defined in
@@ -87,8 +89,6 @@ public class Swerve extends SubsystemBase implements Tuneable {
     private final PoseEstimatorWithVision poseEstimator;
 
     private final LoggedDashboardChooser<Boolean> isRedAlliance = new LoggedDashboardChooser<>("alliance");
-
-    private final NetworkAlerts networkAlerts = new NetworkAlerts("Swerve");
 
     public Swerve() {
         fieldsTable.update();
