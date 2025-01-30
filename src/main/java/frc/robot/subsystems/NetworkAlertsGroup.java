@@ -59,6 +59,14 @@ public class NetworkAlertsGroup {
         return !(hasErrors || hasWarnings);
     }
 
+    private void setHasErrors(boolean hasErrors) {
+        this.hasErrors = hasErrors;
+    }
+
+    private void setHasWarnings(boolean hasWarnings) {
+        this.hasWarnings = hasWarnings;
+    }
+
     /* A sub group is recorded seperatly from it's parent in the robot status alerts */
     public NetworkAlertsGroup getSubGroup(String subGroupName) {
         return new NetworkAlertsGroup(groupFolder, subGroupName, true);
@@ -172,15 +180,14 @@ public class NetworkAlertsGroup {
 
     public static void update() {
         for (NetworkAlertsGroup networkAlertsGroup : createdGroups) {
-            networkAlertsGroup.hasWarnings = false;
-            networkAlertsGroup.hasErrors = false;
+            networkAlertsGroup.setHasWarnings(false);
+            networkAlertsGroup.setHasErrors(false);
             networkAlertsGroup.alerts.forEach((alert, isActive) -> {
                 alert.set(isActive.getAsBoolean());
                 if(alert.get() && alert.getType() == AlertType.kWarning)
-                    networkAlertsGroup.hasWarnings = true;
+                    networkAlertsGroup.setHasWarnings(true);
                 if(alert.get() && alert.getType() == AlertType.kError)
-                    networkAlertsGroup.hasErrors = true;
-
+                    networkAlertsGroup.setHasErrors(true);
             });
         }
         /* Done seperatly in order that the robot status will be synchronized with */
