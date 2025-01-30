@@ -172,10 +172,10 @@ public class NetworkAlertsGroup {
 
     public static void update() {
         for (NetworkAlertsGroup networkAlertsGroup : createdGroups) {
+            networkAlertsGroup.hasWarnings = false;
+            networkAlertsGroup.hasErrors = false;
             networkAlertsGroup.alerts.forEach((alert, isActive) -> {
                 alert.set(isActive.getAsBoolean());
-                networkAlertsGroup.hasWarnings = false;
-                networkAlertsGroup.hasErrors = false;
                 if(alert.get() && alert.getType() == AlertType.kWarning)
                     networkAlertsGroup.hasWarnings = true;
                 if(alert.get() && alert.getType() == AlertType.kError)
