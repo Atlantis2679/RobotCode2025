@@ -1,33 +1,56 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
-
 package frc.robot.subsystems.pivot;
 
+import static frc.robot.subsystems.pivot.PivotConstants.*;
+
+import java.util.function.DoubleSupplier;
+
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.lib.valueholders.ValueHolder;
 
-/* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class PivotCommands extends Command {
-  /** Creates a new PivotCommands. */
-  public PivotCommands() {
-    // Use addRequirements() here to declare subsystem dependencies.
+
+  private Pivot pivot;
+
+  public PivotCommands(Pivot pivot) {
+      this.pivot = pivot;
+      this.addRequirements(pivot);
   }
+    public Command moveToAngle(DoubleSupplier desiredAngleDeg) {
+      ValueHolder<TrapezoidProfile.State> referenceState = new ValueHolder<TrapezoidProfile.State>(null);
+        return pivot.runOnce(() -> {
+            pivot.resetPID();
+            referenceState.set(new TrapezoidProfile.State(pivot.getAngleDegrees(), pivot.getVelocity()));
+        }).andThen(pivot.run(() -> {
+            referenceState.set(pivot.calculateTrapezoidProfile(
+                    0.02,
+                    referenceState.get(),
+                    new TrapezoidProfile.State(desiredAngleDeg.getAsDouble(), 0)));
 
-  // Called when the command is initially scheduled.
-  @Override
-  public void initialize() {}
+            double voltage = pivot.calculateFeedForward(
+                    referenceState.get().position,
+                    referenceState.get().velocity,
+                    true);
 
-  // Called every time the scheduler runs while the command is scheduled.
-  @Override
-  public void execute() {}
-
-  // Called once the command ends or is interrupted.
-  @Override
-  public void end(boolean interrupted) {}
-
-  // Returns true when the command should end.
-  @Override
-  public boolean isFinished() {
-    return false;
+            pivot.setPivotVoltage(voltage);
+        })).finallyDo(pivot::stop).withName("pivotMoveToAngle");
+    }
+    public Command moveToAngle(double angle) {
+      return moveToAngle(() -> {return angle;});
+  }
+    public Command manualController(DoubleSupplier pivotSpeed) {
+      return pivot.run(() -> {
+          double feedforwardResult = pivot.calculateFeedForward(
+                  pivot.getAngleDegrees(),
+                  0,
+                  false);
+          double demandPivotSpeed = pivotSpeed.getAsDouble();
+          if ((pivot.getAngleDegrees() > MAX_ANGLE_DEGREE && demandPivotSpeed > 0)
+                  || (pivot.getAngleDegrees() < MIN_ANGLE_DEGREE && demandPivotSpeed < 0)) {
+              demandPivotSpeed = 0;
+          }
+          pivot.setPivotVoltage(
+                  feedforwardResult + demandPivotSpeed * MANUAL_SPEED_MULTIPLIER);
+      }).finallyDo(pivot::stop).withName("pivotManualController");
   }
 }
