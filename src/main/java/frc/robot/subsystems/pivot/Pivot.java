@@ -1,36 +1,24 @@
 package frc.robot.subsystems.pivot;
 
-import static frc.robot.subsystems.pivot.PivotConstants.FULL_ROTATION;
-import static frc.robot.subsystems.pivot.PivotConstants.INITIAL_OFFSET;
-import static frc.robot.subsystems.pivot.PivotConstants.KA;
-import static frc.robot.subsystems.pivot.PivotConstants.KD;
-import static frc.robot.subsystems.pivot.PivotConstants.KG;
-import static frc.robot.subsystems.pivot.PivotConstants.KI;
-import static frc.robot.subsystems.pivot.PivotConstants.KP;
-import static frc.robot.subsystems.pivot.PivotConstants.KS;
-import static frc.robot.subsystems.pivot.PivotConstants.KV;
-import static frc.robot.subsystems.pivot.PivotConstants.MAX_ANGLE_DIFFERENCE;
-import static frc.robot.subsystems.pivot.PivotConstants.MAX_SPEED;
-import static frc.robot.subsystems.pivot.PivotConstants.MIN_SPEED;
-import static frc.robot.subsystems.pivot.PivotConstants.SIM_KA;
-import static frc.robot.subsystems.pivot.PivotConstants.SIM_KG;
-import static frc.robot.subsystems.pivot.PivotConstants.SIM_KS;
-import static frc.robot.subsystems.pivot.PivotConstants.SIM_KV;
-import static frc.robot.subsystems.pivot.PivotConstants.UPPER_BOUND;
+import static frc.robot.subsystems.pivot.PivotConstants.*;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.logfields.LogFieldsTable;
+import frc.lib.tuneables.Tuneable;
+import frc.lib.tuneables.TuneableBuilder;
+import frc.lib.tuneables.TuneablesManager;
 import frc.robot.Robot;
 import frc.robot.subsystems.pivot.io.PivotIO;
 import frc.robot.subsystems.pivot.io.PivotIOSim;
 import frc.robot.subsystems.pivot.io.PivotIOSparxmax;
 import frc.robot.utils.PrimitiveRotationalSensorHelper;
 
-public class Pivot extends SubsystemBase {
+public class Pivot extends SubsystemBase implements Tuneable {
     private final LogFieldsTable fieldsTable = new LogFieldsTable(getName());
 
     private final PivotIO io = Robot.isSimulation() ? new PivotIOSim(fieldsTable) : new PivotIOSparxmax(fieldsTable);
@@ -45,8 +33,9 @@ public class Pivot extends SubsystemBase {
 
     public Pivot() {
         fieldsTable.update();
-        pivotRotationalHelper = new PrimitiveRotationalSensorHelper(io.speed.getAsDouble(), INITIAL_OFFSET);
+        pivotRotationalHelper = new PrimitiveRotationalSensorHelper(io.angle.getAsDouble(), INITIAL_OFFSET);
         pivotRotationalHelper.enableContinousWrap(UPPER_BOUND, FULL_ROTATION);
+        TuneablesManager.add("Pivot", (Tuneable) this);
     }
 
     @Override
@@ -55,15 +44,18 @@ public class Pivot extends SubsystemBase {
         pivotRotationalHelper.update(io.angle.getAsDouble());
     }
 
-    public void setPivotSpeed(double speed) {
-        fieldsTable.recordOutput("Desired Speed", speed);
-        speed = MathUtil.clamp(speed, -1, 1);
-        fieldsTable.recordOutput("Real Speed", io.speed.getAsDouble());
-        io.setSpeed(speed);
+    public void setPivotVoltage(double voltage) {
+        fieldsTable.recordOutput("Desired Voltage", voltage);
+        voltage = MathUtil.clamp(voltage, 0, PIVOT_VOLTAGE_LIMIT);
+        //I checked the offseason code and there seems to be a problem there as well with the output being a current
+        fieldsTable.recordOutput("Real Current", io.current.getAsDouble());
+        io.setVoltage(voltage);
     }
 
     public void stop() {
-        setPivotSpeed(0);
+        fieldsTable.recordOutput("Demand Voltage", 0);
+        fieldsTable.recordOutput("Real voltage", 0);
+        io.setVoltage(0);
     }
 
     public double getAngleDegrees() {
@@ -75,11 +67,19 @@ public class Pivot extends SubsystemBase {
         if(usePID) {
             speed += pivotPidController.calculate(getAngleDegrees(), desiredAngleDegrees);
         }
-
         return speed;
+    }
+
+    public TrapezoidProfile.State calculateTrapezoidProfile(double time, TrapezoidProfile.State initialState,
+            TrapezoidProfile.State goalState) {
+        return pivotTrapezoid.calculate(time, initialState, goalState);
     }
 
     public boolean isAtAngle(double desiredAngleDegrees) {
         return Math.abs(desiredAngleDegrees - getAngleDegrees()) < MAX_ANGLE_DIFFERENCE;
+    }
+
+    public void initTuneable(TuneableBuilder builder) {
+        builder.addChild("Pivot Subsystem", (Sendable) this);
     }
 }
