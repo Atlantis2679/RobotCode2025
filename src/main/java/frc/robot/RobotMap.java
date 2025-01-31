@@ -17,6 +17,10 @@ public class RobotMap {
     }
        
     public static class CANBUS {
+        public static final int GRIPPER_LEFT_OUTTAKE_MOTOR_ID = 0;
+        public static final int GRIPPER_RIGHT_OUTTAKE_MOTOR_ID = 0;
+        public static final int GRIPPER_IBACK_MOTOR_ID = 0;
+
         public class ModuleFL {
             public final static int DRIVE_MOTOR_ID = 20;
             public final static int TURN_MOTOR_ID = 21;
