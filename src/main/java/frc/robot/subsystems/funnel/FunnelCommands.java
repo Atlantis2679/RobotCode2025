@@ -14,13 +14,13 @@ public class FunnelCommands {
     }
 
     public Command loadCoral() {
-        return funnel.run(() -> funnel.setMotorPercentageSpeed(MOTOR_PERCENTAGE_SPEED_LOADING))
+        return funnel.run(() -> funnel.setMotorPercentageSpeed(MOTORS_PERCENTAGE_SPEED_LOADING))
             .until(funnel::getIsCoralIn).finallyDo(funnel::stop).withName("loadCoral");
     }
 
     public Command passCoral() {
-        return funnel.run(() -> funnel.setMotorPercentageSpeed(MOTOR_PERCENTAGE_SPEED_LOADING))
-                .until(funnel::getIsCoralIn).andThen(funnel.run(() -> funnel.setMotorPercentageSpeed(MOTOR_PERCENTAGE_SPEED_PASSING))
+        return funnel.run(() -> funnel.setMotorPercentageSpeed(MOTORS_PERCENTAGE_SPEED_LOADING))
+                .until(funnel::getIsCoralIn).andThen(funnel.run(() -> funnel.setMotorPercentageSpeed(MOTORS_PERCENTAGE_SPEED_PASSING))
                 .until(() -> !funnel.getIsCoralIn())).finallyDo(funnel::stop).withName("passCoral");
     }
 

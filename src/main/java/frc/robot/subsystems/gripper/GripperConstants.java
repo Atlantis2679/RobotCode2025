@@ -1,6 +1,8 @@
 package frc.robot.subsystems.gripper;
 
 public class GripperConstants {
+    public static final int MOTORS_CURRENT_LIMIT = 0;
+
     /* Gripper: */
     public static final double MOTORS_MAX_VOLTAGE = 0;
     public static final double DEBOUNCER_SECONDS = 0;

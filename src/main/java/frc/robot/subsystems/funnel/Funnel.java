@@ -22,7 +22,7 @@ public class Funnel extends SubsystemBase {
     }
 
     public void setMotorVoltage(double voltageDemand) {
-        io.setVoltage(MathUtil.clamp(voltageDemand, -MOTOR_MAX_VOLTAGE, MOTOR_MAX_VOLTAGE));
+        io.setVoltage(MathUtil.clamp(voltageDemand, -MOTORS_MAX_VOLTAGE, MOTORS_MAX_VOLTAGE));
     }
 
     public void setMotorPercentageSpeed(double percentageSpeed)  {
