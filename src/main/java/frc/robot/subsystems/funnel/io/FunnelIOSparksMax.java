@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import frc.lib.logfields.LogFieldsTable;
 
 import static frc.robot.RobotMap.*;
+import static frc.robot.RobotMap.CANBUS.*;
 
 public class FunnelIOSparksMax extends FunnelIO {
     private SparkMax funnelLeftMotor = new SparkMax(FUNNEL_LEFT_MOTOR_ID, MotorType.kBrushless);
@@ -26,7 +27,7 @@ public class FunnelIOSparksMax extends FunnelIO {
     @Override
     public void setPercentageSpeed(double percentageSpeed) {
         funnelLeftMotor.set(percentageSpeed);
-        funnelRightMotor.setVoltage(voltageDemand);
+        funnelRightMotor.set(percentageSpeed);
     }
 
     @Override
