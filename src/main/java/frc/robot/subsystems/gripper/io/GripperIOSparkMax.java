@@ -11,7 +11,7 @@ import static frc.robot.RobotMap.*;
 public class GripperIOSparkMax extends GripperIO {
     private final SparkMax rightOuttakeMotor = new SparkMax(CANBUS.GRIPPER_RIGHT_OUTTAKE_MOTOR_ID, MotorType.kBrushless);
     private final SparkMax leftOuttakeMotor = new SparkMax(CANBUS.GRIPPER_LEFT_OUTTAKE_MOTOR_ID, MotorType.kBrushless);
-    private final SparkMax backMotor = new SparkMax(CANBUS.GRIPPER_IBACK_MOTOR_ID, MotorType.kBrushless);
+    private final SparkMax backMotor = new SparkMax(CANBUS.GRIPPER_BACK_MOTOR_ID, MotorType.kBrushless);
 
     private final DigitalInput beamBrake = new DigitalInput(GRIPPER_BEAM_BRAKE_ID); 
 
