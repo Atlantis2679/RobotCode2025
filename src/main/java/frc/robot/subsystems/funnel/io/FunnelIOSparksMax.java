@@ -9,7 +9,8 @@ import frc.lib.logfields.LogFieldsTable;
 import static frc.robot.RobotMap.*;
 
 public class FunnelIOSparksMax extends FunnelIO {
-    private SparkMax funnelMotor = new SparkMax(FUNNEL_MOTOR_ID, MotorType.kBrushless);
+    private SparkMax funnelLeftMotor = new SparkMax(FUNNEL_LEFT_MOTOR_ID, MotorType.kBrushless);
+    private SparkMax funnelRightMotor = new SparkMax(FUNNEL_RIGHT_MOTOR_ID, MotorType.kBrushless);
     private DigitalInput beamBrake = new DigitalInput(FUNNEL_BEAM_BRAKE_ID);
 
     public FunnelIOSparksMax(LogFieldsTable fieldsTable) {
@@ -18,12 +19,14 @@ public class FunnelIOSparksMax extends FunnelIO {
 
     @Override
     public void setVoltage(double voltageDemand) {
-        funnelMotor.setVoltage(voltageDemand);
+        funnelLeftMotor.setVoltage(voltageDemand);
+        funnelRightMotor.setVoltage(voltageDemand);
     }
 
     @Override
     public void setPercentageSpeed(double percentageSpeed) {
-        funnelMotor.set(percentageSpeed);
+        funnelLeftMotor.set(percentageSpeed);
+        funnelRightMotor.setVoltage(voltageDemand);
     }
 
     @Override
