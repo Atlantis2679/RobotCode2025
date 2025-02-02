@@ -61,6 +61,10 @@ public class Pivot extends SubsystemBase implements Tuneable {
     public double getAngleDegrees() {
         return pivotRotationalHelper.getAngle();
     }
+    
+    public double getVelocity() {
+        return pivotRotationalHelper.getVelocity();
+    }
 
     public double calculateFeedForward(double desiredAngleDegrees, double desiredSpeed, boolean usePID) {
         double speed = pivotFeedforward.calculate(Math.toRadians(desiredAngleDegrees), desiredSpeed);
@@ -76,10 +80,14 @@ public class Pivot extends SubsystemBase implements Tuneable {
     }
 
     public boolean isAtAngle(double desiredAngleDegrees) {
-        return Math.abs(desiredAngleDegrees - getAngleDegrees()) < MAX_ANGLE_DIFFERENCE;
+        return Math.abs(desiredAngleDegrees - getAngleDegrees()) < (MAX_ANGLE_DEGREE - MIN_ANGLE_DEGREE);
     }
 
     public void initTuneable(TuneableBuilder builder) {
         builder.addChild("Pivot Subsystem", (Sendable) this);
+    }
+
+    public void resetPID() {
+
     }
 }
