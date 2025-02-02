@@ -7,6 +7,8 @@ import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.util.sendable.Sendable;
+import edu.wpi.first.wpilibj.util.Color;
+import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.logfields.LogFieldsTable;
 import frc.lib.tuneables.Tuneable;
@@ -22,6 +24,12 @@ public class Pivot extends SubsystemBase implements Tuneable {
     private final LogFieldsTable fieldsTable = new LogFieldsTable(getName());
 
     private final PivotIO io = Robot.isSimulation() ? new PivotIOSim(fieldsTable) : new PivotIOSparxmax(fieldsTable);
+    
+    private final PivotVisualizer pivotVisualizer = new PivotVisualizer(fieldsTable, "Real Mech2d",
+            new Color8Bit(Color.kPurple));
+    private final PivotVisualizer desiredPivotVisualizer = new PivotVisualizer(fieldsTable, "Desired Visualizer",
+            new Color8Bit(Color.kYellow));
+
     private final PrimitiveRotationalSensorHelper pivotRotationalHelper;
 
     private final TrapezoidProfile pivotTrapezoid = new TrapezoidProfile(new TrapezoidProfile.Constraints(MAX_SPEED, MIN_SPEED));
@@ -42,6 +50,7 @@ public class Pivot extends SubsystemBase implements Tuneable {
     public void periodic() {
         fieldsTable.update();
         pivotRotationalHelper.update(io.angle.getAsDouble());
+        pivotVisualizer.update(getAngleDegrees());
     }
 
     public void setPivotVoltage(double voltage) {
@@ -67,6 +76,7 @@ public class Pivot extends SubsystemBase implements Tuneable {
     }
 
     public double calculateFeedForward(double desiredAngleDegrees, double desiredSpeed, boolean usePID) {
+        desiredPivotVisualizer.update(getAngleDegrees());
         double speed = pivotFeedforward.calculate(Math.toRadians(desiredAngleDegrees), desiredSpeed);
         if(usePID) {
             speed += pivotPidController.calculate(getAngleDegrees(), desiredAngleDegrees);
