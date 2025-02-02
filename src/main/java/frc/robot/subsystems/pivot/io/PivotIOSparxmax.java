@@ -19,10 +19,10 @@ public class PivotIOSparxmax extends PivotIO{
             config.smartCurrentLimit(PIVOT_VOLTAGE_LIMIT);
         }
 
-        //inputs
+        //outputs
         @Override
-        protected double getSpeed() {
-            return pivotMotor.get();
+        protected double getCurrent() {
+            return pivotMotor.getOutputCurrent();
         }
 
         @Override
@@ -30,10 +30,10 @@ public class PivotIOSparxmax extends PivotIO{
             return encoder.get();
         }
 
-        //outputs
+        //inputs
         @Override
-        public void setSpeed(double speed) {
-            pivotMotor.set(speed);
+        public void setVoltage(double voltage) {
+            pivotMotor.set(voltage);
         }
 
 }
