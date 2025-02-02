@@ -15,8 +15,6 @@ import frc.robot.utils.PrimitiveRotationalSensorHelper;
 
 import static frc.robot.subsystems.swerve.SwerveContants.*;
 
-import com.ctre.phoenix6.StatusCode;
-
 public class SwerveModule implements Tuneable {
     private final int moduleNumber;
 

@@ -5,8 +5,6 @@ import java.util.List;
 import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
-import org.littletonrobotics.junction.Logger;
-
 import com.ctre.phoenix6.StatusCode;
 
 import edu.wpi.first.wpilibj.Alert;
@@ -118,11 +116,8 @@ public class NetworkAlertsManager {
     }
 
     public static void update() {
-        int count = 0;
         for(NetworkAlert networkAlert : alerts) {
             networkAlert.update();
-            count++;
         }
-        Logger.recordOutput("running times", count);
     }
 }
