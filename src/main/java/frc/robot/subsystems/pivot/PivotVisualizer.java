@@ -25,7 +25,7 @@ public class PivotVisualizer {
     }
 
     public void update(double angleDegrees) {
-        pivotLigament.setAngle(angleDegrees - 90);
+        pivotLigament.setAngle(angleDegrees);
         fieldsTable.recordOutput(name, pivotMech.toString());
     }
 }

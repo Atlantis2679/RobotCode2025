@@ -88,6 +88,6 @@ public class Pivot extends SubsystemBase implements Tuneable {
     }
 
     public void resetPID() {
-
+        pivotPidController.reset();
     }
 }

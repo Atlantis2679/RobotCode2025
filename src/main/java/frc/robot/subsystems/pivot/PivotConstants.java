@@ -25,6 +25,7 @@ public class PivotConstants {
     public static final int MIN_SPEED = -1;
     public static final double MAX_ANGLE_DEGREE = 0;
     public static final double MIN_ANGLE_DEGREE = 0;
+    public static final double MANUAL_SPEED_MULTIPLIER = 0;
 
     // Sim
     public static final double PIVOT_JKG_METERS_SQUARED = 0;
