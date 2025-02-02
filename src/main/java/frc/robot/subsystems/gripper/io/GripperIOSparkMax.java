@@ -17,6 +17,7 @@ public class GripperIOSparkMax extends GripperIO {
 
     public GripperIOSparkMax(LogFieldsTable fieldsTable) {
         super(fieldsTable);
+        backMotor.getLastError();
     }
 
     // Inputs:
@@ -41,5 +42,20 @@ public class GripperIOSparkMax extends GripperIO {
     @Override
     public void setBackMotorVoltage(double voltage) {
         backMotor.setVoltage(voltage);
+    }
+
+    @Override
+    protected int getRightOuttakeMotorStatusValue() {
+        return backMotor.getLastError().value;
+    }
+
+    @Override
+    protected int getLeftOuttakeMotorStatusValue() {
+        return leftOuttakeMotor.getLastError().value;
+    }
+
+    @Override
+    protected int getBackMotorStatusValue() {
+        return backMotor.getLastError().value;
     }
 }

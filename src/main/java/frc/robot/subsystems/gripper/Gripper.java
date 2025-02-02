@@ -5,6 +5,7 @@ import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.logfields.LogFieldsTable;
 import frc.robot.Robot;
+import frc.robot.subsystems.NetworkAlertsManager;
 import frc.robot.subsystems.gripper.io.GripperIO;
 import frc.robot.subsystems.gripper.io.GripperIOSim;
 import frc.robot.subsystems.gripper.io.GripperIOSparkMax;
@@ -20,6 +21,8 @@ public class Gripper extends SubsystemBase {
         new GripperIOSim(fieldsTable);
 
     public Gripper() {
+        NetworkAlertsManager.addWarningAlert(() -> NetworkAlertsManager.getREVLibErrorMessage((int)io.leftOuttakeMotorStatusValue.getAsLong()),
+            () -> io.leftOuttakeMotorStatusValue.getAsLong() != 0);
     }
 
     public boolean getIsCoralIn() {

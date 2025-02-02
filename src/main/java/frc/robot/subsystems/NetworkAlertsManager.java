@@ -120,4 +120,37 @@ public class NetworkAlertsManager {
             networkAlert.update();
         }
     }
+
+    public static String getREVLibErrorMessage(int value) {
+        switch (value) {
+            case 0: return "OK";
+            case 1: return "Error";
+            case 2: return "Timeout";
+            case 3: return "Not Implemented";
+            case 4: return "HAL Error";
+            case 5: return "Cant Find Firmware";
+            case 6: return "Firmware Too Old";
+            case 7: return "Firmware Too New";
+            case 8: return "Param Invalid ID";
+            case 9: return "Param Mismatch Type";
+            case 10: return "Param Access Mode";
+            case 11: return "Param Invalid";
+            case 12: return "Param Not Implemented Deprecated";
+            case 13: return "Follow Config Mismatch";
+            case 14: return "Invalid";
+            case 15: return "Setpoint Out Of Range";
+            case 16: return "Unknown";
+            case 17: return "CAN Disconnected";
+            case 18: return "Duplicate CAN Id";
+            case 19: return "Invalid CAN Id";
+            case 20: return "Spark Max Data Port Already Configured Differently";
+            case 21: return "Spark Flex Brushed Without Dock";
+            case 22: return "Invalid Brushless Encoder Configuration";
+            case 23: return "Feedback Sensor Incompatible With Data Port Config";
+            case 24: return "Param Invalid Channel";
+            case 25: return "Param Invalid Value";
+            case 26: return "Cannot Persist Parameters While Enabled";
+            default: return "Invalid";
+        }
+    }
 }
