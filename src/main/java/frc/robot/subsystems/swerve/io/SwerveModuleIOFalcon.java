@@ -8,6 +8,7 @@ import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.hardware.CANcoder;
+import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.Slot0Configs;
 
@@ -171,5 +172,20 @@ public class SwerveModuleIOFalcon extends SwerveModuleIO {
     @Override
     protected double getTurnStatorCurrent() {
         return turnMotor.getStatorCurrent().getValueAsDouble();
+    }
+
+    @Override
+    protected StatusCode getDriveStatusCode() {
+        return driveMotor.setPosition(driveMotor.getPosition().getValueAsDouble());
+    }
+
+    @Override
+    protected StatusCode getTurnStatusCode() {
+        return turnMotor.setPosition(driveMotor.getPosition().getValueAsDouble());
+    }
+
+    @Override
+    protected StatusCode getCanCoderStatusCode() {
+        return canCoder.setPosition(driveMotor.getPosition().getValueAsDouble());
     }
 }

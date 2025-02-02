@@ -108,15 +108,17 @@ public class NetworkAlertsManager {
     public static BooleanSupplier addErrorAlert(String groupName, Supplier<String> message, BooleanSupplier isActive) {
         return NetworkAlertsManager.addAlert(groupName, message, AlertType.kError, isActive);
     }
-    public static StatusCode addStatusCodeAlert(String message, StatusCode statusCode) {
-        NetworkAlertsManager.addWarningAlert(() -> message + statusCode.getDescription(), statusCode::isWarning);
-        NetworkAlertsManager.addErrorAlert(() -> message + statusCode.getDescription(), statusCode::isError);
+    public static Supplier<StatusCode> addStatusCodeAlert(String message, Supplier<StatusCode> statusCode) {
+        NetworkAlertsManager.addWarningAlert(() -> message + statusCode.get().getDescription(), () -> statusCode.get().isWarning());
+        NetworkAlertsManager.addErrorAlert(() -> message + statusCode.get().getDescription(), () -> statusCode.get().isError());
         return statusCode;
     }
 
-    public static StatusCode addStatusCodeAlert(String groupName, String message, StatusCode statusCode) {
-        NetworkAlertsManager.addWarningAlert(groupName, () -> message + statusCode.getDescription(), statusCode::isWarning);
-        NetworkAlertsManager.addErrorAlert(groupName, () -> message + statusCode.getDescription(), statusCode::isError);
+    public static Supplier<StatusCode> addStatusCodeAlert(String groupName, String message, Supplier<StatusCode> statusCode) {
+        NetworkAlertsManager.addWarningAlert(groupName, () -> message + statusCode.get().getDescription(),
+            () -> statusCode.get().isWarning());
+        NetworkAlertsManager.addErrorAlert(groupName, () -> message + statusCode.get().getDescription(), 
+            () -> statusCode.get().isError());
         return statusCode;
     }
 
