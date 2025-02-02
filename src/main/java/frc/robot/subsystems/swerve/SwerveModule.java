@@ -43,8 +43,12 @@ public class SwerveModule implements Tuneable {
         fieldsTable.update();
 
         NetworkAlertsManager.addStatusCodeAlert(positionName + " Module drive: ", io.driveStatusCode);
-        NetworkAlertsManager.addStatusCodeAlert(positionName + " Module drive: ", io.turnStatusCode);
-        NetworkAlertsManager.addStatusCodeAlert(positionName + " Module drive: ", io.canCoderStatusCode);
+        NetworkAlertsManager.addStatusCodeAlert(positionName + " Module turn: ", io.turnStatusCode);
+        NetworkAlertsManager.addStatusCodeAlert(positionName + " Module canCoder: ", io.canCoderStatusCode);
+
+        NetworkAlertsManager.addStatusCodeAlert(positionName + " Module drive: ", io.driveConfigurationStatusCode);
+        NetworkAlertsManager.addStatusCodeAlert(positionName + " Module turn: ", io.turnConfigurationStatusCode);
+        NetworkAlertsManager.addStatusCodeAlert(positionName + " Module canCoder: ", io.canCoderConfigurationStatusCode);
 
         absoluteAngleHelperDegrees = new PrimitiveRotationalSensorHelper(
                 io.absoluteTurnAngleRotations.getAsDouble() * 360,

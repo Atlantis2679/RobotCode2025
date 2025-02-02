@@ -21,6 +21,14 @@ public class SwerveModuleIOFalcon extends SwerveModuleIO {
     private final TalonFX turnMotor;
     private final CANcoder canCoder;
 
+    private final StatusCode driveConfigurationStatusCode;
+    private final StatusCode turnConfigurationStatusCode;
+    private final StatusCode canCoderConfigurationStatusCode;
+
+    private StatusCode driveStatusCode = StatusCode.valueOf(0);
+    private StatusCode turnStatusCode = StatusCode.valueOf(0);
+    private StatusCode canCoderStatusCode = StatusCode.valueOf(0);
+
     private final PositionVoltage turnPositionVoltageControl = new PositionVoltage(0).withSlot(0);
     private final VoltageOut driveVoltageControl = new VoltageOut(0);
     private final DutyCycleOut drivePrecentageControl = new DutyCycleOut(0);
@@ -50,7 +58,7 @@ public class SwerveModuleIOFalcon extends SwerveModuleIO {
 
         driveMotor.getVelocity().setUpdateFrequency(100);
         driveMotor.getPosition().setUpdateFrequency(100);
-        driveMotor.getConfigurator().apply(driveMotorConfiguration);
+        driveConfigurationStatusCode = driveMotor.getConfigurator().apply(driveMotorConfiguration);
 
         // turn motor configs
         TalonFXConfiguration turnMotorConfiguration = new TalonFXConfiguration();
@@ -68,11 +76,11 @@ public class SwerveModuleIOFalcon extends SwerveModuleIO {
         turnSlotConfigs.kD = MODULE_TURN_KD;
 
         turnMotor.getPosition().setUpdateFrequency(100);
-        turnMotor.getConfigurator().apply(turnMotorConfiguration);
+        turnConfigurationStatusCode = turnMotor.getConfigurator().apply(turnMotorConfiguration);
 
         // cancoder configs
         CANcoderConfiguration canCoderConfiguration = new CANcoderConfiguration();
-        canCoder.getConfigurator().apply(canCoderConfiguration);
+        canCoderConfigurationStatusCode = canCoder.getConfigurator().apply(canCoderConfiguration);
     }
 
     @Override
@@ -112,28 +120,28 @@ public class SwerveModuleIOFalcon extends SwerveModuleIO {
 
     @Override
     public void setDriveSpeedPrecentage(double demand) {
-        driveMotor.setControl(drivePrecentageControl.withOutput(demand));
+        driveStatusCode = driveMotor.setControl(drivePrecentageControl.withOutput(demand));
     }
 
     @Override
     public void setDriveSpeedVoltage(double demandVoltage) {
-        driveMotor.setControl(driveVoltageControl.withOutput(demandVoltage));
+        driveStatusCode = driveMotor.setControl(driveVoltageControl.withOutput(demandVoltage));
     }
 
     @Override
     public void setTurnAngleRotations(double angleRotations) {
-        turnMotor.setControl(turnPositionVoltageControl.withPosition(angleRotations));
+        turnStatusCode = turnMotor.setControl(turnPositionVoltageControl.withPosition(angleRotations));
     }
 
     @Override
     public void resetIntegratedTurnAngleRotations(double angleRotations) {
-        turnMotor.setPosition(angleRotations);
+        turnStatusCode = turnMotor.setPosition(angleRotations);
     }
 
     @Override
     public void coastAll() {
-        driveMotor.setControl(new CoastOut());
-        turnMotor.setControl(new CoastOut());
+        driveStatusCode = driveMotor.setControl(new CoastOut());
+        turnStatusCode = turnMotor.setControl(new CoastOut());
     }
 
     @Override
@@ -176,16 +184,31 @@ public class SwerveModuleIOFalcon extends SwerveModuleIO {
 
     @Override
     protected StatusCode getDriveStatusCode() {
-        return driveMotor.setPosition(driveMotor.getPosition().getValueAsDouble());
+        return driveStatusCode;
     }
 
     @Override
     protected StatusCode getTurnStatusCode() {
-        return turnMotor.setPosition(driveMotor.getPosition().getValueAsDouble());
+        return turnStatusCode;
     }
 
     @Override
     protected StatusCode getCanCoderStatusCode() {
-        return canCoder.setPosition(driveMotor.getPosition().getValueAsDouble());
+        return canCoderStatusCode;
+    }
+
+    @Override
+    protected StatusCode getDriveConfigurationStatusCode() {
+        return driveConfigurationStatusCode;
+    }
+
+    @Override
+    protected StatusCode getTurnConfigurationStatusCode() {
+        return turnConfigurationStatusCode;
+    }
+
+    @Override
+    protected StatusCode getCanCoderConfigurationStatusCode() {
+        return canCoderConfigurationStatusCode;
     }
 }

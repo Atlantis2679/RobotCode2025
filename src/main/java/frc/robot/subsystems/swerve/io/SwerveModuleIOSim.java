@@ -177,4 +177,21 @@ public class SwerveModuleIOSim extends SwerveModuleIO {
     protected StatusCode getCanCoderStatusCode() {
         return StatusCode.valueOf(0);
     }
+
+    @Override
+    protected StatusCode getDriveConfigurationStatusCode() {
+        return StatusCode.valueOf(0);
+    }
+
+    @Override
+    protected StatusCode getTurnConfigurationStatusCode() {
+        return StatusCode.valueOf(0);
+
+    }
+
+    @Override
+    protected StatusCode getCanCoderConfigurationStatusCode() {
+        return StatusCode.valueOf(0);
+
+    }
 }

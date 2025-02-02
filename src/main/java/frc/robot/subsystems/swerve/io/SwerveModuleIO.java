@@ -27,6 +27,9 @@ public abstract class SwerveModuleIO extends IOBase {
         public final Supplier<StatusCode> driveStatusCode = fields.addStatusCode("driveStatusCode", this::getDriveStatusCode);
         public final Supplier<StatusCode> turnStatusCode = fields.addStatusCode("turnStatusCode", this::getTurnStatusCode);
         public final Supplier<StatusCode> canCoderStatusCode = fields.addStatusCode("canCoderStatusCode", this::getCanCoderStatusCode);
+        public final Supplier<StatusCode> driveConfigurationStatusCode = fields.addStatusCode("driveConfigurationStatusCode", this::getDriveConfigurationStatusCode);
+        public final Supplier<StatusCode> turnConfigurationStatusCode = fields.addStatusCode("turnConfigurationStatusCode", this::getTurnConfigurationStatusCode);
+        public final Supplier<StatusCode> canCoderConfigurationStatusCode = fields.addStatusCode("canCoderConfigurationStatusCode", this::getCanCoderConfigurationStatusCode);
         public final DoubleSupplier TurnKP = fields.addDouble("Turn kP", this::getTurnKP);
         public final DoubleSupplier TurnKI = fields.addDouble("Turn kI", this::getTurnKI);
         public final DoubleSupplier TurnKD = fields.addDouble("Turn kD", this::getTurnKD);
@@ -58,6 +61,12 @@ public abstract class SwerveModuleIO extends IOBase {
         protected abstract StatusCode getTurnStatusCode();
 
         protected abstract StatusCode getCanCoderStatusCode();
+
+        protected abstract StatusCode getDriveConfigurationStatusCode();
+
+        protected abstract StatusCode getTurnConfigurationStatusCode();
+
+        protected abstract StatusCode getCanCoderConfigurationStatusCode();
 
         protected abstract double getTurnKP();
 
