@@ -7,22 +7,33 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.lib.tuneables.TuneablesManager;
 import frc.lib.tuneables.extensions.TuneableCommand;
+// import frc.robot.subsystems.funnel.Funnel;
+// import frc.robot.subsystems.funnel.FunnelCommands;
+import frc.robot.subsystems.gripper.Gripper;
+import frc.robot.subsystems.gripper.GripperCommands;
 import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.subsystems.swerve.SwerveCommands;
 import frc.robot.utils.NaturalXboxController;
 
 public class RobotContainer {
     private final Swerve swerve = new Swerve();
+    private final Gripper gripper = new Gripper();
+    // private final Funnel funnel = new Funnel();
 
     private final NaturalXboxController driverController = new NaturalXboxController(
             RobotMap.Controllers.DRIVER_PORT);
+    private final NaturalXboxController operatorController = new NaturalXboxController(
+                RobotMap.Controllers.OPERATOR_PORT);    
 
     private final SwerveCommands swerveCommands = new SwerveCommands(swerve);
+    private final GripperCommands gripperCommands = new GripperCommands(gripper);
+    // private final FunnelCommands funnelCommands = new FunnelCommands(funnel);
 
     public RobotContainer() {
         new Trigger(DriverStation::isDisabled).onTrue(swerveCommands.stop().repeatedly().withTimeout(0.5));
 
         configureDriverBindings();
+        configureOperatorBindings();
     }
 
     private void configureDriverBindings() {
@@ -44,6 +55,12 @@ public class RobotContainer {
                         driverController::getLeftY,
                         driverController::getRightY).fullTuneable());
     }
+
+    private void configureOperatorBindings() {
+        gripper.setDefaultCommand(gripperCommands.manualController(() -> -operatorController.getLeftY(), operatorController::getLeftY));
+        // funnelCommands.manualController(operatorController::getRightY);
+    }
+    
 
     public void setSubsystemsInTestModeState() {
         swerve.enableCoast();

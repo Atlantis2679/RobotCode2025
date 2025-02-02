@@ -16,16 +16,16 @@ public class RobotMap {
     public static final int GRIPPER_BEAM_BRAKE_ID = 0;
 
     public static class Controllers {
-        public static final int DRIVER_PORT = 0;
-        public static final int OPERATOR_PORT = 1;
+        public static final int DRIVER_PORT = 1;
+        public static final int OPERATOR_PORT = 0;
     }
        
     public static class CANBUS {
-        public static final int FUNNEL_LEFT_MOTOR_ID = 0;
-        public static final int FUNNEL_RIGHT_MOTOR_ID = 0;
+        public static final int FUNNEL_LEFT_MOTOR_ID = 16;
+        public static final int FUNNEL_RIGHT_MOTOR_ID = 15;
 
-        public static final int GRIPPER_LEFT_MOTOR_ID = 0;
-        public static final int GRIPPER_RIGHT_MOTOR_ID = 0;
+        public static final int GRIPPER_LEFT_MOTOR_ID = 11;
+        public static final int GRIPPER_RIGHT_MOTOR_ID = 7;
 
         public class ModuleFL {
             public final static int DRIVE_MOTOR_ID = 20;
