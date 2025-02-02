@@ -271,7 +271,8 @@ public class LogFieldsTable implements LoggableInputs {
     }
 
     public Supplier<StatusCode> addStatusCode(String name, Supplier<StatusCode> valueSupplier) {
-        return () -> StatusCode.valueOf(((int)(addInteger(name, () -> valueSupplier.get().value)).getAsLong()));
+        LongSupplier value = addInteger(name, () -> valueSupplier.get().value);
+        return () -> StatusCode.valueOf(((int)(value).getAsLong()));
     }
 
     public <T extends WPISerializable> Supplier<T> addObject(

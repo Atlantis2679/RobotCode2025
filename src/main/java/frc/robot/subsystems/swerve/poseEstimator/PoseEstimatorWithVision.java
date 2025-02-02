@@ -46,7 +46,7 @@ public class PoseEstimatorWithVision {
         this.fieldsTable = fieldsTable;
 
         visionCameras.forEach((cameraName, visionIO) -> {
-            NetworkAlertsManager.addErrorAlert(cameraName + " Is Dissconnected!", () -> !visionIO.isCameraConnected.getAsBoolean());
+            NetworkAlertsManager.addErrorAlert(cameraName + " Is Disconnected!", () -> !visionIO.isCameraConnected.getAsBoolean());
         });
 
         poseEstimator = new SwerveDrivePoseEstimator(

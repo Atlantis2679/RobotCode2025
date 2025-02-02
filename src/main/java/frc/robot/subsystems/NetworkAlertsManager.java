@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
+import org.littletonrobotics.junction.Logger;
+
 import com.ctre.phoenix6.StatusCode;
 
 import edu.wpi.first.wpilibj.Alert;
@@ -28,16 +30,9 @@ public class NetworkAlertsManager {
             this.isActive = isActive;
         }
 
-        private String getMessage() {
-            return messageSupplier.get();
-        }
-
-        private Alert getAlert() {
-            return alert;
-        }
-
-        private boolean getIsActive() {
-            return isActive.getAsBoolean();
+        private void update() {
+            alert.setText(messageSupplier.get());
+            alert.set(isActive.getAsBoolean());
         }
     }
 
@@ -123,9 +118,11 @@ public class NetworkAlertsManager {
     }
 
     public static void update() {
+        int count = 0;
         for(NetworkAlert networkAlert : alerts) {
-            networkAlert.getAlert().setText(networkAlert.getMessage());
-            networkAlert.getAlert().set(networkAlert.getIsActive());
+            networkAlert.update();
+            count++;
         }
+        Logger.recordOutput("running times", count);
     }
 }
