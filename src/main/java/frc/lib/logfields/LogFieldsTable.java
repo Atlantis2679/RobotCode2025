@@ -11,6 +11,8 @@ import org.littletonrobotics.junction.LogTable;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.inputs.LoggableInputs;
 
+import com.ctre.phoenix6.StatusCode;
+
 import edu.wpi.first.util.WPISerializable;
 import edu.wpi.first.util.function.FloatSupplier;
 import edu.wpi.first.util.struct.StructSerializable;
@@ -266,6 +268,11 @@ public class LogFieldsTable implements LoggableInputs {
 
     public Supplier<String[][]> addStringMatrix(String name, Supplier<String[][]> valueSupplier) {
         return addStringMatrix(name, valueSupplier, new String[0][0]);
+    }
+
+    public Supplier<StatusCode> addStatusCode(String name, Supplier<StatusCode> valueSupplier) {
+        LongSupplier value = addInteger(name, () -> valueSupplier.get().value);
+        return () -> StatusCode.valueOf(((int)(value).getAsLong()));
     }
 
     public <T extends WPISerializable> Supplier<T> addObject(

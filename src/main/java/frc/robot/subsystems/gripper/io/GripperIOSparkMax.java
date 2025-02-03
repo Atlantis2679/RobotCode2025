@@ -5,6 +5,7 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import frc.lib.logfields.LogFieldsTable;
+import frc.robot.RobotMap.CANBUS;
 
 import static frc.robot.RobotMap.*;
 
@@ -41,5 +42,20 @@ public class GripperIOSparkMax extends GripperIO {
     @Override
     public void setBackMotorVoltage(double voltage) {
         backMotor.setVoltage(voltage);
+    }
+
+    @Override
+    protected int getRightOuttakeMotorStatusValue() {
+        return backMotor.getLastError().value;
+    }
+
+    @Override
+    protected int getLeftOuttakeMotorStatusValue() {
+        return leftOuttakeMotor.getLastError().value;
+    }
+
+    @Override
+    protected int getBackMotorStatusValue() {
+        return backMotor.getLastError().value;
     }
 }

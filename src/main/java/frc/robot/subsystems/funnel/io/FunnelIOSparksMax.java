@@ -10,7 +10,7 @@ import static frc.robot.RobotMap.*;
 
 public class FunnelIOSparksMax extends FunnelIO {
     private SparkMax funnelMotor = new SparkMax(FUNNEL_MOTOR_ID, MotorType.kBrushless);
-    private DigitalInput beamBrake = new DigitalInput(FUNNEL_BEAM_BRAKE_ID);
+    private DigitalInput beamBrake = new DigitalInput(FUNNEL_BEAM_BRAKE_ID);    
 
     public FunnelIOSparksMax(LogFieldsTable fieldsTable) {
         super(fieldsTable);
@@ -31,4 +31,8 @@ public class FunnelIOSparksMax extends FunnelIO {
         return beamBrake.get();
     }
 
+    @Override
+    protected int getMotorStatusValue() {
+        return funnelMotor.getLastError().value;
+    }
 }

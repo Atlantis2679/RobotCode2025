@@ -54,4 +54,19 @@ public class GripperIOSim extends GripperIO {
     public void setBackMotorVoltage(double voltage) {
         backMotor.setInputVoltage(voltage);
     }
+
+    @Override
+    protected int getRightOuttakeMotorStatusValue() {
+        return 0;
+    }
+
+    @Override
+    protected int getLeftOuttakeMotorStatusValue() {
+        return 0;
+    }
+
+    @Override
+    protected int getBackMotorStatusValue() {
+        return 0;
+    }
 }
