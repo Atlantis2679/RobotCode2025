@@ -20,4 +20,9 @@ public class FunnelIOSim extends FunnelIO {
     protected boolean getIsCoralIn() {
         return false;
     }
+
+    @Override
+    protected int getMotorStatusValue() {
+        return 0;
+    }
 }

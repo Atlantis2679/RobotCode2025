@@ -5,6 +5,7 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import frc.lib.logfields.LogFieldsTable;
+import frc.robot.RobotMap.CANBUS;
 
 import static frc.robot.RobotMap.*;
 
@@ -17,7 +18,6 @@ public class GripperIOSparkMax extends GripperIO {
 
     public GripperIOSparkMax(LogFieldsTable fieldsTable) {
         super(fieldsTable);
-        backMotor.getLastError();
     }
 
     // Inputs:

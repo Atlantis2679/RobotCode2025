@@ -7,12 +7,14 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.lib.tuneables.TuneablesManager;
 import frc.lib.tuneables.extensions.TuneableCommand;
+import frc.robot.subsystems.funnel.Funnel;
 import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.subsystems.swerve.SwerveCommands;
 import frc.robot.utils.NaturalXboxController;
 
 public class RobotContainer {
     private final Swerve swerve = new Swerve();
+    private final Funnel funnel = new Funnel();
 
     private final NaturalXboxController driverController = new NaturalXboxController(
             RobotMap.Controllers.DRIVER_PORT);

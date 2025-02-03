@@ -6,6 +6,7 @@ import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.logfields.LogFieldsTable;
 import frc.robot.Robot;
+import frc.robot.subsystems.NetworkAlertsManager;
 import frc.robot.subsystems.funnel.io.FunnelIO;
 import frc.robot.subsystems.funnel.io.FunnelIOSim;
 import frc.robot.subsystems.funnel.io.FunnelIOSparksMax;
@@ -19,6 +20,8 @@ public class Funnel extends SubsystemBase {
 
     public Funnel() {
         io = Robot.isReal() ? new FunnelIOSparksMax(this.fieldsTable) : new FunnelIOSim(this.fieldsTable);
+        NetworkAlertsManager.addWarningAlert(() -> "Funnel: Motor: " + NetworkAlertsManager.getREVLibErrorMessage(
+            (int)io.motorStatusValue.getAsLong()), () -> io.motorStatusValue.getAsLong() != 0);
     }
 
     public void setMotorVoltage(double voltageDemand) {

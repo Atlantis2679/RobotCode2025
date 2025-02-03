@@ -21,8 +21,12 @@ public class Gripper extends SubsystemBase {
         new GripperIOSim(fieldsTable);
 
     public Gripper() {
-        NetworkAlertsManager.addWarningAlert(() -> NetworkAlertsManager.getREVLibErrorMessage((int)io.leftOuttakeMotorStatusValue.getAsLong()),
+        NetworkAlertsManager.addWarningAlert(() -> "Gripper: Right Outtake Motor: " + NetworkAlertsManager.getREVLibErrorMessage((int)io.leftOuttakeMotorStatusValue.getAsLong()),
             () -> io.leftOuttakeMotorStatusValue.getAsLong() != 0);
+        NetworkAlertsManager.addWarningAlert(() -> "Gripper: Left Outtake Motor: " + NetworkAlertsManager.getREVLibErrorMessage((int)io.rightOuttakeMotorStatusValue.getAsLong()),
+        () -> io.rightOuttakeMotorStatusValue.getAsLong() != 0);
+        NetworkAlertsManager.addWarningAlert(() -> "Gripper: Back Motor: " + NetworkAlertsManager.getREVLibErrorMessage((int)io.backMotorStatusValue.getAsLong()),
+        () -> io.backMotorStatusValue.getAsLong() != 0);
     }
 
     public boolean getIsCoralIn() {
