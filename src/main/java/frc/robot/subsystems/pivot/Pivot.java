@@ -32,15 +32,17 @@ public class Pivot extends SubsystemBase implements Tuneable {
 
     private final PrimitiveRotationalSensorHelper pivotRotationalHelper;
 
-    private final TrapezoidProfile pivotTrapezoid = new TrapezoidProfile(new TrapezoidProfile.Constraints(MAX_SPEED, MIN_SPEED));
+    private final TrapezoidProfile pivotTrapezoid = new TrapezoidProfile(
+        new TrapezoidProfile.Constraints(MAX_VELOCITY, MAX_ACCELERATION));
 
     private PIDController pivotPidController = new PIDController(KP, KI, KD);
 
-    private ArmFeedforward pivotFeedforward = Robot.isSimulation() ? new ArmFeedforward(SIM_KS, SIM_KG, SIM_KV, SIM_KA)
+    private ArmFeedforward pivotFeedforward = Robot.isSimulation() ? new ArmFeedforward(Sim.SIM_KS, Sim.SIM_KG, Sim.SIM_KV, Sim.SIM_KA)
         : new ArmFeedforward(KS, KG, KV, KA);
 
+    private double lastDesiredVoltage = 0;
+
     public Pivot() {
-        fieldsTable.update();
         pivotRotationalHelper = new PrimitiveRotationalSensorHelper(io.angle.getAsDouble(), INITIAL_OFFSET);
         pivotRotationalHelper.enableContinousWrap(UPPER_BOUND, FULL_ROTATION);
         TuneablesManager.add("Pivot", (Tuneable) this);
@@ -48,22 +50,19 @@ public class Pivot extends SubsystemBase implements Tuneable {
 
     @Override
     public void periodic() {
-        fieldsTable.update();
         pivotRotationalHelper.update(io.angle.getAsDouble());
         pivotVisualizer.update(getAngleDegrees());
+        fieldsTable.recordOutput("Desired Voltage", lastDesiredVoltage);
     }
 
     public void setPivotVoltage(double voltage) {
-        fieldsTable.recordOutput("Desired Voltage", voltage);
-        voltage = MathUtil.clamp(voltage, 0, PIVOT_VOLTAGE_LIMIT);
-        //I checked the offseason code and there seems to be a problem there as well with the output being a current
-        fieldsTable.recordOutput("Real Current", io.current.getAsDouble());
+        voltage = MathUtil.clamp(voltage, 0, PIVOT_CURRENT_LIMIT);
+        lastDesiredVoltage = voltage;
         io.setVoltage(voltage);
     }
 
     public void stop() {
-        fieldsTable.recordOutput("Demand Voltage", 0);
-        fieldsTable.recordOutput("Real voltage", 0);
+        lastDesiredVoltage = 0;
         io.setVoltage(0);
     }
 
@@ -90,7 +89,7 @@ public class Pivot extends SubsystemBase implements Tuneable {
     }
 
     public boolean isAtAngle(double desiredAngleDegrees) {
-        return Math.abs(desiredAngleDegrees - getAngleDegrees()) < (MAX_ANGLE_DEGREE - MIN_ANGLE_DEGREE);
+        return Math.abs(desiredAngleDegrees - getAngleDegrees()) < MESURED_ANGLE_TOLERENCE_DEGREES;
     }
 
     public void initTuneable(TuneableBuilder builder) {
