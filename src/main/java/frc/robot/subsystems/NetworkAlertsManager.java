@@ -133,11 +133,11 @@ public class NetworkAlertsManager {
             case 5: return "Can't Find Firmware";
             case 6: return "Firmware Too Old";
             case 7: return "Firmware Too New";
-            case 8: return "Parameter Invalid ID";
-            case 9: return "Parameter Mismatch Type";
-            case 10: return "Parameter Access Mode";
-            case 11: return "Parameter Invalid";
-            case 12: return "Parameter Not Implemented Deprecated";
+            case 8: return "Param Invalid ID";
+            case 9: return "Param Mismatch Type";
+            case 10: return "Param Access Mode";
+            case 11: return "Param Invalid";
+            case 12: return "Param Not Implemented Deprecated";
             case 13: return "Follow Config Mismatch";
             case 14: return "Invalid";
             case 15: return "Setpoint Out Of Range";
@@ -149,8 +149,8 @@ public class NetworkAlertsManager {
             case 21: return "Spark Flex Brushed Without Dock";
             case 22: return "Invalid Brushless Encoder Configuration";
             case 23: return "Feedback Sensor Incompatible With Data Port Config";
-            case 24: return "Parameter Invalid Channel";
-            case 25: return "Parameter Invalid Value";
+            case 24: return "Param Invalid Channel";
+            case 25: return "Param Invalid Value";
             case 26: return "Canno't Persist Parameters While Enabled";
             default: return "Invalid";
         }
