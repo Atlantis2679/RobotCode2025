@@ -24,7 +24,7 @@ public class FunnelIOSparksMax extends FunnelIO {
         super(fieldsTable);
         motorsConfig.smartCurrentLimit(MOTORS_CURRENT_LIMIT);
         funnelLeftMotor.configure(motorsConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
-        funnelRightMotor.configure(motorsConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+        funnelRightMotor.configure(motorsConfig.inverted(true), ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
     }
 
     @Override
@@ -44,4 +44,13 @@ public class FunnelIOSparksMax extends FunnelIO {
         return beamBrake.get();
     }
 
+    @Override
+    protected double getLeftVoltage() {
+        return funnelLeftMotor.getBusVoltage();
+    }
+
+    @Override
+    protected double getRightVoltage() {
+        return funnelRightMotor.getBusVoltage();
+    }
 }

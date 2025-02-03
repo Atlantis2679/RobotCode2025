@@ -44,4 +44,22 @@ public class GripperIOSparkMax extends GripperIO {
     public void setLeftMotorVoltage(double voltage) {
         leftMotor.setVoltage(voltage);
     }
+
+    @Override
+    protected double getBackMotorVoltage() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getBackMotorVoltage'");
+    }
+
+    @Override
+    protected double getLeftOuttakeMotorVoltage() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getLeftOuttakeMotorVoltage'");
+    }
+
+    @Override
+    protected double getRightOuttakeMotorVoltage() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getRightOuttakeMotorVoltage'");
+    }
 }

@@ -11,7 +11,7 @@ public class RobotMap {
     public static final String FRONT_PHOTON_CAMERA_NAME = "FrontCam";
     public static final String BACK_LIMELIGHT_CAMERA_NAME = "limelight-back";
 
-    public static final int FUNNEL_BEAM_BRAKE_ID = 0;
+    public static final int FUNNEL_BEAM_BRAKE_ID = 2;
     
     public static final int GRIPPER_BEAM_BRAKE_ID = 0;
 
@@ -41,7 +41,7 @@ public class RobotMap {
     
         public class ModuleBL {
             public final static int DRIVE_MOTOR_ID = 24;
-            public final static int TURN_MOTOR_ID = 25;
+            public final static int TURN_MOTOR_ID = 30;
             public final static int ENCODER_ID = 52;
         }
     
