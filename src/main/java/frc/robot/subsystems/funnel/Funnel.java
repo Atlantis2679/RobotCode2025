@@ -29,7 +29,7 @@ public class Funnel extends SubsystemBase {
         fieldsTable.recordOutput("right motor real voltage", io.rightVoltage.getAsDouble());
         fieldsTable.recordOutput("left motor real voltage", io.leftVoltage.getAsDouble());
         fieldsTable.recordOutput("motors voltage demand", lastDemandVoltage);
-        fieldsTable.recordOutput("last debauncer value", getIsCoralIn());
+        fieldsTable.recordOutput("last debauncer value", lastDebouncerValue);
     }
 
     public void setMotorVoltage(double voltageDemand) {

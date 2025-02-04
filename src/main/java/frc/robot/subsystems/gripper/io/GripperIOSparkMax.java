@@ -33,7 +33,7 @@ public class GripperIOSparkMax extends GripperIO {
 
     @Override
     protected boolean getIsCoralIn() {
-        return beamBrake.get();
+        return !beamBrake.get();
     }
     
     @Override

@@ -13,7 +13,7 @@ public class RobotMap {
 
     public static final int FUNNEL_BEAM_BRAKE_ID = 2;
     
-    public static final int GRIPPER_BEAM_BRAKE_ID = 0;
+    public static final int GRIPPER_BEAM_BRAKE_ID = 1;
 
     public static class Controllers {
         public static final int DRIVER_PORT = 1;

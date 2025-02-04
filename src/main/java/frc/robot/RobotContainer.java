@@ -58,8 +58,9 @@ public class RobotContainer {
 
     private void configureOperatorBindings() {
         operatorController.a().onTrue(funnelCommands.loadCoral());
-        operatorController.b().onTrue(gripperCommands.loadCoral().alongWith(funnelCommands.passCoral()));
-        operatorController.y().onTrue(gripperCommands.scoreL1());
+        operatorController.y().onTrue(funnelCommands.loadCoral().alongWith(gripperCommands.loadCoral()));
+        operatorController.x().onTrue(gripperCommands.scoreL1());
+        operatorController.b().onTrue(funnelCommands.passCoral().alongWith(gripperCommands.loadCoral()).andThen(gripperCommands.scoreL1()));
     }
     
 

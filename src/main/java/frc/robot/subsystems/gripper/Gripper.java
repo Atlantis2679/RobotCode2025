@@ -15,6 +15,10 @@ public class Gripper extends SubsystemBase {
     private final LogFieldsTable fieldsTable = new LogFieldsTable(getName());
     private final Debouncer isCoralInDebouncer = new Debouncer(DEBOUNCER_SECONDS);
 
+    private double lastRightMotorVoltageDemand = 0;
+    private double lastLeftMotorVoltageDemand = 0;
+    private boolean lastDebouncerValue = false;
+
     private final GripperIO io = Robot.isReal() ? 
         new GripperIOSparkMax(fieldsTable) : 
         new GripperIOSim(fieldsTable);
@@ -22,16 +26,29 @@ public class Gripper extends SubsystemBase {
     public Gripper() {
     }
 
-    public boolean getIsCoralIn() {
-        return isCoralInDebouncer.calculate(io.isCoraIn.getAsBoolean());
+    @Override
+    public void periodic() {
+        fieldsTable.recordOutput("right motor real voltage", io.rightMotorVoltage.getAsDouble());
+        fieldsTable.recordOutput("left motor real voltage", io.leftMotorVoltage.getAsDouble());
+        fieldsTable.recordOutput("right motor voltage demand", lastRightMotorVoltageDemand);
+        fieldsTable.recordOutput("left motor voltage demand", lastLeftMotorVoltageDemand);
+        fieldsTable.recordOutput("last debauncer value", lastDebouncerValue);
     }
 
-    public void setMotorsVoltage(double rightOuttakeVoltage, double leftOuttakeVoltage) {
-        io.setRightMotorVoltage(MathUtil.clamp(rightOuttakeVoltage, -RIGHT_MOTOR_MAX_VOLTAGE, RIGHT_MOTOR_MAX_VOLTAGE));
-        io.setLeftMotorVoltage(MathUtil.clamp(leftOuttakeVoltage, -LEFT_MOTOR_MAX_VOLTAGE, LEFT_MOTOR_MAX_VOLTAGE));
+    public boolean getIsCoralIn() {
+        return lastDebouncerValue = isCoralInDebouncer.calculate(io.isCoraIn.getAsBoolean());
+    }
+
+    public void setMotorsVoltage(double rightVoltage, double leftVoltage) {
+        lastRightMotorVoltageDemand = rightVoltage;
+        lastLeftMotorVoltageDemand = leftVoltage;
+        io.setRightMotorVoltage(MathUtil.clamp(rightVoltage, -RIGHT_MOTOR_MAX_VOLTAGE, RIGHT_MOTOR_MAX_VOLTAGE));
+        io.setLeftMotorVoltage(MathUtil.clamp(leftVoltage, -LEFT_MOTOR_MAX_VOLTAGE, LEFT_MOTOR_MAX_VOLTAGE));
     }
 
     public void stop() {
+        lastRightMotorVoltageDemand = 0;
+        lastLeftMotorVoltageDemand = 0;
         io.setRightMotorVoltage(0);
         io.setLeftMotorVoltage(0);
     }

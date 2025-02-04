@@ -8,9 +8,9 @@ import frc.lib.logfields.LogFieldsTable;
 
 public abstract class GripperIO extends IOBase {
     public final BooleanSupplier isCoraIn = fields.addBoolean("isCoraIn", this::getIsCoralIn);
-    public final DoubleSupplier leftOuttakeMotorVoltage = fields.addDouble(
+    public final DoubleSupplier leftMotorVoltage = fields.addDouble(
         "leftMotorVoltage", this::getLeftMotorVoltage);
-    public final DoubleSupplier rightOuttakeMotorVoltage = fields.addDouble(
+    public final DoubleSupplier rightMotorVoltage = fields.addDouble(
         "rightMotorVoltage", this::getRightMotorVoltage);
 
     public GripperIO(LogFieldsTable fieldsTable) {

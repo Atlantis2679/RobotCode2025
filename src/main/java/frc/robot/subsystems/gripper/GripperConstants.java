@@ -12,10 +12,10 @@ public class GripperConstants {
     /* Gripper Commands: */
 
     // Loading:
-    public static final double LODING_MOTORS_VOLTAGE = 10;
+    public static final double LODING_MOTORS_VOLTAGE = 7;
     // Score L1:
     public static final double L1_RIGHT_MOTOR_VOLTAGE = 6;
-    public static final double L1_LEFT_MOTOR_VOLTAGE = 6;
+    public static final double L1_LEFT_MOTOR_VOLTAGE = 4;
 
     // Score L3:
     public static final double L3_MOTORS_VOLTAGE = 0;
