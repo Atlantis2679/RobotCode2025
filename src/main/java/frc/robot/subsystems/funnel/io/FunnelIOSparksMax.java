@@ -41,7 +41,7 @@ public class FunnelIOSparksMax extends FunnelIO {
 
     @Override
     protected boolean getIsCoralIn() {
-        return beamBrake.get();
+        return !beamBrake.get();
     }
 
     @Override

@@ -41,7 +41,7 @@ public class RobotMap {
     
         public class ModuleBL {
             public final static int DRIVE_MOTOR_ID = 24;
-            public final static int TURN_MOTOR_ID = 30;
+            public final static int TURN_MOTOR_ID = 25;
             public final static int ENCODER_ID = 52;
         }
     

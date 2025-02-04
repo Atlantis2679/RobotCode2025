@@ -27,8 +27,8 @@ public class Gripper extends SubsystemBase {
     }
 
     public void setMotorsVoltage(double rightOuttakeVoltage, double leftOuttakeVoltage) {
-        io.setRightMotorVoltage(MathUtil.clamp(rightOuttakeVoltage, -MOTORS_MAX_VOLTAGE, MOTORS_MAX_VOLTAGE));
-        io.setLeftMotorVoltage(MathUtil.clamp(leftOuttakeVoltage, -MOTORS_MAX_VOLTAGE, MOTORS_MAX_VOLTAGE));
+        io.setRightMotorVoltage(MathUtil.clamp(rightOuttakeVoltage, -RIGHT_MOTOR_MAX_VOLTAGE, RIGHT_MOTOR_MAX_VOLTAGE));
+        io.setLeftMotorVoltage(MathUtil.clamp(leftOuttakeVoltage, -LEFT_MOTOR_MAX_VOLTAGE, LEFT_MOTOR_MAX_VOLTAGE));
     }
 
     public void stop() {

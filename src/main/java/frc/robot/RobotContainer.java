@@ -17,7 +17,7 @@ import frc.robot.utils.NaturalXboxController;
 
 public class RobotContainer {
     private final Swerve swerve = new Swerve();
-    // private final Gripper gripper = new Gripper();
+    private final Gripper gripper = new Gripper();
     private final Funnel funnel = new Funnel();
 
     private final NaturalXboxController driverController = new NaturalXboxController(
@@ -26,7 +26,7 @@ public class RobotContainer {
                 RobotMap.Controllers.OPERATOR_PORT);    
 
     private final SwerveCommands swerveCommands = new SwerveCommands(swerve);
-    // private final GripperCommands gripperCommands = new GripperCommands(gripper);
+    private final GripperCommands gripperCommands = new GripperCommands(gripper);
     private final FunnelCommands funnelCommands = new FunnelCommands(funnel);
 
     public RobotContainer() {
@@ -58,6 +58,8 @@ public class RobotContainer {
 
     private void configureOperatorBindings() {
         operatorController.a().onTrue(funnelCommands.loadCoral());
+        operatorController.b().onTrue(gripperCommands.loadCoral().alongWith(funnelCommands.passCoral()));
+        operatorController.y().onTrue(gripperCommands.scoreL1());
     }
     
 

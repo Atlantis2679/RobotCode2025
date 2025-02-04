@@ -33,6 +33,16 @@ public class GripperIOSim extends GripperIO {
     protected boolean getIsCoralIn() {
         return false;
     }
+    
+    @Override
+    protected double getLeftMotorVoltage() {
+        return leftMotor.getInputVoltage();
+    }
+
+    @Override
+    protected double getRightMotorVoltage() {
+        return rightMotor.getInputVoltage();
+    }
 
     // Outputs:
 
@@ -44,23 +54,5 @@ public class GripperIOSim extends GripperIO {
     @Override
     public void setLeftMotorVoltage(double voltage) {
         leftMotor.setInputVoltage(voltage);
-    }
-
-    @Override
-    protected double getBackMotorVoltage() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getBackMotorVoltage'");
-    }
-
-    @Override
-    protected double getLeftOuttakeMotorVoltage() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getLeftOuttakeMotorVoltage'");
-    }
-
-    @Override
-    protected double getRightOuttakeMotorVoltage() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getRightOuttakeMotorVoltage'");
     }
 }
