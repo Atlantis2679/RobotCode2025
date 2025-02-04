@@ -4,8 +4,6 @@ import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.wpilibj2.command.Command;
 
-import static frc.robot.subsystems.funnel.FunnelConstants.*;
-
 public class FunnelCommands {
     private final Funnel funnel;
 
@@ -13,14 +11,14 @@ public class FunnelCommands {
         this.funnel = funnel;
     }
 
-    public Command loadCoral() {
-        return funnel.run(() -> funnel.setMotorPercentageSpeed(MOTORS_PERCENTAGE_SPEED_LOADING))
+    public Command loadCoral(double percentageSpeed) {
+        return funnel.run(() -> funnel.setMotorPercentageSpeed(percentageSpeed))
             .until(funnel::getIsCoralIn).finallyDo(funnel::stop).withName("loadCoral");
     }
 
-    public Command passCoral() {
-        return funnel.run(() -> funnel.setMotorPercentageSpeed(MOTORS_PERCENTAGE_SPEED_LOADING))
-                .until(funnel::getIsCoralIn).andThen(funnel.run(() -> funnel.setMotorPercentageSpeed(MOTORS_PERCENTAGE_SPEED_PASSING))
+    public Command passCoral(double percentageSpeedForLoading, double percentageSpeedForPassing) {
+        return funnel.run(() -> funnel.setMotorPercentageSpeed(percentageSpeedForLoading))
+                .until(funnel::getIsCoralIn).andThen(funnel.run(() -> funnel.setMotorPercentageSpeed(percentageSpeedForPassing))
                 .until(() -> !funnel.getIsCoralIn())).finallyDo(funnel::stop).withName("passCoral");
     }
 
