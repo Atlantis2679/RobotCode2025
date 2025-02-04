@@ -8,13 +8,14 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import frc.lib.logfields.LogFieldsTable;
-import frc.robot.RobotMap.CANBUS;
+import static frc.robot.RobotMap.*;
+
 import static frc.robot.subsystems.pivot.PivotConstants.*;
 
 public class PivotIOSparxMax extends PivotIO {
         private final SparkMax pivotLeftMotor = new SparkMax(CANBUS.PIVOT_LEFT_MOTOR_ID, MotorType.kBrushless);
         private final SparkMax pivotRightMotor = new SparkMax(CANBUS.PIVOT_RIGHT_MOTOR_ID, MotorType.kBrushless);
-        private final DutyCycleEncoder encoder = new DutyCycleEncoder(CANBUS.PIVOT_ENCODER_ID);
+        private final DutyCycleEncoder encoder = new DutyCycleEncoder(PIVOT_ENCODER_ID);
         private final SparkMaxConfig config = new SparkMaxConfig();
         public PivotIOSparxMax(LogFieldsTable fieldsTable) {
             super(fieldsTable);

@@ -7,16 +7,17 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.lib.tuneables.TuneablesManager;
 import frc.lib.tuneables.extensions.TuneableCommand;
+import frc.robot.allcommands.AllCommands;
 import frc.robot.subsystems.funnel.Funnel;
-import frc.robot.subsystems.funnel.FunnelCommands;
 import frc.robot.subsystems.gripper.Gripper;
-import frc.robot.subsystems.gripper.GripperCommands;
+import frc.robot.subsystems.pivot.Pivot;
 import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.subsystems.swerve.SwerveCommands;
 import frc.robot.utils.NaturalXboxController;
 
 public class RobotContainer {
     private final Swerve swerve = new Swerve();
+    private final Pivot pivot = new Pivot();
     private final Gripper gripper = new Gripper();
     private final Funnel funnel = new Funnel();
 
@@ -24,10 +25,11 @@ public class RobotContainer {
             RobotMap.Controllers.DRIVER_PORT);
     private final NaturalXboxController operatorController = new NaturalXboxController(
                 RobotMap.Controllers.OPERATOR_PORT);    
-
+    
     private final SwerveCommands swerveCommands = new SwerveCommands(swerve);
-    private final GripperCommands gripperCommands = new GripperCommands(gripper);
-    private final FunnelCommands funnelCommands = new FunnelCommands(funnel);
+    private final AllCommands allCommands = new AllCommands(gripper, pivot, funnel);
+
+    private boolean useStaticCommands = false;
 
     public RobotContainer() {
         new Trigger(DriverStation::isDisabled).onTrue(swerveCommands.stop().repeatedly().withTimeout(0.5));
@@ -57,11 +59,16 @@ public class RobotContainer {
     }
 
     private void configureOperatorBindings() {
-        operatorController.a().onTrue(funnelCommands.loadCoral(0.3));
-        operatorController.y().onTrue(funnelCommands.loadCoral(0.3).alongWith(gripperCommands.loadCoral(7)));
-        operatorController.x().onTrue(gripperCommands.scoreL1(7, 6, 4));
-        operatorController.b().onTrue(funnelCommands.passCoral(0.3, 0.35).alongWith(gripperCommands.loadCoral(7))
-            .andThen(gripperCommands.scoreL1(7, 6, 4)));
+        operatorController.a().onTrue(Commands.either(allCommands.intakeStatic(), allCommands.intake(), () -> useStaticCommands));
+        operatorController.leftBumper().onChange(Commands.runOnce(() -> useStaticCommands = !useStaticCommands));
+        operatorController.b().onTrue(Commands.either(allCommands.scoreStaticL1(), allCommands.scoreL1(), () -> useStaticCommands));
+        operatorController.y().onTrue(allCommands.scoreL2());
+        operatorController.x().onTrue(allCommands.scoreL3());
+        operatorController.rightBumper().whileTrue(Commands.parallel(
+            allCommands.manualFunnelController(operatorController::getLeftY),
+            allCommands.manualGripperController(operatorController::getLeftX),
+            allCommands.manualPivotController(operatorController::getRightY)
+        ));
     }
     
 

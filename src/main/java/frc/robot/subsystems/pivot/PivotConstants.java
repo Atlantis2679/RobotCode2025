@@ -10,10 +10,9 @@ public class PivotConstants {
     
     public static final double MAX_VELOCITY_DEG_PER_SEC = 0;
     public static final double MAX_ACCELERATION = 0;
-    public static final double MAX_ANGLE_DEGREES = 0;
-    public static final double MIN_ANGLE_DEGREES = 0;
-    public static final double MESURED_ANGLE_TOLERENCE_DEGREES = 0;
-    public static final double MANUAL_SPEED_MULTIPLIER = 0;
+    public static final double MAX_ANGLE_DEGREES = 20;
+    public static final double MIN_ANGLE_DEGREES = -20;
+    public static final double MESURED_ANGLE_TOLERENCE_DEGREES = 5;
 
     public static final double KP = 0;
     public static final double KI = 0;

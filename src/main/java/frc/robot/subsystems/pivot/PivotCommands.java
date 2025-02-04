@@ -1,5 +1,7 @@
 package frc.robot.subsystems.pivot;
 
+import static frc.robot.subsystems.swerve.SwerveContants.MAX_VOLTAGE;
+
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
@@ -40,7 +42,7 @@ public class PivotCommands {
     public Command manualController(DoubleSupplier pivotSpeed) {
         return pivot.run(() -> {
             double feedForward = pivot.calculateFeedForward(pivot.getAngleDegrees(), 0, false);
-            pivot.setPivotVoltage(feedForward + pivotSpeed.getAsDouble());
+            pivot.setPivotVoltage(feedForward + pivotSpeed.getAsDouble() * MAX_VOLTAGE);
         });
     }
 
