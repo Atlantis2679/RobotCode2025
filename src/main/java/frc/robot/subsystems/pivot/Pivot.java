@@ -1,12 +1,11 @@
 package frc.robot.subsystems.pivot;
 
 import static frc.robot.subsystems.pivot.PivotConstants.*;
+import static frc.robot.subsystems.swerve.SwerveContants.MAX_VOLTAGE;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -14,6 +13,8 @@ import frc.lib.logfields.LogFieldsTable;
 import frc.lib.tuneables.Tuneable;
 import frc.lib.tuneables.TuneableBuilder;
 import frc.lib.tuneables.TuneablesManager;
+import frc.lib.tuneables.extensions.TuneableArmFeedforward;
+import frc.lib.tuneables.extensions.TuneableTrapezoidProfile;
 import frc.robot.Robot;
 import frc.robot.subsystems.pivot.io.PivotIO;
 import frc.robot.subsystems.pivot.io.PivotIOSim;
@@ -32,13 +33,13 @@ public class Pivot extends SubsystemBase implements Tuneable {
 
     private final PrimitiveRotationalSensorHelper pivotRotationalHelper;
 
-    private final TrapezoidProfile pivotTrapezoid = new TrapezoidProfile(
-        new TrapezoidProfile.Constraints(MAX_VELOCITY, MAX_ACCELERATION));
+    private final TuneableTrapezoidProfile pivotTrapezoid = new TuneableTrapezoidProfile(
+        new TrapezoidProfile.Constraints(MAX_VELOCITY_DEG_PER_SEC, MAX_ACCELERATION));
 
     private PIDController pivotPidController = new PIDController(KP, KI, KD);
 
-    private ArmFeedforward pivotFeedforward = Robot.isSimulation() ? new ArmFeedforward(Sim.SIM_KS, Sim.SIM_KG, Sim.SIM_KV, Sim.SIM_KA)
-        : new ArmFeedforward(KS, KG, KV, KA);
+    private TuneableArmFeedforward pivotFeedforward = Robot.isSimulation() ? new TuneableArmFeedforward(Sim.SIM_KS, Sim.SIM_KG, Sim.SIM_KV, Sim.SIM_KA)
+        : new TuneableArmFeedforward(KS, KG, KV, KA);
 
     private double lastDesiredVoltage = 0;
 
@@ -56,7 +57,11 @@ public class Pivot extends SubsystemBase implements Tuneable {
     }
 
     public void setPivotVoltage(double voltage) {
-        voltage = MathUtil.clamp(voltage, 0, PIVOT_CURRENT_LIMIT);
+        voltage = MathUtil.clamp(voltage, -MAX_VOLTAGE, MAX_VOLTAGE);
+        if((getAngleDegrees() > MAX_ANGLE_DEGREES && voltage > 0)
+            || (getAngleDegrees() < MIN_ANGLE_DEGREES && voltage < 0)) {
+            voltage = 0;
+        }
         lastDesiredVoltage = voltage;
         io.setVoltage(voltage);
     }
@@ -92,11 +97,14 @@ public class Pivot extends SubsystemBase implements Tuneable {
         return Math.abs(desiredAngleDegrees - getAngleDegrees()) < MESURED_ANGLE_TOLERENCE_DEGREES;
     }
 
-    public void initTuneable(TuneableBuilder builder) {
-        builder.addChild("Pivot Subsystem", (Sendable) this);
-    }
-
     public void resetPID() {
         pivotPidController.reset();
+    }
+
+    public void initTuneable(TuneableBuilder builder) {
+        builder.addChild("Pivot PID", pivotPidController);
+        builder.addChild("Pivot feedforward", pivotFeedforward);
+        builder.addChild("Pivot Trapezoid profile", pivotTrapezoid);
+        builder.addChild("Pivot angle degrees", pivotRotationalHelper);
     }
 }

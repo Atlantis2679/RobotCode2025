@@ -1,14 +1,17 @@
 package frc.robot.subsystems.pivot;
 
 public class PivotConstants {
+    public static final int PIVOT_MAX_VOLTAGE = 12;
     public static final int PIVOT_CURRENT_LIMIT = 30;
 
     public static final double INITIAL_OFFSET = 0;
     public static final double FULL_ROTATION = 360;
     public static final double UPPER_BOUND = 0;
     
-    public static final double MAX_VELOCITY = 0;
+    public static final double MAX_VELOCITY_DEG_PER_SEC = 0;
     public static final double MAX_ACCELERATION = 0;
+    public static final double MAX_ANGLE_DEGREES = 0;
+    public static final double MIN_ANGLE_DEGREES = 0;
     public static final double MESURED_ANGLE_TOLERENCE_DEGREES = 0;
     public static final double MANUAL_SPEED_MULTIPLIER = 0;
 
