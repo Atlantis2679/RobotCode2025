@@ -1,23 +1,20 @@
 package frc.robot.subsystems.pivot;
 
-import static frc.robot.subsystems.pivot.PivotConstants.*;
-
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.lib.valueholders.ValueHolder;
 
-public class PivotCommands extends Command {
+public class PivotCommands {
+    private final Pivot pivot;
 
-  private Pivot pivot;
+    public PivotCommands(Pivot pivot) {
+        this.pivot = pivot;
+    }
 
-  public PivotCommands(Pivot pivot) {
-      this.pivot = pivot;
-      this.addRequirements(pivot);
-  }
     public Command moveToAngle(DoubleSupplier desiredAngleDeg) {
-      ValueHolder<TrapezoidProfile.State> referenceState = new ValueHolder<TrapezoidProfile.State>(null);
+        ValueHolder<TrapezoidProfile.State> referenceState = new ValueHolder<TrapezoidProfile.State>(null);
         return pivot.runOnce(() -> {
             pivot.resetPID();
             referenceState.set(new TrapezoidProfile.State(pivot.getAngleDegrees(), pivot.getVelocity()));
@@ -33,24 +30,18 @@ public class PivotCommands extends Command {
                     true);
 
             pivot.setPivotVoltage(voltage);
-        })).finallyDo(pivot::stop).withName("pivotMoveToAngle");
+        })).until(() -> pivot.isAtAngle(desiredAngleDeg.getAsDouble())).finallyDo(pivot::stop);
     }
+
     public Command moveToAngle(double angle) {
-      return moveToAngle(() -> {return angle;});
-  }
+        return moveToAngle(() -> angle);
+    }
+ 
     public Command manualController(DoubleSupplier pivotSpeed) {
-      return pivot.run(() -> {
-          double feedforwardResult = pivot.calculateFeedForward(
-                  pivot.getAngleDegrees(),
-                  0,
-                  false);
-          double demandPivotSpeed = pivotSpeed.getAsDouble();
-          if ((pivot.getAngleDegrees() > MAX_ANGLE_DEGREE && demandPivotSpeed > 0)
-                  || (pivot.getAngleDegrees() < MIN_ANGLE_DEGREE && demandPivotSpeed < 0)) {
-              demandPivotSpeed = 0;
-          }
-          pivot.setPivotVoltage(
-                  feedforwardResult + demandPivotSpeed * MANUAL_SPEED_MULTIPLIER);
-      }).finallyDo(pivot::stop).withName("pivotManualController");
-  }
+        return pivot.run(() -> {
+            double feedForward = pivot.calculateFeedForward(pivot.getAngleDegrees(), 0, false);
+            pivot.setPivotVoltage(feedForward + pivotSpeed.getAsDouble());
+        });
+    }
+
 }

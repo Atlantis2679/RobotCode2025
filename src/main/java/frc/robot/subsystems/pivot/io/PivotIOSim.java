@@ -1,6 +1,7 @@
 package frc.robot.subsystems.pivot.io;
 
-import static frc.robot.subsystems.pivot.PivotConstants.*;
+import static frc.robot.subsystems.pivot.PivotConstants.Sim.*;
+import static frc.robot.subsystems.pivot.PivotConstants.INITIAL_OFFSET;
 
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
@@ -11,10 +12,10 @@ public class PivotIOSim extends PivotIO {
     private final SingleJointedArmSim pivotMotor = new SingleJointedArmSim(
         DCMotor.getNEO(2),
         JOINT_GEAR_RATIO,
-        PIVOT_JKG_METERS_SQUARED,
-        0.41,
-        Math.toRadians(PIVOT_TURNING_MIN_DEGREES),
-        Math.toRadians(PIVOT_TURNING_MAX_DEGREES),
+        JKG_METERS_SQUARED,
+        ARM_LENGTH,
+        Math.toRadians(TURNING_MIN_DEGREES),
+        Math.toRadians(TURNING_MAX_DEGREES),
         true,
         INITIAL_OFFSET);
     
@@ -28,8 +29,15 @@ public class PivotIOSim extends PivotIO {
     }
 
     //outputs
+
+    
     @Override
-    protected double getCurrent() {
+    protected double getLeftMotorCurrent() {
+        return pivotMotor.getCurrentDrawAmps();
+    }
+
+    @Override
+    protected double getRightMotorCurrent() {
         return pivotMotor.getCurrentDrawAmps();
     }
 

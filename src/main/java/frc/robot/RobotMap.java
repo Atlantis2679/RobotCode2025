@@ -51,7 +51,8 @@ public class RobotMap {
             public final static int ENCODER_ID = 53;
         }
 
-        public final static int PIVOT_MOTOR_ID = 0;
+        public final static int PIVOT_LEFT_MOTOR_ID = 0;
+        public final static int PIVOT_RIGHT_MOTOR_ID = 0;
         public final static int PIVOT_ENCODER_ID = 0;
     }
 }
