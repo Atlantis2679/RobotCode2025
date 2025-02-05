@@ -1,6 +1,7 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -20,6 +21,7 @@ public class RobotContainer {
     private final Pivot pivot = new Pivot();
     private final Gripper gripper = new Gripper();
     private final Funnel funnel = new Funnel();
+    private final PowerDistribution pdh = new PowerDistribution();
 
     private final NaturalXboxController driverController = new NaturalXboxController(
             RobotMap.Controllers.DRIVER_PORT);
@@ -33,7 +35,7 @@ public class RobotContainer {
 
     public RobotContainer() {
         new Trigger(DriverStation::isDisabled).onTrue(swerveCommands.stop().repeatedly().withTimeout(0.5));
-
+        pdh.setSwitchableChannel(true);
         configureDriverBindings();
         configureOperatorBindings();
     }
