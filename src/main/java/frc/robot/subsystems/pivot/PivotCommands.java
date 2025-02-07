@@ -32,7 +32,7 @@ public class PivotCommands {
                     true);
 
             pivot.setPivotVoltage(voltage);
-        })).until(() -> pivot.isAtAngle(desiredAngleDeg.getAsDouble())).finallyDo(pivot::stop);
+        }));
     }
 
     public Command moveToAngle(double angle) {
@@ -43,7 +43,8 @@ public class PivotCommands {
         return pivot.run(() -> {
             double feedForward = pivot.calculateFeedForward(pivot.getAngleDegrees(), 0, false);
             pivot.setPivotVoltage(feedForward + pivotSpeed.getAsDouble() * MAX_VOLTAGE);
-        });
+        
+        }).finallyDo(() -> pivot.stop()).withName("pivotManualController");
     }
 
 }

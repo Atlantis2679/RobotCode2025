@@ -7,7 +7,7 @@ public class GripperConstants {
     /* Gripper: */
     public static final double LEFT_MOTOR_MAX_VOLTAGE = 12;
     public static final double RIGHT_MOTOR_MAX_VOLTAGE = 12;
-    public static final double DEBOUNCER_SECONDS = 0.05;
+    public static final double DEBOUNCER_SECONDS = 0.1;
     
     /* Sim: */
     public static class GripperSim {

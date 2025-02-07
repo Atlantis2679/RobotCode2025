@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.lib.tuneables.Tuneable;
 import frc.lib.tuneables.TuneablesManager;
 import frc.lib.tuneables.extensions.TuneableCommand;
 import frc.robot.allcommands.AllCommands;
@@ -59,11 +60,17 @@ public class RobotContainer {
     }
 
     private void configureOperatorBindings() {
-        operatorController.a().onTrue(Commands.either(allCommands.intakeStatic(), allCommands.intake(), () -> useStaticCommands));
+        operatorController.a().onTrue(allCommands.intake());
         operatorController.leftBumper().onChange(Commands.runOnce(() -> useStaticCommands = !useStaticCommands));
-        operatorController.b().onTrue(Commands.either(allCommands.scoreStaticL1(), allCommands.scoreL1(), () -> useStaticCommands));
-        operatorController.y().onTrue(allCommands.scoreL2());
-        operatorController.x().onTrue(allCommands.scoreL3());
+        // operatorController.b().onTrue(Commands.either(allCommands.scoreStaticL1(), allCommands.scoreL1(), () -> useStaticCommands));
+        operatorController.b().onTrue(allCommands.scoreL1());
+        operatorController.y().onTrue(allCommands.moveToL2());
+        operatorController.x().onTrue(allCommands.moveToL3());
+        TuneableCommand tuneableAngleAndScore = allCommands.getPivotReadyAndScore();
+        // operatorController.x().whileTrue(tuneableAngleAndScore);
+        TuneablesManager.add("ready to Angle and score", (Tuneable) tuneableAngleAndScore);
+        operatorController.rightTrigger().onTrue(allCommands.scoreL3());
+        operatorController.leftTrigger().onTrue(allCommands.scoreL1Shoot());
         operatorController.rightBumper().whileTrue(Commands.parallel(
             allCommands.manualFunnelController(operatorController::getLeftY),
             allCommands.manualGripperController(operatorController::getLeftX),

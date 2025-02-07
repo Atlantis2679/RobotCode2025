@@ -6,6 +6,8 @@ import static frc.robot.subsystems.swerve.SwerveContants.MAX_VOLTAGE;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.units.measure.Voltage;
+import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -30,7 +32,7 @@ public class Pivot extends SubsystemBase implements Tuneable {
             new Color8Bit(Color.kPurple));
     private final PivotVisualizer desiredPivotVisualizer = new PivotVisualizer(fieldsTable, "Desired Visualizer",
             new Color8Bit(Color.kYellow));
-
+    
     private final PrimitiveRotationalSensorHelper pivotRotationalHelper;
 
     private final TuneableTrapezoidProfile pivotTrapezoid = new TuneableTrapezoidProfile(
@@ -47,6 +49,7 @@ public class Pivot extends SubsystemBase implements Tuneable {
     private double minAngle = MIN_ANGLE_DEGREES;
 
     public Pivot() {
+        fieldsTable.update();
         pivotRotationalHelper = new PrimitiveRotationalSensorHelper(io.angle.getAsDouble(), INITIAL_OFFSET);
         pivotRotationalHelper.enableContinousWrap(UPPER_BOUND, FULL_ROTATION);
         TuneablesManager.add("Pivot", (Tuneable) this);
@@ -57,10 +60,13 @@ public class Pivot extends SubsystemBase implements Tuneable {
         pivotRotationalHelper.update(io.angle.getAsDouble());
         pivotVisualizer.update(getAngleDegrees());
         fieldsTable.recordOutput("Desired Voltage", lastDesiredVoltage);
+        fieldsTable.recordOutput("rotaionHelper", getAngleDegrees());
+        fieldsTable.recordOutput("feedForWord", pivotFeedforward.getArmFeedforward());
     }
 
     public void setPivotVoltage(double voltage) {
         voltage = MathUtil.clamp(voltage, -MAX_VOLTAGE, MAX_VOLTAGE);
+        fieldsTable.recordOutput("real voltage", voltage);
         if((getAngleDegrees() > MAX_ANGLE_DEGREES && voltage > 0)
             || (getAngleDegrees() < MIN_ANGLE_DEGREES && voltage < 0)) {
             voltage = 0;
@@ -97,6 +103,7 @@ public class Pivot extends SubsystemBase implements Tuneable {
     }
 
     public boolean isAtAngle(double desiredAngleDegrees) {
+        fieldsTable.recordOutput("desored angle", desiredAngleDegrees);
         return Math.abs(desiredAngleDegrees - getAngleDegrees()) < MESURED_ANGLE_TOLERENCE_DEGREES;
     }
 

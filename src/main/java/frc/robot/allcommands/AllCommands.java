@@ -4,6 +4,10 @@ import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import frc.lib.tuneables.Tuneable;
+import frc.lib.tuneables.extensions.TuneableCommand;
+import frc.lib.valueholders.DoubleHolder;
+import frc.robot.allcommands.AllCommandsConstants.ManualControllers;
 import frc.robot.subsystems.funnel.Funnel;
 import frc.robot.subsystems.funnel.FunnelCommands;
 import frc.robot.subsystems.gripper.Gripper;
@@ -27,13 +31,15 @@ public class AllCommands {
         this.pivot = pivot;
         this.funnel = funnel;
 
-        this.gripperCMDs = new GripperCommands(gripper);
+        this.gripperCMDs = new GripperCommands(gripper, funnel);
         this.pivotCMDs = new PivotCommands(pivot);
         this.funnelCMDs = new FunnelCommands(funnel);
     }
-
     public Command intake() {
-        return pivotCMDs.moveToAngle(PIVOT_ANGLE_FOR_INTAKE).andThen(funnelCMDs.loadCoral(FUNNEL_INTAKE_SPEED)).withName("Intake");
+        return pivotCMDs.moveToAngle(PIVOT_ANGLE_FOR_INTAKE)
+        .until(() -> pivot.isAtAngle(PIVOT_ANGLE_FOR_INTAKE)).andThen(
+             funnelCMDs.loadCoral(FUNNEL_INTAKE_SPEED).alongWith(gripperCMDs.loadCoral(GRIPPER_INTAKE_VOLTAGE)))
+             .until( () -> !funnel.getIsCoralIn() && gripper.getIsCoralIn()).withName("Intake");
     }
 
     public Command intakeStatic() {
@@ -41,8 +47,7 @@ public class AllCommands {
     }
 
     public Command scoreL1() {
-        return funnelCMDs.passCoral(FUNNEL_INTAKE_SPEED, FUNNEL_PASSING_SPEED).alongWith(gripperCMDs.loadCoral(GRIPPER_INTAKE_VOLTAGE))
-            .andThen(pivotCMDs.moveToAngle(PIVOT_ANGLE_FOR_L1))
+        return pivotCMDs.moveToAngle(PIVOT_ANGLE_FOR_L1)
             .andThen(gripperCMDs.score(GRIPPER_LOADING_VOLTAGE, GRIPPER_RIGHT_L1_VOLTAGE, GRIPPER_LEFT_L1_VOLTAGE))
             .withName("scoreL1");
     }
@@ -53,16 +58,35 @@ public class AllCommands {
             .withName("scoreStaticL1");
     }
 
-    public Command scoreL2() {
-        return funnelCMDs.passCoral(FUNNEL_INTAKE_SPEED, FUNNEL_PASSING_SPEED).alongWith(gripperCMDs.loadCoral(GRIPPER_INTAKE_VOLTAGE))
-            .andThen(gripperCMDs.score(GRIPPER_LOADING_VOLTAGE, GRIPPER_L2_VOLTAGE, GRIPPER_L2_VOLTAGE))
-            .withName("scoreL2");
+    public Command moveToL2() {
+        return 
+            pivotCMDs.moveToAngle(PIVOT_ANGLE_FOR_L2).withName("moveToL2");
     }
 
-    public Command scoreL3() {
-        return funnelCMDs.passCoral(FUNNEL_INTAKE_SPEED, FUNNEL_PASSING_SPEED).alongWith(gripperCMDs.loadCoral(GRIPPER_INTAKE_VOLTAGE))
-            .andThen(gripperCMDs.score(GRIPPER_LOADING_VOLTAGE, GRIPPER_L3_VOLTAGE, GRIPPER_L3_VOLTAGE))
-            .withName("scoreL3");
+    public Command moveToL3() {
+        return pivotCMDs.moveToAngle(PIVOT_ANGLE_FOR_L3)
+            .withName("moveToL3");
+    }
+
+    public Command scoreL1Shoot() {
+        return gripperCMDs.score(GRIPPER_INTAKE_VOLTAGE, GRIPPER_RIGHT_L1_VOLTAGE, GRIPPER_LEFT_L1_VOLTAGE);
+    }
+    public Command scoreL3(){
+        return gripperCMDs.score(GRIPPER_INTAKE_VOLTAGE, GRIPPER_L3_VOLTAGE, GRIPPER_L3_VOLTAGE);
+    }
+
+    public TuneableCommand getPivotReadyAndScore() {
+            return TuneableCommand.wrap((tuneableTable) -> {
+            DoubleHolder angleHolder = tuneableTable.addNumber("angle", PIVOT_TUNEABLE_ANGLE);
+            DoubleHolder leftGripperVoltage = tuneableTable.addNumber("upper roller speed",
+                    GRIPPER_LEFT_TUNEABLE_VOLTAGE);
+            DoubleHolder rightGripperVoltage = tuneableTable.addNumber("lower roller speed",
+                    GRIPPER_RIGHT_TUNEABLE_VOLTAGE);
+            return (pivotCMDs.moveToAngle(angleHolder.get()))
+            .andThen(gripperCMDs.score(GRIPPER_INTAKE_VOLTAGE, rightGripperVoltage.get(), leftGripperVoltage.get()))
+                    .withName("getPivotAngleAndScore");
+        });
+
     }
  
     public Command manualGripperController(DoubleSupplier speed) {

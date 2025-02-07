@@ -22,6 +22,7 @@ public class Funnel extends SubsystemBase {
 
     public Funnel() {
         io = Robot.isReal() ? new FunnelIOSparksMax(this.fieldsTable) : new FunnelIOSim(this.fieldsTable);
+        fieldsTable.update();
     }
 
     @Override
@@ -30,6 +31,7 @@ public class Funnel extends SubsystemBase {
         fieldsTable.recordOutput("left motor real voltage", io.leftVoltage.getAsDouble());
         fieldsTable.recordOutput("motors voltage demand", lastDemandVoltage);
         fieldsTable.recordOutput("last debauncer value", lastDebouncerValue);
+        fieldsTable.recordOutput("isCoralIn", getIsCoralIn());
     }
 
     public void setMotorVoltage(double voltageDemand) {

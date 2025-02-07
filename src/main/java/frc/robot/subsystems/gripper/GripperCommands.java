@@ -5,17 +5,20 @@ import static frc.robot.subsystems.swerve.SwerveContants.MAX_VOLTAGE;
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.funnel.Funnel;
+import frc.robot.subsystems.funnel.FunnelCommands;
 
 public class GripperCommands {
     Gripper gripper;
+    Funnel funnel;
     
-    public GripperCommands(Gripper gripper) {
+    public GripperCommands(Gripper gripper, Funnel funnel) {
         this.gripper = gripper;
+        this.funnel = funnel;
     }
 
     public Command loadCoral(double voltage) {
-        return gripper.run(() -> gripper.setMotorsVoltage(voltage, voltage))
-            .until(gripper::getIsCoralIn).finallyDo(gripper::stop).withName("loadCoral");
+        return gripper.run(() -> gripper.setMotorsVoltage(voltage, voltage)).finallyDo(gripper::stop).withName("loadCoral");
     }
 
     public Command score(double voltageForLoading, double rightVoltageForScoring, double leftVoltageForScoring) {

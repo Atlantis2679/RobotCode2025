@@ -37,7 +37,7 @@ public class PivotIOSparxMax extends PivotIO {
 
         @Override
         protected double getPivotAngleDegrees() {
-            return encoder.get();
+            return encoder.get()*360;
         }
 
         //inputs
