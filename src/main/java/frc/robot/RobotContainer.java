@@ -60,7 +60,7 @@ public class RobotContainer {
     }
 
     public Command getAutonomousCommand() {
-        return new PathPlannerAuto("AutoA");
-        // return autoChooser.getSelected();
+        // return new PathPlannerAuto("AutoA");
+        return autoChooser.getSelected();
     }
 }
