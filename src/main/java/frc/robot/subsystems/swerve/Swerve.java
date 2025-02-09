@@ -62,17 +62,17 @@ public class Swerve extends SubsystemBase implements Tuneable {
     // WPILib. For more info:
     // https://docs.wpilib.org/he/stable/docs/software/advanced-controls/geometry/coordinate-systems.html
     public final Translation2d FL_LOCATION = new Translation2d(
-            SwerveContants.TRACK_LENGTH_M / 2,
-            SwerveContants.TRACK_WIDTH_M / 2);
+            SwerveContants.TRACK_LENGTH_METERS / 2,
+            SwerveContants.TRACK_WIDTH_METERS / 2);
     public final Translation2d FR_LOCATION = new Translation2d(
-            SwerveContants.TRACK_LENGTH_M / 2,
-            -SwerveContants.TRACK_WIDTH_M / 2);
+            SwerveContants.TRACK_LENGTH_METERS / 2,
+            -SwerveContants.TRACK_WIDTH_METERS / 2);
     public final Translation2d BL_LOCATION = new Translation2d(
-            -SwerveContants.TRACK_LENGTH_M / 2,
-            SwerveContants.TRACK_WIDTH_M / 2);
+            -SwerveContants.TRACK_LENGTH_METERS / 2,
+            SwerveContants.TRACK_WIDTH_METERS / 2);
     public final Translation2d BR_LOCATION = new Translation2d(
-            -SwerveContants.TRACK_WIDTH_M / 2,
-            -SwerveContants.TRACK_LENGTH_M / 2);
+            -SwerveContants.TRACK_WIDTH_METERS / 2,
+            -SwerveContants.TRACK_LENGTH_METERS / 2);
 
     private final SwerveDriveKinematics swerveKinematics = new SwerveDriveKinematics(
             FL_LOCATION,
