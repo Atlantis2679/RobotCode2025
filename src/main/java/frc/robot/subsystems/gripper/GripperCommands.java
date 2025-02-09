@@ -6,7 +6,6 @@ import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.funnel.Funnel;
-import frc.robot.subsystems.funnel.FunnelCommands;
 
 public class GripperCommands {
     Gripper gripper;

@@ -12,12 +12,12 @@ import static frc.robot.RobotMap.*;
 
 import static frc.robot.subsystems.pivot.PivotConstants.*;
 
-public class PivotIOSparxMax extends PivotIO {
+public class PivotIOSparkMax extends PivotIO {
         private final SparkMax pivotLeftMotor = new SparkMax(CANBUS.PIVOT_LEFT_MOTOR_ID, MotorType.kBrushless);
         private final SparkMax pivotRightMotor = new SparkMax(CANBUS.PIVOT_RIGHT_MOTOR_ID, MotorType.kBrushless);
         private final DutyCycleEncoder encoder = new DutyCycleEncoder(PIVOT_ENCODER_ID);
         private final SparkMaxConfig config = new SparkMaxConfig();
-        public PivotIOSparxMax(LogFieldsTable fieldsTable) {
+        public PivotIOSparkMax(LogFieldsTable fieldsTable) {
             super(fieldsTable);
             config.smartCurrentLimit(PIVOT_CURRENT_LIMIT);
             pivotLeftMotor.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);

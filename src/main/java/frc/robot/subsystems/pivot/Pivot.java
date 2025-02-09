@@ -18,15 +18,16 @@ import frc.lib.tuneables.TuneablesManager;
 import frc.lib.tuneables.extensions.TuneableArmFeedforward;
 import frc.lib.tuneables.extensions.TuneableTrapezoidProfile;
 import frc.robot.Robot;
+import frc.robot.subsystems.pivot.PivotConstants.Sim;
 import frc.robot.subsystems.pivot.io.PivotIO;
 import frc.robot.subsystems.pivot.io.PivotIOSim;
-import frc.robot.subsystems.pivot.io.PivotIOSparxMax;
+import frc.robot.subsystems.pivot.io.PivotIOSparkMax;
 import frc.robot.utils.PrimitiveRotationalSensorHelper;
 
 public class Pivot extends SubsystemBase implements Tuneable {
     private final LogFieldsTable fieldsTable = new LogFieldsTable(getName());
 
-    private final PivotIO io = Robot.isSimulation() ? new PivotIOSim(fieldsTable) : new PivotIOSparxMax(fieldsTable);
+    private final PivotIO io = Robot.isSimulation() ? new PivotIOSim(fieldsTable) :new PivotIOSparkMax(fieldsTable);
     
     private final PivotVisualizer pivotVisualizer = new PivotVisualizer(fieldsTable, "Real Mech2d",
             new Color8Bit(Color.kPurple));

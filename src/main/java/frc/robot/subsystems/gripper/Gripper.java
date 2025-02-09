@@ -4,7 +4,6 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.logfields.LogFieldsTable;
-import frc.lib.tuneables.TuneableBuilder;
 import frc.robot.Robot;
 import frc.robot.subsystems.gripper.io.GripperIO;
 import frc.robot.subsystems.gripper.io.GripperIOSim;
