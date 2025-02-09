@@ -58,6 +58,7 @@ public class SwerveModule implements Tuneable {
         fieldsTable.recordOutput("module " + moduleNumber + " drive distance meters", getDriveDistanceMeters());
         fieldsTable.recordOutput("AbsoluteAngleDegrees", getAbsoluteAngleDegrees());
         fieldsTable.recordOutput("IntegratedAngleDegrees", getIntegratedAngleDegrees());
+        fieldsTable.recordOutput("Module Position", getModulePosition());
     }
 
     public void setDesiredState(SwerveModuleState desiredState, boolean preventJittering, boolean optimizeState,
