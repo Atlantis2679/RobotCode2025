@@ -12,8 +12,8 @@ import edu.wpi.first.math.geometry.Translation3d;
 
 public class PoseEstimatorConstants {
     public final static Transform3d ROBOT_TO_CAMERA_TRANSFORM_PHOTON_FRONT = new Transform3d(
-            new Translation3d(0.245, 0.13, 0.51),
-            new Rotation3d(Degrees.of(0), Degrees.of(-28.6), Degrees.of(180)));
+            new Translation3d(0.336, 0.17, 0.31),
+            new Rotation3d(Degrees.of(0), Degrees.of(17.6), Degrees.of(0)));
 
     public final static double VISION_MAX_TAG_ANBIGUITY_THRESHOLD = 0.7; // Need to check
     public final static double VISION_MIN_TAG_DISTANCE_TO_POSE_METERS = 0.05; // Need to check

@@ -6,11 +6,11 @@ public class PivotConstants {
 
     public static final double INITIAL_OFFSET = 116;
     public static final double FULL_ROTATION = 360;
-    public static final double UPPER_BOUND = 180;
+    public static final double UPPER_BOUND = 205;
     
     public static final double MAX_VELOCITY_DEG_PER_SEC = 70;
     public static final double MAX_ACCELERATION = 70;
-    public static final double MAX_ANGLE_DEGREES = 110;
+    public static final double MAX_ANGLE_DEGREES = 130;
     public static final double MIN_ANGLE_DEGREES = -115;
     public static final double MESURED_ANGLE_TOLERENCE_DEGREES = 1.5;
 

@@ -6,14 +6,14 @@ public class AllCommandsConstants {
 
     public static final double GRIPPER_INTAKE_VOLTAGE = 2;
     public static final double GRIPPER_LOADING_VOLTAGE = 4;
-    public static final double GRIPPER_RIGHT_L1_VOLTAGE = 6;
-    public static final double GRIPPER_LEFT_L1_VOLTAGE = 4;
+    public static final double GRIPPER_RIGHT_L1_VOLTAGE = 7;
+    public static final double GRIPPER_LEFT_L1_VOLTAGE = 5;
     // public static final double GRIPPER_L2_VOLTAGE = 7;
     public static final double GRIPPER_L3_VOLTAGE = -12;
 
 
-    public static final double PIVOT_ANGLE_FOR_INTAKE = -113;
-    public static final double PIVOT_ANGLE_FOR_L1 = -90;
+    public static final double PIVOT_ANGLE_FOR_INTAKE = -111;
+    public static final double PIVOT_ANGLE_FOR_L1 = -80;
     public static final double PIVOT_ANGLE_FOR_L2 = 20;
     public static final double PIVOT_ANGLE_FOR_L3 = 90;
     
