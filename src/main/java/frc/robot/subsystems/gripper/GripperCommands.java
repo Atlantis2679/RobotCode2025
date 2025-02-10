@@ -17,11 +17,12 @@ public class GripperCommands {
     }
 
     public Command loadCoral(double voltage) {
-        return gripper.run(() -> gripper.setMotorsVoltage(voltage, voltage)).finallyDo(gripper::stop).withName("loadCoral");
+        return gripper.run(() -> gripper.setMotorsVoltage(voltage, voltage))
+               .until(gripper::getIsCoralIn).finallyDo(gripper::stop).withName("loadCoral");
     }
 
     public Command score(double voltageForLoading, double rightVoltageForScoring, double leftVoltageForScoring) {
-        return gripper.run(() -> gripper.setMotorsVoltage(voltageForLoading, voltageForLoading))
+        return loadCoral(voltageForLoading)
             .until(gripper::getIsCoralIn)
             .andThen(gripper.run(() -> gripper.setMotorsVoltage(rightVoltageForScoring, leftVoltageForScoring)))
             .until(() -> !gripper.getIsCoralIn())

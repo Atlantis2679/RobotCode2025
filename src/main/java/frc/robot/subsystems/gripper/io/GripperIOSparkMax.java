@@ -38,12 +38,12 @@ public class GripperIOSparkMax extends GripperIO {
     
     @Override
     protected double getLeftMotorVoltage() {
-        return leftMotor.getBusVoltage();
+        return leftMotor.getAppliedOutput();
     }
 
     @Override
     protected double getRightMotorVoltage() {
-        return rightMotor.getBusVoltage();
+        return rightMotor.getAppliedOutput();
     }
 
     // Outputs:
