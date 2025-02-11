@@ -8,9 +8,10 @@ import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 import frc.lib.logfields.LogFieldsTable;
 
 public class PivotIOSim extends PivotIO {
+    private double lastVoltage = 0;
 
     private final SingleJointedArmSim pivotMotor = new SingleJointedArmSim(
-        DCMotor.getNEO(2),
+        DCMotor.getNEO(1),
         JOINT_GEAR_RATIO,
         JKG_METERS_SQUARED,
         ARM_LENGTH,
@@ -29,16 +30,14 @@ public class PivotIOSim extends PivotIO {
     }
 
     //outputs
-
-    
     @Override
-    protected double getLeftMotorCurrent() {
+    protected double getMotorCurrent() {
         return pivotMotor.getCurrentDrawAmps();
     }
 
     @Override
-    protected double getRightMotorCurrent() {
-        return pivotMotor.getCurrentDrawAmps();
+    protected double getMotorVoltage() {
+        return lastVoltage;
     }
 
     @Override
@@ -49,6 +48,7 @@ public class PivotIOSim extends PivotIO {
     //inputs
     @Override
     public void setVoltage(double voltage) {
+        lastVoltage = voltage;
         pivotMotor.setInputVoltage(voltage);
     }
 }

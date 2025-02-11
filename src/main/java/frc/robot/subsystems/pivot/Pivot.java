@@ -43,6 +43,9 @@ public class Pivot extends SubsystemBase implements Tuneable {
 
     private double lastDesiredVoltage = 0;
 
+    private double maxAngle = MAX_ANGLE_DEGREES;
+    private double minAngle = MIN_ANGLE_DEGREES;
+
     public Pivot() {
         pivotRotationalHelper = new PrimitiveRotationalSensorHelper(io.angle.getAsDouble(), INITIAL_OFFSET);
         pivotRotationalHelper.enableContinousWrap(UPPER_BOUND, FULL_ROTATION);
@@ -58,8 +61,8 @@ public class Pivot extends SubsystemBase implements Tuneable {
 
     public void setPivotVoltage(double voltage) {
         voltage = MathUtil.clamp(voltage, -MAX_VOLTAGE, MAX_VOLTAGE);
-        if((getAngleDegrees() > MAX_ANGLE_DEGREES && voltage > 0)
-            || (getAngleDegrees() < MIN_ANGLE_DEGREES && voltage < 0)) {
+        if((getAngleDegrees() > maxAngle && voltage > 0)
+            || (getAngleDegrees() < minAngle && voltage < 0)) {
             voltage = 0;
         }
         lastDesiredVoltage = voltage;
@@ -106,5 +109,7 @@ public class Pivot extends SubsystemBase implements Tuneable {
         builder.addChild("Pivot feedforward", pivotFeedforward);
         builder.addChild("Pivot Trapezoid profile", pivotTrapezoid);
         builder.addChild("Pivot angle degrees", pivotRotationalHelper);
+        builder.addDoubleProperty("Pivot max angle", () -> maxAngle, (newAngle) -> maxAngle = newAngle);
+        builder.addDoubleProperty("Pivot min angle", () -> minAngle, (newAngle) -> minAngle = newAngle);
     }
 }

@@ -9,10 +9,9 @@ public class RobotMap {
 
     public static final NavXComType NAVX_PORT = NavXComType.kMXP_SPI;
     public static final String FRONT_PHOTON_CAMERA_NAME = "FrontCam";
-    public static final String BACK_LIMELIGHT_CAMERA_NAME = "limelight-back";
 
-    public static final int FUNNEL_MOTOR_ID = 0;
     public static final int FUNNEL_BEAM_BRAKE_ID = 0;
+    public final static int PIVOT_ENCODER_ID = 0;
 
     public static class Controllers {
         public static final int DRIVER_PORT = 0;
@@ -44,8 +43,8 @@ public class RobotMap {
             public final static int ENCODER_ID = 53;
         }
 
-        public final static int PIVOT_LEFT_MOTOR_ID = 0;
-        public final static int PIVOT_RIGHT_MOTOR_ID = 0;
-        public final static int PIVOT_ENCODER_ID = 0;
+        public static final int FUNNEL_MOTOR_ID = 0;
+
+        public final static int PIVOT_MOTOR_ID = 0;
     }
 }
