@@ -4,7 +4,6 @@ import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import frc.lib.tuneables.Tuneable;
 import frc.lib.tuneables.extensions.TuneableCommand;
 import frc.lib.valueholders.DoubleHolder;
 import frc.robot.allcommands.AllCommandsConstants.ManualControllers;
@@ -60,13 +59,13 @@ public class AllCommands {
     }
 
     public Command moveToL2() {
-        return 
-            pivotCMDs.moveToAngle(PIVOT_ANGLE_FOR_L2).withName("moveToL2");
+        return pivotCMDs.moveToAngle(PIVOT_ANGLE_FOR_L2)
+            .withName("moveToL2").finallyDo(() -> pivot.stop());
     }
 
     public Command moveToL3() {
         return pivotCMDs.moveToAngle(PIVOT_ANGLE_FOR_L3)
-            .withName("moveToL3");
+            .withName("moveToL3").finallyDo(() -> pivot.stop());
     }
 
     public Command scoreL1Shoot() {

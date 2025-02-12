@@ -36,6 +36,16 @@ public class PivotIOSparkMax extends PivotIO {
         }
 
         @Override
+        protected double getLeftMotorVoltage() {
+            return pivotLeftMotor.getAppliedOutput() * pivotLeftMotor.getBusVoltage();
+        }
+
+        @Override
+        protected double getRightMotorVoltage() {
+            return pivotRightMotor.getAppliedOutput() * pivotRightMotor.getBusVoltage();
+        }
+
+        @Override
         protected double getPivotAngleDegrees() {
             return encoder.get()*360;
         }

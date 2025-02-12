@@ -6,8 +6,6 @@ import static frc.robot.subsystems.swerve.SwerveContants.MAX_VOLTAGE;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.units.measure.Voltage;
-import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -49,6 +47,8 @@ public class Pivot extends SubsystemBase implements Tuneable {
     private double maxAngle = MAX_ANGLE_DEGREES;
     private double minAngle = MIN_ANGLE_DEGREES;
 
+    private double upperBound = UPPER_BOUND;
+
     public Pivot() {
         fieldsTable.update();
         pivotRotationalHelper = new PrimitiveRotationalSensorHelper(io.angle.getAsDouble(), INITIAL_OFFSET);
@@ -63,13 +63,13 @@ public class Pivot extends SubsystemBase implements Tuneable {
         fieldsTable.recordOutput("Desired Voltage", lastDesiredVoltage);
         fieldsTable.recordOutput("rotaionHelper", getAngleDegrees());
         fieldsTable.recordOutput("feedForWord", pivotFeedforward.getArmFeedforward());
+        fieldsTable.recordOutput("velocity", pivotRotationalHelper.getVelocity() * Math.PI / 180);
     }
 
     public void setPivotVoltage(double voltage) {
         voltage = MathUtil.clamp(voltage, -MAX_VOLTAGE, MAX_VOLTAGE);
-        fieldsTable.recordOutput("real voltage", voltage);
-        if((getAngleDegrees() > MAX_ANGLE_DEGREES && voltage > 0)
-            || (getAngleDegrees() < MIN_ANGLE_DEGREES && voltage < 0)) {
+        if((getAngleDegrees() > maxAngle && voltage > 0)
+            || (getAngleDegrees() < minAngle && voltage < 0)) {
             voltage = 0;
         }
         lastDesiredVoltage = voltage;
@@ -119,5 +119,10 @@ public class Pivot extends SubsystemBase implements Tuneable {
         builder.addChild("Pivot angle degrees", pivotRotationalHelper);
         builder.addDoubleProperty("Pivot max angle", () -> maxAngle, (angle) -> maxAngle = angle);
         builder.addDoubleProperty("Pivot min angle", () -> minAngle, (angle) -> minAngle = angle);
+        builder.addDoubleProperty("Pivot upper bound", () -> upperBound,
+            (newUpperBound) -> {
+                upperBound = newUpperBound;
+                pivotRotationalHelper.enableContinousWrap(newUpperBound, FULL_ROTATION);
+            });
     }
 }

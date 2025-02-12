@@ -25,6 +25,6 @@ public class AllCommandsConstants {
         public static final double FUNNEL_SPEED_MULTIPLAYER = 1;
         public static final double GRIPPER_LEFT_SPEED_MULTIPLAYER = 1;
         public static final double GRIPPER_RIGHT_SPEED_MULTIPLAYER = 1;
-        public static final double PIVOT_SPEED_MULTIPLAYER = 0.008;
+        public static final double PIVOT_SPEED_MULTIPLAYER = 0.023;
     }
 }

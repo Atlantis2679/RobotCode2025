@@ -1,7 +1,13 @@
 package frc.robot;
 
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.commands.PathPlannerAuto;
+
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PowerDistribution;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -24,6 +30,8 @@ public class RobotContainer {
     private final Funnel funnel = new Funnel();
     private final PowerDistribution pdh = new PowerDistribution();
 
+    private final SendableChooser<Command> autoChooser;
+
     private final NaturalXboxController driverController = new NaturalXboxController(
             RobotMap.Controllers.DRIVER_PORT);
     private final NaturalXboxController operatorController = new NaturalXboxController(
@@ -31,14 +39,34 @@ public class RobotContainer {
     
     private final SwerveCommands swerveCommands = new SwerveCommands(swerve);
     private final AllCommands allCommands = new AllCommands(gripper, pivot, funnel);
-
+    
     private boolean useStaticCommands = false;
 
+    private boolean isCompetition = false;
+
+    private PathPlannerAuto autoCommand;
+
     public RobotContainer() {
+        NamedCommands.registerCommand("intake", allCommands.intake());
+        NamedCommands.registerCommand("scoreL1", allCommands.scoreL1());
+        NamedCommands.registerCommand("moveToL2", allCommands.moveToL2());
+        NamedCommands.registerCommand("moveToL3", allCommands.moveToL3());
+        NamedCommands.registerCommand("scoreL3", allCommands.scoreL3());
+        NamedCommands.registerCommand("score", allCommands.scoreL1Shoot());
+
         new Trigger(DriverStation::isDisabled).onTrue(swerveCommands.stop().repeatedly().withTimeout(0.5));
         pdh.setSwitchableChannel(true);
+
         configureDriverBindings();
         configureOperatorBindings();
+
+        autoChooser =  AutoBuilder.buildAutoChooserWithOptionsModifier(
+            (stream) -> isCompetition
+              ? stream.filter(auto -> auto.getName().startsWith("comp"))
+              : stream
+          );
+          SmartDashboard.putData("Auto Chooser", autoChooser);
+
     }
 
     private void configureDriverBindings() {
@@ -86,6 +114,6 @@ public class RobotContainer {
     }
 
     public Command getAutonomousCommand() {
-        return Commands.print("No autonomous command configured");
+        return autoChooser.getSelected();
     }
 }

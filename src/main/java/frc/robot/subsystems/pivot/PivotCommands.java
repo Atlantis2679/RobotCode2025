@@ -32,7 +32,7 @@ public class PivotCommands {
                     true);
 
             pivot.setPivotVoltage(voltage);
-        }));
+        })).andThen(()-> pivot.stop());
     }
 
     public Command moveToAngle(double angle) {
