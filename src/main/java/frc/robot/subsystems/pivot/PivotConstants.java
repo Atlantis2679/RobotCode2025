@@ -8,20 +8,20 @@ public class PivotConstants {
     public static final double FULL_ROTATION = 360;
     public static final double UPPER_BOUND = 180;
     
-    public static final double MAX_VELOCITY_DEG_PER_SEC = 180;
-    public static final double MAX_ACCELERATION = 160;
+    public static final double MAX_VELOCITY_DEG_PER_SEC = 120;
+    public static final double MAX_ACCELERATION = 120;
     public static final double MAX_ANGLE_DEGREES = 110;
     public static final double MIN_ANGLE_DEGREES = -115;
     public static final double MESURED_ANGLE_TOLERENCE_DEGREES = 1.5;
 
-    public static final double KP = 0.01;
+    public static final double KP = 0.013;
     public static final double KI = 0;
     public static final double KD = 0.0001;
 
     public static final double KS = 0;
     public static final double KA = 0;
-    public static final double KV = 0;
-    public static final double KG = 0.03;
+    public static final double KV = 0.0005;
+    public static final double KG = 0.02;
 
     public static class Sim {
         public static final double SIM_KS = 0;

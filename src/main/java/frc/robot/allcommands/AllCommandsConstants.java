@@ -12,10 +12,10 @@ public class AllCommandsConstants {
     public static final double GRIPPER_L3_VOLTAGE = -12;
 
 
-    public static final double PIVOT_ANGLE_FOR_INTAKE = -111;
+    public static final double PIVOT_ANGLE_FOR_INTAKE = -112;
     public static final double PIVOT_ANGLE_FOR_L1 = -80;
-    public static final double PIVOT_ANGLE_FOR_L2 = 25;
-    public static final double PIVOT_ANGLE_FOR_L3 = 82;
+    public static final double PIVOT_ANGLE_FOR_L2 = 0;//25
+    public static final double PIVOT_ANGLE_FOR_L3 = 100;
     
     public static final double PIVOT_TUNEABLE_ANGLE = 0;
     public static final double GRIPPER_RIGHT_TUNEABLE_VOLTAGE = 0;

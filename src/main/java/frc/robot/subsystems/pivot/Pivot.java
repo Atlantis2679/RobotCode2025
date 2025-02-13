@@ -13,6 +13,7 @@ import frc.lib.logfields.LogFieldsTable;
 import frc.lib.tuneables.Tuneable;
 import frc.lib.tuneables.TuneableBuilder;
 import frc.lib.tuneables.TuneablesManager;
+import frc.lib.tuneables.TuneablesTable;
 import frc.lib.tuneables.extensions.TuneableArmFeedforward;
 import frc.lib.tuneables.extensions.TuneableTrapezoidProfile;
 import frc.robot.Robot;
@@ -42,6 +43,7 @@ public class Pivot extends SubsystemBase implements Tuneable {
     private TuneableArmFeedforward pivotFeedforward = Robot.isSimulation() ? new TuneableArmFeedforward(Sim.SIM_KS, Sim.SIM_KG, Sim.SIM_KV, Sim.SIM_KA)
         : new TuneableArmFeedforward(KS, KG, KV, KA);
 
+
     private double lastDesiredVoltage = 0;
 
     private double maxAngle = MAX_ANGLE_DEGREES;
@@ -60,6 +62,7 @@ public class Pivot extends SubsystemBase implements Tuneable {
     public void periodic() {
         pivotRotationalHelper.update(io.angle.getAsDouble());
         pivotVisualizer.update(getAngleDegrees());
+        fieldsTable.recordOutput("angle", getAngleDegrees());
         fieldsTable.recordOutput("Desired Voltage", lastDesiredVoltage);
         fieldsTable.recordOutput("rotaionHelper", getAngleDegrees());
         fieldsTable.recordOutput("feedForWord", pivotFeedforward.getArmFeedforward());

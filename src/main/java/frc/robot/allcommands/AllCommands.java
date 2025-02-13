@@ -60,12 +60,12 @@ public class AllCommands {
 
     public Command moveToL2() {
         return pivotCMDs.moveToAngle(PIVOT_ANGLE_FOR_L2)
-            .withName("moveToL2").finallyDo(() -> pivot.stop());
+        .finallyDo(() -> pivot.stop()).withName("moveToL2");
     }
 
     public Command moveToL3() {
         return pivotCMDs.moveToAngle(PIVOT_ANGLE_FOR_L3)
-            .withName("moveToL3").finallyDo(() -> pivot.stop());
+        .finallyDo(() -> pivot.stop()).withName("moveToL3");
     }
 
     public Command scoreL1Shoot() {
