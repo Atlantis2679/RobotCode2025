@@ -14,7 +14,7 @@ public class PivotConstants {
     public static final double MIN_ANGLE_DEGREES = -115;
     public static final double MESURED_ANGLE_TOLERENCE_DEGREES = 1.5;
 
-    public static final double KP = 0.013;
+    public static final double KP = 0.015;
     public static final double KI = 0;
     public static final double KD = 0.0001;
 
