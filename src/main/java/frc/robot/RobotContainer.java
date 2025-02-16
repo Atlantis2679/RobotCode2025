@@ -42,17 +42,18 @@ public class RobotContainer {
     
     private boolean useStaticCommands = false;
 
-    private boolean isCompetition = false;
+    private boolean isCompetition = true;
 
     private PathPlannerAuto autoCommand;
 
     public RobotContainer() {
         NamedCommands.registerCommand("intake", allCommands.intake());
-        NamedCommands.registerCommand("scoreL1", allCommands.moveToL1());
+        NamedCommands.registerCommand("moveToL1", allCommands.moveToL1());
         NamedCommands.registerCommand("moveToL2", allCommands.moveToL2());
         NamedCommands.registerCommand("moveToL3", allCommands.moveToL3());
         NamedCommands.registerCommand("scoreL3", allCommands.scoreL3());
-        NamedCommands.registerCommand("score", allCommands.moveToL1());
+        NamedCommands.registerCommand("score", allCommands.scoreL1());
+        NamedCommands.registerCommand("stop", allCommands.stopAll());
 
         new Trigger(DriverStation::isDisabled).onTrue(swerveCommands.stop().repeatedly().withTimeout(0.5));
         pdh.setSwitchableChannel(true);
@@ -81,6 +82,8 @@ public class RobotContainer {
         TuneablesManager.add("Swerve/drive command", driveCommand.fullTuneable());
         driverController.a().onTrue(new InstantCommand(swerve::resetYaw));
         driverController.x().onTrue(swerveCommands.xWheelLock());
+
+        driverController.y().onTrue(allCommands.stopAll());
 
         TuneablesManager.add("Swerve/modules control mode",
                 swerveCommands.controlModules(

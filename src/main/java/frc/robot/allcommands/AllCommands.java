@@ -49,7 +49,7 @@ public class AllCommands {
     public Command moveToL1() {
         return pivotCMDs.moveToAngle(PIVOT_ANGLE_FOR_L1)
         .until(() -> pivot.isAtAngle(PIVOT_ANGLE_FOR_L1))
-        // .andThen(gripperCMDs.score(GRIPPER_INTAKE_VOLTAGE, GRIPPER_RIGHT_L1_VOLTAGE, GRIPPER_LEFT_L1_VOLTAGE))
+        // .andThen(gripperCMDs.score(GRIPPER_RIGHT_L1_VOLTAGE, GRIPPER_LEFT_L1_VOLTAGE))
         // .finallyDo(pivot::stop)
         .withName("moveToL1");
     }
@@ -62,20 +62,23 @@ public class AllCommands {
 
     public Command moveToL2() {
         return pivotCMDs.moveToAngle(PIVOT_ANGLE_FOR_L2)
-        .finallyDo(() -> pivot.stop()).withName("moveToL2");
+        .until(() -> pivot.isAtAngle(PIVOT_ANGLE_FOR_L2));
     }
 
     public Command moveToL3() {
         return pivotCMDs.moveToAngle(PIVOT_ANGLE_FOR_L3)
-        .finallyDo(() -> pivot.stop()).withName("moveToL3");
+        .until(() -> pivot.isAtAngle(PIVOT_ANGLE_FOR_L3));
     }
 
     public Command scoreL1() {
         return gripperCMDs.score(GRIPPER_RIGHT_L1_VOLTAGE, GRIPPER_LEFT_L1_VOLTAGE)
+                .andThen(gripper::stop)
                 .finallyDo(pivot::stop);
     }
     public Command scoreL3(){
-        return gripperCMDs.score(GRIPPER_L3_VOLTAGE, GRIPPER_L3_VOLTAGE);
+        return gripperCMDs.score(GRIPPER_L3_VOLTAGE, GRIPPER_L3_VOLTAGE)
+            .andThen(gripper::stop)
+            .finallyDo(pivot::stop);
     }
 
     public TuneableCommand getPivotReadyAndScore() {

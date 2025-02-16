@@ -5,9 +5,21 @@
     "data": {
       "commands": [
         {
+          "type": "path",
+          "data": {
+            "pathName": "L1FromMiddle"
+          }
+        },
+        {
           "type": "named",
           "data": {
-            "name": "stop"
+            "name": "moveToL1"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "score"
           }
         }
       ]

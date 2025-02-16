@@ -19,8 +19,8 @@ public class RobotMap {
     public final static int PIVOT_ENCODER_ID = 0;
 
     public static class Controllers {
-        public static final int DRIVER_PORT = 1;
-        public static final int OPERATOR_PORT = 0;
+        public static final int DRIVER_PORT = 0;
+        public static final int OPERATOR_PORT = 1;
     }
        
     public static class CANBUS {
