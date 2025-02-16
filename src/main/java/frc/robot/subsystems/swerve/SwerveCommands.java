@@ -97,52 +97,47 @@ public class SwerveCommands {
         });
     }
     
-    public Command driveToPose(Pose2d targetPoseBlueAlliance, Command driveCommand) {
-        return Commands.sequence(
-            Commands.defer(() -> {
-                Pose2d targetPose = swerve.getIsRedAlliance()
-                        ? FlippingUtil.flipFieldPose(targetPoseBlueAlliance)
-                        : targetPoseBlueAlliance;
+    public Command driveToPoseWithPID(Pose2d targetPose, Command driveCommand) {
+        PIDController xController = new PIDController(0.7, 0.0, 0.0); 
+        PIDController yController = new PIDController(0.5, 0.0, 0.0);
+        PIDController thetaController = new PIDController(0.1, 0.0, 0.01); // Lower P, Add D
     
-                PathPlannerPath pathToPose = new PathPlannerPath(
-                    PathPlannerPath.waypointsFromPoses(swerve.getPose(), targetPose),
-                    new PathConstraints(
-                        DriveToPose.MAX_VELOCITY_MPS, DriveToPose.MAX_ACCELERATION_MPS,
-                        DriveToPose.MAX_ANGULAR_VELOCITY_RPS, DriveToPose.MAX_ANGULAR_ACCELERATION_RPS
-                    ),
-                    null,
-                    new GoalEndState(DriveToPose.GOAL_VELOCITY, targetPose.getRotation())
-                );
+        thetaController.enableContinuousInput(-Math.PI, Math.PI); 
     
-                pathToPose.preventFlipping = true;
+        return Commands.run(() -> {
+            // Get current robot pose
+            Pose2d currentPose = swerve.getPose();
     
-                System.out.println("[INFO] Starting driveToPose command...");
+            // Calculate movement corrections
+            double xSpeed = xController.calculate(currentPose.getX(), targetPose.getX());
+            double ySpeed = yController.calculate(currentPose.getY(), targetPose.getY());
     
-                return AutoBuilder.followPath(pathToPose)
-                    .until(() -> {
-                        double distance = swerve.getPose().getTranslation().getDistance(targetPose.getTranslation());
-                        System.out.println("[DEBUG] Distance to target: " + distance);
-                        return distance < 0.1; // ✅ Stop if within 10 cm
-                    })
-                    .withTimeout(4.0) // ⏳ Prevents infinite running
-                    .andThen(() -> {
-                        System.out.println("[INFO] Reached target, stopping...");
-                        swerve.stop(); // ✅ STOP all motion
-                    });
-            }, Set.of(swerve)),
+            // ✅ Fix: Use proper angle wrapping
+            double angleError = targetPose.getRotation().minus(currentPose.getRotation()).getRadians();
+            double thetaSpeed = thetaController.calculate(0, angleError);
     
-            // ⏹️ Ensure manual control is restored
-            Commands.runOnce(() -> {
-                System.out.println("[INFO] Restoring manual control...");
-                swerve.setDefaultCommand(driveCommand);
-            }, swerve)
-        ).finallyDo((interrupted) -> {
-            // 🚨 Ensure command always ends correctly
-            System.out.println("[INFO] driveToPose finished. Cleaning up.");
+            // ✅ Fix: Negate thetaSpeed if robot turns wrong way
+            swerve.drive(xSpeed, ySpeed, -thetaSpeed, false, false);
+    
+            // Debugging
+            System.out.println("[DEBUG] X Error: " + (targetPose.getX() - currentPose.getX()));
+            System.out.println("[DEBUG] Y Error: " + (targetPose.getY() - currentPose.getY()));
+            System.out.println("[DEBUG] Rotation Error: " + angleError);
+    
+        }, swerve)
+        .until(() -> {
+            double angleError = targetPose.getRotation().minus(swerve.getPose().getRotation()).getRadians();
+            return Math.abs(targetPose.getX() - swerve.getPose().getX()) < 0.1 &&
+                   Math.abs(targetPose.getY() - swerve.getPose().getY()) < 0.1 &&
+                   Math.abs(angleError) < Math.toRadians(2.0); // ✅ Fix: Use angleError instead of raw subtraction
+        })
+        .finallyDo((interrupted) -> {
+            System.out.println("[INFO] Reached target! Stopping...");
             swerve.stop();
             swerve.setDefaultCommand(driveCommand);
         });
     }
+    
     
     
     

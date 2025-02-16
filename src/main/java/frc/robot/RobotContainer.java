@@ -84,7 +84,7 @@ public class RobotContainer {
         swerve.setDefaultCommand(driveCommand);
         TuneablesManager.add("Swerve/drive command", driveCommand.fullTuneable());
         driverController.a().onTrue(new InstantCommand(swerve::resetYaw));
-        driverController.b().whileTrue(allCommands.getToPose(new Pose2d(5.928, 4.182, new Rotation2d(Degrees.of(-179))), driveCommand)
+        driverController.b().whileTrue(allCommands.getToPose(new Pose2d(11.90, 3.55, new Rotation2d(Degrees.of(0))), driveCommand)
         .andThen(() -> swerve.setDefaultCommand(driveCommand)));
         driverController.x().onTrue(swerveCommands.xWheelLock());
         TuneablesManager.add("Swerve/modules control mode",

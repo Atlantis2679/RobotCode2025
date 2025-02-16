@@ -58,11 +58,12 @@ public class SwerveContants {
     }
 
     public class DriveToPose {
-        public final static double MAX_VELOCITY_MPS = 1;
-        public final static double MAX_ACCELERATION_MPS = 1;
-        public final static double MAX_ANGULAR_VELOCITY_RPS = Math.toRadians(540);
+        public final static double MAX_VELOCITY_MPS = 0.5;
+        public final static double MAX_ACCELERATION_MPS = 0.5;
+        public final static double MAX_ANGULAR_VELOCITY_RPS = Math.toRadians(270);
         public final static double MAX_ANGULAR_ACCELERATION_RPS = Math.toRadians(620);
         public final static double GOAL_VELOCITY = 0;
+        
         public final static boolean ROTATE_FAST = true;
     }
 }

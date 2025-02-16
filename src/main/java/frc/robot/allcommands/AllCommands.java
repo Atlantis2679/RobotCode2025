@@ -46,7 +46,7 @@ public class AllCommands {
     }
 
     public Command getToPose(Pose2d targetPose2d, TuneableCommand driveCommand){
-        return new DeferredCommand(() -> swerveCMDs.driveToPose(targetPose2d, driveCommand), Set.of(swerve));
+        return new DeferredCommand(() -> swerveCMDs.driveToPoseWithPID(targetPose2d, driveCommand), Set.of(swerve));
     }
     public Command intake() {
         return pivotCMDs.moveToAngle(PIVOT_ANGLE_FOR_INTAKE)
