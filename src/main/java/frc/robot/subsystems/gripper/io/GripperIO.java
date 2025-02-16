@@ -12,12 +12,17 @@ public abstract class GripperIO extends IOBase {
         super(fieldsTable);
     }
 
-    // Intputs:
-    protected abstract boolean getIsCoralIn();
-
     // Outputs:
     public abstract void setRightOuttakeMotorVoltage(double voltage);
     public abstract void setLeftOuttakeMotorVoltage(double voltage);
     public abstract void setBackMotorVoltage(double voltage);
 
+    // Intputs:
+    protected abstract boolean getIsCoralIn();
+    protected abstract double getRightOuttakeMotorVoltage();
+    protected abstract double getRightOuttakeMotorCurrent();
+    protected abstract double getLeftOuttakeMotorVoltage();
+    protected abstract double getLeftOuttakeMotorCurrent();
+    protected abstract double getBackMotorVoltage();
+    protected abstract double getBackMotorCurrent();
 }

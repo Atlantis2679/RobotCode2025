@@ -3,7 +3,7 @@ package frc.robot.subsystems.funnel;
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.wpilibj2.command.Command;
-
+    
 public class FunnelCommands {
     private final Funnel funnel;
 
