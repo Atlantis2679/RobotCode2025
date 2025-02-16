@@ -13,7 +13,7 @@ import static frc.robot.RobotMap.*;
 import static frc.robot.subsystems.funnel.FunnelConstants.MAX_CURRENT;
 
 public class FunnelIOSparksMax extends FunnelIO {
-    private SparkMax funnelMotor = new SparkMax(FUNNEL_MOTOR_ID, MotorType.kBrushless);
+    private SparkMax funnelMotor = new SparkMax(CANBUS.FUNNEL_MOTOR_ID, MotorType.kBrushless);
     private DigitalInput beamBrake = new DigitalInput(FUNNEL_BEAM_BRAKE_ID);
 
     private SparkMaxConfig motorConfig = new SparkMaxConfig();
