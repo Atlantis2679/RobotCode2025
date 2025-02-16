@@ -22,11 +22,15 @@ public class GripperCommands {
     }
 
     public Command score(double voltageForLoading, double rightVoltageForScoring, double leftVoltageForScoring) {
-        return loadCoral(voltageForLoading)
-            .until(gripper::getIsCoralIn)
-            .andThen(gripper.run(() -> gripper.setMotorsVoltage(rightVoltageForScoring, leftVoltageForScoring)))
-            .until(() -> !gripper.getIsCoralIn())
-            .finallyDo(gripper::stop).withName("scoreL1");
+        return
+        //  loadCoral(voltageForLoading)
+        //     .until(gripper::getIsCoralIn)
+            // .andThen(
+                gripper.run(() -> gripper.setMotorsVoltage(rightVoltageForScoring, leftVoltageForScoring))
+                // )
+            // .until(() -> !gripper.getIsCoralIn())
+            // .finallyDo(gripper::stop)
+            .withName("scoreL1");
     }
 
     public Command manualController(DoubleSupplier rightSpeed, DoubleSupplier leftSpeed) {

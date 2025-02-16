@@ -49,8 +49,9 @@ public class AllCommands {
     public Command scoreL1() {
         return pivotCMDs.moveToAngle(PIVOT_ANGLE_FOR_L1)
         .until(() -> pivot.isAtAngle(PIVOT_ANGLE_FOR_L1))
-        .andThen(gripperCMDs.score(GRIPPER_INTAKE_VOLTAGE, GRIPPER_RIGHT_L1_VOLTAGE, GRIPPER_LEFT_L1_VOLTAGE))
-        .finallyDo(pivot::stop).withName("scoreL1");
+        // .andThen(gripperCMDs.score(GRIPPER_INTAKE_VOLTAGE, GRIPPER_RIGHT_L1_VOLTAGE, GRIPPER_LEFT_L1_VOLTAGE))
+        // .finallyDo(pivot::stop)
+        .withName("scoreL1");
     }
 
     public Command scoreStaticL1() {
@@ -70,7 +71,8 @@ public class AllCommands {
     }
 
     public Command scoreL1Shoot() {
-        return gripperCMDs.score(GRIPPER_INTAKE_VOLTAGE, GRIPPER_RIGHT_L1_VOLTAGE, GRIPPER_LEFT_L1_VOLTAGE);
+        return gripperCMDs.score(GRIPPER_INTAKE_VOLTAGE, GRIPPER_RIGHT_L1_VOLTAGE, GRIPPER_LEFT_L1_VOLTAGE)
+                .finallyDo(pivot::stop);
     }
     public Command scoreL3(){
         return gripperCMDs.score(GRIPPER_INTAKE_VOLTAGE, GRIPPER_L3_VOLTAGE, GRIPPER_L3_VOLTAGE);
