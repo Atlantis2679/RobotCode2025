@@ -20,4 +20,14 @@ public class FunnelIOSim extends FunnelIO {
     protected boolean getIsCoralIn() {
         return false;
     }
+
+    @Override
+    protected double getVoltage() {
+        return 0;
+    }
+
+    @Override
+    protected double getCurrent() {
+        return 0;
+    }
 }
