@@ -1,9 +1,13 @@
 package frc.robot.allcommands;
 
+import java.util.Set;
 import java.util.function.DoubleSupplier;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.DeferredCommand;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.lib.tuneables.extensions.TuneableCommand;
 import frc.lib.valueholders.DoubleHolder;
 import frc.robot.allcommands.AllCommandsConstants.ManualControllers;
@@ -13,6 +17,8 @@ import frc.robot.subsystems.gripper.Gripper;
 import frc.robot.subsystems.gripper.GripperCommands;
 import frc.robot.subsystems.pivot.Pivot;
 import frc.robot.subsystems.pivot.PivotCommands;
+import frc.robot.subsystems.swerve.Swerve;
+import frc.robot.subsystems.swerve.SwerveCommands;
 
 import static frc.robot.allcommands.AllCommandsConstants.*;
 
@@ -20,19 +26,27 @@ public class AllCommands {
     private final Gripper gripper;
     private final Pivot pivot;
     private final Funnel funnel;
+    private final Swerve swerve;
 
     private final GripperCommands gripperCMDs;
     private final PivotCommands pivotCMDs;
     private final FunnelCommands funnelCMDs;
+    private final SwerveCommands swerveCMDs;
 
-    public AllCommands(Gripper gripper, Pivot pivot, Funnel funnel) {
+    public AllCommands(Gripper gripper, Pivot pivot, Funnel funnel, Swerve swerve) {
         this.gripper = gripper;
         this.pivot = pivot;
         this.funnel = funnel;
+        this.swerve = swerve;
 
         this.gripperCMDs = new GripperCommands(gripper, funnel);
         this.pivotCMDs = new PivotCommands(pivot);
         this.funnelCMDs = new FunnelCommands(funnel);
+        this.swerveCMDs = new SwerveCommands(swerve);
+    }
+
+    public Command getToPose(Pose2d targetPose2d, TuneableCommand driveCommand){
+        return new DeferredCommand(() -> swerveCMDs.driveToPose(targetPose2d, driveCommand), Set.of(swerve));
     }
     public Command intake() {
         return pivotCMDs.moveToAngle(PIVOT_ANGLE_FOR_INTAKE)

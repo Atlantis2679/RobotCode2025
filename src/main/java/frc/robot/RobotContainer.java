@@ -1,9 +1,13 @@
 package frc.robot;
 
+import static edu.wpi.first.units.Units.Degrees;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -38,7 +42,7 @@ public class RobotContainer {
                 RobotMap.Controllers.OPERATOR_PORT);    
     
     private final SwerveCommands swerveCommands = new SwerveCommands(swerve);
-    private final AllCommands allCommands = new AllCommands(gripper, pivot, funnel);
+    private final AllCommands allCommands = new AllCommands(gripper, pivot, funnel, swerve);
     
     private boolean useStaticCommands = false;
 
@@ -80,8 +84,9 @@ public class RobotContainer {
         swerve.setDefaultCommand(driveCommand);
         TuneablesManager.add("Swerve/drive command", driveCommand.fullTuneable());
         driverController.a().onTrue(new InstantCommand(swerve::resetYaw));
+        driverController.b().whileTrue(allCommands.getToPose(new Pose2d(5.928, 4.182, new Rotation2d(Degrees.of(-179))), driveCommand)
+        .andThen(() -> swerve.setDefaultCommand(driveCommand)));
         driverController.x().onTrue(swerveCommands.xWheelLock());
-
         TuneablesManager.add("Swerve/modules control mode",
                 swerveCommands.controlModules(
                         driverController::getLeftX,
