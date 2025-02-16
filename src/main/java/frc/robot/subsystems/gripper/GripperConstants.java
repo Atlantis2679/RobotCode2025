@@ -11,7 +11,7 @@ public class GripperConstants {
     
     /* Sim: */
     public static class GripperSim {
-        public static final double MOTORS_GEAR_RATIO = 0;
-        public static final double MOTORS_MOMENT_OF_INERTIA = 0;
+        public static final double MOTORS_GEAR_RATIO = 0.1;
+        public static final double MOTORS_MOMENT_OF_INERTIA = 0.1;
     }
 }

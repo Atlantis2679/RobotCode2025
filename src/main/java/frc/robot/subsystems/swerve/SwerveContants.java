@@ -46,7 +46,7 @@ public class SwerveContants {
         public final static double TRANSLATION_KD = 0;
 
         //
-        public final static double ROTATION_KP = 0;
+        public final static double ROTATION_KP = 1;
         public final static double ROTATION_KI = 0;
         public final static double ROTATION_KD = 0;
     }

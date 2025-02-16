@@ -42,6 +42,7 @@ import com.pathplanner.lib.config.ModuleConfig;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+import com.pathplanner.lib.util.PathPlannerLogging;
 
 public class Swerve extends SubsystemBase implements Tuneable {
     private final LogFieldsTable fieldsTable = new LogFieldsTable(getName());
@@ -138,7 +139,17 @@ public class Swerve extends SubsystemBase implements Tuneable {
                     PathPlanner.ROTATION_KD)), 
             config, 
             this::getIsRedAlliance, 
-            this);  
+            this);
+
+        PathPlannerLogging.setLogTargetPoseCallback((pose) -> {
+            fieldsTable.recordOutput("PathPlanner/desired pose", pose);
+        });
+        PathPlannerLogging.setLogCurrentPoseCallback((pose) -> {
+            fieldsTable.recordOutput("PathPlanner/current pose", pose);
+        });
+        PathPlannerLogging.setLogActivePathCallback((path) -> {
+            fieldsTable.recordOutput("PathPlanner/path", path.toArray(new Pose2d[0]));
+        });
         // In case the modules fail to reset to absolute:
         // queueResetModulesToAbsolute();
     }
