@@ -48,11 +48,11 @@ public class RobotContainer {
 
     public RobotContainer() {
         NamedCommands.registerCommand("intake", allCommands.intake());
-        NamedCommands.registerCommand("scoreL1", allCommands.scoreL1());
+        NamedCommands.registerCommand("scoreL1", allCommands.moveToL1());
         NamedCommands.registerCommand("moveToL2", allCommands.moveToL2());
         NamedCommands.registerCommand("moveToL3", allCommands.moveToL3());
         NamedCommands.registerCommand("scoreL3", allCommands.scoreL3());
-        NamedCommands.registerCommand("score", allCommands.scoreL1Shoot());
+        NamedCommands.registerCommand("score", allCommands.moveToL1());
 
         new Trigger(DriverStation::isDisabled).onTrue(swerveCommands.stop().repeatedly().withTimeout(0.5));
         pdh.setSwitchableChannel(true);
@@ -93,14 +93,14 @@ public class RobotContainer {
         operatorController.a().onTrue(allCommands.intake());
         operatorController.leftBumper().onChange(Commands.runOnce(() -> useStaticCommands = !useStaticCommands));
         // operatorController.b().onTrue(Commands.either(allCommands.scoreStaticL1(), allCommands.scoreL1(), () -> useStaticCommands));
-        operatorController.b().onTrue(allCommands.scoreL1());
+        operatorController.b().onTrue(allCommands.moveToL1());
         operatorController.y().onTrue(allCommands.moveToL2());
         operatorController.x().onTrue(allCommands.moveToL3());
         TuneableCommand tuneableAngleAndScore = allCommands.getPivotReadyAndScore();
         // operatorController.x().whileTrue(tuneableAngleAndScore);
         TuneablesManager.add("ready to Angle and score", (Tuneable) tuneableAngleAndScore);
         operatorController.rightTrigger().onTrue(allCommands.scoreL3());
-        operatorController.leftTrigger().onTrue(allCommands.scoreL1Shoot());
+        operatorController.leftTrigger().onTrue(allCommands.scoreL1());
         operatorController.rightBumper().whileTrue(Commands.parallel(
             allCommands.manualFunnelController(operatorController::getLeftY),
             allCommands.manualGripperController(operatorController::getLeftX),

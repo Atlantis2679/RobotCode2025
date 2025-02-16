@@ -46,17 +46,17 @@ public class AllCommands {
         return funnelCMDs.loadCoral(FUNNEL_INTAKE_SPEED).withName("intakeStatic");
     }
 
-    public Command scoreL1() {
+    public Command moveToL1() {
         return pivotCMDs.moveToAngle(PIVOT_ANGLE_FOR_L1)
         .until(() -> pivot.isAtAngle(PIVOT_ANGLE_FOR_L1))
         // .andThen(gripperCMDs.score(GRIPPER_INTAKE_VOLTAGE, GRIPPER_RIGHT_L1_VOLTAGE, GRIPPER_LEFT_L1_VOLTAGE))
         // .finallyDo(pivot::stop)
-        .withName("scoreL1");
+        .withName("moveToL1");
     }
 
-    public Command scoreStaticL1() {
+    public Command moveToL1Static() {
         return funnelCMDs.passCoral(FUNNEL_INTAKE_SPEED, FUNNEL_PASSING_SPEED).alongWith(gripperCMDs.loadCoral(GRIPPER_INTAKE_VOLTAGE))
-            .andThen(gripperCMDs.score(GRIPPER_LOADING_VOLTAGE, GRIPPER_RIGHT_L1_VOLTAGE, GRIPPER_LEFT_L1_VOLTAGE))
+            .andThen(gripperCMDs.score(GRIPPER_RIGHT_L1_VOLTAGE, GRIPPER_LEFT_L1_VOLTAGE))
             .withName("scoreStaticL1");
     }
 
@@ -70,12 +70,12 @@ public class AllCommands {
         .finallyDo(() -> pivot.stop()).withName("moveToL3");
     }
 
-    public Command scoreL1Shoot() {
-        return gripperCMDs.score(GRIPPER_INTAKE_VOLTAGE, GRIPPER_RIGHT_L1_VOLTAGE, GRIPPER_LEFT_L1_VOLTAGE)
+    public Command scoreL1() {
+        return gripperCMDs.score(GRIPPER_RIGHT_L1_VOLTAGE, GRIPPER_LEFT_L1_VOLTAGE)
                 .finallyDo(pivot::stop);
     }
     public Command scoreL3(){
-        return gripperCMDs.score(GRIPPER_INTAKE_VOLTAGE, GRIPPER_L3_VOLTAGE, GRIPPER_L3_VOLTAGE);
+        return gripperCMDs.score(GRIPPER_L3_VOLTAGE, GRIPPER_L3_VOLTAGE);
     }
 
     public TuneableCommand getPivotReadyAndScore() {
@@ -86,7 +86,7 @@ public class AllCommands {
             DoubleHolder rightGripperVoltage = tuneableTable.addNumber("lower roller speed",
                     GRIPPER_RIGHT_TUNEABLE_VOLTAGE);
             return (pivotCMDs.moveToAngle(angleHolder.get()))
-            .andThen(gripperCMDs.score(GRIPPER_INTAKE_VOLTAGE, rightGripperVoltage.get(), leftGripperVoltage.get()))
+            .andThen(gripperCMDs.score(rightGripperVoltage.get(), leftGripperVoltage.get()))
                     .withName("getPivotAngleAndScore");
         });
 
