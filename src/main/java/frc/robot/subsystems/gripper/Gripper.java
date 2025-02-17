@@ -29,9 +29,6 @@ public class Gripper extends SubsystemBase {
         () -> io.leftOuttakeMotorStatusValue.getAsLong() != 0);
         NetworkAlertsManager.addWarningAlert(() -> "Gripper: Left Outtake Motor: " + NetworkAlertsManager.getREVLibErrorMessage((int)io.rightOuttakeMotorStatusValue.getAsLong()),
         () -> io.rightOuttakeMotorStatusValue.getAsLong() != 0);
-        NetworkAlertsManager.addWarningAlert(() -> "Gripper: Back Motor: " + NetworkAlertsManager.getREVLibErrorMessage((int)io.backMotorStatusValue.getAsLong()),
-        () -> io.backMotorStatusValue.getAsLong() != 0);
-
         fieldsTable.update();
     }
 

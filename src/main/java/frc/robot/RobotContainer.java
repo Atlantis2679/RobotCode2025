@@ -17,7 +17,6 @@ import frc.lib.tuneables.TuneablesManager;
 import frc.lib.tuneables.extensions.TuneableCommand;
 import frc.robot.subsystems.funnel.Funnel;
 import frc.robot.allcommands.AllCommands;
-import frc.robot.subsystems.funnel.Funnel;
 import frc.robot.subsystems.gripper.Gripper;
 import frc.robot.subsystems.pivot.Pivot;
 import frc.robot.subsystems.swerve.Swerve;
@@ -29,7 +28,6 @@ public class RobotContainer {
     private final Funnel funnel = new Funnel();
     private final Pivot pivot = new Pivot();
     private final Gripper gripper = new Gripper();
-    private final Funnel funnel = new Funnel();
     private final PowerDistribution pdh = new PowerDistribution();
 
     private final SendableChooser<Command> autoChooser;

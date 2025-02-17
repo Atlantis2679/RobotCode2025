@@ -42,11 +42,6 @@ public class GripperIOSim extends GripperIO {
     protected int getLeftOuttakeMotorStatusValue() {
         return 0;
     }
-
-    @Override
-    protected int getBackMotorStatusValue() {
-        return 0;
-
     
     @Override
     protected double getLeftMotorVoltage() {

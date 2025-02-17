@@ -50,8 +50,13 @@ public class FunnelIOSparksMax extends FunnelIO {
     }
 
     @Override
-    protected int getMotorStatusValue() {
-        return funnelMotor.getLastError().value;
+    protected int getLeftMotorStatusValue() {
+        return funnelLeftMotor.getLastError().value;
+    }
+
+    @Override
+    protected int getRightMotorStatusValue() {
+        return funnelRightMotor.getLastError().value;
     }
     
     @Override

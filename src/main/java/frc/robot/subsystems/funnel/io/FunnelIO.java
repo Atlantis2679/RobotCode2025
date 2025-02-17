@@ -9,7 +9,8 @@ import frc.lib.logfields.LogFieldsTable;
 
 public abstract class FunnelIO extends IOBase {
     public final BooleanSupplier isCoralIn = fields.addBoolean("isCoralIn", this::getIsCoralIn);
-    public final LongSupplier motorStatusValue = fields.addInteger("motorStatusValue", this::getMotorStatusValue);
+    public final LongSupplier leftMotorStatusValue = fields.addInteger("leftMotorStatusValue", this::getLeftMotorStatusValue);
+    public final LongSupplier rightMotorStatusValue = fields.addInteger("rightMotorStatusValue", this::getRightMotorStatusValue);
     public final DoubleSupplier leftVoltage = fields.addDouble("leftVoltage", this::getLeftVoltage);
     public final DoubleSupplier rightVoltage = fields.addDouble("rightVoltage", this::getRightVoltage);
 
@@ -23,7 +24,8 @@ public abstract class FunnelIO extends IOBase {
 
     // Outputs:
     protected abstract boolean getIsCoralIn();
-    protected abstract int getMotorStatusValue();
+    protected abstract int getLeftMotorStatusValue();
+    protected abstract int getRightMotorStatusValue();
     protected abstract double getLeftVoltage();
     protected abstract double getRightVoltage();
 }

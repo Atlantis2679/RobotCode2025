@@ -23,8 +23,10 @@ public class Funnel extends SubsystemBase {
 
     public Funnel() {
         io = Robot.isReal() ? new FunnelIOSparksMax(this.fieldsTable) : new FunnelIOSim(this.fieldsTable);
-        NetworkAlertsManager.addWarningAlert(() -> "Funnel: Motor: " + NetworkAlertsManager.getREVLibErrorMessage(
-            (int)io.motorStatusValue.getAsLong()), () -> io.motorStatusValue.getAsLong() != 0);
+        NetworkAlertsManager.addWarningAlert(() -> "Funnel: Left Motor: " + NetworkAlertsManager.getREVLibErrorMessage(
+            (int)io.leftMotorStatusValue.getAsLong()), () -> io.leftMotorStatusValue.getAsLong() != 0);
+        NetworkAlertsManager.addWarningAlert(() -> "Funnel: Right Motor: " + NetworkAlertsManager.getREVLibErrorMessage(
+            (int)io.rightMotorStatusValue.getAsLong()), () -> io.rightMotorStatusValue.getAsLong() != 0);    
         fieldsTable.update();
     }
 

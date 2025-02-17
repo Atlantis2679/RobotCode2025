@@ -5,7 +5,6 @@ import static frc.robot.subsystems.swerve.SwerveContants.MAX_VOLTAGE;
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.funnel.Funnel;
 
 public class GripperCommands {
     Gripper gripper;

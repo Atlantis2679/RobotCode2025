@@ -13,8 +13,6 @@ public abstract class GripperIO extends IOBase {
         "rightOuttakeMotorStatusValue", this::getRightOuttakeMotorStatusValue);
     public final LongSupplier leftOuttakeMotorStatusValue = fields.addInteger(
     "leftOuttakeMotorStatusValue", this::getLeftOuttakeMotorStatusValue);
-    public final LongSupplier backMotorStatusValue = fields.addInteger(
-        "backMotorStatusValue", this::getBackMotorStatusValue);
     public final DoubleSupplier leftMotorVoltage = fields.addDouble(
         "leftMotorVoltage", this::getLeftMotorVoltage);
     public final DoubleSupplier rightMotorVoltage = fields.addDouble(
@@ -29,7 +27,6 @@ public abstract class GripperIO extends IOBase {
 
     protected abstract int getRightOuttakeMotorStatusValue();
     protected abstract int getLeftOuttakeMotorStatusValue();
-    protected abstract int getBackMotorStatusValue();
     protected abstract double getLeftMotorVoltage();
     protected abstract double getRightMotorVoltage();
 
