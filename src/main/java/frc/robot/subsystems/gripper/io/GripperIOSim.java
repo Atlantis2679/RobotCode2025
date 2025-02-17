@@ -16,7 +16,6 @@ public class GripperIOSim extends GripperIO {
         LinearSystemId.createFlywheelSystem(DCMotor.getNeo550(1), GripperSim.MOTORS_MOMENT_OF_INERTIA,
         GripperSim.MOTORS_GEAR_RATIO), DCMotor.getNeo550(1));
     
-
     public GripperIOSim(LogFieldsTable fieldsTable) {
         super(fieldsTable);
     }
@@ -33,6 +32,21 @@ public class GripperIOSim extends GripperIO {
     protected boolean getIsCoralIn() {
         return false;
     }
+  
+    @Override
+    protected int getRightOuttakeMotorStatusValue() {
+        return 0;
+    }
+
+    @Override
+    protected int getLeftOuttakeMotorStatusValue() {
+        return 0;
+    }
+
+    @Override
+    protected int getBackMotorStatusValue() {
+        return 0;
+
     
     @Override
     protected double getLeftMotorVoltage() {

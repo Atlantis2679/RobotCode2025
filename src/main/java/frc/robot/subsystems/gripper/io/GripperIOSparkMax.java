@@ -31,8 +31,20 @@ public class GripperIOSparkMax extends GripperIO {
 
     // Inputs:
 
+    // Outputs:
+
     @Override
-    protected boolean getIsCoralIn() {
+    protected int getRightOuttakeMotorStatusValue() {
+        return backMotor.getLastError().value;
+    }
+
+    @Override
+    protected int getLeftOuttakeMotorStatusValue() {
+        return leftOuttakeMotor.getLastError().value;
+    }
+
+    @Override
+    protected int getIsCoralIn() {
         return !beamBrake.get();
     }
     

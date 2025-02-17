@@ -9,11 +9,9 @@ import frc.robot.subsystems.funnel.Funnel;
 
 public class GripperCommands {
     Gripper gripper;
-    Funnel funnel;
     
-    public GripperCommands(Gripper gripper, Funnel funnel) {
+    public GripperCommands(Gripper gripper) {
         this.gripper = gripper;
-        this.funnel = funnel;
     }
 
     public Command loadCoral(double voltage) {

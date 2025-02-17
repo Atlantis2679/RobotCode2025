@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.lib.tuneables.Tuneable;
 import frc.lib.tuneables.TuneablesManager;
 import frc.lib.tuneables.extensions.TuneableCommand;
+import frc.robot.subsystems.funnel.Funnel;
 import frc.robot.allcommands.AllCommands;
 import frc.robot.subsystems.funnel.Funnel;
 import frc.robot.subsystems.gripper.Gripper;
@@ -25,6 +26,7 @@ import frc.robot.utils.NaturalXboxController;
 
 public class RobotContainer {
     private final Swerve swerve = new Swerve();
+    private final Funnel funnel = new Funnel();
     private final Pivot pivot = new Pivot();
     private final Gripper gripper = new Gripper();
     private final Funnel funnel = new Funnel();

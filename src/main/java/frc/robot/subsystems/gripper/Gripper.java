@@ -5,6 +5,7 @@ import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.logfields.LogFieldsTable;
 import frc.robot.Robot;
+import frc.robot.subsystems.NetworkAlertsManager;
 import frc.robot.subsystems.gripper.io.GripperIO;
 import frc.robot.subsystems.gripper.io.GripperIOSim;
 import frc.robot.subsystems.gripper.io.GripperIOSparkMax;
@@ -24,6 +25,13 @@ public class Gripper extends SubsystemBase {
         new GripperIOSim(fieldsTable);
 
     public Gripper() {
+        NetworkAlertsManager.addWarningAlert(() -> "Gripper: Right Outtake Motor: " + NetworkAlertsManager.getREVLibErrorMessage((int)io.leftOuttakeMotorStatusValue.getAsLong()),
+        () -> io.leftOuttakeMotorStatusValue.getAsLong() != 0);
+        NetworkAlertsManager.addWarningAlert(() -> "Gripper: Left Outtake Motor: " + NetworkAlertsManager.getREVLibErrorMessage((int)io.rightOuttakeMotorStatusValue.getAsLong()),
+        () -> io.rightOuttakeMotorStatusValue.getAsLong() != 0);
+        NetworkAlertsManager.addWarningAlert(() -> "Gripper: Back Motor: " + NetworkAlertsManager.getREVLibErrorMessage((int)io.backMotorStatusValue.getAsLong()),
+        () -> io.backMotorStatusValue.getAsLong() != 0);
+
         fieldsTable.update();
     }
 
