@@ -19,9 +19,8 @@ public class GripperCommands {
     }
 
     public Command score(double rightVoltageForScoring, double leftVoltageForScoring) {
-        return
-                gripper.run(() -> gripper.setMotorsVoltage(rightVoltageForScoring, leftVoltageForScoring))
-            .withName("scoreL1");
+        return gripper.run(() -> gripper.setMotorsVoltage(rightVoltageForScoring, leftVoltageForScoring))
+            .finallyDo(gripper::stop).withName("scoreL1");
     }
 
     public Command manualController(DoubleSupplier rightSpeed, DoubleSupplier leftSpeed) {
