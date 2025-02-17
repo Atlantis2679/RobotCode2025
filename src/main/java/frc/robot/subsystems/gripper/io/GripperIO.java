@@ -2,6 +2,7 @@ package frc.robot.subsystems.gripper.io;
 
 import java.util.function.BooleanSupplier;
 import java.util.function.LongSupplier;
+import java.util.function.DoubleSupplier;
 
 import frc.lib.logfields.IOBase;
 import frc.lib.logfields.LogFieldsTable;
@@ -14,7 +15,10 @@ public abstract class GripperIO extends IOBase {
     "leftOuttakeMotorStatusValue", this::getLeftOuttakeMotorStatusValue);
     public final LongSupplier backMotorStatusValue = fields.addInteger(
         "backMotorStatusValue", this::getBackMotorStatusValue);
-    
+    public final DoubleSupplier leftMotorVoltage = fields.addDouble(
+        "leftMotorVoltage", this::getLeftMotorVoltage);
+    public final DoubleSupplier rightMotorVoltage = fields.addDouble(
+        "rightMotorVoltage", this::getRightMotorVoltage);
 
     public GripperIO(LogFieldsTable fieldsTable) {
         super(fieldsTable);
@@ -26,10 +30,10 @@ public abstract class GripperIO extends IOBase {
     protected abstract int getRightOuttakeMotorStatusValue();
     protected abstract int getLeftOuttakeMotorStatusValue();
     protected abstract int getBackMotorStatusValue();
+    protected abstract double getLeftMotorVoltage();
+    protected abstract double getRightMotorVoltage();
 
     // Outputs:
-    public abstract void setRightOuttakeMotorVoltage(double voltage);
-    public abstract void setLeftOuttakeMotorVoltage(double voltage);
-    public abstract void setBackMotorVoltage(double voltage);
-
+    public abstract void setRightMotorVoltage(double voltage);
+    public abstract void setLeftMotorVoltage(double voltage);
 }

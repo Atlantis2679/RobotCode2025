@@ -1,10 +1,11 @@
 package frc.robot.subsystems.gripper;
 
-import static frc.robot.subsystems.gripper.GripperConstants.*;
+import static frc.robot.subsystems.swerve.SwerveContants.MAX_VOLTAGE;
 
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.funnel.Funnel;
 
 public class GripperCommands {
     Gripper gripper;
@@ -13,33 +14,20 @@ public class GripperCommands {
         this.gripper = gripper;
     }
 
-    public Command loadCoral() {
-        return gripper.run(() -> gripper.setMotorsVoltage(
-            LODING_OUTTAKE_MOTORS_VOLTAGE, LODING_OUTTAKE_MOTORS_VOLTAGE, LOADING_BACK_MOTOR_VOLTAGE))
-            .until(gripper::getIsCoralIn).finallyDo(gripper::stop).withName("loadCoral");
+    public Command loadCoral(double voltage) {
+        return gripper.run(() -> gripper.setMotorsVoltage(voltage, voltage))
+               .until(gripper::getIsCoralIn).finallyDo(gripper::stop).withName("loadCoral");
     }
 
-    public Command scoreL1() {
-        return gripper.run(() -> gripper.setMotorsVoltage(
-            LODING_OUTTAKE_MOTORS_VOLTAGE, LODING_OUTTAKE_MOTORS_VOLTAGE, LOADING_BACK_MOTOR_VOLTAGE))
-            .until(gripper::getIsCoralIn)
-            .andThen(gripper.run(() -> gripper.setMotorsVoltage(
-                L1_RIGHT_OUTTAKE_MOTOR_VOLTAGE, L1_LEFT_OUTTAKE_MOTOR_VOLTAGE, L1_BACK_MOTOR_VOLTAGE)))
-            .until(() -> !gripper.getIsCoralIn()).finallyDo(gripper::stop).withName("scoreL1");
+    public Command score(double rightVoltageForScoring, double leftVoltageForScoring) {
+        return
+                gripper.run(() -> gripper.setMotorsVoltage(rightVoltageForScoring, leftVoltageForScoring))
+            .withName("scoreL1");
     }
 
-    public Command scoreL3() {
-        return gripper.run(() -> gripper.setMotorsVoltage(
-            LODING_OUTTAKE_MOTORS_VOLTAGE, LODING_OUTTAKE_MOTORS_VOLTAGE, LOADING_BACK_MOTOR_VOLTAGE))
-            .until(gripper::getIsCoralIn)
-            .andThen(gripper.run(() -> gripper.setMotorsVoltage(
-                L3_OUTTAKE_MOTORS_VOLTAGE, L3_OUTTAKE_MOTORS_VOLTAGE, L3_BACK_MOTOR_VOLTAGE)))
-            .until(() -> !gripper.getIsCoralIn()).finallyDo(gripper::stop).withName("scoreL3");
-    }
-
-    public Command manualController(DoubleSupplier rightOuttakeMotorVoltage, DoubleSupplier leftOuttakeMotorVoltage, DoubleSupplier backMotorVoltage) {
+    public Command manualController(DoubleSupplier rightSpeed, DoubleSupplier leftSpeed) {
         return gripper.run(() -> 
-            gripper.setMotorsVoltage(rightOuttakeMotorVoltage.getAsDouble(), leftOuttakeMotorVoltage.getAsDouble(), backMotorVoltage.getAsDouble()))
+            gripper.setMotorsVoltage(rightSpeed.getAsDouble() * MAX_VOLTAGE, leftSpeed.getAsDouble() * MAX_VOLTAGE))
             .finallyDo(gripper::stop).withName("manualController");
     }
 }

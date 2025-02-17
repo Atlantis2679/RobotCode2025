@@ -42,7 +42,9 @@ public class PoseEstimatorWithVision {
         visionCameras.put(FRONT_PHOTON_CAMERA_NAME,
                 new VisionAprilTagsIOPhoton(fieldsTable, FRONT_PHOTON_CAMERA_NAME, fieldLayout,
                         PoseEstimatorConstants.ROBOT_TO_CAMERA_TRANSFORM_PHOTON_FRONT));
-
+        // visionCameras.put(BACk_PHOTON_CAMERA_NAME,
+        //                 new VisionAprilTagsIOPhoton(fieldsTable, BACk_PHOTON_CAMERA_NAME, fieldLayout,
+        //                         PoseEstimatorConstants.ROBOT_TO_CAMERA_TRANSFORM_PHOTON_BACK));
         this.fieldsTable = fieldsTable;
 
         visionCameras.forEach((cameraName, visionIO) -> {

@@ -8,11 +8,13 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.NetworkAlertsManager;
+import frc.robot.subsystems.swerve.SwerveContants.PathPlanner;
 import frc.robot.subsystems.swerve.io.GyroIO;
 import frc.robot.subsystems.swerve.io.GyroIONavX;
 import frc.robot.subsystems.swerve.io.GyroIOSim;
@@ -35,6 +37,12 @@ import java.util.List;
 import java.util.function.BiConsumer;
 
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
+
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.config.ModuleConfig;
+import com.pathplanner.lib.config.PIDConstants;
+import com.pathplanner.lib.config.RobotConfig;
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 
 public class Swerve extends SubsystemBase implements Tuneable {
     private final LogFieldsTable fieldsTable = new LogFieldsTable(getName());
@@ -63,17 +71,17 @@ public class Swerve extends SubsystemBase implements Tuneable {
     // WPILib. For more info:
     // https://docs.wpilib.org/he/stable/docs/software/advanced-controls/geometry/coordinate-systems.html
     public final Translation2d FL_LOCATION = new Translation2d(
-            SwerveContants.TRACK_LENGTH_M / 2,
-            SwerveContants.TRACK_WIDTH_M / 2);
+            SwerveContants.TRACK_LENGTH_METERS / 2,
+            SwerveContants.TRACK_WIDTH_METERS / 2);
     public final Translation2d FR_LOCATION = new Translation2d(
-            SwerveContants.TRACK_LENGTH_M / 2,
-            -SwerveContants.TRACK_WIDTH_M / 2);
+            SwerveContants.TRACK_LENGTH_METERS / 2,
+            -SwerveContants.TRACK_WIDTH_METERS / 2);
     public final Translation2d BL_LOCATION = new Translation2d(
-            -SwerveContants.TRACK_LENGTH_M / 2,
-            SwerveContants.TRACK_WIDTH_M / 2);
+            -SwerveContants.TRACK_LENGTH_METERS / 2,
+            SwerveContants.TRACK_WIDTH_METERS / 2);
     public final Translation2d BR_LOCATION = new Translation2d(
-            -SwerveContants.TRACK_WIDTH_M / 2,
-            -SwerveContants.TRACK_LENGTH_M / 2);
+            -SwerveContants.TRACK_WIDTH_METERS / 2,
+            -SwerveContants.TRACK_LENGTH_METERS / 2);
 
     private final SwerveDriveKinematics swerveKinematics = new SwerveDriveKinematics(
             FL_LOCATION,
@@ -99,13 +107,41 @@ public class Swerve extends SubsystemBase implements Tuneable {
 
         poseEstimator = new PoseEstimatorWithVision(fieldsTable.getSubTable("poseEstimator"), getYawDegreesCCW(),
                 getModulesPositions(), swerveKinematics);
-
+                
         TuneablesManager.add("Swerve", (Tuneable) this);
 
         NetworkAlertsManager.addErrorAlert("Gyro Is Disconnected!", () -> !gyroIO.isConnected.getAsBoolean());
 
         resetYaw();
-        
+
+        ModuleConfig moduleConfig = new ModuleConfig(WHEEL_RADIUS_METERS, MAX_MODULE_VELOCITY_MPS, PathPlanner.FRICTION_WITH_CARPET, DCMotor.getFalcon500(1).withReduction(GEAR_RATIO_DRIVE), MAX_VOLTAGE, 2);
+
+        RobotConfig config = new RobotConfig(PathPlanner.ROBOT_MASS_KG, PathPlanner.MOMENT_OF_INERTIA, moduleConfig, FL_LOCATION, FR_LOCATION, BL_LOCATION, BR_LOCATION);
+
+        try{
+            config = RobotConfig.fromGUISettings();
+        } catch (Exception e) {
+            // Handle exception as needed
+            e.printStackTrace();
+        }
+
+        AutoBuilder.configure(
+            this::getPose,
+            this::resetPose,
+            this::getRobotRelativeChassisSpeeds,
+            (speeds, feedforward) -> driveChassisSpeed(speeds, true), 
+            new PPHolonomicDriveController(
+                new PIDConstants(
+                    PathPlanner.TRANSLATION_KP, 
+                    PathPlanner.TRANSLATION_KI, 
+                    PathPlanner.TRANSLATION_KD),
+                new PIDConstants(
+                    PathPlanner.ROTATION_KP, 
+                    PathPlanner.ROTATION_KI, 
+                    PathPlanner.ROTATION_KD)), 
+            config, 
+            this::getIsRedAlliance, 
+            this);  
         // In case the modules fail to reset to absolute:
         // queueResetModulesToAbsolute();
     }
