@@ -30,7 +30,7 @@ public class AllCommands {
         this.pivot = pivot;
         this.funnel = funnel;
 
-        this.gripperCMDs = new GripperCommands(gripper, funnel);
+        this.gripperCMDs = new GripperCommands(gripper);
         this.pivotCMDs = new PivotCommands(pivot);
         this.funnelCMDs = new FunnelCommands(funnel);
     }
