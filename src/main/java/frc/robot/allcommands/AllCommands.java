@@ -1,5 +1,6 @@
 package frc.robot.allcommands;
 
+import java.util.List;
 import java.util.Set;
 import java.util.function.DoubleSupplier;
 
@@ -9,9 +10,9 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.DeferredCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import frc.FieldConstants;
 import frc.lib.tuneables.extensions.TuneableCommand;
 import frc.lib.valueholders.DoubleHolder;
+import frc.robot.FieldConstants;
 import frc.robot.allcommands.AllCommandsConstants.ManualControllers;
 import frc.robot.subsystems.funnel.Funnel;
 import frc.robot.subsystems.funnel.FunnelCommands;
@@ -50,6 +51,12 @@ public class AllCommands {
     public Command getToPose(Pose2d targetPose2d, TuneableCommand driveCommand){
         return new DeferredCommand(() -> swerveCMDs.driveToPoseWithPID(targetPose2d, driveCommand), Set.of(swerve));
     }
+    public Command alignToReef(TuneableCommand driveCommand) {
+        return new DeferredCommand(() -> swerveCMDs.driveToPoseWithPID(swerve.getClosestPose(FieldConstants.REEF_PLACE_POSES), driveCommand), Set.of(swerve))
+        .onlyWhile(() -> swerve.getDistanceToPose(swerve.getClosestPose(FieldConstants.REEF_PLACE_POSES)) <= AllCommandsConstants.MIN_DISTANCE_TO_AMPALIGN);
+        }        
+    
+    
     public Command intake() {
         return pivotCMDs.moveToAngle(PIVOT_ANGLE_FOR_INTAKE)
         .until(() -> pivot.isAtAngle(PIVOT_ANGLE_FOR_INTAKE)).andThen(
@@ -57,18 +64,8 @@ public class AllCommands {
             .alongWith(gripperCMDs.loadCoral(GRIPPER_INTAKE_VOLTAGE))).until( () -> !funnel.getIsCoralIn() && gripper.getIsCoralIn()))
             .withName("Intake");
     }
+    
 
-
-    // public static FlippablePose2d calculateTargetScoringPose() {
-    //     return TARGET_SCORING_LEVEL.calculateTargetPlacingPosition(TARGET_REEF_SCORING_CLOCK_POSITION, TARGET_REEF_SCORING_SIDE);
-    // }
-        //     public FlippablePose2d calculateTargetPlacingPosition(FieldConstants.ReefClockPosition reefClockPosition, FieldConstants.ReefSide reefSide) {
-        //     final Pose2d reefCenterPose = new Pose2d(FieldConstants.BLUE_REEF_CENTER_TRANSLATION, reefClockPosition.clockAngle);
-        //     final double yTransform = reefSide.shouldFlipYTransform(reefClockPosition) ? -0.17 : 0.17;
-        //     final Transform2d transform = new Transform2d(1.38, yTransform, rotationTransform);
-
-        //     return new FlippablePose2d(reefCenterPose.plus(transform), true);
-        // }
     public Command intakeStatic() {
         return funnelCMDs.loadCoral(FUNNEL_INTAKE_SPEED).withName("intakeStatic");
     }

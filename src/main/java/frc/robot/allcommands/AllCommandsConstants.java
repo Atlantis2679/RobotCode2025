@@ -11,7 +11,6 @@ public class AllCommandsConstants {
     // public static final double GRIPPER_L2_VOLTAGE = 7;
     public static final double GRIPPER_L3_VOLTAGE = -12;
 
-
     public static final double PIVOT_ANGLE_FOR_INTAKE = -112;
     public static final double PIVOT_ANGLE_FOR_L1 = -75;
     public static final double PIVOT_ANGLE_FOR_L2 = 0;//25
@@ -20,6 +19,8 @@ public class AllCommandsConstants {
     public static final double PIVOT_TUNEABLE_ANGLE = 0;
     public static final double GRIPPER_RIGHT_TUNEABLE_VOLTAGE = 0;
     public static final double GRIPPER_LEFT_TUNEABLE_VOLTAGE = 0; 
+
+    public static final double MIN_DISTANCE_TO_AMPALIGN = 1.5;
 
     public static class ManualControllers {
         public static final double FUNNEL_SPEED_MULTIPLAYER = 1;

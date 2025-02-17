@@ -100,9 +100,9 @@ public class SwerveCommands {
     }
     
     public Command driveToPoseWithPID(Pose2d targetPose, Command driveCommand) {
-        PIDController xController = new PIDController(2.1, 0.0, 0.0); 
-        PIDController yController = new PIDController(1.7, 0.0, 0.0);
-        PIDController thetaController = new PIDController(1.1, 0.0, 0.01); 
+        PIDController xController = new PIDController(SwerveContants.DriveToPose.X_KP,SwerveContants.DriveToPose.X_KI , SwerveContants.DriveToPose.X_KD); 
+        PIDController yController = new PIDController(SwerveContants.DriveToPose.Y_KP, SwerveContants.DriveToPose.Y_KI, SwerveContants.DriveToPose.Y_KD);
+        PIDController thetaController = new PIDController(SwerveContants.DriveToPose.ANGLE_KP, SwerveContants.DriveToPose.ANGLE_KI, SwerveContants.DriveToPose.ANGLE_KD); 
         
         thetaController.enableContinuousInput(-Math.PI, Math.PI); 
         
@@ -115,9 +115,9 @@ public class SwerveCommands {
             double angleError = targetPose.getRotation().minus(currentPose.getRotation()).getRadians();
             double thetaSpeed = thetaController.calculate(0, angleError);
             
-            int direction = swerve.getIsRedAlliance() ? -1 : 1;
-
-            swerve.drive(xSpeed * direction, ySpeed * -direction, -thetaSpeed * direction, false, false);
+            // int direction = swerve.getIsRedAlliance() ? -1 : 1;
+            int direction = currentPose.getRotation().getDegrees() < 90 && currentPose.getRotation().getDegrees() > -90 ? 1: -1;
+            swerve.drive(xSpeed*direction, ySpeed*-direction, -thetaSpeed, false, false);
         
         }, swerve)
         .until(() -> {
@@ -125,8 +125,7 @@ public class SwerveCommands {
             
             double currentXVelocity = chassisSpeeds.vxMetersPerSecond;
             double currentYVelocity = chassisSpeeds.vyMetersPerSecond;
-            double currentAngularVelocity = chassisSpeeds.omegaRadiansPerSecond;
-            
+
             boolean atXPosition = swerve.atTranslationPosition(swerve.getPose().getX(), targetPose.getX(), currentXVelocity);
             boolean atYPosition = swerve.atTranslationPosition(swerve.getPose().getY(), targetPose.getY(), currentYVelocity);
             boolean atRotation = swerve.atAngle(targetPose.getRotation());

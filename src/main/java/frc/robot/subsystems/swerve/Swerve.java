@@ -26,6 +26,7 @@ import frc.lib.tuneables.Tuneable;
 import frc.lib.tuneables.TuneableBuilder;
 import frc.lib.tuneables.TuneablesManager;
 import frc.lib.valueholders.DoubleHolder;
+import frc.robot.FieldConstants;
 import frc.robot.Robot;
 import frc.robot.RobotContainer;
 import frc.robot.RobotMap.CANBUS.*;
@@ -99,46 +100,6 @@ public class Swerve extends SubsystemBase implements Tuneable {
 
     public Swerve() {
         fieldsTable.update();
-        fieldsTable.recordOutput("swerve/poseCheck1", new Pose2d(
-            new Translation2d(3.670, 5.107),
-            new Rotation2d(Math.toRadians(-60))
-        ));
-        fieldsTable.recordOutput("swerve/poseCheck2", new Pose2d(
-            new Translation2d(3.939, 5.286),
-            new Rotation2d(Math.toRadians(-60))
-        ));
-        fieldsTable.recordOutput("swerve/poseCheck3", new Pose2d(
-            new Translation2d(5.095, 5.336),
-            new Rotation2d(Math.toRadians(-120))
-        ));
-        fieldsTable.recordOutput("swerve/poseCheck4", new Pose2d(
-            new Translation2d(5.355, 5.167),
-            new Rotation2d(Math.toRadians(-120))
-        ));
-        fieldsTable.recordOutput("swerve/poseCheck5", new Pose2d(
-            new Translation2d(5.913, 4.180),
-            new Rotation2d(Math.toRadians(-180))
-        ));
-        fieldsTable.recordOutput("swerve/poseCheck6", new Pose2d(
-            new Translation2d(5.913, 3.870),
-            new Rotation2d(Math.toRadians(-180))
-        ));
-        fieldsTable.recordOutput("swerve/poseCheck7", new Pose2d(
-            new Translation2d(5.345, 2.903),
-            new Rotation2d(Math.toRadians(120))
-        ));
-        fieldsTable.recordOutput("swerve/poseCheck8", new Pose2d(
-            new Translation2d(5.066, 2.744),
-            new Rotation2d(Math.toRadians(120))
-        ));
-        fieldsTable.recordOutput("swerve/poseCheck9", new Pose2d(
-            new Translation2d(3.949, 2.734),
-            new Rotation2d(Math.toRadians(60))
-        ));
-        fieldsTable.recordOutput("swerve/poseCheck10", new Pose2d(
-            new Translation2d(3.640, 2.873),
-            new Rotation2d(Math.toRadians(60))
-        ));
         isRedAlliance.addDefaultOption("blue", false);
         isRedAlliance.addOption("red", true);
 
@@ -306,8 +267,10 @@ public class Swerve extends SubsystemBase implements Tuneable {
     }
 
     public Pose2d getPose() {
+        fieldsTable.recordOutput("poses", FieldConstants.REEF_PLACE_POSES);
         return poseEstimator.getPose();
     }
+
 
     public void queueResetModulesToAbsolute() {
         for (SwerveModule module : modules) {
@@ -338,7 +301,7 @@ public class Swerve extends SubsystemBase implements Tuneable {
         boolean atPosition = Math.abs(currentPosition - targetPosition) < SwerveContants.TRANSLATION_TOLERANCE_METERS;
         boolean atVelocity = Math.abs(currentVelocity) < SwerveContants.TRANSLATION_VELOCITY_TOLERANCE;
         fieldsTable.recordOutput("AtTargetPosition/isStill", atVelocity);
-        fieldsTable.recordOutput("atTargetPosition" + targetPosition, atPosition);
+        fieldsTable.recordOutput("atTargetPosition-" + targetPosition, atPosition);
         return atPosition && atVelocity;
     }
 
@@ -348,10 +311,35 @@ public class Swerve extends SubsystemBase implements Tuneable {
     double currentAngularVelocity = getRobotRelativeChassisSpeeds().omegaRadiansPerSecond;
     final boolean isAngleStill = Math.abs(currentAngularVelocity) < SwerveContants.ROTATION_VELOCITY_TOLERANCE;
     fieldsTable.recordOutput("AtTargetAngle/isStill", isAngleStill);
-    fieldsTable.recordOutput("atTargetAngle", atTargetAngle);
+    fieldsTable.recordOutput("atTargetAngle-" + targetAngle, atTargetAngle);
     return atTargetAngle && isAngleStill;
-}
+    }
+    public double getDistanceToPose(Pose2d targetPose) {
+        double deltaX = targetPose.getX() - getPose().getX();
+        double deltaY = targetPose.getY() - getPose().getY();
+        double distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+        fieldsTable.recordOutput("distanceTPose", distance);
+        return distance;
+    }
+    public double getAngularDistance(Pose2d targetPose){
+        double deltaTheta = targetPose.getRotation().minus(getPose().getRotation()).getRadians();
+        double angularDistance = Math.abs(deltaTheta); 
+        return angularDistance;
+    }
 
+    public Pose2d getClosestPose(Pose2d[] poses) {
+        Pose2d closestPose = null;
+        double minDistance = Double.MAX_VALUE;
+        for (Pose2d targetPose : poses) {
+            double distance = (getDistanceToPose(targetPose));
+            if (distance < minDistance) {
+                minDistance = distance;
+                closestPose = targetPose;
+            }
+        }
+        fieldsTable.recordOutput("closestPose", closestPose);
+        return closestPose;
+    }
     
 
     public ChassisSpeeds getRobotRelativeChassisSpeeds() {
