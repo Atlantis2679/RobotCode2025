@@ -27,6 +27,7 @@ import frc.lib.tuneables.TuneableBuilder;
 import frc.lib.tuneables.TuneablesManager;
 import frc.lib.valueholders.DoubleHolder;
 import frc.robot.Robot;
+import frc.robot.RobotContainer;
 import frc.robot.RobotMap.CANBUS.*;
 
 import static frc.robot.subsystems.swerve.SwerveContants.*;
@@ -248,6 +249,9 @@ public class Swerve extends SubsystemBase implements Tuneable {
     public Rotation2d getYawDegreesCCW() {
         return gyroYawHelperDegreesCCW.getAngle();
     }
+    public ChassisSpeeds getSelfRelativeVelocity() {
+        return swerveKinematics.toChassisSpeeds();
+    }
 
     public void resetYawDegreesCW(double newYawDegreesCW) {
         Pose2d currentPose = getPose();
@@ -291,6 +295,25 @@ public class Swerve extends SubsystemBase implements Tuneable {
         gyroYawHelperDegreesCCW.resetAngle(pose2d.getRotation());
         poseEstimator.resetPosition(gyroYawHelperDegreesCCW.getMeasuredAngle(), getModulesPositions(), pose2d);
     }
+    public boolean atTranslationPosition(double currentPosition, double targetPosition, double currentVelocity) {
+        boolean atPosition = Math.abs(currentPosition - targetPosition) < SwerveContants.TRANSLATION_TOLERANCE_METERS;
+        boolean atVelocity = Math.abs(currentVelocity) < SwerveContants.TRANSLATION_VELOCITY_TOLERANCE;
+        fieldsTable.recordOutput("AtTargetPosition/isStill", atVelocity);
+        fieldsTable.recordOutput("atTargetPosition" + targetPosition, atPosition);
+        return atPosition && atVelocity;
+    }
+
+    public boolean atAngle(Rotation2d targetAngle) {
+    double angleDifference = targetAngle.minus(getPose().getRotation()).getDegrees();
+    final boolean atTargetAngle = Math.abs(angleDifference) < SwerveContants.ROTATION_TOLERANCE_DEGREES;
+    double currentAngularVelocity = getRobotRelativeChassisSpeeds().omegaRadiansPerSecond;
+    final boolean isAngleStill = Math.abs(currentAngularVelocity) < SwerveContants.ROTATION_VELOCITY_TOLERANCE;
+    fieldsTable.recordOutput("AtTargetAngle/isStill", isAngleStill);
+    fieldsTable.recordOutput("atTargetAngle", atTargetAngle);
+    return atTargetAngle && isAngleStill;
+}
+
+    
 
     public ChassisSpeeds getRobotRelativeChassisSpeeds() {
         return swerveKinematics.toChassisSpeeds(

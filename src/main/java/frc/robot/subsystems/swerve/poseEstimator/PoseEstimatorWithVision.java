@@ -41,7 +41,10 @@ public class PoseEstimatorWithVision {
         visionCameras.put(FRONT_PHOTON_CAMERA_NAME,
                 new VisionAprilTagsIOPhoton(fieldsTable, FRONT_PHOTON_CAMERA_NAME, fieldLayout,
                         PoseEstimatorConstants.ROBOT_TO_CAMERA_TRANSFORM_PHOTON_FRONT));
-
+        // visionCameras.put(BACK_PHOTON_CAMERA_NAME,
+        //                 new VisionAprilTagsIOPhoton(fieldsTable, BACK_PHOTON_CAMERA_NAME, fieldLayout,
+        //                 PoseEstimatorConstants.ROBOT_TO_CAMERA_TRANSFORM_PHOTON_BACK));
+        
         this.fieldsTable = fieldsTable;
 
         poseEstimator = new SwerveDrivePoseEstimator(

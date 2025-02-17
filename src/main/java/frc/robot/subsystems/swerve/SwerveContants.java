@@ -24,6 +24,12 @@ public class SwerveContants {
     public final static double MODULE_TURN_KI = 0;
     public final static double MODULE_TURN_KD = 0;
 
+    static final double
+            TRANSLATION_TOLERANCE_METERS = 0.02,
+            ROTATION_TOLERANCE_DEGREES = 1,
+            TRANSLATION_VELOCITY_TOLERANCE = 0.03,
+            ROTATION_VELOCITY_TOLERANCE = 0.2;
+
     public static class DriverController {
         public final static double DRIVER_ACCELERATION_LIMIT_MPS = 8;
         public final static double DRIVER_ANGULAR_ACCELERATION_LIMIT_RPS = Math.toRadians(720);

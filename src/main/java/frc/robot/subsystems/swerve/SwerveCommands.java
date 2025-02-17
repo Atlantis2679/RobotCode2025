@@ -16,6 +16,7 @@ import com.pathplanner.lib.util.FlippingUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -24,6 +25,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.lib.tuneables.extensions.TuneableCommand;
 import frc.lib.valueholders.BooleanHolder;
+import frc.robot.RobotContainer;
 import frc.robot.subsystems.swerve.SwerveContants.DriveToPose;
 import frc.robot.subsystems.swerve.SwerveContants.RotateToAngle;
 import frc.robot.subsystems.swerve.commands.SwerveDriverController;
@@ -98,50 +100,43 @@ public class SwerveCommands {
     }
     
     public Command driveToPoseWithPID(Pose2d targetPose, Command driveCommand) {
-        PIDController xController = new PIDController(0.7, 0.0, 0.0); 
-        PIDController yController = new PIDController(0.5, 0.0, 0.0);
-        PIDController thetaController = new PIDController(0.1, 0.0, 0.01); // Lower P, Add D
-    
+        PIDController xController = new PIDController(2.1, 0.0, 0.0); 
+        PIDController yController = new PIDController(1.7, 0.0, 0.0);
+        PIDController thetaController = new PIDController(1.1, 0.0, 0.01); 
+        
         thetaController.enableContinuousInput(-Math.PI, Math.PI); 
-    
+        
         return Commands.run(() -> {
-            // Get current robot pose
             Pose2d currentPose = swerve.getPose();
-    
-            // Calculate movement corrections
+
             double xSpeed = xController.calculate(currentPose.getX(), targetPose.getX());
             double ySpeed = yController.calculate(currentPose.getY(), targetPose.getY());
-    
-            // ✅ Fix: Use proper angle wrapping
+            
             double angleError = targetPose.getRotation().minus(currentPose.getRotation()).getRadians();
             double thetaSpeed = thetaController.calculate(0, angleError);
-    
-            // ✅ Fix: Negate thetaSpeed if robot turns wrong way
-            swerve.drive(xSpeed, ySpeed, -thetaSpeed, false, false);
-    
-            // Debugging
-            System.out.println("[DEBUG] X Error: " + (targetPose.getX() - currentPose.getX()));
-            System.out.println("[DEBUG] Y Error: " + (targetPose.getY() - currentPose.getY()));
-            System.out.println("[DEBUG] Rotation Error: " + angleError);
-    
+            
+            int direction = swerve.getIsRedAlliance() ? -1 : 1;
+
+            swerve.drive(xSpeed * direction, ySpeed * -direction, -thetaSpeed * direction, false, false);
+        
         }, swerve)
         .until(() -> {
-            double angleError = targetPose.getRotation().minus(swerve.getPose().getRotation()).getRadians();
-            return Math.abs(targetPose.getX() - swerve.getPose().getX()) < 0.1 &&
-                   Math.abs(targetPose.getY() - swerve.getPose().getY()) < 0.1 &&
-                   Math.abs(angleError) < Math.toRadians(2.0); // ✅ Fix: Use angleError instead of raw subtraction
+            ChassisSpeeds chassisSpeeds = swerve.getRobotRelativeChassisSpeeds();
+            
+            double currentXVelocity = chassisSpeeds.vxMetersPerSecond;
+            double currentYVelocity = chassisSpeeds.vyMetersPerSecond;
+            double currentAngularVelocity = chassisSpeeds.omegaRadiansPerSecond;
+            
+            boolean atXPosition = swerve.atTranslationPosition(swerve.getPose().getX(), targetPose.getX(), currentXVelocity);
+            boolean atYPosition = swerve.atTranslationPosition(swerve.getPose().getY(), targetPose.getY(), currentYVelocity);
+            boolean atRotation = swerve.atAngle(targetPose.getRotation());
+            return atXPosition && atYPosition && atRotation;
         })
         .finallyDo((interrupted) -> {
-            System.out.println("[INFO] Reached target! Stopping...");
             swerve.stop();
             swerve.setDefaultCommand(driveCommand);
         });
     }
-    
-    
-    
-    
-    
     
     public Command stop() {
         return swerve.run(swerve::stop).ignoringDisable(true)

@@ -4,10 +4,12 @@ import java.util.Set;
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.DeferredCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import frc.FieldConstants;
 import frc.lib.tuneables.extensions.TuneableCommand;
 import frc.lib.valueholders.DoubleHolder;
 import frc.robot.allcommands.AllCommandsConstants.ManualControllers;
@@ -56,6 +58,17 @@ public class AllCommands {
             .withName("Intake");
     }
 
+
+    // public static FlippablePose2d calculateTargetScoringPose() {
+    //     return TARGET_SCORING_LEVEL.calculateTargetPlacingPosition(TARGET_REEF_SCORING_CLOCK_POSITION, TARGET_REEF_SCORING_SIDE);
+    // }
+        //     public FlippablePose2d calculateTargetPlacingPosition(FieldConstants.ReefClockPosition reefClockPosition, FieldConstants.ReefSide reefSide) {
+        //     final Pose2d reefCenterPose = new Pose2d(FieldConstants.BLUE_REEF_CENTER_TRANSLATION, reefClockPosition.clockAngle);
+        //     final double yTransform = reefSide.shouldFlipYTransform(reefClockPosition) ? -0.17 : 0.17;
+        //     final Transform2d transform = new Transform2d(1.38, yTransform, rotationTransform);
+
+        //     return new FlippablePose2d(reefCenterPose.plus(transform), true);
+        // }
     public Command intakeStatic() {
         return funnelCMDs.loadCoral(FUNNEL_INTAKE_SPEED).withName("intakeStatic");
     }
