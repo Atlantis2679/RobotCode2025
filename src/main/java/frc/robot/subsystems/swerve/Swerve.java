@@ -99,7 +99,46 @@ public class Swerve extends SubsystemBase implements Tuneable {
 
     public Swerve() {
         fieldsTable.update();
-
+        fieldsTable.recordOutput("swerve/poseCheck1", new Pose2d(
+            new Translation2d(3.670, 5.107),
+            new Rotation2d(Math.toRadians(-60))
+        ));
+        fieldsTable.recordOutput("swerve/poseCheck2", new Pose2d(
+            new Translation2d(3.939, 5.286),
+            new Rotation2d(Math.toRadians(-60))
+        ));
+        fieldsTable.recordOutput("swerve/poseCheck3", new Pose2d(
+            new Translation2d(5.095, 5.336),
+            new Rotation2d(Math.toRadians(-120))
+        ));
+        fieldsTable.recordOutput("swerve/poseCheck4", new Pose2d(
+            new Translation2d(5.355, 5.167),
+            new Rotation2d(Math.toRadians(-120))
+        ));
+        fieldsTable.recordOutput("swerve/poseCheck5", new Pose2d(
+            new Translation2d(5.913, 4.180),
+            new Rotation2d(Math.toRadians(-180))
+        ));
+        fieldsTable.recordOutput("swerve/poseCheck6", new Pose2d(
+            new Translation2d(5.913, 3.870),
+            new Rotation2d(Math.toRadians(-180))
+        ));
+        fieldsTable.recordOutput("swerve/poseCheck7", new Pose2d(
+            new Translation2d(5.345, 2.903),
+            new Rotation2d(Math.toRadians(120))
+        ));
+        fieldsTable.recordOutput("swerve/poseCheck8", new Pose2d(
+            new Translation2d(5.066, 2.744),
+            new Rotation2d(Math.toRadians(120))
+        ));
+        fieldsTable.recordOutput("swerve/poseCheck9", new Pose2d(
+            new Translation2d(3.949, 2.734),
+            new Rotation2d(Math.toRadians(60))
+        ));
+        fieldsTable.recordOutput("swerve/poseCheck10", new Pose2d(
+            new Translation2d(3.640, 2.873),
+            new Rotation2d(Math.toRadians(60))
+        ));
         isRedAlliance.addDefaultOption("blue", false);
         isRedAlliance.addOption("red", true);
 
@@ -110,7 +149,7 @@ public class Swerve extends SubsystemBase implements Tuneable {
                 getModulesPositions(), swerveKinematics);
                 
         TuneablesManager.add("Swerve", (Tuneable) this);
-
+    
         resetYaw();
 
         ModuleConfig moduleConfig = new ModuleConfig(WHEEL_RADIUS_METERS, MAX_MODULE_VELOCITY_MPS, PathPlanner.FRICTION_WITH_CARPET, DCMotor.getFalcon500(1).withReduction(GEAR_RATIO_DRIVE), MAX_VOLTAGE, 2);
