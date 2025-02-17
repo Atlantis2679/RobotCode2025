@@ -14,6 +14,7 @@ import com.ctre.phoenix6.configs.Slot0Configs;
 import static frc.robot.subsystems.swerve.SwerveContants.*;
 
 import frc.lib.logfields.LogFieldsTable;
+import frc.robot.subsystems.NetworkAlertsManager;
 
 public class SwerveModuleIOFalcon extends SwerveModuleIO {
     private final TalonFX driveMotor;
@@ -26,7 +27,7 @@ public class SwerveModuleIOFalcon extends SwerveModuleIO {
 
     private final Slot0Configs turnSlotConfigs;
 
-    public SwerveModuleIOFalcon(LogFieldsTable fieldsTable, int driveMotorID, int turnMotorID, int encoderID) {
+    public SwerveModuleIOFalcon(LogFieldsTable fieldsTable, int driveMotorID, int turnMotorID, int encoderID, int moduleNum) {
         super(fieldsTable);
 
         driveMotor = new TalonFX(driveMotorID);
@@ -49,7 +50,6 @@ public class SwerveModuleIOFalcon extends SwerveModuleIO {
 
         driveMotor.getVelocity().setUpdateFrequency(100);
         driveMotor.getPosition().setUpdateFrequency(100);
-        driveMotor.getConfigurator().apply(driveMotorConfiguration);
 
         // turn motor configs
         TalonFXConfiguration turnMotorConfiguration = new TalonFXConfiguration();
@@ -67,11 +67,25 @@ public class SwerveModuleIOFalcon extends SwerveModuleIO {
         turnSlotConfigs.kD = MODULE_TURN_KD;
 
         turnMotor.getPosition().setUpdateFrequency(100);
-        turnMotor.getConfigurator().apply(turnMotorConfiguration);
 
-        // cancoder configs
         CANcoderConfiguration canCoderConfiguration = new CANcoderConfiguration();
-        canCoder.getConfigurator().apply(canCoderConfiguration);
+
+        NetworkAlertsManager.addStatusCodeAlert("Swerve Module " + moduleNum + " Drive Motor Config Status: ",
+            () -> driveMotor.getConfigurator().apply(driveMotorConfiguration));
+
+        NetworkAlertsManager.addStatusCodeAlert("Swerve Module " + moduleNum + " Turn Motor Config Status: ",
+            () -> turnMotor.getConfigurator().apply(turnMotorConfiguration));
+
+        NetworkAlertsManager.addStatusCodeAlert("Swerve Module " + moduleNum + " CanCoder Config Status: ",
+            () -> canCoder.getConfigurator().apply(canCoderConfiguration));
+
+        NetworkAlertsManager.addStatusCodeAlert("Swerve Module " + moduleNum + " Drive Motor: ",
+            () -> driveMotor.setControl(driveMotor.getAppliedControl()));
+        NetworkAlertsManager.addStatusCodeAlert("Swerve Module " + moduleNum + " Turn Motor: ",
+            () -> turnMotor.setControl(turnMotor.getAppliedControl()));
+        NetworkAlertsManager.addStatusCodeAlert("Swerve Module " + moduleNum + " CanCoder Motor: ",
+            () -> canCoder.setControl(canCoder.getAppliedControl()));
+
     }
 
     @Override

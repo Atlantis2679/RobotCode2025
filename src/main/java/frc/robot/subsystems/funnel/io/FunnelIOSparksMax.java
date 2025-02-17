@@ -8,6 +8,7 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import frc.lib.logfields.LogFieldsTable;
+import frc.robot.subsystems.NetworkAlertsManager;
 
 import static frc.robot.RobotMap.*;
 import static frc.robot.subsystems.funnel.FunnelConstants.MAX_CURRENT;
@@ -21,7 +22,9 @@ public class FunnelIOSparksMax extends FunnelIO {
     public FunnelIOSparksMax(LogFieldsTable fieldsTable) {
         super(fieldsTable);
         motorConfig.smartCurrentLimit(MAX_CURRENT);
-        funnelMotor.configure(motorConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+        NetworkAlertsManager.addRevLibErrorAlert("Funnel: Motor Config: ", () ->
+            funnelMotor.configure(motorConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters));
+        NetworkAlertsManager.addSparkMotorAlert("Funnel: Motor: ", funnelMotor::getFaults, funnelMotor::getWarnings);
     }
 
     @Override

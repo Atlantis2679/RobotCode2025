@@ -29,7 +29,7 @@ public class PivotIOSim extends PivotIO {
         pivotMotor.update(0.02);
     }
 
-    //outputs    
+    // Outputs:    
     @Override
     protected double getLeftMotorCurrent() {
         return pivotMotor.getCurrentDrawAmps();
@@ -45,7 +45,7 @@ public class PivotIOSim extends PivotIO {
         return Math.toDegrees(pivotMotor.getAngleRads());
     }
 
-    //inputs
+    // Inputs:
     @Override
     public void setVoltage(double voltage) {
         lastVoltage = voltage;

@@ -9,6 +9,7 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.wpilibj.DigitalInput;
 import frc.lib.logfields.LogFieldsTable;
 import frc.robot.RobotMap.CANBUS;
+import frc.robot.subsystems.NetworkAlertsManager;
 
 import static frc.robot.RobotMap.*;
 import static frc.robot.subsystems.gripper.GripperConstants.*;
@@ -29,9 +30,15 @@ public class GripperIOSparkMax extends GripperIO {
         outtakeMotorsConfig.smartCurrentLimit(OUTTAKE_MOTORS_MAX_CURRENT);
         backMotorConfig.smartCurrentLimit(BACK_MOTOR_MAX_CURRENT);
 
-        rightOuttakeMotor.configure(outtakeMotorsConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
-        leftOuttakeMotor.configure(outtakeMotorsConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
-        backMotor.configure(backMotorConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+        NetworkAlertsManager.addRevLibErrorAlert("Gripper: Right Outtake Motor Config: ", () -> 
+            rightOuttakeMotor.configure(outtakeMotorsConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters));
+        NetworkAlertsManager.addRevLibErrorAlert("Gripper: Left Outtake Motor Config: ", () ->
+            leftOuttakeMotor.configure(outtakeMotorsConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters));
+        NetworkAlertsManager.addRevLibErrorAlert("Gripper: Back Motor Config: ", () ->
+            backMotor.configure(backMotorConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters));
+        NetworkAlertsManager.addSparkMotorAlert("Gripper: Right Outtake Motor: ", rightOuttakeMotor::getFaults, rightOuttakeMotor::getWarnings);
+        NetworkAlertsManager.addSparkMotorAlert("Gripper: Left Outtake Motor: ", leftOuttakeMotor::getFaults, rightOuttakeMotor::getWarnings);
+        NetworkAlertsManager.addSparkMotorAlert("Gripper: Back Motor: ", backMotor::getFaults, rightOuttakeMotor::getWarnings);
     }
 
     // Outputs:
