@@ -80,11 +80,16 @@ public class SwerveModuleIOFalcon extends SwerveModuleIO {
             () -> canCoder.getConfigurator().apply(canCoderConfiguration));
 
         NetworkAlertsManager.addStatusCodeAlert("Swerve Module " + moduleNum + " Drive Motor: ",
-            () -> driveMotor.setControl(driveMotor.getAppliedControl()));
+            () -> driveMotor.getVersion().getStatus());
         NetworkAlertsManager.addStatusCodeAlert("Swerve Module " + moduleNum + " Turn Motor: ",
-            () -> turnMotor.setControl(turnMotor.getAppliedControl()));
+            () -> turnMotor.getVersion().getStatus());
         NetworkAlertsManager.addStatusCodeAlert("Swerve Module " + moduleNum + " CanCoder Motor: ",
-            () -> canCoder.setControl(canCoder.getAppliedControl()));
+            () -> canCoder.getVersion().getStatus());
+
+        NetworkAlertsManager.addWarningAlert("Swerve Module " + moduleNum + " Drive Motor is Getting Hot!", 
+            () -> driveMotor.getDeviceTemp().getValueAsDouble() > MODULE_TEMPERATORE_WARNING_THRESHOLD);
+        NetworkAlertsManager.addWarningAlert("Swerve Module " + moduleNum + " Turn Motor is Getting Hot!", 
+            () -> turnMotor.getDeviceTemp().getValueAsDouble() > MODULE_TEMPERATORE_WARNING_THRESHOLD);
 
     }
 
