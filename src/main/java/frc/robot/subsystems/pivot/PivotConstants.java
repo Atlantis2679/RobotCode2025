@@ -21,7 +21,7 @@ public class PivotConstants {
     public static final double KS = 0;
     public static final double KA = 0;
     public static final double KV = 0.0005;
-    public static final double KG = 0.02;
+    public static final double KG = 0.03;
 
     public static class Sim {
         public static final double SIM_KS = 0;

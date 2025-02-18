@@ -38,7 +38,7 @@ public class AllCommands {
         return pivotCMDs.moveToAngle(PIVOT_ANGLE_FOR_INTAKE)
         .until(() -> pivot.isAtAngle(PIVOT_ANGLE_FOR_INTAKE)).andThen(
             funnelCMDs.loadCoral(FUNNEL_INTAKE_SPEED).andThen(funnelCMDs.passCoral(FUNNEL_INTAKE_SPEED, FUNNEL_PASSING_SPEED)
-            .alongWith(gripperCMDs.loadCoral(GRIPPER_INTAKE_VOLTAGE))).until( () -> !funnel.getIsCoralIn() && gripper.getIsCoralIn()))
+            .alongWith(gripperCMDs.loadCoral(GRIPPER_INTAKE_VOLTAGE))).until(() -> !funnel.getIsCoralIn() && gripper.getIsCoralIn()))
             .withName("Intake");
     }
 
