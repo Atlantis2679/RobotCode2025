@@ -55,7 +55,8 @@ public class RobotContainer {
         NamedCommands.registerCommand("score", allCommands.scoreL1());
         NamedCommands.registerCommand("stop", allCommands.stopAll());
 
-        new Trigger(DriverStation::isDisabled).onTrue(swerveCommands.stop().repeatedly().withTimeout(0.5));
+        new Trigger(DriverStation::isDisabled).onTrue(swerveCommands.stop().repeatedly().withTimeout(0.5)
+            .alongWith(allCommands.stopAll()));
         pdh.setSwitchableChannel(true);
 
         configureDriverBindings();
@@ -95,15 +96,15 @@ public class RobotContainer {
     private void configureOperatorBindings() {
         operatorController.a().onTrue(allCommands.intake());
         operatorController.leftBumper().onChange(Commands.runOnce(() -> useStaticCommands = !useStaticCommands));
-        // operatorController.b().onTrue(Commands.either(allCommands.scoreStaticL1(), allCommands.scoreL1(), () -> useStaticCommands));
-        operatorController.b().onTrue(allCommands.moveToL1());
+        operatorController.b().onTrue(Commands.either(allCommands.moveToL1Static(), allCommands.moveToL1(), () -> useStaticCommands));
+        // operatorController.b().onTrue(allCommands.moveToL1());
         operatorController.y().onTrue(allCommands.moveToL2());
         operatorController.x().onTrue(allCommands.moveToL3());
         TuneableCommand tuneableAngleAndScore = allCommands.getPivotReadyAndScore();
-        // operatorController.x().whileTrue(tuneableAngleAndScore);
+        operatorController.povUp().whileTrue(tuneableAngleAndScore);
         TuneablesManager.add("ready to Angle and score", (Tuneable) tuneableAngleAndScore);
-        operatorController.rightTrigger().onTrue(allCommands.scoreL3());
-        operatorController.leftTrigger().onTrue(allCommands.scoreL1());
+        operatorController.rightTrigger().whileTrue(allCommands.scoreL3());
+        operatorController.leftTrigger().whileTrue(allCommands.scoreL1());
         operatorController.rightBumper().whileTrue(Commands.parallel(
             allCommands.manualFunnelController(operatorController::getLeftY),
             allCommands.manualGripperController(operatorController::getLeftX),
