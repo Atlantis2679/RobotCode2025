@@ -9,6 +9,7 @@ public class SwerveContants {
 
     public final static double MAX_VOLTAGE = 11;
     public final static double MAX_MODULE_VELOCITY_MPS = 5; // for the max voltage
+    public final static double MODULE_TEMPERATORE_WARNING_THRESHOLD = 0;
 
     public final static double TRACK_WIDTH_M = 0.518;
     public final static double TRACK_LENGTH_M = 0.518;

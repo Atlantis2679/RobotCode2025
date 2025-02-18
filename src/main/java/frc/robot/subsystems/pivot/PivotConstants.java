@@ -26,14 +26,14 @@ public class PivotConstants {
     public static class Sim {
         public static final double SIM_KS = 0;
         public static final double SIM_KA = 0;
-        public static final double SIM_KV = 0;
-        public static final double SIM_KG = 0;
+        public static final double SIM_KV = 0.0005;
+        public static final double SIM_KG = 0.03;
 
-        public static final double JKG_METERS_SQUARED = 0;
-        public static final double JOINT_GEAR_RATIO = 0;
-        public static final double TURNING_MIN_DEGREES = 0;
-        public static final double TURNING_MAX_DEGREES = 0.25;    
+        public static final double JKG_METERS_SQUARED = 0.004;
+        public static final double JOINT_GEAR_RATIO = 1/60.0;
+        public static final double TURNING_MIN_DEGREES = 115;
+        public static final double TURNING_MAX_DEGREES = 110;    
 
-        public static final double ARM_LENGTH = 0;
+        public static final double ARM_LENGTH = 50;
     }
 }
