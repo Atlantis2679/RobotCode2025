@@ -35,11 +35,10 @@ public class AllCommands {
         this.funnelCMDs = new FunnelCommands(funnel);
     }
     public Command intake() {
-        return pivotCMDs.moveToAngle(PIVOT_ANGLE_FOR_INTAKE)
-        .until(() -> pivot.isAtAngle(PIVOT_ANGLE_FOR_INTAKE)).andThen(
+        return pivotCMDs.moveToAngle(PIVOT_ANGLE_FOR_INTAKE).until(() -> pivot.isAtAngle(PIVOT_ANGLE_FOR_INTAKE)).andThen(
             funnelCMDs.loadCoral(FUNNEL_INTAKE_SPEED).andThen(funnelCMDs.passCoral(FUNNEL_INTAKE_SPEED, FUNNEL_PASSING_SPEED)
             .alongWith(gripperCMDs.loadCoral(GRIPPER_BACK_LOADING_VOLTAGE, GRIPPER_RIGHT_LOADING_VOLTAGE, GRIPPER_LEFT_LOADING_VOLTAGE)))
-            .until( () -> !funnel.getIsCoralIn() && gripper.getIsCoralIn())).withName("Intake");
+            .until(() -> !funnel.getIsCoralIn() && gripper.getIsCoralIn())).withName("Intake");
     }
 
     public Command intakeStatic() {
@@ -48,38 +47,30 @@ public class AllCommands {
 
     public Command moveToL1() {
         return pivotCMDs.moveToAngle(PIVOT_ANGLE_FOR_L1)
-        .until(() -> pivot.isAtAngle(PIVOT_ANGLE_FOR_L1))
-        // .andThen(gripperCMDs.score(GRIPPER_RIGHT_L1_VOLTAGE, GRIPPER_LEFT_L1_VOLTAGE))
-        // .finallyDo(pivot::stop)
-        .withName("moveToL1");
+            .withName("moveToL1");
     }
 
-    public Command scoreL1Static() {
+    public Command moveToL1Static() {
         return funnelCMDs.passCoral(FUNNEL_INTAKE_SPEED, FUNNEL_PASSING_SPEED)
             .alongWith(gripperCMDs.loadCoral(GRIPPER_BACK_LOADING_VOLTAGE, GRIPPER_RIGHT_LOADING_VOLTAGE, GRIPPER_LEFT_LOADING_VOLTAGE))
-            .andThen(gripperCMDs.score(GRIPPER_BACK_L1_VOLTAGE, GRIPPER_RIGHT_L1_VOLTAGE, GRIPPER_LEFT_L1_VOLTAGE))
-            .withName("scoreStaticL1");
+            .withName("moveToL1Static");
     }
 
     public Command moveToL2() {
-        return pivotCMDs.moveToAngle(PIVOT_ANGLE_FOR_L2)
-        .until(() -> pivot.isAtAngle(PIVOT_ANGLE_FOR_L2));
+        return pivotCMDs.moveToAngle(PIVOT_ANGLE_FOR_L2).withName("moveToL2");
     }
 
     public Command moveToL3() {
-        return pivotCMDs.moveToAngle(PIVOT_ANGLE_FOR_L3)
-        .until(() -> pivot.isAtAngle(PIVOT_ANGLE_FOR_L3));
+        return pivotCMDs.moveToAngle(PIVOT_ANGLE_FOR_L3).withName("moveToL3");
     }
 
     public Command scoreL1() {
         return gripperCMDs.score(GRIPPER_BACK_L1_VOLTAGE, GRIPPER_RIGHT_L1_VOLTAGE, GRIPPER_LEFT_L1_VOLTAGE)
-                .andThen(gripper::stop)
-                .finallyDo(pivot::stop);
+            .withName("scoreL1");
     }
     public Command scoreL3(){
         return gripperCMDs.score(GRIPPER_BACK_L3_VOLTAGE, GRIPPER_OUTTAKE_L3_VOLTAGE, GRIPPER_OUTTAKE_L3_VOLTAGE)
-            .andThen(gripper::stop)
-            .finallyDo(pivot::stop);
+            .withName("scoreL3");
     }
 
     public TuneableCommand getPivotReadyAndScore() {

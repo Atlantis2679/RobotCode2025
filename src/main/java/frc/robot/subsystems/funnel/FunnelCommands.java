@@ -18,8 +18,8 @@ public class FunnelCommands {
 
     public Command passCoral(double percentageSpeedLoading, double percentageSpeedPassing) {
         return funnel.run(() -> funnel.setMotorPercentageSpeed(percentageSpeedLoading))
-                .until(funnel::getIsCoralIn).andThen(funnel.run(() -> funnel.setMotorPercentageSpeed(percentageSpeedPassing))
-                .until(() -> !funnel.getIsCoralIn())).finallyDo(funnel::stop).withName("passCoral");
+                .until(funnel::getIsCoralIn).andThen(funnel.run(() -> funnel.setMotorPercentageSpeed(percentageSpeedPassing)))
+                .finallyDo(funnel::stop).withName("passCoral");
     }
 
     public Command manualController(DoubleSupplier funnelPercentageSpeed) {
