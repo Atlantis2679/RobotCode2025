@@ -43,6 +43,7 @@ public class SwerveModuleIOSim extends SwerveModuleIO {
         simAbsoluteTurnRotations = calculateToAbsoluteRotations(
                 simAbsoluteTurnRotations + angleDiffRotations);
 
+        // Sim note - RPM stands for Radiands, not Rotations. Can be an incorrect use
         double driveVelocityRPS = driveMotorSim.getAngularVelocityRPM() / 60;
         double driveRotationsDiff = driveVelocityRPS * 0.02;
         simDriveRotations += driveRotationsDiff;
@@ -159,5 +160,16 @@ public class SwerveModuleIOSim extends SwerveModuleIO {
     @Override
     protected double getTurnStatorCurrent() {
         return turnMotorSim.getCurrentDrawAmps();
+    }
+
+    @Override
+    protected double getDriveMotorAcceleration() {
+        return driveMotorSim.getAngularAccelerationRadPerSecSq() 
+    }
+
+    @Override
+    protected double getTurnMotorAcceleration() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getTurnMotorAcceleration'");
     }
 }

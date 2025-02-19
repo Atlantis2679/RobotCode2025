@@ -90,7 +90,6 @@ public class SwerveModuleIOFalcon extends SwerveModuleIO {
             () -> driveMotor.getDeviceTemp().getValueAsDouble() > MODULE_TEMPERATORE_WARNING_THRESHOLD);
         NetworkAlertsManager.addWarningAlert("Swerve Module " + moduleNum + " Turn Motor is Getting Hot!", 
             () -> turnMotor.getDeviceTemp().getValueAsDouble() > MODULE_TEMPERATORE_WARNING_THRESHOLD);
-
     }
 
     @Override
@@ -190,5 +189,17 @@ public class SwerveModuleIOFalcon extends SwerveModuleIO {
     @Override
     protected double getTurnStatorCurrent() {
         return turnMotor.getStatorCurrent().getValueAsDouble();
+    }
+
+    // For logging:
+
+    @Override
+    protected double getDriveMotorAcceleration() {
+        return driveMotor.getAcceleration().getValueAsDouble();
+    }
+
+    @Override
+    protected double getTurnMotorAcceleration() {
+        return turnMotor.getAcceleration().getValueAsDouble();
     }
 }
