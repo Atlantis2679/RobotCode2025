@@ -2,10 +2,11 @@ package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
-import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.pathplanner.lib.path.PathPlannerPath;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PowerDistribution;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -44,8 +45,6 @@ public class RobotContainer {
 
     private boolean isCompetition = true;
 
-    private PathPlannerAuto autoCommand;
-
     public RobotContainer() {
         NamedCommands.registerCommand("intake", allCommands.intake());
         NamedCommands.registerCommand("moveToL1", allCommands.moveToL1());
@@ -67,8 +66,16 @@ public class RobotContainer {
               ? stream.filter(auto -> auto.getName().startsWith("comp"))
               : stream
           );
-          SmartDashboard.putData("Auto Chooser", autoChooser);
-
+        SmartDashboard.putData("Auto Chooser", autoChooser);
+        Field2d field = new Field2d();
+        SmartDashboard.putData(field);
+        autoChooser.onChange((command) -> {
+            try {
+                PathPlannerPath autoPath = PathPlannerPath.fromPathFile(autoChooser.getSelected().getName());
+                field.getObject("Auto Trajectory").setPoses(autoPath.getPathPoses());
+            } catch (Exception e) {
+                Commands.print("Auto Trajectory Loading Failed!");
+            }});
     }
 
     private void configureDriverBindings() {
