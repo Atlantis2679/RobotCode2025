@@ -162,14 +162,14 @@ public class SwerveModuleIOSim extends SwerveModuleIO {
         return turnMotorSim.getCurrentDrawAmps();
     }
 
+    // For logging:
     @Override
     protected double getDriveMotorAcceleration() {
-        return driveMotorSim.getAngularAccelerationRadPerSecSq() 
+        return driveMotorSim.getAngularAccelerationRadPerSecSq();
     }
 
     @Override
     protected double getTurnMotorAcceleration() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getTurnMotorAcceleration'");
+        return turnMotorSim.getAngularAccelerationRadPerSecSq();
     }
 }

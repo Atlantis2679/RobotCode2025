@@ -3,6 +3,7 @@ package frc.robot.allcommands;
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.lib.tuneables.extensions.TuneableCommand;
 import frc.lib.valueholders.DoubleHolder;
@@ -110,6 +111,7 @@ public class AllCommands {
             gripper.stop();
             pivot.stop();
             funnel.stop();
-        }, gripper, pivot, funnel);
+        }, gripper, pivot, funnel)
+        .ignoringDisable(true).withInterruptBehavior(InterruptionBehavior.kCancelIncoming);
     }
 }
