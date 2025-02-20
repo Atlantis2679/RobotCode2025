@@ -1,14 +1,16 @@
 package frc.robot.subsystems.pivot.io;
 
+import com.revrobotics.REVLibError;
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkBase.Faults;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
+import com.revrobotics.spark.SparkBase.Warnings;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import frc.lib.logfields.LogFieldsTable;
-import frc.robot.subsystems.NetworkAlertsManager;
 
 import static frc.robot.RobotMap.*;
 
@@ -19,15 +21,15 @@ public class PivotIOSparkMax extends PivotIO {
         private final SparkMax pivotRightMotor = new SparkMax(CANBUS.PIVOT_RIGHT_MOTOR_ID, MotorType.kBrushless);
         private final DutyCycleEncoder encoder = new DutyCycleEncoder(PIVOT_ENCODER_ID);
         private final SparkMaxConfig config = new SparkMaxConfig();
+
+        private final REVLibError leftMotorConfigError;
+        private final REVLibError rightMotorConfigError;
+
         public PivotIOSparkMax(LogFieldsTable fieldsTable) {
             super(fieldsTable);
             config.smartCurrentLimit(PIVOT_CURRENT_LIMIT);
-            NetworkAlertsManager.addRevLibErrorAlert("Pivot: Left Motor Config Status: ",
-                () -> pivotLeftMotor.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters));
-            NetworkAlertsManager.addRevLibErrorAlert("Pivot: Right Motor Config Status: ",
-                () -> pivotRightMotor.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters));
-            NetworkAlertsManager.addSparkMotorAlert("Pivot: Left Motor: ", pivotLeftMotor::getFaults, pivotLeftMotor::getWarnings);
-            NetworkAlertsManager.addSparkMotorAlert("Pivot: Right Motor: ", pivotRightMotor::getFaults, pivotLeftMotor::getWarnings);
+            leftMotorConfigError = pivotLeftMotor.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+            rightMotorConfigError = pivotRightMotor.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
         }
 
         // Outputs:
@@ -61,6 +63,36 @@ public class PivotIOSparkMax extends PivotIO {
         public void setVoltage(double voltage) {
             pivotLeftMotor.set(voltage);
             pivotRightMotor.set(voltage);
+        }
+
+        @Override
+        protected REVLibError getLeftMotorConfigError() {
+            return leftMotorConfigError;
+        }
+
+        @Override
+        protected REVLibError getRightMotorConfigError() {
+            return rightMotorConfigError;
+        }
+
+        @Override
+        protected Faults getLeftMotorFaults() {
+            return pivotLeftMotor.getFaults();
+        }
+
+        @Override
+        protected Faults getRightMotorFaults() {
+            return pivotRightMotor.getFaults();
+        }
+
+        @Override
+        protected Warnings getLeftMotorWarnings() {
+            return pivotLeftMotor.getWarnings();
+        }
+
+        @Override
+        protected Warnings getRightMotorWarnings() {
+            return pivotRightMotor.getWarnings();
         }
 
 }

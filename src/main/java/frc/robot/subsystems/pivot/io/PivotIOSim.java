@@ -1,6 +1,11 @@
 package frc.robot.subsystems.pivot.io;
 
 import static frc.robot.subsystems.pivot.PivotConstants.Sim.*;
+
+import com.revrobotics.REVLibError;
+import com.revrobotics.spark.SparkBase.Faults;
+import com.revrobotics.spark.SparkBase.Warnings;
+
 import static frc.robot.subsystems.pivot.PivotConstants.INITIAL_OFFSET;
 
 import edu.wpi.first.math.system.plant.DCMotor;
@@ -60,5 +65,35 @@ public class PivotIOSim extends PivotIO {
     @Override
     protected double getRightMotorVoltage() {
         return lastVoltage;
+    }
+
+    @Override
+    protected REVLibError getLeftMotorConfigError() {
+        return REVLibError.fromInt(0);
+    }
+
+    @Override
+    protected REVLibError getRightMotorConfigError() {
+        return REVLibError.fromInt(0);
+    }
+
+    @Override
+    protected Faults getLeftMotorFaults() {
+        return new Faults(0);
+    }
+
+    @Override
+    protected Faults getRightMotorFaults() {
+        return new Faults(0);
+    }
+
+    @Override
+    protected Warnings getLeftMotorWarnings() {
+        return new Warnings(0);
+    }
+
+    @Override
+    protected Warnings getRightMotorWarnings() {
+        return new Warnings(0);
     }
 }

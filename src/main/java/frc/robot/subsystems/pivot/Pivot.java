@@ -16,6 +16,7 @@ import frc.lib.tuneables.TuneablesManager;
 import frc.lib.tuneables.extensions.TuneableArmFeedforward;
 import frc.lib.tuneables.extensions.TuneableTrapezoidProfile;
 import frc.robot.Robot;
+import frc.robot.subsystems.NetworkAlertsManager;
 import frc.robot.subsystems.pivot.PivotConstants.Sim;
 import frc.robot.subsystems.pivot.io.PivotIO;
 import frc.robot.subsystems.pivot.io.PivotIOSim;
@@ -55,6 +56,12 @@ public class Pivot extends SubsystemBase implements Tuneable {
         pivotRotationalHelper = new PrimitiveRotationalSensorHelper(io.angle.getAsDouble(), INITIAL_OFFSET);
         pivotRotationalHelper.enableContinousWrap(UPPER_BOUND, FULL_ROTATION);
         TuneablesManager.add("Pivot", (Tuneable) this);
+
+        NetworkAlertsManager.addRevLibErrorAlert("Pivot: Left Motor: ", io.leftMotorConfigError);
+        NetworkAlertsManager.addRevLibErrorAlert("Pivot: Right Motor: ", io.rightMotorConfigError);
+
+        NetworkAlertsManager.addSparkMotorAlert("Pivot: Left Motor: ", io.leftMotorFaults, io.leftMotorWarnings);
+        NetworkAlertsManager.addSparkMotorAlert("Pivot: Right Motor: ", io.rightMotorFaults, io.rightMotorWarnings);
     }
 
     @Override

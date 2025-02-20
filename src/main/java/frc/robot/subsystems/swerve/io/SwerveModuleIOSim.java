@@ -8,6 +8,8 @@ import edu.wpi.first.wpilibj.simulation.FlywheelSim;
 import frc.lib.logfields.LogFieldsTable;
 import static frc.robot.subsystems.swerve.SwerveContants.*;
 
+import com.ctre.phoenix6.StatusCode;
+
 public class SwerveModuleIOSim extends SwerveModuleIO {
     private final FlywheelSim driveMotorSim;
     private final FlywheelSim turnMotorSim;
@@ -171,5 +173,45 @@ public class SwerveModuleIOSim extends SwerveModuleIO {
     @Override
     protected double getTurnMotorAcceleration() {
         return turnMotorSim.getAngularAccelerationRadPerSecSq();
+    }
+
+    @Override
+    protected double getDriveMotorTemperature() {
+        return 0;
+    }
+
+    @Override
+    protected double getTurnMotorTemperature() {
+        return 0;
+    }
+
+    @Override
+    protected StatusCode getDriveMotorStatusCode() {
+        return StatusCode.valueOf(0);
+    }
+
+    @Override
+    protected StatusCode getDriveMotorConfigStatusCode() {
+        return StatusCode.valueOf(0);
+    }
+
+    @Override
+    protected StatusCode getTurnMotorStatusCode() {
+        return StatusCode.valueOf(0);
+    }
+
+    @Override
+    protected StatusCode getTurnMotorConfigStatusCode() {
+        return StatusCode.valueOf(0);
+    }
+
+    @Override
+    protected StatusCode getCanCoderStatusCode() {
+        return StatusCode.valueOf(0);
+    }
+
+    @Override
+    protected StatusCode getCanCoderConfigStatusCode() {
+        return StatusCode.valueOf(0);
     }
 }

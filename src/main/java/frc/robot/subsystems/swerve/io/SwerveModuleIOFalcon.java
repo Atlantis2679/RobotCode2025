@@ -8,13 +8,13 @@ import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.hardware.CANcoder;
+import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.Slot0Configs;
 
 import static frc.robot.subsystems.swerve.SwerveContants.*;
 
 import frc.lib.logfields.LogFieldsTable;
-import frc.robot.subsystems.NetworkAlertsManager;
 
 public class SwerveModuleIOFalcon extends SwerveModuleIO {
     private final TalonFX driveMotor;
@@ -27,7 +27,11 @@ public class SwerveModuleIOFalcon extends SwerveModuleIO {
 
     private final Slot0Configs turnSlotConfigs;
 
-    public SwerveModuleIOFalcon(LogFieldsTable fieldsTable, int driveMotorID, int turnMotorID, int encoderID, int moduleNum) {
+    private final StatusCode driveMotorConfigStatusCode;
+    private final StatusCode turnMotorConfigStatusCode;
+    private final StatusCode canCoderConfigStatusCode;
+
+    public SwerveModuleIOFalcon(LogFieldsTable fieldsTable, int driveMotorID, int turnMotorID, int encoderID) {
         super(fieldsTable);
 
         driveMotor = new TalonFX(driveMotorID);
@@ -70,26 +74,12 @@ public class SwerveModuleIOFalcon extends SwerveModuleIO {
 
         CANcoderConfiguration canCoderConfiguration = new CANcoderConfiguration();
 
-        NetworkAlertsManager.addStatusCodeAlert("Swerve Module " + moduleNum + " Drive Motor Config Status: ",
-            () -> driveMotor.getConfigurator().apply(driveMotorConfiguration));
+        driveMotorConfigStatusCode = driveMotor.getConfigurator().apply(driveMotorConfiguration);
 
-        NetworkAlertsManager.addStatusCodeAlert("Swerve Module " + moduleNum + " Turn Motor Config Status: ",
-            () -> turnMotor.getConfigurator().apply(turnMotorConfiguration));
+        turnMotorConfigStatusCode = turnMotor.getConfigurator().apply(turnMotorConfiguration);
 
-        NetworkAlertsManager.addStatusCodeAlert("Swerve Module " + moduleNum + " CanCoder Config Status: ",
-            () -> canCoder.getConfigurator().apply(canCoderConfiguration));
+        canCoderConfigStatusCode = canCoder.getConfigurator().apply(canCoderConfiguration);
 
-        NetworkAlertsManager.addStatusCodeAlert("Swerve Module " + moduleNum + " Drive Motor: ",
-            () -> driveMotor.getVersion().getStatus());
-        NetworkAlertsManager.addStatusCodeAlert("Swerve Module " + moduleNum + " Turn Motor: ",
-            () -> turnMotor.getVersion().getStatus());
-        NetworkAlertsManager.addStatusCodeAlert("Swerve Module " + moduleNum + " CanCoder Motor: ",
-            () -> canCoder.getVersion().getStatus());
-
-        NetworkAlertsManager.addWarningAlert("Swerve Module " + moduleNum + " Drive Motor is Getting Hot!", 
-            () -> driveMotor.getDeviceTemp().getValueAsDouble() > MODULE_TEMPERATORE_WARNING_THRESHOLD);
-        NetworkAlertsManager.addWarningAlert("Swerve Module " + moduleNum + " Turn Motor is Getting Hot!", 
-            () -> turnMotor.getDeviceTemp().getValueAsDouble() > MODULE_TEMPERATORE_WARNING_THRESHOLD);
     }
 
     @Override
@@ -201,5 +191,45 @@ public class SwerveModuleIOFalcon extends SwerveModuleIO {
     @Override
     protected double getTurnMotorAcceleration() {
         return turnMotor.getAcceleration().getValueAsDouble();
+    }
+
+    @Override
+    protected double getDriveMotorTemperature() {
+        return driveMotor.getDeviceTemp().getValueAsDouble();
+    }
+
+    @Override
+    protected double getTurnMotorTemperature() {
+        return turnMotor.getDeviceTemp().getValueAsDouble();
+    }
+
+    @Override
+    protected StatusCode getDriveMotorStatusCode() {
+        return driveMotor.getVersion().getStatus();
+    }
+
+    @Override
+    protected StatusCode getDriveMotorConfigStatusCode() {
+        return driveMotorConfigStatusCode;
+    }
+
+    @Override
+    protected StatusCode getTurnMotorStatusCode() {
+        return turnMotor.getVersion().getStatus();
+    }
+
+    @Override
+    protected StatusCode getTurnMotorConfigStatusCode() {
+        return turnMotorConfigStatusCode;
+    }
+
+    @Override
+    protected StatusCode getCanCoderStatusCode() {
+        return canCoder.getVersion().getStatus();
+    }
+
+    @Override
+    protected StatusCode getCanCoderConfigStatusCode() {
+        return canCoderConfigStatusCode;
     }
 }

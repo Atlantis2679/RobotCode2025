@@ -1,15 +1,17 @@
 package frc.robot.subsystems.gripper.io;
 
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.REVLibError;
+import com.revrobotics.spark.SparkBase.Faults;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
+import com.revrobotics.spark.SparkBase.Warnings;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import frc.lib.logfields.LogFieldsTable;
 import frc.robot.RobotMap.CANBUS;
-import frc.robot.subsystems.NetworkAlertsManager;
 
 import static frc.robot.RobotMap.*;
 import static frc.robot.subsystems.gripper.GripperConstants.*;
@@ -24,21 +26,19 @@ public class GripperIOSparkMax extends GripperIO {
     private final SparkMaxConfig outtakeMotorsConfig = new SparkMaxConfig();
     private final SparkMaxConfig backMotorConfig = new SparkMaxConfig();
 
+    private final REVLibError rightOuttakeMotorConfigError;
+    private final REVLibError leftOuttakeMotorConfigError;
+    private final REVLibError backMotorConfigError;
+
     public GripperIOSparkMax(LogFieldsTable fieldsTable) {
         super(fieldsTable);
 
         outtakeMotorsConfig.smartCurrentLimit(OUTTAKE_MOTORS_MAX_CURRENT);
         backMotorConfig.smartCurrentLimit(BACK_MOTOR_MAX_CURRENT);
 
-        NetworkAlertsManager.addRevLibErrorAlert("Gripper: Right Outtake Motor Config: ", () -> 
-            rightOuttakeMotor.configure(outtakeMotorsConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters));
-        NetworkAlertsManager.addRevLibErrorAlert("Gripper: Left Outtake Motor Config: ", () ->
-            leftOuttakeMotor.configure(outtakeMotorsConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters));
-        NetworkAlertsManager.addRevLibErrorAlert("Gripper: Back Motor Config: ", () ->
-            backMotor.configure(backMotorConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters));
-        NetworkAlertsManager.addSparkMotorAlert("Gripper: Right Outtake Motor: ", rightOuttakeMotor::getFaults, rightOuttakeMotor::getWarnings);
-        NetworkAlertsManager.addSparkMotorAlert("Gripper: Left Outtake Motor: ", leftOuttakeMotor::getFaults, rightOuttakeMotor::getWarnings);
-        NetworkAlertsManager.addSparkMotorAlert("Gripper: Back Motor: ", backMotor::getFaults, rightOuttakeMotor::getWarnings);
+        rightOuttakeMotorConfigError = rightOuttakeMotor.configure(outtakeMotorsConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+        leftOuttakeMotorConfigError = leftOuttakeMotor.configure(outtakeMotorsConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+        backMotorConfigError = backMotor.configure(backMotorConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
     }
 
     // Outputs:
@@ -93,5 +93,50 @@ public class GripperIOSparkMax extends GripperIO {
     @Override
     protected double getBackMotorCurrent() {
         return backMotor.getOutputCurrent();
+    }
+
+    @Override
+    protected REVLibError getRightOuttakeMotorConfigError() {
+        return rightOuttakeMotorConfigError;
+    }
+
+    @Override
+    protected REVLibError getLeftOuttakeMotorConfigError() {
+        return leftOuttakeMotorConfigError;
+    }
+
+    @Override
+    protected REVLibError getBackMotorConfigError() {
+        return backMotorConfigError;
+    }
+
+    @Override
+    protected Faults getRightOuttakeMotorFaults() {
+        return rightOuttakeMotor.getFaults();
+    }
+
+    @Override
+    protected Faults getLeftOuttakeMotorFaults() {
+        return leftOuttakeMotor.getFaults();
+    }
+
+    @Override
+    protected Faults getBackMotorFaults() {
+        return backMotor.getFaults();
+    }
+
+    @Override
+    protected Warnings getRightOuttakeMotorWarnings() {
+        return rightOuttakeMotor.getWarnings();
+    }
+
+    @Override
+    protected Warnings getLeftOuttakeMotorWarnings() {
+        return leftOuttakeMotor.getWarnings();
+    }
+
+    @Override
+    protected Warnings getBackMotorWarnings() {
+        return backMotor.getWarnings();
     }
 }

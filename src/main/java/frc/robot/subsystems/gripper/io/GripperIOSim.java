@@ -1,5 +1,9 @@
 package frc.robot.subsystems.gripper.io;
 
+import com.revrobotics.REVLibError;
+import com.revrobotics.spark.SparkBase.Faults;
+import com.revrobotics.spark.SparkBase.Warnings;
+
 import frc.lib.logfields.LogFieldsTable;
 
 public class GripperIOSim extends GripperIO {
@@ -63,5 +67,50 @@ public class GripperIOSim extends GripperIO {
     @Override
     protected double getBackMotorCurrent() {
         return 0;
+    }
+
+    @Override
+    protected REVLibError getRightOuttakeMotorConfigError() {
+        return REVLibError.fromInt(0);
+    }
+
+    @Override
+    protected REVLibError getLeftOuttakeMotorConfigError() {
+        return REVLibError.fromInt(0);
+    }
+
+    @Override
+    protected REVLibError getBackMotorConfigError() {
+        return REVLibError.fromInt(0);
+    }
+
+    @Override
+    protected Faults getRightOuttakeMotorFaults() {
+        return new Faults(0);
+    }
+
+    @Override
+    protected Faults getLeftOuttakeMotorFaults() {
+        return new Faults(0);
+    }
+
+    @Override
+    protected Faults getBackMotorFaults() {
+        return new Faults(0);
+    }
+
+    @Override
+    protected Warnings getRightOuttakeMotorWarnings() {
+        return new Warnings(0);
+    }
+
+    @Override
+    protected Warnings getLeftOuttakeMotorWarnings() {
+        return new Warnings(0);
+    }
+
+    @Override
+    protected Warnings getBackMotorWarnings() {
+        return new Warnings(0);
     }
 }

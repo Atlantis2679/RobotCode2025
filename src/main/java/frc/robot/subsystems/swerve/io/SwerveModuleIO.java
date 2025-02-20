@@ -1,9 +1,12 @@
 package frc.robot.subsystems.swerve.io;
 
 import java.util.function.DoubleSupplier;
+import java.util.function.Supplier;
 
-import frc.lib.logfields.LogFieldsTable;
+import com.ctre.phoenix6.StatusCode;
+
 import frc.lib.logfields.IOBase;
+import frc.lib.logfields.LogFieldsTable;
 
 public abstract class SwerveModuleIO extends IOBase {
         public final DoubleSupplier absoluteTurnAngleRotations = fields.addDouble("absoluteTurnAngleRotations",
@@ -26,6 +29,23 @@ public abstract class SwerveModuleIO extends IOBase {
         public final DoubleSupplier TurnKD = fields.addDouble("Turn kD", this::getTurnKD);
         public final DoubleSupplier driveMotorAcceleration = fields.addDouble("driveMotorAcceleration", this::getDriveMotorAcceleration);
         public final DoubleSupplier turnMotorAcceleration = fields.addDouble("turnMotorAcceleration", this::getTurnMotorAcceleration);
+        public final DoubleSupplier driveMotorTemperature = fields.addDouble(
+                "driveMotorTemperature", this::getDriveMotorTemperature);
+        public final DoubleSupplier turnMotorTemperature = fields.addDouble(
+                "turnMotorTemperature", this::getTurnMotorTemperature);
+        public final Supplier<StatusCode> driveMotorConfigStatusCode = fields.addStatusCode(
+                "driveMotorConfigStatusCode", this::getDriveMotorConfigStatusCode);
+        public final Supplier<StatusCode> driveMotorStatusCode = fields.addStatusCode(
+                "driveMotorStatusCode", this::getDriveMotorStatusCode);
+        public final Supplier<StatusCode> turnMotorConfigStatusCode = fields.addStatusCode(
+                "turnMotorConfigStatusCode", this::getTurnMotorConfigStatusCode);
+        public final Supplier<StatusCode> turnMotorStatusCode = fields.addStatusCode(
+                "turnMotorStatusCode", this::getTurnMotorStatusCode);
+        public final Supplier<StatusCode> canCoderConfigStatusCode = fields.addStatusCode(
+                "canCoderConfigStatusCode", this::getCanCoderConfigStatusCode);
+        public final Supplier<StatusCode> canCoderStatusCode = fields.addStatusCode(
+                "canCoderStatusCode", this::getCanCoderStatusCode);
+        
 
         public SwerveModuleIO(LogFieldsTable fieldsTable) {
                 super(fieldsTable);
@@ -58,6 +78,20 @@ public abstract class SwerveModuleIO extends IOBase {
         protected abstract double getDriveMotorAcceleration();
 
         protected abstract double getTurnMotorAcceleration();
+
+        // Network alerts Info:
+
+        protected abstract double getDriveMotorTemperature();
+        protected abstract double getTurnMotorTemperature();
+
+        protected abstract StatusCode getDriveMotorStatusCode();
+        protected abstract StatusCode getDriveMotorConfigStatusCode();
+
+        protected abstract StatusCode getTurnMotorStatusCode();
+        protected abstract StatusCode getTurnMotorConfigStatusCode();
+
+        protected abstract StatusCode getCanCoderStatusCode();
+        protected abstract StatusCode getCanCoderConfigStatusCode();
 
         // Outputs
 
