@@ -46,11 +46,21 @@ public class FunnelIOSparksMax extends FunnelIO {
 
     @Override
     protected double getLeftVoltage() {
-        return funnelLeftMotor.getBusVoltage();
+        return funnelLeftMotor.getAppliedOutput();
     }
 
     @Override
+    protected int getLeftMotorStatusValue() {
+        return funnelLeftMotor.getLastError().value;
+    }
+
+    @Override
+    protected int getRightMotorStatusValue() {
+        return funnelRightMotor.getLastError().value;
+    }
+    
+    @Override
     protected double getRightVoltage() {
-        return funnelRightMotor.getBusVoltage();
+        return funnelRightMotor.getAppliedOutput();
     }
 }

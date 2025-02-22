@@ -5,6 +5,7 @@ import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.logfields.LogFieldsTable;
 import frc.robot.Robot;
+import frc.robot.subsystems.NetworkAlertsManager;
 import frc.robot.subsystems.gripper.io.GripperIO;
 import frc.robot.subsystems.gripper.io.GripperIOSim;
 import frc.robot.subsystems.gripper.io.GripperIOSparkMax;
@@ -24,6 +25,11 @@ public class Gripper extends SubsystemBase {
         new GripperIOSim(fieldsTable);
 
     public Gripper() {
+        NetworkAlertsManager.addWarningAlert(() -> "Gripper: Right Outtake Motor: " + NetworkAlertsManager.getREVLibErrorMessage((int)io.leftOuttakeMotorStatusValue.getAsLong()),
+        () -> io.leftOuttakeMotorStatusValue.getAsLong() != 0);
+        NetworkAlertsManager.addWarningAlert(() -> "Gripper: Left Outtake Motor: " + NetworkAlertsManager.getREVLibErrorMessage((int)io.rightOuttakeMotorStatusValue.getAsLong()),
+        () -> io.rightOuttakeMotorStatusValue.getAsLong() != 0);
+        fieldsTable.update();
     }
 
     @Override
@@ -33,7 +39,8 @@ public class Gripper extends SubsystemBase {
         fieldsTable.recordOutput("right motor voltage demand", lastRightMotorVoltageDemand);
         fieldsTable.recordOutput("left motor voltage demand", lastLeftMotorVoltageDemand);
         fieldsTable.recordOutput("last debauncer value", lastDebouncerValue);
-    }
+        fieldsTable.recordOutput("isCoralIn", getIsCoralIn());
+    }   
 
     public boolean getIsCoralIn() {
         return lastDebouncerValue = isCoralInDebouncer.calculate(io.isCoraIn.getAsBoolean());
@@ -52,4 +59,7 @@ public class Gripper extends SubsystemBase {
         io.setRightMotorVoltage(0);
         io.setLeftMotorVoltage(0);
     }
+    //     public void initTuneable(TuneableBuilder builder) {
+    //     builder.addChild("Pivot PID", pivotPidController);
+    // }
 }

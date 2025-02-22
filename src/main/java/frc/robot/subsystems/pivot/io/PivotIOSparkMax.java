@@ -8,15 +8,16 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import frc.lib.logfields.LogFieldsTable;
-import frc.robot.RobotMap.CANBUS;
+import static frc.robot.RobotMap.*;
+
 import static frc.robot.subsystems.pivot.PivotConstants.*;
 
-public class PivotIOSparxMax extends PivotIO {
+public class PivotIOSparkMax extends PivotIO {
         private final SparkMax pivotLeftMotor = new SparkMax(CANBUS.PIVOT_LEFT_MOTOR_ID, MotorType.kBrushless);
         private final SparkMax pivotRightMotor = new SparkMax(CANBUS.PIVOT_RIGHT_MOTOR_ID, MotorType.kBrushless);
-        private final DutyCycleEncoder encoder = new DutyCycleEncoder(CANBUS.PIVOT_ENCODER_ID);
+        private final DutyCycleEncoder encoder = new DutyCycleEncoder(PIVOT_ENCODER_ID);
         private final SparkMaxConfig config = new SparkMaxConfig();
-        public PivotIOSparxMax(LogFieldsTable fieldsTable) {
+        public PivotIOSparkMax(LogFieldsTable fieldsTable) {
             super(fieldsTable);
             config.smartCurrentLimit(PIVOT_CURRENT_LIMIT);
             pivotLeftMotor.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
@@ -35,8 +36,18 @@ public class PivotIOSparxMax extends PivotIO {
         }
 
         @Override
+        protected double getLeftMotorVoltage() {
+            return pivotLeftMotor.getAppliedOutput() * pivotLeftMotor.getBusVoltage();
+        }
+
+        @Override
+        protected double getRightMotorVoltage() {
+            return pivotRightMotor.getAppliedOutput() * pivotRightMotor.getBusVoltage();
+        }
+
+        @Override
         protected double getPivotAngleDegrees() {
-            return encoder.get();
+            return encoder.get()*360;
         }
 
         //inputs

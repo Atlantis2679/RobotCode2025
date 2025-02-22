@@ -10,6 +10,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import frc.lib.logfields.LogFieldsTable;
+import frc.robot.subsystems.NetworkAlertsManager;
 import frc.robot.subsystems.swerve.poseEstimator.io.VisionAprilTagsIO;
 import frc.robot.subsystems.swerve.poseEstimator.io.VisionAprilTagsIOPhoton;
 
@@ -41,8 +42,14 @@ public class PoseEstimatorWithVision {
         visionCameras.put(FRONT_PHOTON_CAMERA_NAME,
                 new VisionAprilTagsIOPhoton(fieldsTable, FRONT_PHOTON_CAMERA_NAME, fieldLayout,
                         PoseEstimatorConstants.ROBOT_TO_CAMERA_TRANSFORM_PHOTON_FRONT));
-
+        // visionCameras.put(BACk_PHOTON_CAMERA_NAME,
+        //                 new VisionAprilTagsIOPhoton(fieldsTable, BACk_PHOTON_CAMERA_NAME, fieldLayout,
+        //                         PoseEstimatorConstants.ROBOT_TO_CAMERA_TRANSFORM_PHOTON_BACK));
         this.fieldsTable = fieldsTable;
+
+        visionCameras.forEach((cameraName, visionIO) -> {
+            NetworkAlertsManager.addErrorAlert(cameraName + " Is Disconnected!", () -> !visionIO.isCameraConnected.getAsBoolean());
+        });
 
         poseEstimator = new SwerveDrivePoseEstimator(
                 swerveKinematics,

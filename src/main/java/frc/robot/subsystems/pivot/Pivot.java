@@ -16,21 +16,22 @@ import frc.lib.tuneables.TuneablesManager;
 import frc.lib.tuneables.extensions.TuneableArmFeedforward;
 import frc.lib.tuneables.extensions.TuneableTrapezoidProfile;
 import frc.robot.Robot;
+import frc.robot.subsystems.pivot.PivotConstants.Sim;
 import frc.robot.subsystems.pivot.io.PivotIO;
 import frc.robot.subsystems.pivot.io.PivotIOSim;
-import frc.robot.subsystems.pivot.io.PivotIOSparxMax;
+import frc.robot.subsystems.pivot.io.PivotIOSparkMax;
 import frc.robot.utils.PrimitiveRotationalSensorHelper;
 
 public class Pivot extends SubsystemBase implements Tuneable {
     private final LogFieldsTable fieldsTable = new LogFieldsTable(getName());
 
-    private final PivotIO io = Robot.isSimulation() ? new PivotIOSim(fieldsTable) : new PivotIOSparxMax(fieldsTable);
+    private final PivotIO io = Robot.isSimulation() ? new PivotIOSim(fieldsTable) :new PivotIOSparkMax(fieldsTable);
     
     private final PivotVisualizer pivotVisualizer = new PivotVisualizer(fieldsTable, "Real Mech2d",
             new Color8Bit(Color.kPurple));
     private final PivotVisualizer desiredPivotVisualizer = new PivotVisualizer(fieldsTable, "Desired Visualizer",
             new Color8Bit(Color.kYellow));
-
+    
     private final PrimitiveRotationalSensorHelper pivotRotationalHelper;
 
     private final TuneableTrapezoidProfile pivotTrapezoid = new TuneableTrapezoidProfile(
@@ -41,9 +42,16 @@ public class Pivot extends SubsystemBase implements Tuneable {
     private TuneableArmFeedforward pivotFeedforward = Robot.isSimulation() ? new TuneableArmFeedforward(Sim.SIM_KS, Sim.SIM_KG, Sim.SIM_KV, Sim.SIM_KA)
         : new TuneableArmFeedforward(KS, KG, KV, KA);
 
+
     private double lastDesiredVoltage = 0;
 
+    private double maxAngle = MAX_ANGLE_DEGREES;
+    private double minAngle = MIN_ANGLE_DEGREES;
+
+    private double upperBound = UPPER_BOUND;
+
     public Pivot() {
+        fieldsTable.update();
         pivotRotationalHelper = new PrimitiveRotationalSensorHelper(io.angle.getAsDouble(), INITIAL_OFFSET);
         pivotRotationalHelper.enableContinousWrap(UPPER_BOUND, FULL_ROTATION);
         TuneablesManager.add("Pivot", (Tuneable) this);
@@ -53,13 +61,17 @@ public class Pivot extends SubsystemBase implements Tuneable {
     public void periodic() {
         pivotRotationalHelper.update(io.angle.getAsDouble());
         pivotVisualizer.update(getAngleDegrees());
+        fieldsTable.recordOutput("angle", getAngleDegrees());
         fieldsTable.recordOutput("Desired Voltage", lastDesiredVoltage);
+        fieldsTable.recordOutput("rotaionHelper", getAngleDegrees());
+        fieldsTable.recordOutput("feedForWord", pivotFeedforward.getArmFeedforward());
+        fieldsTable.recordOutput("velocity", pivotRotationalHelper.getVelocity() * Math.PI / 180);
     }
 
     public void setPivotVoltage(double voltage) {
         voltage = MathUtil.clamp(voltage, -MAX_VOLTAGE, MAX_VOLTAGE);
-        if((getAngleDegrees() > MAX_ANGLE_DEGREES && voltage > 0)
-            || (getAngleDegrees() < MIN_ANGLE_DEGREES && voltage < 0)) {
+        if((getAngleDegrees() > maxAngle && voltage > 0)
+            || (getAngleDegrees() < minAngle && voltage < 0)) {
             voltage = 0;
         }
         lastDesiredVoltage = voltage;
@@ -94,6 +106,7 @@ public class Pivot extends SubsystemBase implements Tuneable {
     }
 
     public boolean isAtAngle(double desiredAngleDegrees) {
+        fieldsTable.recordOutput("desored angle", desiredAngleDegrees);
         return Math.abs(desiredAngleDegrees - getAngleDegrees()) < MESURED_ANGLE_TOLERENCE_DEGREES;
     }
 
@@ -106,5 +119,12 @@ public class Pivot extends SubsystemBase implements Tuneable {
         builder.addChild("Pivot feedforward", pivotFeedforward);
         builder.addChild("Pivot Trapezoid profile", pivotTrapezoid);
         builder.addChild("Pivot angle degrees", pivotRotationalHelper);
+        builder.addDoubleProperty("Pivot max angle", () -> maxAngle, (angle) -> maxAngle = angle);
+        builder.addDoubleProperty("Pivot min angle", () -> minAngle, (angle) -> minAngle = angle);
+        builder.addDoubleProperty("Pivot upper bound", () -> upperBound,
+            (newUpperBound) -> {
+                upperBound = newUpperBound;
+                pivotRotationalHelper.enableContinousWrap(newUpperBound, FULL_ROTATION);
+            });
     }
 }

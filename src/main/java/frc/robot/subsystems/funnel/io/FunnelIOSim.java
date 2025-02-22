@@ -22,6 +22,16 @@ public class FunnelIOSim extends FunnelIO {
     }
 
     @Override
+    protected int getLeftMotorStatusValue() {
+        return 0;
+    }
+
+    @Override
+    protected int getRightMotorStatusValue() {
+        return 0;
+    }
+  
+    @Override
     protected double getLeftVoltage() {
         return 0;
     }

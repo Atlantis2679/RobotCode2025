@@ -6,6 +6,7 @@ import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.logfields.LogFieldsTable;
 import frc.robot.Robot;
+import frc.robot.subsystems.NetworkAlertsManager;
 import frc.robot.subsystems.funnel.io.FunnelIO;
 import frc.robot.subsystems.funnel.io.FunnelIOSim;
 import frc.robot.subsystems.funnel.io.FunnelIOSparksMax;
@@ -22,6 +23,11 @@ public class Funnel extends SubsystemBase {
 
     public Funnel() {
         io = Robot.isReal() ? new FunnelIOSparksMax(this.fieldsTable) : new FunnelIOSim(this.fieldsTable);
+        NetworkAlertsManager.addWarningAlert(() -> "Funnel: Left Motor: " + NetworkAlertsManager.getREVLibErrorMessage(
+            (int)io.leftMotorStatusValue.getAsLong()), () -> io.leftMotorStatusValue.getAsLong() != 0);
+        NetworkAlertsManager.addWarningAlert(() -> "Funnel: Right Motor: " + NetworkAlertsManager.getREVLibErrorMessage(
+            (int)io.rightMotorStatusValue.getAsLong()), () -> io.rightMotorStatusValue.getAsLong() != 0);    
+        fieldsTable.update();
     }
 
     @Override
@@ -30,6 +36,7 @@ public class Funnel extends SubsystemBase {
         fieldsTable.recordOutput("left motor real voltage", io.leftVoltage.getAsDouble());
         fieldsTable.recordOutput("motors voltage demand", lastDemandVoltage);
         fieldsTable.recordOutput("last debauncer value", lastDebouncerValue);
+        fieldsTable.recordOutput("isCoralIn", getIsCoralIn());
     }
 
     public void setMotorVoltage(double voltageDemand) {
