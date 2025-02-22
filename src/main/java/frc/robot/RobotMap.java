@@ -13,9 +13,9 @@ public class RobotMap {
     
     public static final int GRIPPER_BEAM_BRAKE_ID = 0;
 
-    public static final int FUNNEL_BEAM_BRAKE_ID = 0;
+    public static final int FUNNEL_BEAM_BRAKE_ID = 9;
 
-    public static final int PIVOT_ENCODER_ID = 0;
+    public static final int PIVOT_ENCODER_ID = 1;
 
     public static class Controllers {
         public static final int DRIVER_PORT = 0;
@@ -23,13 +23,13 @@ public class RobotMap {
     }
        
     public static class CANBUS {
-        public static final int FUNNEL_MOTOR_ID = 0;
+        public static final int FUNNEL_MOTOR_ID = 10;
 
-        public static final int GRIPPER_LEFT_OUTTAKE_MOTOR_ID = 0;
-        public static final int GRIPPER_RIGHT_OUTTAKE_MOTOR_ID = 0;
-        public static final int GRIPPER_BACK_MOTOR_ID = 0;
+        public static final int GRIPPER_LEFT_OUTTAKE_MOTOR_ID = 13;
+        public static final int GRIPPER_RIGHT_OUTTAKE_MOTOR_ID = 14;
+        public static final int GRIPPER_BACK_MOTOR_ID = 12;
 
-        public static final int PIVOT_MOTOR_ID = 0;
+        public static final int PIVOT_MOTOR_ID = 11;
     
         public class ModuleFL {
             public final static int DRIVE_MOTOR_ID = 20;
@@ -44,14 +44,14 @@ public class RobotMap {
         }
     
         public class ModuleBL {
-            public final static int DRIVE_MOTOR_ID = 24;
-            public final static int TURN_MOTOR_ID = 25;
+            public final static int DRIVE_MOTOR_ID = 26;
+            public final static int TURN_MOTOR_ID = 27;
             public final static int ENCODER_ID = 52;
         }
     
         public class ModuleBR {
-            public final static int DRIVE_MOTOR_ID = 26;
-            public final static int TURN_MOTOR_ID = 27;
+            public final static int DRIVE_MOTOR_ID = 24;
+            public final static int TURN_MOTOR_ID = 25;
             public final static int ENCODER_ID = 53;
         }
     }

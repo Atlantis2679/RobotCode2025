@@ -39,7 +39,13 @@ public class AllCommands {
         return pivotCMDs.moveToAngle(PIVOT_ANGLE_FOR_INTAKE).until(() -> pivot.isAtAngle(PIVOT_ANGLE_FOR_INTAKE)).andThen(
             funnelCMDs.loadCoral(FUNNEL_INTAKE_SPEED).andThen(funnelCMDs.passCoral(FUNNEL_INTAKE_SPEED, FUNNEL_PASSING_SPEED)
             .alongWith(gripperCMDs.loadCoral(GRIPPER_BACK_LOADING_VOLTAGE, GRIPPER_RIGHT_LOADING_VOLTAGE, GRIPPER_LEFT_LOADING_VOLTAGE)))
-            .until(() -> !funnel.getIsCoralIn() && gripper.getIsCoralIn())).withName("Intake");
+            .until(() -> !funnel.getIsCoralIn() && gripper.getIsCoralIn()))
+            .finallyDo((intterapted) -> {
+                pivot.stop();
+                funnel.stop();
+                gripper.stop();
+            })
+            .withName("Intake");
     }
 
     public Command intakeStatic() {
@@ -67,11 +73,11 @@ public class AllCommands {
 
     public Command scoreL1() {
         return gripperCMDs.score(GRIPPER_BACK_L1_VOLTAGE, GRIPPER_RIGHT_L1_VOLTAGE, GRIPPER_LEFT_L1_VOLTAGE)
-            .withName("scoreL1");
+            .finallyDo(() -> gripper.stop()).withName("scoreL1");
     }
-    public Command scoreL3(){
+    public Command scoreL3() {
         return gripperCMDs.score(GRIPPER_BACK_L3_VOLTAGE, GRIPPER_OUTTAKE_L3_VOLTAGE, GRIPPER_OUTTAKE_L3_VOLTAGE)
-            .withName("scoreL3");
+        .finallyDo(() -> gripper.stop()).withName("scoreL3");
     }
 
     public TuneableCommand getPivotReadyAndScore() {

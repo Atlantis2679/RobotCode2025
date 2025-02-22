@@ -118,7 +118,7 @@ public class Swerve extends SubsystemBase implements Tuneable {
 
         RobotConfig config = new RobotConfig(PathPlanner.ROBOT_MASS_KG, PathPlanner.MOMENT_OF_INERTIA, moduleConfig, FL_LOCATION, FR_LOCATION, BL_LOCATION, BR_LOCATION);
 
-        try{
+        try {
             config = RobotConfig.fromGUISettings();
         } catch (Exception e) {
             // Handle exception as needed
