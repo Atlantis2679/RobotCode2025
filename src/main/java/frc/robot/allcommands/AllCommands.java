@@ -1,5 +1,6 @@
 package frc.robot.allcommands;
 
+import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.wpilibj2.command.Command;
@@ -89,6 +90,44 @@ public class AllCommands {
                     .withName("getPivotAngleAndScore");
         });
 
+    }
+
+    /*
+     * The Expected Behavior:
+     * 1. Manual funnel conntroller
+     * 2. Manual gripper conntroller
+     * 3. Manual pivot conntroller
+     * 4. Pivot move to intake
+     * 5. Funnel load coral
+     * 6. Funnel pass coral and gripper load coral
+     * 7. Pivot move to L1
+     * 8. Score L1
+     * 9. Pivot move to intake
+     * 10. Funnel load and pass and Gripper load coral
+     * 11. Pivot move to scoreL3
+     * 12. Score L3
+     * 13. Pivot move to L2
+     * 14. Pivot move to rest
+     */
+
+    public TuneableCommand testWizard(BooleanSupplier moveToNext, DoubleSupplier firstSpeed, DoubleSupplier secondSpeed, DoubleSupplier thirdSpeed) {
+        return TuneableCommand.wrap(tuneableTable -> 
+            manualFunnelController(firstSpeed).until(moveToNext)
+            .andThen(gripperCMDs.manualController(
+                    () -> firstSpeed.getAsDouble() * ManualControllers.GRIPPER_BACK_SPEED_MULTIPLAYER,
+                    () -> secondSpeed.getAsDouble() * ManualControllers.GRIPPER_RIGHT_SPEED_MULTIPLAYER, 
+                    () -> thirdSpeed.getAsDouble() * ManualControllers.GRIPPER_LEFT_SPEED_MULTIPLAYER))
+            .until(moveToNext).andThen(manualPivotController(firstSpeed)).until(moveToNext)
+            .andThen(pivotCMDs.moveToAngle(PIVOT_ANGLE_FOR_INTAKE)).andThen(Commands.waitUntil(moveToNext))
+            .andThen(funnelCMDs.loadCoral(FUNNEL_INTAKE_SPEED)).until(moveToNext)
+            .andThen(funnelCMDs.passCoral(FUNNEL_INTAKE_SPEED, FUNNEL_PASSING_SPEED)
+            .alongWith(gripperCMDs.loadCoral(GRIPPER_BACK_LOADING_VOLTAGE, GRIPPER_RIGHT_LOADING_VOLTAGE, GRIPPER_LEFT_LOADING_VOLTAGE)))
+            .until(moveToNext).andThen(moveToL1()).andThen(Commands.waitUntil(moveToNext)).andThen(scoreL1())
+            .until(moveToNext).andThen(intake()).andThen(Commands.waitUntil(moveToNext)).andThen(moveToL3())
+            .andThen(Commands.waitUntil(moveToNext)).andThen(scoreL3()).until(moveToNext)
+            .andThen(moveToL2()).until(moveToNext).andThen(pivotCMDs.moveToAngle(-90)).until(moveToNext)
+            .withName("testWizard")
+        );
     }
  
     public Command manualGripperController(DoubleSupplier speed) {

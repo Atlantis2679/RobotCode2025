@@ -117,6 +117,9 @@ public class RobotContainer {
             allCommands.manualGripperController(operatorController::getLeftX),
             allCommands.manualPivotController(operatorController::getRightY)
         ));
+        TuneablesManager.add("Test Operator Wizard", (Tuneable) allCommands.testWizard(
+            () -> operatorController.povRight().debounce(0.1).getAsBoolean(),
+            operatorController::getRightY, operatorController::getLeftX, operatorController::getLeftY));
     }
     
 
