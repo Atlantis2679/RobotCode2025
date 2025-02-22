@@ -14,7 +14,7 @@ import frc.lib.logfields.LogFieldsTable;
 
 public class PivotIOSim extends PivotIO {
     private final SingleJointedArmSim pivotMotor = new SingleJointedArmSim(
-        DCMotor.getNEO(2),
+        DCMotor.getNEO(1),
         JOINT_GEAR_RATIO,
         JKG_METERS_SQUARED,
         ARM_LENGTH,
@@ -36,12 +36,7 @@ public class PivotIOSim extends PivotIO {
 
     // Outputs:    
     @Override
-    protected double getLeftMotorCurrent() {
-        return pivotMotor.getCurrentDrawAmps();
-    }
-
-    @Override
-    protected double getRightMotorCurrent() {
+    protected double getMotorCurrent() {
         return pivotMotor.getCurrentDrawAmps();
     }
 
@@ -58,42 +53,22 @@ public class PivotIOSim extends PivotIO {
     }
 
     @Override
-    protected double getLeftMotorVoltage() {
+    protected double getMotorVoltage() {
         return lastVoltage;
     }
 
     @Override
-    protected double getRightMotorVoltage() {
-        return lastVoltage;
-    }
-
-    @Override
-    protected REVLibError getLeftMotorConfigError() {
+    protected REVLibError getMotorConfigError() {
         return REVLibError.fromInt(0);
     }
 
     @Override
-    protected REVLibError getRightMotorConfigError() {
-        return REVLibError.fromInt(0);
-    }
-
-    @Override
-    protected Faults getLeftMotorFaults() {
+    protected Faults getMotorFaults() {
         return new Faults(0);
     }
 
     @Override
-    protected Faults getRightMotorFaults() {
-        return new Faults(0);
-    }
-
-    @Override
-    protected Warnings getLeftMotorWarnings() {
-        return new Warnings(0);
-    }
-
-    @Override
-    protected Warnings getRightMotorWarnings() {
+    protected Warnings getMotorWarnings() {
         return new Warnings(0);
     }
 }

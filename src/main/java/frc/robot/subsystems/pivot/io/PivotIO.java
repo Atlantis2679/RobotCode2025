@@ -11,39 +11,28 @@ import frc.lib.logfields.IOBase;
 import frc.lib.logfields.LogFieldsTable;
 
 public abstract class PivotIO extends IOBase {
-    public final DoubleSupplier leftMotorCurrent = fields.addDouble("Left motor current", this::getLeftMotorCurrent);
-    public final DoubleSupplier rightMotorCurrent = fields.addDouble("Right motor current", this::getRightMotorCurrent);
-    public final DoubleSupplier leftMotorVoltage = fields.addDouble("Left motor voltage", this::getLeftMotorVoltage);
-    public final DoubleSupplier rightMotorVoltage = fields.addDouble("Right motor voltage", this::getRightMotorVoltage);
+    public final DoubleSupplier motorCurrent = fields.addDouble("motor current", this::getMotorCurrent);
+    public final DoubleSupplier motorVoltage = fields.addDouble("motor voltage", this::getMotorVoltage);
     public final DoubleSupplier angle = fields.addDouble("Pivot angle", this::getPivotAngleDegrees);
-    public final Supplier<REVLibError> leftMotorConfigError = fields.addREVLibError(
-        "leftMotorConfigError", this::getLeftMotorConfigError);
-    public final Supplier<REVLibError> rightMotorConfigError = fields.addREVLibError(
-        "rightMotorConfigError", this::getRightMotorConfigError);
-    public final Supplier<Faults> leftMotorFaults = fields.addSparkFaults("leftMotorFaults", this::getLeftMotorFaults);
-    public final Supplier<Faults> rightMotorFaults = fields.addSparkFaults("rightMotorFaults", this::getRightMotorFaults);
-    public final Supplier<Warnings> leftMotorWarnings = fields.addSparkWarnings("leftMotorWarnings", this::getLeftMotorWarnings);
-    public final Supplier<Warnings> rightMotorWarnings = fields.addSparkWarnings("rightMotorWarnings", this::getRightMotorWarnings);
+    public final Supplier<REVLibError> motorConfigError = fields.addREVLibError(
+        "motorConfigError", this::getMotorConfigError);
+    public final Supplier<Faults> motorFaults = fields.addSparkFaults("motorFaults", this::getMotorFaults);
+    public final Supplier<Warnings> motorWarnings = fields.addSparkWarnings("motorWarnings", this::getMotorWarnings);
 
     public PivotIO(LogFieldsTable fieldsTable) {
         super(fieldsTable);
     }
 
     // Outputs: 
-    protected abstract double getLeftMotorCurrent();
-    protected abstract double getRightMotorCurrent();
-    protected abstract double getLeftMotorVoltage();
-    protected abstract double getRightMotorVoltage();
+    protected abstract double getMotorCurrent();
+    protected abstract double getMotorVoltage();
     protected abstract double getPivotAngleDegrees();
 
-    protected abstract REVLibError getLeftMotorConfigError();
-    protected abstract REVLibError getRightMotorConfigError();
+    protected abstract REVLibError getMotorConfigError();
 
-    protected abstract Faults getLeftMotorFaults();
-    protected abstract Faults getRightMotorFaults();
+    protected abstract Faults getMotorFaults();
 
-    protected abstract Warnings getLeftMotorWarnings();
-    protected abstract Warnings getRightMotorWarnings();
+    protected abstract Warnings getMotorWarnings();
     
     // Inputs: 
     public abstract void setVoltage(double voltage);

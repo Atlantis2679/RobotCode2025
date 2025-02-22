@@ -17,40 +17,27 @@ import static frc.robot.RobotMap.*;
 import static frc.robot.subsystems.pivot.PivotConstants.*;
 
 public class PivotIOSparkMax extends PivotIO {
-        private final SparkMax pivotLeftMotor = new SparkMax(CANBUS.PIVOT_LEFT_MOTOR_ID, MotorType.kBrushless);
-        private final SparkMax pivotRightMotor = new SparkMax(CANBUS.PIVOT_RIGHT_MOTOR_ID, MotorType.kBrushless);
+        private final SparkMax pivotMotor = new SparkMax(CANBUS.PIVOT_MOTOR_ID, MotorType.kBrushless);
         private final DutyCycleEncoder encoder = new DutyCycleEncoder(PIVOT_ENCODER_ID);
         private final SparkMaxConfig config = new SparkMaxConfig();
 
-        private final REVLibError leftMotorConfigError;
-        private final REVLibError rightMotorConfigError;
+        private final REVLibError motorConfigError;
 
         public PivotIOSparkMax(LogFieldsTable fieldsTable) {
             super(fieldsTable);
             config.smartCurrentLimit(PIVOT_CURRENT_LIMIT);
-            leftMotorConfigError = pivotLeftMotor.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
-            rightMotorConfigError = pivotRightMotor.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+            motorConfigError = pivotMotor.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
         }
 
         // Outputs:
         @Override
-        protected double getLeftMotorCurrent() {
-            return pivotLeftMotor.getOutputCurrent();
+        protected double getMotorCurrent() {
+            return pivotMotor.getOutputCurrent();
         }
 
         @Override
-        protected double getRightMotorCurrent() {
-            return pivotRightMotor.getOutputCurrent();
-        }
-
-        @Override
-        protected double getLeftMotorVoltage() {
-            return pivotLeftMotor.getAppliedOutput() * pivotLeftMotor.getBusVoltage();
-        }
-
-        @Override
-        protected double getRightMotorVoltage() {
-            return pivotRightMotor.getAppliedOutput() * pivotRightMotor.getBusVoltage();
+        protected double getMotorVoltage() {
+            return pivotMotor.getAppliedOutput() * pivotMotor.getBusVoltage();
         }
 
         @Override
@@ -61,38 +48,21 @@ public class PivotIOSparkMax extends PivotIO {
         // Inputs:
         @Override
         public void setVoltage(double voltage) {
-            pivotLeftMotor.set(voltage);
-            pivotRightMotor.set(voltage);
+            pivotMotor.set(voltage);
         }
 
         @Override
-        protected REVLibError getLeftMotorConfigError() {
-            return leftMotorConfigError;
+        protected REVLibError getMotorConfigError() {
+            return motorConfigError;
         }
 
         @Override
-        protected REVLibError getRightMotorConfigError() {
-            return rightMotorConfigError;
+        protected Faults getMotorFaults() {
+            return pivotMotor.getFaults();
         }
 
         @Override
-        protected Faults getLeftMotorFaults() {
-            return pivotLeftMotor.getFaults();
+        protected Warnings getMotorWarnings() {
+            return pivotMotor.getWarnings();
         }
-
-        @Override
-        protected Faults getRightMotorFaults() {
-            return pivotRightMotor.getFaults();
-        }
-
-        @Override
-        protected Warnings getLeftMotorWarnings() {
-            return pivotLeftMotor.getWarnings();
-        }
-
-        @Override
-        protected Warnings getRightMotorWarnings() {
-            return pivotRightMotor.getWarnings();
-        }
-
 }

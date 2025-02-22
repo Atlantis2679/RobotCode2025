@@ -57,11 +57,9 @@ public class Pivot extends SubsystemBase implements Tuneable {
         pivotRotationalHelper.enableContinousWrap(UPPER_BOUND, FULL_ROTATION);
         TuneablesManager.add("Pivot", (Tuneable) this);
 
-        NetworkAlertsManager.addRevLibErrorAlert("Pivot: Left Motor: ", io.leftMotorConfigError);
-        NetworkAlertsManager.addRevLibErrorAlert("Pivot: Right Motor: ", io.rightMotorConfigError);
+        NetworkAlertsManager.addRevLibErrorAlert("Pivot: Motor: ", io.motorConfigError);
 
-        NetworkAlertsManager.addSparkMotorAlert("Pivot: Left Motor: ", io.leftMotorFaults, io.leftMotorWarnings);
-        NetworkAlertsManager.addSparkMotorAlert("Pivot: Right Motor: ", io.rightMotorFaults, io.rightMotorWarnings);
+        NetworkAlertsManager.addSparkMotorAlert("Pivot: Motor: ", io.motorFaults, io.motorWarnings);
     }
 
     @Override
