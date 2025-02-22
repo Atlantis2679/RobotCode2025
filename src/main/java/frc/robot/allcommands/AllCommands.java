@@ -65,6 +65,10 @@ public class AllCommands {
         .withName("scoreLedsCommand");
     }
 
+    public Command setAlignToReefColor() {
+        return LedsCommands.colorForSeconds(Color.kChocolate, 1, ledStrips);
+    }
+
     public Command moveToAngleLedsCommand(){
         return LedsCommands.colorForSeconds(Color.kPurple, 1, ledStrips);
     }

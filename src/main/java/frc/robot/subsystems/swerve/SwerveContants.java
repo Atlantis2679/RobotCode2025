@@ -24,6 +24,12 @@ public class SwerveContants {
     public final static double MODULE_TURN_KI = 0;
     public final static double MODULE_TURN_KD = 0;
 
+    static final double
+        TRANSLATION_TOLERANCE_METERS = 0.02,
+        ROTATION_TOLERANCE_DEGREES = 1,
+        TRANSLATION_VELOCITY_TOLERANCE = 0.03,
+        ROTATION_VELOCITY_TOLERANCE = 0.2;
+
     public static class DriverController {
         public final static double DRIVER_ACCELERATION_LIMIT_MPS = 8;
         public final static double DRIVER_ANGULAR_ACCELERATION_LIMIT_RPS = Math.toRadians(720);
@@ -58,11 +64,28 @@ public class SwerveContants {
     }
 
     public class DriveToPose {
-        public final static double MAX_VELOCITY_MPS = 1;
-        public final static double MAX_ACCELERATION_MPS = 1;
-        public final static double MAX_ANGULAR_VELOCITY_RPS = Math.toRadians(540);
+        public final static double Y_KP = 1.7;//1.7
+        public final static double Y_KI = 0;
+        public final static double Y_KD = 0;
+
+        public final static double X_KP = 2.1;//2.1
+        public final static double X_KI = 0;
+        public final static double X_KD = 0;
+
+        public final static double ANGLE_KP = 1.1;//1.1
+        public final static double ANGLE_KI = 0;
+        public final static double ANGLE_KD = 0.01;
+
+        public final static double MAX_VELOCITY_MPS = 0.5;
+        public final static double MAX_ACCELERATION_MPS = 0.5;
+        public final static double MAX_ANGULAR_VELOCITY_RPS = Math.toRadians(270);
         public final static double MAX_ANGULAR_ACCELERATION_RPS = Math.toRadians(620);
         public final static double GOAL_VELOCITY = 0;
+
         public final static boolean ROTATE_FAST = true;
+    }
+
+    public class AlignToReef {
+        public static final double MIN_DISTANCE_TO_AMPALIGN = 1.5;        
     }
 }

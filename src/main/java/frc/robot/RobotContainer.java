@@ -90,7 +90,7 @@ public class RobotContainer {
         TuneablesManager.add("Swerve/drive command", driveCommand.fullTuneable());
         driverController.a().onTrue(new InstantCommand(swerve::resetYaw));
         driverController.x().onTrue(swerveCommands.xWheelLock());
-
+        driverController.b().onTrue(swerveCommands.alignToReef(driveCommand).andThen(allCommands.setAlignToReefColor()));
         driverController.y().onTrue(allCommands.stopAll());
 
         TuneablesManager.add("Swerve/modules control mode",
