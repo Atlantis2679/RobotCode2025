@@ -13,6 +13,8 @@ import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.subsystems.NetworkAlertsManager;
+import frc.robot.subsystems.swerve.SwerveContants.PathPlanner;
 import frc.robot.subsystems.swerve.io.GyroIO;
 import frc.robot.subsystems.swerve.io.GyroIONavX;
 import frc.robot.subsystems.swerve.io.GyroIOSim;
@@ -37,7 +39,6 @@ import java.util.function.BiConsumer;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 import frc.robot.subsystems.swerve.SwerveContants.PathPlanner;
-
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.ModuleConfig;
 import com.pathplanner.lib.config.PIDConstants;
@@ -107,12 +108,14 @@ public class Swerve extends SubsystemBase implements Tuneable {
 
         poseEstimator = new PoseEstimatorWithVision(fieldsTable.getSubTable("poseEstimator"), getYawDegreesCCW(),
                 getModulesPositions(), swerveKinematics);
-
+                
         TuneablesManager.add("Swerve", (Tuneable) this);
 
+        NetworkAlertsManager.addErrorAlert("Gyro Is Disconnected!", () -> !gyroIO.isConnected.getAsBoolean());
+
         resetYaw();
-        
-       ModuleConfig moduleConfig = new ModuleConfig(WHEEL_RADIUS_METERS, MAX_MODULE_VELOCITY_MPS, PathPlanner.FRICTION_WITH_CARPET, DCMotor.getFalcon500(1).withReduction(GEAR_RATIO_DRIVE), MAX_VOLTAGE, 2);
+
+        ModuleConfig moduleConfig = new ModuleConfig(WHEEL_RADIUS_METERS, MAX_MODULE_VELOCITY_MPS, PathPlanner.FRICTION_WITH_CARPET, DCMotor.getFalcon500(1).withReduction(GEAR_RATIO_DRIVE), MAX_VOLTAGE, 2);
 
         RobotConfig config = new RobotConfig(PathPlanner.ROBOT_MASS_KG, PathPlanner.MOMENT_OF_INERTIA, moduleConfig, FL_LOCATION, FR_LOCATION, BL_LOCATION, BR_LOCATION);
         try{
@@ -138,6 +141,7 @@ public class Swerve extends SubsystemBase implements Tuneable {
                     PathPlanner.ROTATION_KD)), 
             config, 
             this::getIsRedAlliance, 
+
             this);
         // In case the modules fail to reset to absolute:
         // queueResetModulesToAbsolute();

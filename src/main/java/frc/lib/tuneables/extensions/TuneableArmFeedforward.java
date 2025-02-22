@@ -6,6 +6,10 @@ import frc.lib.tuneables.Tuneable;
 import frc.lib.tuneables.TuneableBuilder;
 
 public class TuneableArmFeedforward implements Tuneable {
+    private double ks;
+    private double kg;
+    private double kv;
+    private double ka;
     private ArmFeedforward armFeedforward;
 
     public TuneableArmFeedforward(double ks, double kg, double kv) {
@@ -13,6 +17,10 @@ public class TuneableArmFeedforward implements Tuneable {
     }
 
     public TuneableArmFeedforward(double ks, double kg, double kv, double ka) {
+        this.ks = ks;
+        this.kg = kg;
+        this.ka = ka;
+        this.kv = kv;
         armFeedforward = new ArmFeedforward(ks, kg, kv, ka);
     }
 

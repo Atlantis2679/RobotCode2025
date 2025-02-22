@@ -41,18 +41,20 @@ public class SwerveContants {
         public final static double MOMENT_OF_INERTIA =  (1/12)*ROBOT_MASS_KG*(TRACK_LENGTH_METERS*TRACK_LENGTH_METERS+TRACK_WIDTH_METERS*TRACK_WIDTH_METERS);
 
         //
-        public final static double TRANSLATION_KP = 0;
+
+        public final static double TRANSLATION_KP = 0.5;
+
         public final static double TRANSLATION_KI = 0;
         public final static double TRANSLATION_KD = 0;
 
         //
-        public final static double ROTATION_KP = 0;
+        public final static double ROTATION_KP = 1;
         public final static double ROTATION_KI = 0;
         public final static double ROTATION_KD = 0;
     }
 
     public class RotateToAngle {
-        public final static double KP = 0;
+        public final static double KP = 1;
         public final static double KI = 0;
         public final static double KD = 0;
     }

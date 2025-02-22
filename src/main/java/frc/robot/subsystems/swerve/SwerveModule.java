@@ -10,6 +10,7 @@ import frc.lib.tuneables.TuneableBuilder;
 import frc.robot.Robot;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Voltage;
+import frc.robot.subsystems.NetworkAlertsManager;
 import frc.robot.subsystems.swerve.io.SwerveModuleIO;
 import frc.robot.subsystems.swerve.io.SwerveModuleIOFalcon;
 import frc.robot.subsystems.swerve.io.SwerveModuleIOSim;
@@ -47,6 +48,14 @@ public class SwerveModule implements Tuneable {
 
         fieldsTable.update();
 
+        NetworkAlertsManager.addStatusCodeAlert(positionName + " Module drive: ", io.driveStatusCode);
+        NetworkAlertsManager.addStatusCodeAlert(positionName + " Module turn: ", io.turnStatusCode);
+        NetworkAlertsManager.addStatusCodeAlert(positionName + " Module canCoder: ", io.canCoderStatusCode);
+
+        NetworkAlertsManager.addStatusCodeAlert(positionName + " Module drive: ", io.driveConfigurationStatusCode);
+        NetworkAlertsManager.addStatusCodeAlert(positionName + " Module turn: ", io.turnConfigurationStatusCode);
+        NetworkAlertsManager.addStatusCodeAlert(positionName + " Module canCoder: ", io.canCoderConfigurationStatusCode);
+
         absoluteAngleHelperDegrees = new PrimitiveRotationalSensorHelper(
                 io.absoluteTurnAngleRotations.getAsDouble() * 360,
                 absoluteAngleOffSetDegrees);
@@ -61,9 +70,10 @@ public class SwerveModule implements Tuneable {
         absoluteAngleHelperDegrees.update(io.absoluteTurnAngleRotations.getAsDouble() * 360);
         lastDriveDistanceMeters = currDriveDistanceMeters;
         currDriveDistanceMeters = getDriveDistanceMeters();
-        fieldsTable.recordOutput("module " + moduleNumber +" drive distance meters", getDriveDistanceMeters());
+        fieldsTable.recordOutput("module " + moduleNumber + " drive distance meters", getDriveDistanceMeters());
         fieldsTable.recordOutput("AbsoluteAngleDegrees", getAbsoluteAngleDegrees());
         fieldsTable.recordOutput("IntegratedAngleDegrees", getIntegratedAngleDegrees());
+        fieldsTable.recordOutput("Module Position", getModulePosition());
     }
 
     public void setDesiredState(SwerveModuleState desiredState, boolean preventJittering, boolean optimizeState,
@@ -103,7 +113,7 @@ public class SwerveModule implements Tuneable {
     public void queueResetToAbsolute() {
         encoderResetToAbsoluteQueued = true;
     }
-    
+
     public void enableCoastMode() {
         io.coastAll();
     }

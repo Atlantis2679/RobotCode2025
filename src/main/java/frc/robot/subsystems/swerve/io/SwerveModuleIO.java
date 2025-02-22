@@ -1,6 +1,9 @@
 package frc.robot.subsystems.swerve.io;
 
 import java.util.function.DoubleSupplier;
+import java.util.function.Supplier;
+
+import com.ctre.phoenix6.StatusCode;
 
 import frc.lib.logfields.LogFieldsTable;
 import frc.lib.logfields.IOBase;
@@ -23,6 +26,12 @@ public abstract class SwerveModuleIO extends IOBase {
                         this::getTurnStatorCurrent);
         public final DoubleSupplier voltage = fields.addDouble("voltage",
                         this::getVoltage);
+        public final Supplier<StatusCode> driveStatusCode = fields.addStatusCode("driveStatusCode", this::getDriveStatusCode);
+        public final Supplier<StatusCode> turnStatusCode = fields.addStatusCode("turnStatusCode", this::getTurnStatusCode);
+        public final Supplier<StatusCode> canCoderStatusCode = fields.addStatusCode("canCoderStatusCode", this::getCanCoderStatusCode);
+        public final Supplier<StatusCode> driveConfigurationStatusCode = fields.addStatusCode("driveConfigurationStatusCode", this::getDriveConfigurationStatusCode);
+        public final Supplier<StatusCode> turnConfigurationStatusCode = fields.addStatusCode("turnConfigurationStatusCode", this::getTurnConfigurationStatusCode);
+        public final Supplier<StatusCode> canCoderConfigurationStatusCode = fields.addStatusCode("canCoderConfigurationStatusCode", this::getCanCoderConfigurationStatusCode);
         public final DoubleSupplier TurnKP = fields.addDouble("Turn kP", this::getTurnKP);
         public final DoubleSupplier TurnKI = fields.addDouble("Turn kI", this::getTurnKI);
         public final DoubleSupplier TurnKD = fields.addDouble("Turn kD", this::getTurnKD);
@@ -50,7 +59,19 @@ public abstract class SwerveModuleIO extends IOBase {
         protected abstract double getTurnStatorCurrent();
 
         protected abstract double getVoltage();
+        protected abstract StatusCode getDriveStatusCode();
 
+        protected abstract StatusCode getTurnStatusCode();
+
+        protected abstract StatusCode getCanCoderStatusCode();
+
+        protected abstract StatusCode getDriveConfigurationStatusCode();
+
+        protected abstract StatusCode getTurnConfigurationStatusCode();
+
+        protected abstract StatusCode getCanCoderConfigurationStatusCode();
+  
+  
         protected abstract double getTurnKP();
 
         protected abstract double getTurnKI();
