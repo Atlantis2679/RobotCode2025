@@ -115,7 +115,8 @@ public class RobotContainer {
         operatorController.rightBumper().whileTrue(Commands.parallel(
             allCommands.manualFunnelController(operatorController::getLeftY),
             allCommands.manualGripperController(operatorController::getLeftX),
-            allCommands.manualPivotController(operatorController::getRightY)
+            allCommands.manualPivotController(operatorController::getRightY),
+            allCommands.setManualColor()
         ));
         TuneablesManager.add("Test Operator Wizard", (Tuneable) allCommands.testWizard(
             () -> operatorController.povRight().debounce(0.1).getAsBoolean(),
