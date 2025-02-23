@@ -5,7 +5,6 @@ import static frc.robot.subsystems.swerve.SwerveContants.*;
 import java.util.Set;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
-
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -16,9 +15,9 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.DeferredCommand;
+import frc.lib.tuneables.TuneablesManager;
 import frc.lib.tuneables.extensions.TuneableCommand;
 import frc.lib.valueholders.BooleanHolder;
-import frc.robot.FieldConstants;
 import frc.robot.subsystems.swerve.SwerveContants.RotateToAngle;
 import frc.robot.subsystems.swerve.commands.SwerveDriverController;
 
@@ -96,8 +95,10 @@ public class SwerveCommands {
         PIDController yController = new PIDController(SwerveContants.DriveToPose.Y_KP, SwerveContants.DriveToPose.Y_KI, SwerveContants.DriveToPose.Y_KD);
         PIDController thetaController = new PIDController(SwerveContants.DriveToPose.ANGLE_KP, SwerveContants.DriveToPose.ANGLE_KI, SwerveContants.DriveToPose.ANGLE_KD); 
 
-        thetaController.enableContinuousInput(-Math.PI, Math.PI); 
-
+        thetaController.enableContinuousInput(-Math.PI, Math.PI);
+        TuneablesManager.add("Swerve/driveToPoseWithPID/xController", xController);
+        TuneablesManager.add("Swerve/driveToPoseWithPID/yController", yController);
+        TuneablesManager.add("Swerve/driveToPoseWithPID/thetaController", thetaController);
         return Commands.run(() -> {
             Pose2d currentPose = swerve.getPose();
 
@@ -134,10 +135,6 @@ public class SwerveCommands {
 
     public Command getToPose(Pose2d targetPose2d, TuneableCommand driveCommand){
         return new DeferredCommand(() -> driveToPoseWithPID(targetPose2d, driveCommand), Set.of(swerve));
-    }
-    public Command alignToReef(TuneableCommand driveCommand) {
-        return new DeferredCommand(() -> driveToPoseWithPID(swerve.getClosestPose(FieldConstants.REEF_PLACE_POSES), driveCommand), Set.of(swerve))
-        .onlyWhile(() -> swerve.getDistanceToPose(swerve.getClosestPose(FieldConstants.REEF_PLACE_POSES)) <= SwerveContants.AlignToReef.MIN_DISTANCE_TO_AMPALIGN);
     }
 
     public Command stop() {

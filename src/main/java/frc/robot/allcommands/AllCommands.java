@@ -1,13 +1,16 @@
 package frc.robot.allcommands;
 
+import java.util.Set;
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.DeferredCommand;
 import frc.lib.tuneables.extensions.TuneableCommand;
 import frc.lib.valueholders.DoubleHolder;
+import frc.robot.FieldConstants;
 import frc.robot.allcommands.AllCommandsConstants.ManualControllers;
 import frc.robot.subsystems.funnel.Funnel;
 import frc.robot.subsystems.funnel.FunnelCommands;
@@ -17,6 +20,9 @@ import frc.robot.subsystems.gripper.GripperCommands;
 import frc.robot.subsystems.leds.LedsCommands;
 import frc.robot.subsystems.pivot.Pivot;
 import frc.robot.subsystems.pivot.PivotCommands;
+import frc.robot.subsystems.swerve.Swerve;
+import frc.robot.subsystems.swerve.SwerveCommands;
+import frc.robot.subsystems.swerve.SwerveContants;
 
 import static frc.robot.allcommands.AllCommandsConstants.*;
 
@@ -25,19 +31,23 @@ public class AllCommands {
     private final Pivot pivot;
     private final Funnel funnel;
     private final Leds[] ledStrips = Leds.LED_STRIPS;
+    private final Swerve swerve;
 
     private final GripperCommands gripperCMDs;
     private final PivotCommands pivotCMDs;
     private final FunnelCommands funnelCMDs;
+    private final SwerveCommands swerveCMDs;
 
-    public AllCommands(Gripper gripper, Pivot pivot, Funnel funnel) {
+    public AllCommands(Gripper gripper, Pivot pivot, Funnel funnel, Swerve swerve) {
         this.gripper = gripper;
         this.pivot = pivot;
         this.funnel = funnel;
+        this.swerve = swerve;
 
         this.gripperCMDs = new GripperCommands(gripper);
         this.pivotCMDs = new PivotCommands(pivot);
         this.funnelCMDs = new FunnelCommands(funnel);
+        this.swerveCMDs = new SwerveCommands(swerve);
     }
 
     public Command setManualColor(){
@@ -114,6 +124,11 @@ public class AllCommands {
     public Command scoreL3(){
         return gripperCMDs.score(GRIPPER_BACK_L3_VOLTAGE, GRIPPER_OUTTAKE_L3_VOLTAGE, GRIPPER_OUTTAKE_L3_VOLTAGE)
             .andThen(scoreLedsCommand()).withName("scoreL3");
+    }
+
+    public Command alignToReef(TuneableCommand driveCommand) {
+        return new DeferredCommand(() -> swerveCMDs.driveToPoseWithPID(swerve.getClosestPose(FieldConstants.REEF_PLACE_POSES), driveCommand), Set.of(swerve))
+        .onlyWhile(() -> 0 <= SwerveContants.AlignToReef.MIN_DISTANCE_TO_AMPALIGN);
     }
 
     public TuneableCommand getPivotReadyAndScore() {
