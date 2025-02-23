@@ -31,6 +31,8 @@ public class AllCommands {
     private final PivotCommands pivotCMDs;
     private final FunnelCommands funnelCMDs;
 
+    private final Color color00bebe = new Color(0, 190, 190);
+
     public AllCommands(Gripper gripper, Pivot pivot, Funnel funnel) {
         this.gripper = gripper;
         this.pivot = pivot;
@@ -64,6 +66,10 @@ public class AllCommands {
     public Command scoreLedsCommand(){
         return LedsCommands.colorForSeconds(Color.kBlue, 1, ledStrips)
         .withName("scoreLedsCommand");
+    }
+
+    public Command wizardLedsNext() {
+        return LedsCommands.colorForSeconds(Color.kWhite, 1, ledStrips);
     }
 
     public Command moveToAngleLedsCommand(){
@@ -151,37 +157,37 @@ public class AllCommands {
 
     public TuneableCommand testWizard(BooleanSupplier moveToNext, DoubleSupplier firstSpeed, DoubleSupplier secondSpeed, DoubleSupplier thirdSpeed) {
         return TuneableCommand.wrap(tuneableTable -> 
-            manualFunnelController(firstSpeed).until(moveToNext)
+            manualFunnelController(firstSpeed).until(moveToNext).andThen(wizardLedsNext())
 
             .andThen(gripperCMDs.manualController(
                     () -> firstSpeed.getAsDouble() * ManualControllers.GRIPPER_BACK_SPEED_MULTIPLAYER,
                     () -> secondSpeed.getAsDouble() * ManualControllers.GRIPPER_RIGHT_SPEED_MULTIPLAYER, 
                     () -> thirdSpeed.getAsDouble() * ManualControllers.GRIPPER_LEFT_SPEED_MULTIPLAYER))
-            .until(moveToNext)
+            .until(moveToNext).andThen(wizardLedsNext())
             
-            .andThen(manualPivotController(firstSpeed)).until(moveToNext)
+            .andThen(manualPivotController(firstSpeed)).until(moveToNext).andThen(wizardLedsNext())
 
-            .andThen(pivotCMDs.moveToAngle(PIVOT_ANGLE_FOR_INTAKE)).andThen(Commands.waitUntil(moveToNext))
+            .andThen(pivotCMDs.moveToAngle(PIVOT_ANGLE_FOR_INTAKE)).andThen(Commands.waitUntil(moveToNext)).andThen(wizardLedsNext())
 
-            .andThen(funnelCMDs.loadCoral(FUNNEL_INTAKE_SPEED)).until(moveToNext)
+            .andThen(funnelCMDs.loadCoral(FUNNEL_INTAKE_SPEED)).until(moveToNext).andThen(wizardLedsNext())
             
             .andThen(funnelCMDs.passCoral(FUNNEL_INTAKE_SPEED, FUNNEL_PASSING_SPEED)
             .alongWith(gripperCMDs.loadCoral(GRIPPER_BACK_LOADING_VOLTAGE, GRIPPER_RIGHT_LOADING_VOLTAGE, GRIPPER_LEFT_LOADING_VOLTAGE)))
-            .until(moveToNext)
+            .until(moveToNext).andThen(wizardLedsNext())
             
-            .andThen(moveToL1()).andThen(Commands.waitUntil(moveToNext))
+            .andThen(moveToL1()).andThen(Commands.waitUntil(moveToNext)).andThen(wizardLedsNext())
             
-            .andThen(scoreL1()).until(moveToNext)
+            .andThen(scoreL1()).until(moveToNext).andThen(wizardLedsNext())
             
-            .andThen(intake()).andThen(Commands.waitUntil(moveToNext))
+            .andThen(intake()).andThen(Commands.waitUntil(moveToNext)).andThen(wizardLedsNext())
             
-            .andThen(moveToL3()).andThen(Commands.waitUntil(moveToNext))
+            .andThen(moveToL3()).andThen(Commands.waitUntil(moveToNext)).andThen(wizardLedsNext())
             
-            .andThen(scoreL3()).until(moveToNext)
+            .andThen(scoreL3()).until(moveToNext).andThen(wizardLedsNext())
             
             .andThen(moveToL2()).until(moveToNext).andThen(pivotCMDs.moveToAngle(-90)).until(moveToNext)
             
-            .withName("testWizard")
+            .andThen(LedsCommands.colorForSeconds(color00bebe, 1, ledStrips)).withName("testWizard")
         );
     }
  
