@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -19,6 +20,7 @@ import frc.lib.tuneables.extensions.TuneableCommand;
 import frc.robot.subsystems.funnel.Funnel;
 import frc.robot.allcommands.AllCommands;
 import frc.robot.subsystems.gripper.Gripper;
+import frc.robot.subsystems.leds.LedsCommands;
 import frc.robot.subsystems.pivot.Pivot;
 import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.subsystems.swerve.SwerveCommands;
@@ -89,8 +91,10 @@ public class RobotContainer {
         swerve.setDefaultCommand(driveCommand);
         TuneablesManager.add("Swerve/drive command", driveCommand.fullTuneable());
         driverController.a().onTrue(new InstantCommand(swerve::resetYaw));
+        driverController.leftTrigger().onTrue(new InstantCommand(() -> swerve.queueResetModulesToAbsolute()));
         driverController.x().onTrue(swerveCommands.xWheelLock());
-
+        driverController.b().onTrue(allCommands.setManualColor());
+        driverController.rightTrigger().onTrue(allCommands.clearLeds());
         driverController.y().onTrue(allCommands.stopAll());
 
         TuneablesManager.add("Swerve/modules control mode",
@@ -115,8 +119,8 @@ public class RobotContainer {
         operatorController.rightBumper().whileTrue(Commands.parallel(
             allCommands.manualFunnelController(operatorController::getLeftY),
             allCommands.manualGripperController(operatorController::getLeftX),
-            allCommands.manualPivotController(operatorController::getRightY),
-            allCommands.setManualColor()
+            allCommands.manualPivotController(operatorController::getRightY)
+            // allCommands.setManualColor()
         ));
     }
     

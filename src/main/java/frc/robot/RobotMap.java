@@ -17,7 +17,7 @@ public class RobotMap {
 
     public static final int PIVOT_ENCODER_ID = 1;
 
-    public final static int LEDS_ID = 0;
+    public final static int LEDS_ID = 9;
 
     public static class Controllers {
         public static final int DRIVER_PORT = 0;

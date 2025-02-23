@@ -6,6 +6,7 @@ import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.StatusCode;
@@ -51,10 +52,10 @@ public class SwerveModuleIOFalcon extends SwerveModuleIO {
         driveMotorConfiguration.CurrentLimits.SupplyCurrentLimit = 70;
         driveMotorConfiguration.CurrentLimits.SupplyCurrentLowerLimit = 40;
         driveMotorConfiguration.CurrentLimits.SupplyCurrentLowerTime = 1;
+        driveMotorConfiguration.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
 
         driveMotor.getVelocity().setUpdateFrequency(100);
         driveMotor.getPosition().setUpdateFrequency(100);
-
         // turn motor configs
         TalonFXConfiguration turnMotorConfiguration = new TalonFXConfiguration();
 
@@ -79,7 +80,7 @@ public class SwerveModuleIOFalcon extends SwerveModuleIO {
         turnMotorConfigStatusCode = turnMotor.getConfigurator().apply(turnMotorConfiguration);
 
         canCoderConfigStatusCode = canCoder.getConfigurator().apply(canCoderConfiguration);
-
+        
     }
 
     @Override

@@ -74,10 +74,6 @@ public class Pivot extends SubsystemBase implements Tuneable {
 
     public void setPivotVoltage(double voltage) {
         voltage = -MathUtil.clamp(voltage, -MAX_VOLTAGE, MAX_VOLTAGE);
-        if((getAngleDegrees() > maxAngle && voltage < 0)
-            || (getAngleDegrees() < minAngle && voltage > 0)) {
-            voltage = 0;
-        }
         lastDesiredVoltage = voltage;
         io.setVoltage(voltage);
     }

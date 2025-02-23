@@ -10,6 +10,7 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.util.sendable.Sendable;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -98,7 +99,7 @@ public class Swerve extends SubsystemBase implements Tuneable {
 
     public Swerve() {
         fieldsTable.update();
-
+        queueResetModulesToAbsolute();
         isRedAlliance.addDefaultOption("blue", false);
         isRedAlliance.addOption("red", true);
 
@@ -113,6 +114,7 @@ public class Swerve extends SubsystemBase implements Tuneable {
         NetworkAlertsManager.addErrorAlert("Swerve: Gyro IS Disconnected!", () -> !gyroIO.isConnected.getAsBoolean());
 
         resetYaw();
+
 
         ModuleConfig moduleConfig = new ModuleConfig(WHEEL_RADIUS_METERS, MAX_MODULE_VELOCITY_MPS, PathPlanner.FRICTION_WITH_CARPET, DCMotor.getFalcon500(1).withReduction(GEAR_RATIO_DRIVE), MAX_VOLTAGE, 2);
 
@@ -144,7 +146,6 @@ public class Swerve extends SubsystemBase implements Tuneable {
             this);  
         
         // In case the modules fail to reset to absolute:
-        // queueResetModulesToAbsolute();
     }
 
     @Override
