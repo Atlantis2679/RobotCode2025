@@ -107,25 +107,42 @@ public class AllCommands {
      * 11. Pivot move to scoreL3
      * 12. Score L3
      * 13. Pivot move to L2
-     * 14. Pivot move to rest
+     * 14. Pivot move to rest (-90)
+     * 15. Leds blink *color* (not finished)
      */
 
     public TuneableCommand testWizard(BooleanSupplier moveToNext, DoubleSupplier firstSpeed, DoubleSupplier secondSpeed, DoubleSupplier thirdSpeed) {
         return TuneableCommand.wrap(tuneableTable -> 
             manualFunnelController(firstSpeed).until(moveToNext)
+
             .andThen(gripperCMDs.manualController(
                     () -> firstSpeed.getAsDouble() * ManualControllers.GRIPPER_BACK_SPEED_MULTIPLAYER,
                     () -> secondSpeed.getAsDouble() * ManualControllers.GRIPPER_RIGHT_SPEED_MULTIPLAYER, 
                     () -> thirdSpeed.getAsDouble() * ManualControllers.GRIPPER_LEFT_SPEED_MULTIPLAYER))
-            .until(moveToNext).andThen(manualPivotController(firstSpeed)).until(moveToNext)
+            .until(moveToNext)
+            
+            .andThen(manualPivotController(firstSpeed)).until(moveToNext)
+
             .andThen(pivotCMDs.moveToAngle(PIVOT_ANGLE_FOR_INTAKE)).andThen(Commands.waitUntil(moveToNext))
+
             .andThen(funnelCMDs.loadCoral(FUNNEL_INTAKE_SPEED)).until(moveToNext)
+            
             .andThen(funnelCMDs.passCoral(FUNNEL_INTAKE_SPEED, FUNNEL_PASSING_SPEED)
             .alongWith(gripperCMDs.loadCoral(GRIPPER_BACK_LOADING_VOLTAGE, GRIPPER_RIGHT_LOADING_VOLTAGE, GRIPPER_LEFT_LOADING_VOLTAGE)))
-            .until(moveToNext).andThen(moveToL1()).andThen(Commands.waitUntil(moveToNext)).andThen(scoreL1())
-            .until(moveToNext).andThen(intake()).andThen(Commands.waitUntil(moveToNext)).andThen(moveToL3())
-            .andThen(Commands.waitUntil(moveToNext)).andThen(scoreL3()).until(moveToNext)
+            .until(moveToNext)
+            
+            .andThen(moveToL1()).andThen(Commands.waitUntil(moveToNext))
+            
+            .andThen(scoreL1()).until(moveToNext)
+            
+            .andThen(intake()).andThen(Commands.waitUntil(moveToNext))
+            
+            .andThen(moveToL3()).andThen(Commands.waitUntil(moveToNext))
+            
+            .andThen(scoreL3()).until(moveToNext)
+            
             .andThen(moveToL2()).until(moveToNext).andThen(pivotCMDs.moveToAngle(-90)).until(moveToNext)
+            
             .withName("testWizard")
         );
     }
