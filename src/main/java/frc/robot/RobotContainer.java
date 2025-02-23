@@ -118,12 +118,12 @@ public class RobotContainer {
             allCommands.manualPivotController(operatorController::getRightY),
             allCommands.setManualColor()
         ));
-        TuneablesManager.add("Test Operator Wizard", (Tuneable) allCommands.testWizard(
+        TuneablesManager.add("Test Operator Wizard", allCommands.testWizard(
             () -> operatorController.povRight().debounce(0.1).getAsBoolean(),
-            operatorController::getRightY, operatorController::getLeftX, operatorController::getLeftY));
+            operatorController::getRightY, operatorController::getLeftX, operatorController::getLeftY)
+            .fullTuneable());
     }
     
-
     public void setSubsystemsInTestModeState() {
         swerve.enableCoast();
     }

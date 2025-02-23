@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import frc.lib.tuneables.extensions.TuneableCommand;
 import frc.lib.valueholders.DoubleHolder;
 import frc.robot.allcommands.AllCommandsConstants.ManualControllers;
@@ -156,39 +157,41 @@ public class AllCommands {
      */
 
     public TuneableCommand testWizard(BooleanSupplier moveToNext, DoubleSupplier firstSpeed, DoubleSupplier secondSpeed, DoubleSupplier thirdSpeed) {
-        return TuneableCommand.wrap(tuneableTable -> 
-            manualFunnelController(firstSpeed).until(moveToNext).andThen(wizardLedsNext())
+        return TuneableCommand.wrap(tuneableBuilder -> {
+            return new RunCommand(() -> {
+                manualFunnelController(firstSpeed).until(moveToNext).andThen(wizardLedsNext())
 
-            .andThen(gripperCMDs.manualController(
-                    () -> firstSpeed.getAsDouble() * ManualControllers.GRIPPER_BACK_SPEED_MULTIPLAYER,
-                    () -> secondSpeed.getAsDouble() * ManualControllers.GRIPPER_RIGHT_SPEED_MULTIPLAYER, 
-                    () -> thirdSpeed.getAsDouble() * ManualControllers.GRIPPER_LEFT_SPEED_MULTIPLAYER))
-            .until(moveToNext).andThen(wizardLedsNext())
-            
-            .andThen(manualPivotController(firstSpeed)).until(moveToNext).andThen(wizardLedsNext())
-
-            .andThen(pivotCMDs.moveToAngle(PIVOT_ANGLE_FOR_INTAKE)).andThen(Commands.waitUntil(moveToNext)).andThen(wizardLedsNext())
-
-            .andThen(funnelCMDs.loadCoral(FUNNEL_INTAKE_SPEED)).until(moveToNext).andThen(wizardLedsNext())
-            
-            .andThen(funnelCMDs.passCoral(FUNNEL_INTAKE_SPEED, FUNNEL_PASSING_SPEED)
-            .alongWith(gripperCMDs.loadCoral(GRIPPER_BACK_LOADING_VOLTAGE, GRIPPER_RIGHT_LOADING_VOLTAGE, GRIPPER_LEFT_LOADING_VOLTAGE)))
-            .until(moveToNext).andThen(wizardLedsNext())
-            
-            .andThen(moveToL1()).andThen(Commands.waitUntil(moveToNext)).andThen(wizardLedsNext())
-            
-            .andThen(scoreL1()).until(moveToNext).andThen(wizardLedsNext())
-            
-            .andThen(intake()).andThen(Commands.waitUntil(moveToNext)).andThen(wizardLedsNext())
-            
-            .andThen(moveToL3()).andThen(Commands.waitUntil(moveToNext)).andThen(wizardLedsNext())
-            
-            .andThen(scoreL3()).until(moveToNext).andThen(wizardLedsNext())
-            
-            .andThen(moveToL2()).until(moveToNext).andThen(pivotCMDs.moveToAngle(-90)).until(moveToNext)
-            
-            .andThen(LedsCommands.colorForSeconds(color00bebe, 1, ledStrips)).withName("testWizard")
-        );
+                .andThen(gripperCMDs.manualController(
+                        () -> firstSpeed.getAsDouble() * ManualControllers.GRIPPER_BACK_SPEED_MULTIPLAYER,
+                        () -> secondSpeed.getAsDouble() * ManualControllers.GRIPPER_RIGHT_SPEED_MULTIPLAYER, 
+                        () -> thirdSpeed.getAsDouble() * ManualControllers.GRIPPER_LEFT_SPEED_MULTIPLAYER))
+                .until(moveToNext).andThen(wizardLedsNext())
+                
+                .andThen(manualPivotController(firstSpeed)).until(moveToNext).andThen(wizardLedsNext())
+    
+                .andThen(pivotCMDs.moveToAngle(PIVOT_ANGLE_FOR_INTAKE)).andThen(Commands.waitUntil(moveToNext)).andThen(wizardLedsNext())
+    
+                .andThen(funnelCMDs.loadCoral(FUNNEL_INTAKE_SPEED)).until(moveToNext).andThen(wizardLedsNext())
+                
+                .andThen(funnelCMDs.passCoral(FUNNEL_INTAKE_SPEED, FUNNEL_PASSING_SPEED)
+                .alongWith(gripperCMDs.loadCoral(GRIPPER_BACK_LOADING_VOLTAGE, GRIPPER_RIGHT_LOADING_VOLTAGE, GRIPPER_LEFT_LOADING_VOLTAGE)))
+                .until(moveToNext).andThen(wizardLedsNext())
+                
+                .andThen(moveToL1()).andThen(Commands.waitUntil(moveToNext)).andThen(wizardLedsNext())
+                
+                .andThen(scoreL1()).until(moveToNext).andThen(wizardLedsNext())
+                
+                .andThen(intake()).andThen(Commands.waitUntil(moveToNext)).andThen(wizardLedsNext())
+                
+                .andThen(moveToL3()).andThen(Commands.waitUntil(moveToNext)).andThen(wizardLedsNext())
+                
+                .andThen(scoreL3()).until(moveToNext).andThen(wizardLedsNext())
+                
+                .andThen(moveToL2()).until(moveToNext).andThen(pivotCMDs.moveToAngle(-90)).until(moveToNext)
+                
+                .andThen(LedsCommands.colorForSeconds(color00bebe, 1, ledStrips)).withName("testWizard");
+            }, funnel);
+        });
     }
  
     public Command manualGripperController(DoubleSupplier speed) {
