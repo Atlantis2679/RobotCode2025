@@ -7,7 +7,6 @@ import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.RunCommand;
 import frc.lib.tuneables.extensions.TuneableCommand;
 import frc.lib.valueholders.DoubleHolder;
 import frc.robot.allcommands.AllCommandsConstants.ManualControllers;
@@ -157,8 +156,7 @@ public class AllCommands {
      */
 
     public TuneableCommand testWizard(BooleanSupplier moveToNext, DoubleSupplier firstSpeed, DoubleSupplier secondSpeed, DoubleSupplier thirdSpeed) {
-        return TuneableCommand.wrap(tuneableBuilder -> {
-            return new RunCommand(() -> {
+        return TuneableCommand.wrap(tuneableBuilder -> 
                 manualFunnelController(firstSpeed).until(moveToNext).andThen(wizardLedsNext())
 
                 .andThen(gripperCMDs.manualController(
@@ -189,9 +187,7 @@ public class AllCommands {
                 
                 .andThen(moveToL2()).until(moveToNext).andThen(pivotCMDs.moveToAngle(-90)).until(moveToNext)
                 
-                .andThen(LedsCommands.colorForSeconds(color00bebe, 1, ledStrips)).withName("testWizard");
-            }, funnel);
-        });
+                .andThen(LedsCommands.colorForSeconds(color00bebe, 1, ledStrips)).withName("testWizard"));
     }
  
     public Command manualGripperController(DoubleSupplier speed) {
