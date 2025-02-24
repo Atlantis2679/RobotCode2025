@@ -89,7 +89,6 @@ public class RobotContainer {
         swerve.setDefaultCommand(driveCommand);
         TuneablesManager.add("Swerve/drive command", driveCommand.fullTuneable());
         driverController.a().onTrue(new InstantCommand(swerve::resetYaw));
-        driverController.leftTrigger().onTrue(new InstantCommand(() -> swerve.queueResetModulesToAbsolute()));
         driverController.x().onTrue(swerveCommands.xWheelLock());
         driverController.b().onTrue(allCommands.setManualColor());
         driverController.rightTrigger().onTrue(allCommands.clearLeds());
@@ -125,12 +124,9 @@ public class RobotContainer {
             () -> operatorController.povRight().debounce(0.1).getAsBoolean(),
             operatorController::getRightY, operatorController::getLeftX, operatorController::getLeftY)
             .fullTuneable());
-    }
-    
-
         pivot.setDefaultCommand(allCommands.moveToRest());
     }
-
+    
     public void setSubsystemsInTestModeState() {
         swerve.enableCoast();
     }

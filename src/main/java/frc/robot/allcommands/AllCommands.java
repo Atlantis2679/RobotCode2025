@@ -170,7 +170,7 @@ public class AllCommands {
 
     public TuneableCommand testWizard(BooleanSupplier moveToNext, DoubleSupplier firstSpeed, DoubleSupplier secondSpeed, DoubleSupplier thirdSpeed) {
         return TuneableCommand.wrap(tuneableBuilder -> 
-                manualFunnelController(firstSpeed).until(moveToNext).andThen(wizardLedsNext())
+                manualFunnelController(thirdSpeed).until(moveToNext).andThen(wizardLedsNext())
 
                 .andThen(gripperCMDs.manualController(
                         () -> firstSpeed.getAsDouble() * ManualControllers.GRIPPER_BACK_SPEED_MULTIPLAYER,
