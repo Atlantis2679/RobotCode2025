@@ -51,7 +51,7 @@ public class PivotCommands {
         }
             pivot.setPivotVoltage(feedForward + demandSpeed * MAX_VOLTAGE);
         
-        }).finallyDo(() -> pivot.stop()).withName("pivotManualController");
+        }).withName("pivotManualController");
     }
 
 }
