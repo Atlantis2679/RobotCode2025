@@ -130,7 +130,7 @@ public class AllCommands {
     public Command alignToReefRight(TuneableCommand driveCommand, BooleanSupplier lockOnPose) {
         return new DeferredCommand(() -> swerveCMDs.driveToPoseWithPID(
             lockOnPose.getAsBoolean() ? swerve.getLastCalculatedClosestPose() : 
-            FieldConstants.REEF_RIGHT_BRANCHES_POSES[swerve.getClosestPose(FieldConstants.REEF_FACE_CENTER)],
+            swerve.getClosestPose(FieldConstants.REEF_RIGHT_BRANCHES_POSES),
             driveCommand).andThen(setAlignToReefColor()), Set.of(swerve))
         .onlyWhile(() -> swerve.getDistanceToPose(swerve.getLastCalculatedClosestPose()) <= SwerveContants.AlignToReef.MIN_DISTANCE_TO_AMPALIGN);
     }
@@ -138,7 +138,7 @@ public class AllCommands {
     public Command alignToReefLeft(TuneableCommand driveCommand, BooleanSupplier lockOnPose) {
         return new DeferredCommand(() -> swerveCMDs.driveToPoseWithPID(
             lockOnPose.getAsBoolean() ? swerve.getLastCalculatedClosestPose() : 
-            FieldConstants.REEF_LEFT_BRANCHES_POSES[swerve.getClosestPose(FieldConstants.REEF_FACE_CENTER)],
+            swerve.getClosestPose(FieldConstants.REEF_LEFT_BRANCHES_POSES),
             driveCommand).andThen(setAlignToReefColor()), Set.of(swerve))
         .onlyWhile(() -> swerve.getDistanceToPose(swerve.getLastCalculatedClosestPose()) <= SwerveContants.AlignToReef.MIN_DISTANCE_TO_AMPALIGN);
     }
