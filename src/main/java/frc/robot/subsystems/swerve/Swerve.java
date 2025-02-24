@@ -101,9 +101,11 @@ public class Swerve extends SubsystemBase implements Tuneable {
 
     public Swerve() {
         fieldsTable.update();
-
+        queueResetModulesToAbsolute();
         isRedAlliance.addDefaultOption("blue", false);
         isRedAlliance.addOption("red", true);
+
+        fieldsTable.recordOutput("current command", getCurrentCommand() == null ? "none" : getCurrentCommand().getName());
 
         gyroYawHelperDegreesCCW = new RotationalSensorHelper(
                 Rotation2d.fromDegrees(gyroIO.isConnected.getAsBoolean() ? -gyroIO.yawDegreesCW.getAsDouble() : 0));
@@ -117,11 +119,12 @@ public class Swerve extends SubsystemBase implements Tuneable {
 
         resetYaw();
 
+
         ModuleConfig moduleConfig = new ModuleConfig(WHEEL_RADIUS_METERS, MAX_MODULE_VELOCITY_MPS, PathPlanner.FRICTION_WITH_CARPET, DCMotor.getFalcon500(1).withReduction(GEAR_RATIO_DRIVE), MAX_VOLTAGE, 2);
 
         RobotConfig config = new RobotConfig(PathPlanner.ROBOT_MASS_KG, PathPlanner.MOMENT_OF_INERTIA, moduleConfig, FL_LOCATION, FR_LOCATION, BL_LOCATION, BR_LOCATION);
 
-        try{
+        try {
             config = RobotConfig.fromGUISettings();
         } catch (Exception e) {
             // Handle exception as needed
@@ -158,7 +161,6 @@ public class Swerve extends SubsystemBase implements Tuneable {
 
         
         // In case the modules fail to reset to absolute:
-        // queueResetModulesToAbsolute();
     }
 
     @Override
