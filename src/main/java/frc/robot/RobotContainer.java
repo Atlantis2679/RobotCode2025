@@ -94,8 +94,12 @@ public class RobotContainer {
         TuneablesManager.add("Swerve/drive command", driveCommand.fullTuneable());
         driverController.a().onTrue(new InstantCommand(swerve::resetYaw));
         driverController.x().onTrue(swerveCommands.xWheelLock());
-        driverController.b().toggleOnTrue(Commands.runOnce(() -> alignToReefLockOnPose = false)).negate().onTrue(Commands.runOnce(() -> alignToReefLockOnPose = true));
-        driverController.b().whileTrue(allCommands.alignToReef(driveCommand, () -> alignToReefLockOnPose));
+        driverController.rightTrigger().or(driverController.leftTrigger()).toggleOnTrue(Commands.runOnce(() -> alignToReefLockOnPose = false))
+            .negate().onTrue(Commands.runOnce(() -> alignToReefLockOnPose = true));
+        driverController.rightTrigger().and(driverController.leftTrigger().negate())
+            .whileTrue(allCommands.alignToReefRight(driveCommand, () -> alignToReefLockOnPose));
+        driverController.leftTrigger().and(driverController.rightTrigger().negate())
+            .whileTrue(allCommands.alignToReefLeft(driveCommand, () -> alignToReefLockOnPose));
         driverController.y().onTrue(allCommands.stopAll());
 
         TuneablesManager.add("Swerve/modules control mode",

@@ -337,18 +337,22 @@ public class Swerve extends SubsystemBase implements Tuneable {
         return angularDistance;
     }
 
-    public Pose2d getClosestPose(Pose2d[] poses) {
+    public int getClosestPose(Pose2d[] poses) {
         Pose2d closestPose = null;
+        int closestPoseIndex = 0;
         double minDistance = Double.MAX_VALUE;
-        for (Pose2d targetPose : poses) {
+        for (int i = 0; i < poses.length; i++) {
+            Pose2d targetPose = poses[i];
             double distance = (getDistanceToPose(targetPose));
             if (distance < minDistance) {
                 minDistance = distance;
                 closestPose = targetPose;
             }
+            closestPoseIndex = i;
         }
         fieldsTable.recordOutput("lastCaculatedClosestPose", closestPose);
-        return lastCaculatedClosestPose = closestPose;
+        lastCaculatedClosestPose = closestPose;
+        return closestPoseIndex;
     }
 
     public Pose2d getLastCalculatedClosestPose() {
