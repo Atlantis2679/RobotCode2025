@@ -49,9 +49,9 @@ public class RobotContainer {
 
     public RobotContainer() {
         NamedCommands.registerCommand("intake", allCommands.intake());
-        NamedCommands.registerCommand("moveToL1", allCommands.moveToL1());
-        NamedCommands.registerCommand("moveToL2", allCommands.moveToL2());
-        NamedCommands.registerCommand("moveToL3", allCommands.moveToL3());
+        NamedCommands.registerCommand("moveToL1", allCommands.autoMoveToL1());
+        NamedCommands.registerCommand("moveToL2", allCommands.autoMoveToL2());
+        NamedCommands.registerCommand("moveToL3", allCommands.autoMoveToL3());
         NamedCommands.registerCommand("scoreL2L3", allCommands.scoreL3());
         NamedCommands.registerCommand("scoreL1", allCommands.scoreL1());
         NamedCommands.registerCommand("stopAll", allCommands.stopAll());

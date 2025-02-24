@@ -108,6 +108,18 @@ public class AllCommands {
         return funnelCMDs.loadCoral(FUNNEL_INTAKE_SPEED).withName("intakeStatic");
     }
 
+    public Command autoMoveToL1() {
+        return pivotCMDs.moveToAngle(PIVOT_ANGLE_FOR_L1).until(() -> pivot.isAtAngle(PIVOT_ANGLE_FOR_L1)).withName("autoMoveToL3");
+    }
+
+    public Command autoMoveToL3() {
+        return pivotCMDs.moveToAngle(PIVOT_ANGLE_FOR_L3).until(() -> pivot.isAtAngle(PIVOT_ANGLE_FOR_L3)).withName("autoMoveToL3");
+    }
+
+    public Command autoMoveToL2() {
+        return pivotCMDs.moveToAngle(PIVOT_ANGLE_FOR_L2).until(() -> pivot.isAtAngle(PIVOT_ANGLE_FOR_L2)).withName("autoMoveToL3");
+    }
+
     public Command moveToL1() {
         return pivotCMDs.moveToAngle(PIVOT_ANGLE_FOR_L1)
             .alongWith(Commands.waitUntil(() -> pivot.isAtAngle(PIVOT_ANGLE_FOR_L1)).andThen(moveToAngleLedsCommand()))
