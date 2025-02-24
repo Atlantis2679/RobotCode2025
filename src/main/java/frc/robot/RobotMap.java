@@ -46,15 +46,15 @@ public class RobotMap {
         }
     
         public class ModuleBL {
-            public final static int DRIVE_MOTOR_ID = 24;
-            public final static int TURN_MOTOR_ID = 25;
-            public final static int ENCODER_ID = 52;
-        }
-    
-        public class ModuleBR {
             public final static int DRIVE_MOTOR_ID = 26;
             public final static int TURN_MOTOR_ID = 27;
             public final static int ENCODER_ID = 53;
+        }
+    
+        public class ModuleBR {
+            public final static int DRIVE_MOTOR_ID = 24;
+            public final static int TURN_MOTOR_ID = 25;
+            public final static int ENCODER_ID = 52;
         }
     }
 }

@@ -54,7 +54,7 @@ public class RobotContainer {
         NamedCommands.registerCommand("scoreL1", allCommands.scoreL1());
         NamedCommands.registerCommand("stopAll", allCommands.stopAll());
 
-        new Trigger(DriverStation::isDisabled).onTrue(swerveCommands.stop().repeatedly().withTimeout(0.5)
+        new Trigger(DriverStation::isDisabled).whileTrue(swerveCommands.stop().repeatedly().withTimeout(0.5)
             .alongWith(allCommands.stopAll()));
         pdh.setSwitchableChannel(true);
 
