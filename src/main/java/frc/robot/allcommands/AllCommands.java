@@ -78,11 +78,11 @@ public class AllCommands {
     }
 
     public Command setAlignToReefColor() {
-        return LedsCommands.colorForSeconds(Color.kChocolate, 1, ledStrips);
+        return LedsCommands.colorForSeconds(Color.kChocolate, LedsConstants.SECONDS_FOR_LEDS_DEFAULT, ledStrips);
     }
   
     public Command wizardLedsNext() {
-        return LedsCommands.colorForSeconds(Color.kWhite, 1, ledStrips);
+        return LedsCommands.colorForSeconds(Color.kWhite, LedsConstants.SECONDS_FOR_LEDS_DEFAULT, ledStrips);
     }
 
     public Command moveToAngleLedsCommand(){
@@ -104,10 +104,6 @@ public class AllCommands {
             .withName("Intake");
     }
 
-    public Command intakeStatic() {
-        return funnelCMDs.loadCoral(FUNNEL_INTAKE_SPEED).withName("intakeStatic");
-    }
-
     public Command autoMoveToL1() {
         return pivotCMDs.moveToAngle(PIVOT_ANGLE_FOR_L1).until(() -> pivot.isAtAngle(PIVOT_ANGLE_FOR_L1)).withName("autoMoveToL3");
     }
@@ -126,7 +122,7 @@ public class AllCommands {
             .withName("moveToL1");
     }
 
-    public Command moveToL1Static() {
+    public Command intakeStatic() {
         return funnelCMDs.passCoral(FUNNEL_INTAKE_SPEED, FUNNEL_PASSING_SPEED)
             .alongWith(gripperCMDs.loadCoral(GRIPPER_BACK_LOADING_VOLTAGE, GRIPPER_RIGHT_LOADING_VOLTAGE, GRIPPER_LEFT_LOADING_VOLTAGE))
             .alongWith(scoreLedsCommand()).withName("moveToL1Static");
@@ -275,7 +271,7 @@ public class AllCommands {
             gripper.stop();
             pivot.stop();
             funnel.stop();
-            LedsCommands.clearLeds(ledStrips); // Maybe find a better solution?
+            LedsCommands.clearLeds(ledStrips);
         }, gripper, pivot, funnel)
         .ignoringDisable(true).withInterruptBehavior(InterruptionBehavior.kCancelIncoming);
     }

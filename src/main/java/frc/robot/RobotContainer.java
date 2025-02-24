@@ -1,9 +1,14 @@
 package frc.robot;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.path.PathPlannerPath;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -74,10 +79,11 @@ public class RobotContainer {
         SmartDashboard.putData(field);
         autoChooser.onChange((command) -> {
             try {
-                PathPlannerPath autoPath = PathPlannerPath.fromPathFile(autoChooser.getSelected().getName());
-                field.getObject("Auto Trajectory").setPoses(autoPath.getPathPoses());
+                
+                List<PathPlannerPath> paths = PathPlannerAuto.getPathGroupFromAutoFile(command.getName());
+                field.getObject("Auto Trajectory").setPoses(paths.get(0).getPathPoses()); // Not done yet.
             } catch (Exception e) {
-                Commands.print("Auto Trajectory Loading Failed!");
+                System.out.println("Auto Trajectory Loading Failed!");
             }
         });
     }
@@ -110,15 +116,13 @@ public class RobotContainer {
     }
 
     private void configureOperatorBindings() {
-        operatorController.a().onTrue(allCommands.intake());
-        operatorController.leftBumper().onChange(Commands.runOnce(() -> useStaticCommands = !useStaticCommands));
-        operatorController.b()
-                .onTrue(Commands.either(allCommands.moveToL1Static(), allCommands.moveToL1(), () -> useStaticCommands));
-        // operatorController.b().onTrue(allCommands.moveToL1());
+        operatorController.a().onTrue(Commands.either(allCommands.intakeStatic(), allCommands.intake(), () -> useStaticCommands));
+        operatorController.leftBumper().onTrue(Commands.runOnce(() -> useStaticCommands = !useStaticCommands));
+        operatorController.b().onTrue(allCommands.moveToL1());
         operatorController.y().onTrue(allCommands.moveToL2());
         operatorController.x().onTrue(allCommands.moveToL3());
         TuneableCommand tuneableAngleAndScore = allCommands.getPivotReadyAndScore();
-        operatorController.povUp().whileTrue(tuneableAngleAndScore);
+        // operatorController.povUp().whileTrue(tuneableAngleAndScore); We want this disabled on the field!
         TuneablesManager.add("ready to Angle and score", (Tuneable) tuneableAngleAndScore);
         operatorController.rightTrigger().whileTrue(allCommands.scoreL3());
         operatorController.leftTrigger().whileTrue(allCommands.scoreL1());
@@ -126,7 +130,6 @@ public class RobotContainer {
                 allCommands.manualFunnelController(operatorController::getLeftY),
                 allCommands.manualGripperController(operatorController::getLeftX),
                 allCommands.manualPivotController(operatorController::getRightY)
-        // allCommands.setManualColor()
         ));
         TuneablesManager.add("Test Operator Wizard", allCommands.testWizard(
             () -> operatorController.povRight().getAsBoolean(),
