@@ -33,7 +33,6 @@ public class AllCommands {
     private final Gripper gripper;
     private final Pivot pivot;
     private final Funnel funnel;
-    private final Swerve swerve;
     private final Leds[] ledStrips = Leds.LED_STRIPS;
     private final Swerve swerve;
 
