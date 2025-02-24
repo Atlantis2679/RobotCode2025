@@ -122,12 +122,9 @@ public class RobotContainer {
         // allCommands.setManualColor()
         ));
         TuneablesManager.add("Test Operator Wizard", allCommands.testWizard(
-            () -> operatorController.povRight().debounce(0.1).getAsBoolean(),
+            () -> operatorController.povRight().getAsBoolean(),
             operatorController::getRightY, operatorController::getLeftX, operatorController::getLeftY)
             .fullTuneable());
-    }
-    
-
         pivot.setDefaultCommand(allCommands.moveToRest());
     }
 
