@@ -15,10 +15,10 @@ public class SwerveContants {
     public final static double TRACK_LENGTH_METERS = 0.76;
     // public final static double TRACK_RADIUS_METERS = 0.366; // not using and not right
 
-    public final static double MODULE_FL_ABSOLUTE_ANGLE_OFFSET_DEGREES = 154.16015625;
-    public final static double MODULE_FR_ABSOLUTE_ANGLE_OFFSET_DEGREES = -50.537109375+180;
-    public final static double MODULE_BL_ABSOLUTE_ANGLE_OFFSET_DEGREES = -100.283203125;
-    public final static double MODULE_BR_ABSOLUTE_ANGLE_OFFSET_DEGREES = -146.689453125;
+    public final static double MODULE_FL_ABSOLUTE_ANGLE_OFFSET_DEGREES = 155.390625;
+    public final static double MODULE_FR_ABSOLUTE_ANGLE_OFFSET_DEGREES = -56.6015625+180;
+    public final static double MODULE_BL_ABSOLUTE_ANGLE_OFFSET_DEGREES = -100.546875;
+    public final static double MODULE_BR_ABSOLUTE_ANGLE_OFFSET_DEGREES = 37.96875+180;
 
     public final static double MODULE_TURN_KP = 1.8 * 12;
     public final static double MODULE_TURN_KI = 0;

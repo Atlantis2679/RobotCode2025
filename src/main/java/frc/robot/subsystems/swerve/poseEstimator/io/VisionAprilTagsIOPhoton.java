@@ -73,7 +73,7 @@ public class VisionAprilTagsIOPhoton extends VisionAprilTagsIO {
             List<PhotonTrackedTarget> targets = photonEstimatorResults.get(i).targetsUsed;
             tagsPoses[i] = new Pose3d[targets.size()];
             for (int j = 0; j < targets.size(); j++) {
-                tagsPoses[i][j] = tagLayout.getTagPose(targets.get(j).fiducialId).orElse(new Pose3d());
+                tagsPoses[i][j] = tagLayout.getTagPose(targets.get(j).fiducialId == 15 ? 2 : targets.get(j).fiducialId).orElse(new Pose3d());
             }
         }
         return tagsPoses;
