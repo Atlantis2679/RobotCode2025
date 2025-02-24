@@ -155,7 +155,7 @@ public class AllCommands {
     }
 
     public Command stopAll() {
-        return Commands.run(() -> {
+        return Commands.runOnce(() -> {
             gripper.stop();
             pivot.stop();
             funnel.stop();

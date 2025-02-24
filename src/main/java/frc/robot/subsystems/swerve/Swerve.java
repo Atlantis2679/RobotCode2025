@@ -103,6 +103,8 @@ public class Swerve extends SubsystemBase implements Tuneable {
         isRedAlliance.addDefaultOption("blue", false);
         isRedAlliance.addOption("red", true);
 
+        fieldsTable.recordOutput("current command", getCurrentCommand() == null ? "none" : getCurrentCommand().getName());
+
         gyroYawHelperDegreesCCW = new RotationalSensorHelper(
                 Rotation2d.fromDegrees(gyroIO.isConnected.getAsBoolean() ? -gyroIO.yawDegreesCW.getAsDouble() : 0));
 
