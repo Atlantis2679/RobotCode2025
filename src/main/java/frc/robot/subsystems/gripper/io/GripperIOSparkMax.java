@@ -23,7 +23,8 @@ public class GripperIOSparkMax extends GripperIO {
 
     private final DigitalInput beamBrake = new DigitalInput(GRIPPER_BEAM_BRAKE_ID);
 
-    private final SparkMaxConfig outtakeMotorsConfig = new SparkMaxConfig();
+    private final SparkMaxConfig leftOuttakeMotorConfig = new SparkMaxConfig();
+    private final SparkMaxConfig rightOuttakeMotorConfig = new SparkMaxConfig();
     private final SparkMaxConfig backMotorConfig = new SparkMaxConfig();
 
     private final REVLibError rightOuttakeMotorConfigError;
@@ -33,19 +34,21 @@ public class GripperIOSparkMax extends GripperIO {
     public GripperIOSparkMax(LogFieldsTable fieldsTable) {
         super(fieldsTable);
 
-        outtakeMotorsConfig.smartCurrentLimit(OUTTAKE_MOTORS_MAX_CURRENT);
+        rightOuttakeMotorConfig.smartCurrentLimit(OUTTAKE_MOTORS_MAX_CURRENT);
+        leftOuttakeMotorConfig.smartCurrentLimit(OUTTAKE_MOTORS_MAX_CURRENT);
         backMotorConfig.smartCurrentLimit(BACK_MOTOR_MAX_CURRENT);
 
-        rightOuttakeMotorConfigError = rightOuttakeMotor.configure(outtakeMotorsConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
-        leftOuttakeMotorConfigError = leftOuttakeMotor.configure(outtakeMotorsConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+        rightOuttakeMotorConfigError = rightOuttakeMotor.configure(rightOuttakeMotorConfig.inverted(true), ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+        leftOuttakeMotorConfigError = leftOuttakeMotor.configure(leftOuttakeMotorConfig.inverted(true), ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
         backMotorConfigError = backMotor.configure(backMotorConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+        
     }
 
     // Outputs:
 
     @Override
     public void setRightOuttakeMotorVoltage(double voltage) {
-        rightOuttakeMotor.setVoltage(voltage);
+        rightOuttakeMotor.setVoltage(-voltage);
     }
 
     @Override

@@ -14,13 +14,13 @@ public class GripperCommands {
     }
 
     public Command loadCoral(double backVoltageForScoring, double rightVoltageForScoring, double leftVoltageForScoring) {
-        return gripper.run(() -> gripper.setMotorsVoltage(backVoltageForScoring, rightVoltageForScoring, leftVoltageForScoring))
-               .until(gripper::getIsCoralIn).finallyDo(gripper::stop).withName("loadCoral");
+        return gripper.run(() -> gripper.setMotorsVoltage(rightVoltageForScoring, leftVoltageForScoring, backVoltageForScoring))
+               .finallyDo(gripper::stop).withName("loadCoral");
     }
 
     public Command score(double backVoltageForScoring, double rightVoltageForScoring, double leftVoltageForScoring) {
-        return gripper.run(() -> gripper.setMotorsVoltage(backVoltageForScoring, rightVoltageForScoring, leftVoltageForScoring))
-            .withName("scoreL1");
+        return gripper.run(() -> gripper.setMotorsVoltage(rightVoltageForScoring, leftVoltageForScoring, backVoltageForScoring))
+        .withName("scoreL1");
     }
 
     public Command manualController(DoubleSupplier backSpeed, DoubleSupplier rightSpeed, DoubleSupplier leftSpeed) {

@@ -11,18 +11,26 @@ public class SwerveContants {
     public final static double MAX_MODULE_VELOCITY_MPS = 5; // for the max voltage
     public final static double MODULE_TEMPERATORE_WARNING_THRESHOLD = 0;
 
-    public final static double TRACK_WIDTH_METERS = 0.518;
-    public final static double TRACK_LENGTH_METERS = 0.518;
+    public final static double TRACK_WIDTH_METERS = 0.76 + 8.5;
+    public final static double TRACK_LENGTH_METERS = 0.76 + 8.5;
     public final static double TRACK_RADIUS_METERS = 0.366;
 
-    public final static double MODULE_FL_ABSOLUTE_ANGLE_OFFSET_DEGREES = 154.16015625;
-    public final static double MODULE_FR_ABSOLUTE_ANGLE_OFFSET_DEGREES = -50.537109375+180;
-    public final static double MODULE_BL_ABSOLUTE_ANGLE_OFFSET_DEGREES = -100.283203125;
-    public final static double MODULE_BR_ABSOLUTE_ANGLE_OFFSET_DEGREES = -146.689453125;
+
+    public final static double MODULE_FL_ABSOLUTE_ANGLE_OFFSET_DEGREES = 155.390625;
+    public final static double MODULE_FR_ABSOLUTE_ANGLE_OFFSET_DEGREES = -56.6015625+180;
+    public final static double MODULE_BL_ABSOLUTE_ANGLE_OFFSET_DEGREES = -100.546875;
+    public final static double MODULE_BR_ABSOLUTE_ANGLE_OFFSET_DEGREES = 37.96875+180;
+
 
     public final static double MODULE_TURN_KP = 1.8 * 12;
     public final static double MODULE_TURN_KI = 0;
     public final static double MODULE_TURN_KD = 0;
+
+    static final double
+        TRANSLATION_TOLERANCE_METERS = 0.02,
+        ROTATION_TOLERANCE_DEGREES = 1,
+        TRANSLATION_VELOCITY_TOLERANCE = 0.03,
+        ROTATION_VELOCITY_TOLERANCE = 0.2;
 
     public static class DriverController {
         public final static double DRIVER_ACCELERATION_LIMIT_MPS = 8;
@@ -58,11 +66,28 @@ public class SwerveContants {
     }
 
     public class DriveToPose {
-        public final static double MAX_VELOCITY_MPS = 1;
-        public final static double MAX_ACCELERATION_MPS = 1;
-        public final static double MAX_ANGULAR_VELOCITY_RPS = Math.toRadians(540);
+        public final static double Y_KP = 2.2;//1.7
+        public final static double Y_KI = 0;
+        public final static double Y_KD = 0.75;
+
+        public final static double X_KP = 2.2;//2.1
+        public final static double X_KI = 0;
+        public final static double X_KD = 0.75;
+
+        public final static double ANGLE_KP = 1.5;//1.1
+        public final static double ANGLE_KI = 0;
+        public final static double ANGLE_KD = 0.1;
+
+        public final static double MAX_VELOCITY_MPS = 0.5;
+        public final static double MAX_ACCELERATION_MPS = 0.5;
+        public final static double MAX_ANGULAR_VELOCITY_RPS = Math.toRadians(270);
         public final static double MAX_ANGULAR_ACCELERATION_RPS = Math.toRadians(620);
         public final static double GOAL_VELOCITY = 0;
+
         public final static boolean ROTATE_FAST = true;
+    }
+
+    public class AlignToReef {
+        public static final double MIN_DISTANCE_TO_AMPALIGN = 1.5;        
     }
 }

@@ -42,6 +42,7 @@ public class SwerveModule implements Tuneable {
 
         fieldsTable.update();
 
+        
         absoluteAngleHelperDegrees = new PrimitiveRotationalSensorHelper(
                 io.absoluteTurnAngleRotations.getAsDouble() * 360,
                 absoluteAngleOffSetDegrees);
@@ -78,6 +79,7 @@ public class SwerveModule implements Tuneable {
     }
 
     public void periodic() {
+        fieldsTable.recordOutput("reseted", encoderResetToAbsoluteQueued);
         absoluteAngleHelperDegrees.update(io.absoluteTurnAngleRotations.getAsDouble() * 360);
         lastDriveDistanceMeters = currDriveDistanceMeters;
         currDriveDistanceMeters = getDriveDistanceMeters();

@@ -1,5 +1,7 @@
 package frc.robot.subsystems.pivot;
 
+import static frc.robot.subsystems.pivot.PivotConstants.MAX_ANGLE_DEGREES;
+import static frc.robot.subsystems.pivot.PivotConstants.MIN_ANGLE_DEGREES;
 import static frc.robot.subsystems.swerve.SwerveContants.MAX_VOLTAGE;
 
 import java.util.function.DoubleSupplier;
@@ -32,7 +34,7 @@ public class PivotCommands {
                     true);
 
             pivot.setPivotVoltage(voltage);
-        })).finallyDo(pivot::stop).withName("pivotMoveToAngle");
+        })).withName("pivotMoveToAngle");
     }
 
     public Command moveToAngle(double angle) {
@@ -41,10 +43,15 @@ public class PivotCommands {
  
     public Command manualController(DoubleSupplier pivotSpeed) {
         return pivot.run(() -> {
+            Double demandSpeed = pivotSpeed.getAsDouble();
             double feedForward = pivot.calculateFeedForward(pivot.getAngleDegrees(), 0, false);
-            pivot.setPivotVoltage(feedForward + pivotSpeed.getAsDouble() * MAX_VOLTAGE);
+            if((pivot.getAngleDegrees() > MAX_ANGLE_DEGREES && demandSpeed > 0)
+            || (pivot.getAngleDegrees() < MIN_ANGLE_DEGREES && demandSpeed < 0)) {
+            demandSpeed = 0.0;
+        }
+            pivot.setPivotVoltage(feedForward + demandSpeed * MAX_VOLTAGE);
         
-        }).finallyDo(() -> pivot.stop()).withName("pivotManualController");
+        }).withName("pivotManualController");
     }
 
 }

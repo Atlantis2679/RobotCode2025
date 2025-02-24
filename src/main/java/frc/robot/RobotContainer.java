@@ -36,38 +36,41 @@ public class RobotContainer {
     private final NaturalXboxController driverController = new NaturalXboxController(
             RobotMap.Controllers.DRIVER_PORT);
     private final NaturalXboxController operatorController = new NaturalXboxController(
-                RobotMap.Controllers.OPERATOR_PORT);    
-    
+            RobotMap.Controllers.OPERATOR_PORT);
+
     private final SwerveCommands swerveCommands = new SwerveCommands(swerve);
-    private final AllCommands allCommands = new AllCommands(gripper, pivot, funnel);
-    
-    private boolean useStaticCommands = false;
+    private final AllCommands allCommands = new AllCommands(gripper, pivot, funnel, swerve);
+
+  private boolean useStaticCommands = false;
+
+    private boolean alignToReefLockOnPose = false;
 
     private boolean isCompetition = true;
 
     public RobotContainer() {
         NamedCommands.registerCommand("intake", allCommands.intake());
-        NamedCommands.registerCommand("moveToL1", allCommands.moveToL1());
-        NamedCommands.registerCommand("moveToL2", allCommands.moveToL2());
-        NamedCommands.registerCommand("moveToL3", allCommands.moveToL3());
+        NamedCommands.registerCommand("moveToL1", allCommands.autoMoveToL1());
+        NamedCommands.registerCommand("moveToL2", allCommands.autoMoveToL2());
+        NamedCommands.registerCommand("moveToL3", allCommands.autoMoveToL3());
         NamedCommands.registerCommand("scoreL2L3", allCommands.scoreL3());
         NamedCommands.registerCommand("scoreL1", allCommands.scoreL1());
         NamedCommands.registerCommand("stopAll", allCommands.stopAll());
 
-        new Trigger(DriverStation::isDisabled).onTrue(swerveCommands.stop().repeatedly().withTimeout(0.5)
-            .alongWith(allCommands.stopAll()));
+        new Trigger(DriverStation::isDisabled).whileTrue(swerveCommands.stop()
+                .alongWith(allCommands.stopAll()));
         pdh.setSwitchableChannel(true);
 
         configureDriverBindings();
         configureOperatorBindings();
 
-        autoChooser =  AutoBuilder.buildAutoChooserWithOptionsModifier(
-            (stream) -> isCompetition
-              ? stream.filter(auto -> auto.getName().startsWith("comp"))
-              : stream
-          );
+        autoChooser = AutoBuilder.buildAutoChooserWithOptionsModifier(
+                (stream) -> isCompetition
+                        ? stream.filter(auto -> auto.getName().startsWith("comp"))
+                        : stream);
         SmartDashboard.putData("Auto Chooser", autoChooser);
         Field2d field = new Field2d();
+
+        swerve.registerCallbackOnPoseUpdate((pose, isRedAlliance) -> {field.setRobotPose(pose);});
         SmartDashboard.putData(field);
         autoChooser.onChange((command) -> {
             try {
@@ -75,7 +78,8 @@ public class RobotContainer {
                 field.getObject("Auto Trajectory").setPoses(autoPath.getPathPoses());
             } catch (Exception e) {
                 Commands.print("Auto Trajectory Loading Failed!");
-            }});
+            }
+        });
     }
 
     private void configureDriverBindings() {
@@ -90,7 +94,12 @@ public class RobotContainer {
         TuneablesManager.add("Swerve/drive command", driveCommand.fullTuneable());
         driverController.a().onTrue(new InstantCommand(swerve::resetYaw));
         driverController.x().onTrue(swerveCommands.xWheelLock());
-
+        driverController.rightTrigger().or(driverController.leftTrigger()).toggleOnTrue(Commands.runOnce(() -> alignToReefLockOnPose = false))
+            .negate().onTrue(Commands.runOnce(() -> alignToReefLockOnPose = true));
+        driverController.rightTrigger().and(driverController.leftTrigger().negate())
+            .whileTrue(allCommands.alignToReefRight(driveCommand, () -> alignToReefLockOnPose));
+        driverController.leftTrigger().and(driverController.rightTrigger().negate())
+            .whileTrue(allCommands.alignToReefLeft(driveCommand, () -> alignToReefLockOnPose));
         driverController.y().onTrue(allCommands.stopAll());
 
         TuneablesManager.add("Swerve/modules control mode",
@@ -103,7 +112,8 @@ public class RobotContainer {
     private void configureOperatorBindings() {
         operatorController.a().onTrue(allCommands.intake());
         operatorController.leftBumper().onChange(Commands.runOnce(() -> useStaticCommands = !useStaticCommands));
-        operatorController.b().onTrue(Commands.either(allCommands.moveToL1Static(), allCommands.moveToL1(), () -> useStaticCommands));
+        operatorController.b()
+                .onTrue(Commands.either(allCommands.moveToL1Static(), allCommands.moveToL1(), () -> useStaticCommands));
         // operatorController.b().onTrue(allCommands.moveToL1());
         operatorController.y().onTrue(allCommands.moveToL2());
         operatorController.x().onTrue(allCommands.moveToL3());
@@ -113,14 +123,18 @@ public class RobotContainer {
         operatorController.rightTrigger().whileTrue(allCommands.scoreL3());
         operatorController.leftTrigger().whileTrue(allCommands.scoreL1());
         operatorController.rightBumper().whileTrue(Commands.parallel(
-            allCommands.manualFunnelController(operatorController::getLeftY),
-            allCommands.manualGripperController(operatorController::getLeftX),
-            allCommands.manualPivotController(operatorController::getRightY),
-            allCommands.setManualColor()
+                allCommands.manualFunnelController(operatorController::getLeftY),
+                allCommands.manualGripperController(operatorController::getLeftX),
+                allCommands.manualPivotController(operatorController::getRightY)
+        // allCommands.setManualColor()
         ));
+        TuneablesManager.add("Test Operator Wizard", allCommands.testWizard(
+            () -> operatorController.povRight().getAsBoolean(),
+            operatorController::getRightY, operatorController::getLeftX, operatorController::getLeftY)
+            .fullTuneable());
+        pivot.setDefaultCommand(allCommands.moveToRest());
     }
     
-
     public void setSubsystemsInTestModeState() {
         swerve.enableCoast();
     }
