@@ -263,6 +263,7 @@ public class AllCommands {
             gripper.stop();
             pivot.stop();
             funnel.stop();
+            LedsCommands.clearLeds(ledStrips); // Maybe find a better solution?
         }, gripper, pivot, funnel)
         .ignoringDisable(true).withInterruptBehavior(InterruptionBehavior.kCancelIncoming);
     }
