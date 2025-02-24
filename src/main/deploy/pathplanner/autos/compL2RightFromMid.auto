@@ -1,0 +1,31 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "moveToL2"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "L2FromMidRight"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "scoreL3"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": false
+}

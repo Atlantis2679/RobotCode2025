@@ -55,6 +55,9 @@ public class Pivot extends SubsystemBase implements Tuneable {
         fieldsTable.update();
         pivotRotationalHelper = new PrimitiveRotationalSensorHelper(io.angle.getAsDouble(), INITIAL_OFFSET);
         pivotRotationalHelper.enableContinousWrap(UPPER_BOUND, FULL_ROTATION);
+
+        fieldsTable.recordOutput("current command", getCurrentCommand() == null ? "none" : getCurrentCommand().getName());
+
         TuneablesManager.add("Pivot", (Tuneable) this);
 
         NetworkAlertsManager.addRevLibErrorAlert("Pivot: Motor: ", io.motorConfigError);

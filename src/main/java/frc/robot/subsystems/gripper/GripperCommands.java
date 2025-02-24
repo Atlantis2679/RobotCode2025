@@ -20,7 +20,7 @@ public class GripperCommands {
 
     public Command score(double backVoltageForScoring, double rightVoltageForScoring, double leftVoltageForScoring) {
         return gripper.run(() -> gripper.setMotorsVoltage(rightVoltageForScoring, leftVoltageForScoring, backVoltageForScoring))
-.withName("scoreL1");
+        .withName("scoreL1");
     }
 
     public Command manualController(DoubleSupplier backSpeed, DoubleSupplier rightSpeed, DoubleSupplier leftSpeed) {

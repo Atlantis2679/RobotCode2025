@@ -43,6 +43,7 @@ import com.pathplanner.lib.config.ModuleConfig;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+import com.pathplanner.lib.util.PathPlannerLogging;
 
 public class Swerve extends SubsystemBase implements Tuneable {
     private final LogFieldsTable fieldsTable = new LogFieldsTable(getName());
@@ -96,6 +97,8 @@ public class Swerve extends SubsystemBase implements Tuneable {
 
     private final LoggedDashboardChooser<Boolean> isRedAlliance = new LoggedDashboardChooser<>("alliance");
 
+    private Pose2d lastCaculatedClosestPose = new Pose2d();
+
     public Swerve() {
         fieldsTable.update();
         queueResetModulesToAbsolute();
@@ -144,7 +147,18 @@ public class Swerve extends SubsystemBase implements Tuneable {
                     PathPlanner.ROTATION_KD)), 
             config, 
             this::getIsRedAlliance, 
-            this);  
+            this); 
+
+        PathPlannerLogging.setLogTargetPoseCallback((pose) -> {
+            fieldsTable.recordOutput("PathPlanner/desired pose", pose);
+        });
+        PathPlannerLogging.setLogCurrentPoseCallback((pose) -> {
+            fieldsTable.recordOutput("PathPlanner/current pose", pose);
+        });
+        PathPlannerLogging.setLogActivePathCallback((path) -> {
+            fieldsTable.recordOutput("PathPlanner/path", path.toArray(new Pose2d[0]));
+        });
+
         
         // In case the modules fail to reset to absolute:
     }
@@ -293,6 +307,54 @@ public class Swerve extends SubsystemBase implements Tuneable {
                 modules[1].getModuleState(),
                 modules[2].getModuleState(),
                 modules[3].getModuleState());
+    }
+
+    public boolean atTranslationPosition(double currentPosition, double targetPosition, double currentVelocity) {
+        boolean atPosition = Math.abs(currentPosition - targetPosition) < SwerveContants.TRANSLATION_TOLERANCE_METERS;
+        boolean atVelocity = Math.abs(currentVelocity) < SwerveContants.TRANSLATION_VELOCITY_TOLERANCE;
+        fieldsTable.recordOutput("AtTargetPosition/isStill", atVelocity);
+        fieldsTable.recordOutput("atTargetPosition-" + targetPosition, atPosition);
+        return atPosition && atVelocity;
+    }
+
+    public boolean atAngle(Rotation2d targetAngle) {
+        double angleDifference = targetAngle.minus(getPose().getRotation()).getDegrees();
+        final boolean atTargetAngle = Math.abs(angleDifference) < SwerveContants.ROTATION_TOLERANCE_DEGREES;
+        double currentAngularVelocity = getRobotRelativeChassisSpeeds().omegaRadiansPerSecond;
+        final boolean isAngleStill = Math.abs(currentAngularVelocity) < SwerveContants.ROTATION_VELOCITY_TOLERANCE;
+        fieldsTable.recordOutput("AtTargetAngle/isStill", isAngleStill);
+        fieldsTable.recordOutput("atTargetAngle-" + targetAngle, atTargetAngle);
+        return atTargetAngle && isAngleStill;
+    }
+    public double getDistanceToPose(Pose2d targetPose) {
+        double deltaX = targetPose.getX() - getPose().getX();
+        double deltaY = targetPose.getY() - getPose().getY();
+        double distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+        fieldsTable.recordOutput("distanceTPose", distance);
+        return distance;
+    }
+    public double getAngularDistance(Pose2d targetPose){
+        double deltaTheta = targetPose.getRotation().minus(getPose().getRotation()).getRadians();
+        double angularDistance = Math.abs(deltaTheta); 
+        return angularDistance;
+    }
+
+    public Pose2d getClosestPose(Pose2d[] poses) {
+        Pose2d closestPose = null;
+        double minDistance = Double.MAX_VALUE;
+        for (Pose2d targetPose: poses) {
+            double distance = (getDistanceToPose(targetPose));
+            if (distance < minDistance) {
+                minDistance = distance;
+                closestPose = targetPose;
+            }
+        }
+        fieldsTable.recordOutput("lastCaculatedClosestPose", closestPose);
+        return lastCaculatedClosestPose = closestPose;
+    }
+
+    public Pose2d getLastCalculatedClosestPose() {
+        return lastCaculatedClosestPose;
     }
 
     public boolean getIsRedAlliance() {

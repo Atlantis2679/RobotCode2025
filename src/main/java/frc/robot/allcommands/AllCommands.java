@@ -1,5 +1,7 @@
 package frc.robot.allcommands;
 
+import java.util.Set;
+
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
@@ -7,8 +9,10 @@ import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.DeferredCommand;
 import frc.lib.tuneables.extensions.TuneableCommand;
 import frc.lib.valueholders.DoubleHolder;
+import frc.robot.FieldConstants;
 import frc.robot.allcommands.AllCommandsConstants.ManualControllers;
 import frc.robot.subsystems.funnel.Funnel;
 import frc.robot.subsystems.funnel.FunnelCommands;
@@ -19,6 +23,9 @@ import frc.robot.subsystems.leds.LedsCommands;
 import frc.robot.subsystems.leds.LedsConstants;
 import frc.robot.subsystems.pivot.Pivot;
 import frc.robot.subsystems.pivot.PivotCommands;
+import frc.robot.subsystems.swerve.Swerve;
+import frc.robot.subsystems.swerve.SwerveCommands;
+import frc.robot.subsystems.swerve.SwerveContants;
 
 import static frc.robot.allcommands.AllCommandsConstants.*;
 
@@ -27,22 +34,26 @@ public class AllCommands {
     private final Pivot pivot;
     private final Funnel funnel;
     private final Leds[] ledStrips = Leds.LED_STRIPS;
+    private final Swerve swerve;
 
 
     private final GripperCommands gripperCMDs;
     private final PivotCommands pivotCMDs;
     private final FunnelCommands funnelCMDs;
+    private final SwerveCommands swerveCMDs;
 
     private final Color color00bebe = new Color(0, 190, 190);
 
-    public AllCommands(Gripper gripper, Pivot pivot, Funnel funnel) {
+    public AllCommands(Gripper gripper, Pivot pivot, Funnel funnel, Swerve swerve) {
         this.gripper = gripper;
         this.pivot = pivot;
         this.funnel = funnel;
+        this.swerve = swerve;
 
         this.gripperCMDs = new GripperCommands(gripper);
         this.pivotCMDs = new PivotCommands(pivot);
         this.funnelCMDs = new FunnelCommands(funnel);
+        this.swerveCMDs = new SwerveCommands(swerve);
     }
 
     public Command setManualColor(){
@@ -66,6 +77,10 @@ public class AllCommands {
         .withName("scoreLedsCommand");
     }
 
+    public Command setAlignToReefColor() {
+        return LedsCommands.colorForSeconds(Color.kChocolate, 1, ledStrips);
+    }
+  
     public Command wizardLedsNext() {
         return LedsCommands.colorForSeconds(Color.kWhite, 1, ledStrips);
     }
@@ -133,6 +148,22 @@ public class AllCommands {
             .alongWith(scoreLedsCommand()).finallyDo(() -> gripper.stop()).withName("scoreL3");
     }
 
+    public Command alignToReefRight(TuneableCommand driveCommand, BooleanSupplier lockOnPose) {
+        return new DeferredCommand(() -> swerveCMDs.driveToPoseWithPID(
+            lockOnPose.getAsBoolean() ? swerve.getLastCalculatedClosestPose() : 
+            swerve.getClosestPose(FieldConstants.REEF_RIGHT_BRANCHES_POSES),
+            driveCommand).andThen(setAlignToReefColor()), Set.of(swerve))
+        .onlyWhile(() -> swerve.getDistanceToPose(swerve.getLastCalculatedClosestPose()) <= SwerveContants.AlignToReef.MIN_DISTANCE_TO_AMPALIGN);
+    }
+
+    public Command alignToReefLeft(TuneableCommand driveCommand, BooleanSupplier lockOnPose) {
+        return new DeferredCommand(() -> swerveCMDs.driveToPoseWithPID(
+            lockOnPose.getAsBoolean() ? swerve.getLastCalculatedClosestPose() : 
+            swerve.getClosestPose(FieldConstants.REEF_LEFT_BRANCHES_POSES),
+            driveCommand).andThen(setAlignToReefColor()), Set.of(swerve))
+        .onlyWhile(() -> swerve.getDistanceToPose(swerve.getLastCalculatedClosestPose()) <= SwerveContants.AlignToReef.MIN_DISTANCE_TO_AMPALIGN);
+    }
+
     public TuneableCommand getPivotReadyAndScore() {
             return TuneableCommand.wrap((tuneableTable) -> {
             DoubleHolder angleHolder = tuneableTable.addNumber("angle", PIVOT_TUNEABLE_ANGLE);
@@ -169,38 +200,47 @@ public class AllCommands {
      */
 
     public TuneableCommand testWizard(BooleanSupplier moveToNext, DoubleSupplier firstSpeed, DoubleSupplier secondSpeed, DoubleSupplier thirdSpeed) {
-        return TuneableCommand.wrap(tuneableBuilder -> 
-                manualFunnelController(firstSpeed).until(moveToNext).andThen(wizardLedsNext())
+        return TuneableCommand.wrap(tuneableBuilder -> {
+            Command command =
+            
+            manualFunnelController(firstSpeed).until(moveToNext).andThen(wizardLedsNext())
 
-                .andThen(gripperCMDs.manualController(
-                        () -> firstSpeed.getAsDouble() * ManualControllers.GRIPPER_BACK_SPEED_MULTIPLAYER,
-                        () -> secondSpeed.getAsDouble() * ManualControllers.GRIPPER_RIGHT_SPEED_MULTIPLAYER, 
-                        () -> thirdSpeed.getAsDouble() * ManualControllers.GRIPPER_LEFT_SPEED_MULTIPLAYER))
-                .until(moveToNext).andThen(wizardLedsNext())
-                
-                .andThen(manualPivotController(firstSpeed)).until(moveToNext).andThen(wizardLedsNext())
-    
-                .andThen(pivotCMDs.moveToAngle(PIVOT_ANGLE_FOR_INTAKE)).andThen(Commands.waitUntil(moveToNext)).andThen(wizardLedsNext())
-    
-                .andThen(funnelCMDs.loadCoral(FUNNEL_INTAKE_SPEED)).until(moveToNext).andThen(wizardLedsNext())
-                
-                .andThen(funnelCMDs.passCoral(FUNNEL_INTAKE_SPEED, FUNNEL_PASSING_SPEED)
-                .alongWith(gripperCMDs.loadCoral(GRIPPER_BACK_LOADING_VOLTAGE, GRIPPER_RIGHT_LOADING_VOLTAGE, GRIPPER_LEFT_LOADING_VOLTAGE)))
-                .until(moveToNext).andThen(wizardLedsNext())
-                
-                .andThen(moveToL1()).andThen(Commands.waitUntil(moveToNext)).andThen(wizardLedsNext())
-                
-                .andThen(scoreL1()).until(moveToNext).andThen(wizardLedsNext())
-                
-                .andThen(intake()).andThen(Commands.waitUntil(moveToNext)).andThen(wizardLedsNext())
-                
-                .andThen(moveToL3()).andThen(Commands.waitUntil(moveToNext)).andThen(wizardLedsNext())
-                
-                .andThen(scoreL3()).until(moveToNext).andThen(wizardLedsNext())
-                
-                .andThen(moveToL2()).until(moveToNext).andThen(pivotCMDs.moveToAngle(-90)).until(moveToNext)
-                
-                .andThen(LedsCommands.colorForSeconds(color00bebe, 1, ledStrips)).withName("testWizard"));
+            .andThen(gripperCMDs.manualController(
+                    () -> firstSpeed.getAsDouble() * ManualControllers.GRIPPER_BACK_SPEED_MULTIPLAYER,
+                    () -> secondSpeed.getAsDouble() * ManualControllers.GRIPPER_RIGHT_SPEED_MULTIPLAYER, 
+                    () -> thirdSpeed.getAsDouble() * ManualControllers.GRIPPER_LEFT_SPEED_MULTIPLAYER))
+            .until(moveToNext).andThen(wizardLedsNext())
+            
+            .andThen(manualPivotController(firstSpeed)).until(moveToNext).andThen(wizardLedsNext())
+
+            .andThen(pivotCMDs.moveToAngle(PIVOT_ANGLE_FOR_INTAKE)).andThen(Commands.waitUntil(moveToNext)).andThen(wizardLedsNext())
+
+            .andThen(funnelCMDs.loadCoral(FUNNEL_INTAKE_SPEED)).until(moveToNext).andThen(wizardLedsNext())
+            
+            .andThen(funnelCMDs.passCoral(FUNNEL_INTAKE_SPEED, FUNNEL_PASSING_SPEED)
+            .alongWith(gripperCMDs.loadCoral(GRIPPER_BACK_LOADING_VOLTAGE, GRIPPER_RIGHT_LOADING_VOLTAGE, GRIPPER_LEFT_LOADING_VOLTAGE)))
+            .until(moveToNext).andThen(wizardLedsNext())
+            
+            .andThen(moveToL1()).andThen(Commands.waitUntil(moveToNext)).andThen(wizardLedsNext())
+            
+            .andThen(scoreL1()).until(moveToNext).andThen(wizardLedsNext())
+            
+            .andThen(intake()).andThen(Commands.waitUntil(moveToNext)).andThen(wizardLedsNext())
+            
+            .andThen(moveToL3()).andThen(Commands.waitUntil(moveToNext)).andThen(wizardLedsNext())
+            
+            .andThen(scoreL3()).until(moveToNext).andThen(wizardLedsNext())
+            
+            .andThen(moveToL2()).until(moveToNext).andThen(pivotCMDs.moveToAngle(-90)).until(moveToNext)
+            
+            .andThen(LedsCommands.colorForSeconds(color00bebe, 1, ledStrips))
+            
+            .withName("testWizard").withInterruptBehavior(InterruptionBehavior.kCancelIncoming);
+
+            command.addRequirements(funnel, gripper, pivot, swerve);
+
+            return command;
+        });
     }
  
     public Command manualGripperController(DoubleSupplier speed) {
