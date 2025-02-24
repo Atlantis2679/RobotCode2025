@@ -1,6 +1,7 @@
 package frc.robot.allcommands;
 
 import java.util.Set;
+import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.wpilibj.util.Color;
@@ -126,9 +127,11 @@ public class AllCommands {
             .andThen(scoreLedsCommand()).withName("scoreL3");
     }
 
-    public Command alignToReef(TuneableCommand driveCommand) {
-        return new DeferredCommand(() -> swerveCMDs.driveToPoseWithPID(swerve.getClosestPose(FieldConstants.REEF_PLACE_POSES), driveCommand), Set.of(swerve))
-        .onlyWhile(() -> 0 <= SwerveContants.AlignToReef.MIN_DISTANCE_TO_AMPALIGN);
+    public Command alignToReef(TuneableCommand driveCommand, BooleanSupplier lockOnPose) {
+        return new DeferredCommand(() -> swerveCMDs.driveToPoseWithPID(
+            lockOnPose.getAsBoolean() ? swerve.getLastCalculatedClosestPose() : swerve.getClosestPose(FieldConstants.REEF_PLACE_POSES),
+            driveCommand).andThen(setAlignToReefColor()), Set.of(swerve))
+        .onlyWhile(() -> swerve.getDistanceToPose(swerve.getLastCalculatedClosestPose()) <= SwerveContants.AlignToReef.MIN_DISTANCE_TO_AMPALIGN);
     }
 
     public TuneableCommand getPivotReadyAndScore() {

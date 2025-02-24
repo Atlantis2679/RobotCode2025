@@ -43,6 +43,8 @@ public class RobotContainer {
     
     private boolean useStaticCommands = false;
 
+    private boolean alignToReefLockOnPose = false;
+
     private boolean isCompetition = true;
 
     public RobotContainer() {
@@ -68,6 +70,8 @@ public class RobotContainer {
           );
         SmartDashboard.putData("Auto Chooser", autoChooser);
         Field2d field = new Field2d();
+
+        swerve.registerCallbackOnPoseUpdate((pose, isRedAlliance) -> {field.setRobotPose(pose);});
         SmartDashboard.putData(field);
         autoChooser.onChange((command) -> {
             try {
@@ -90,7 +94,8 @@ public class RobotContainer {
         TuneablesManager.add("Swerve/drive command", driveCommand.fullTuneable());
         driverController.a().onTrue(new InstantCommand(swerve::resetYaw));
         driverController.x().onTrue(swerveCommands.xWheelLock());
-        driverController.b().whileTrue(allCommands.alignToReef(driveCommand).andThen(allCommands.setAlignToReefColor()));
+        driverController.b().toggleOnTrue(Commands.runOnce(() -> alignToReefLockOnPose = false)).negate().onTrue(Commands.runOnce(() -> alignToReefLockOnPose = true));
+        driverController.b().whileTrue(allCommands.alignToReef(driveCommand, () -> alignToReefLockOnPose));
         driverController.y().onTrue(allCommands.stopAll());
 
         TuneablesManager.add("Swerve/modules control mode",

@@ -97,6 +97,8 @@ public class Swerve extends SubsystemBase implements Tuneable {
 
     private final LoggedDashboardChooser<Boolean> isRedAlliance = new LoggedDashboardChooser<>("alliance");
 
+    private Pose2d lastCaculatedClosestPose = new Pose2d();
+
     public Swerve() {
         fieldsTable.update();
 
@@ -345,8 +347,12 @@ public class Swerve extends SubsystemBase implements Tuneable {
                 closestPose = targetPose;
             }
         }
-        fieldsTable.recordOutput("closestPose", closestPose);
-        return closestPose;
+        fieldsTable.recordOutput("lastCaculatedClosestPose", closestPose);
+        return lastCaculatedClosestPose = closestPose;
+    }
+
+    public Pose2d getLastCalculatedClosestPose() {
+        return lastCaculatedClosestPose;
     }
 
     public boolean getIsRedAlliance() {

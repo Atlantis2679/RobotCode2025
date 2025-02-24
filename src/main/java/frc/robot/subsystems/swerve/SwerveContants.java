@@ -11,8 +11,8 @@ public class SwerveContants {
     public final static double MAX_MODULE_VELOCITY_MPS = 5; // for the max voltage
     public final static double MODULE_TEMPERATORE_WARNING_THRESHOLD = 0;
 
-    public final static double TRACK_WIDTH_METERS = 0.518;
-    public final static double TRACK_LENGTH_METERS = 0.518;
+    public final static double TRACK_WIDTH_METERS = 0.76 + 8.5;
+    public final static double TRACK_LENGTH_METERS = 0.76 + 8.5;
     public final static double TRACK_RADIUS_METERS = 0.366;
 
     public final static double MODULE_FL_ABSOLUTE_ANGLE_OFFSET_DEGREES = 149.94140625;
@@ -64,17 +64,17 @@ public class SwerveContants {
     }
 
     public class DriveToPose {
-        public final static double Y_KP = 1.7;//1.7
+        public final static double Y_KP = 2.2;//1.7
         public final static double Y_KI = 0;
-        public final static double Y_KD = 0;
+        public final static double Y_KD = 0.75;
 
-        public final static double X_KP = 2.1;//2.1
+        public final static double X_KP = 2.2;//2.1
         public final static double X_KI = 0;
-        public final static double X_KD = 0;
+        public final static double X_KD = 0.75;
 
-        public final static double ANGLE_KP = 1.1;//1.1
+        public final static double ANGLE_KP = 1.5;//1.1
         public final static double ANGLE_KI = 0;
-        public final static double ANGLE_KD = 0.01;
+        public final static double ANGLE_KD = 0.1;
 
         public final static double MAX_VELOCITY_MPS = 0.5;
         public final static double MAX_ACCELERATION_MPS = 0.5;
