@@ -48,8 +48,8 @@ public class PivotIOSim extends PivotIO {
     // Inputs:
     @Override
     public void setVoltage(double voltage) {
-        lastVoltage = voltage;
-        pivotMotor.setInputVoltage(voltage);
+        lastVoltage = -voltage;
+        pivotMotor.setInputVoltage(-voltage);
     }
 
     @Override

@@ -27,25 +27,26 @@ public abstract class SwerveModuleIO extends IOBase {
         public final DoubleSupplier TurnKP = fields.addDouble("Turn kP", this::getTurnKP);
         public final DoubleSupplier TurnKI = fields.addDouble("Turn kI", this::getTurnKI);
         public final DoubleSupplier TurnKD = fields.addDouble("Turn kD", this::getTurnKD);
-        public final DoubleSupplier driveMotorAcceleration = fields.addDouble("driveMotorAcceleration", this::getDriveMotorAcceleration);
-        public final DoubleSupplier turnMotorAcceleration = fields.addDouble("turnMotorAcceleration", this::getTurnMotorAcceleration);
+        public final DoubleSupplier driveMotorAcceleration = fields.addDouble("driveMotorAcceleration",
+                        this::getDriveMotorAcceleration);
+        public final DoubleSupplier turnMotorAcceleration = fields.addDouble("turnMotorAcceleration",
+                        this::getTurnMotorAcceleration);
         public final DoubleSupplier driveMotorTemperature = fields.addDouble(
-                "driveMotorTemperature", this::getDriveMotorTemperature);
+                        "driveMotorTemperature", this::getDriveMotorTemperature);
         public final DoubleSupplier turnMotorTemperature = fields.addDouble(
-                "turnMotorTemperature", this::getTurnMotorTemperature);
+                        "turnMotorTemperature", this::getTurnMotorTemperature);
         public final Supplier<StatusCode> driveMotorConfigStatusCode = fields.addStatusCode(
-                "driveMotorConfigStatusCode", this::getDriveMotorConfigStatusCode);
+                        "driveMotorConfigStatusCode", this::getDriveMotorConfigStatusCode);
         public final Supplier<StatusCode> driveMotorStatusCode = fields.addStatusCode(
-                "driveMotorStatusCode", this::getDriveMotorStatusCode);
+                        "driveMotorStatusCode", this::getDriveMotorStatusCode);
         public final Supplier<StatusCode> turnMotorConfigStatusCode = fields.addStatusCode(
-                "turnMotorConfigStatusCode", this::getTurnMotorConfigStatusCode);
+                        "turnMotorConfigStatusCode", this::getTurnMotorConfigStatusCode);
         public final Supplier<StatusCode> turnMotorStatusCode = fields.addStatusCode(
-                "turnMotorStatusCode", this::getTurnMotorStatusCode);
+                        "turnMotorStatusCode", this::getTurnMotorStatusCode);
         public final Supplier<StatusCode> canCoderConfigStatusCode = fields.addStatusCode(
-                "canCoderConfigStatusCode", this::getCanCoderConfigStatusCode);
+                        "canCoderConfigStatusCode", this::getCanCoderConfigStatusCode);
         public final Supplier<StatusCode> canCoderStatusCode = fields.addStatusCode(
-                "canCoderStatusCode", this::getCanCoderStatusCode);
-        
+                        "canCoderStatusCode", this::getCanCoderStatusCode);
 
         public SwerveModuleIO(LogFieldsTable fieldsTable) {
                 super(fieldsTable);
@@ -82,15 +83,19 @@ public abstract class SwerveModuleIO extends IOBase {
         // Network alerts Info:
 
         protected abstract double getDriveMotorTemperature();
+
         protected abstract double getTurnMotorTemperature();
 
         protected abstract StatusCode getDriveMotorStatusCode();
+
         protected abstract StatusCode getDriveMotorConfigStatusCode();
 
         protected abstract StatusCode getTurnMotorStatusCode();
+
         protected abstract StatusCode getTurnMotorConfigStatusCode();
 
         protected abstract StatusCode getCanCoderStatusCode();
+
         protected abstract StatusCode getCanCoderConfigStatusCode();
 
         // Outputs

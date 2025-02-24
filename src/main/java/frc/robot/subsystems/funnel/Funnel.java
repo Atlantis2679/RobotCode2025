@@ -34,7 +34,7 @@ public class Funnel extends SubsystemBase {
     }
 
     public boolean getIsCoralIn() {
-        return isCoralInDebouncer.calculate(io.isCoralIn.getAsBoolean());
+        return !isCoralInDebouncer.calculate(io.isCoralIn.getAsBoolean());
     }
 
     public void stop() {

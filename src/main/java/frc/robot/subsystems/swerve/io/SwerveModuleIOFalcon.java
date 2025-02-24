@@ -54,7 +54,6 @@ public class SwerveModuleIOFalcon extends SwerveModuleIO {
 
         driveMotor.getVelocity().setUpdateFrequency(100);
         driveMotor.getPosition().setUpdateFrequency(100);
-
         // turn motor configs
         TalonFXConfiguration turnMotorConfiguration = new TalonFXConfiguration();
 
@@ -79,7 +78,7 @@ public class SwerveModuleIOFalcon extends SwerveModuleIO {
         turnMotorConfigStatusCode = turnMotor.getConfigurator().apply(turnMotorConfiguration);
 
         canCoderConfigStatusCode = canCoder.getConfigurator().apply(canCoderConfiguration);
-
+        
     }
 
     @Override

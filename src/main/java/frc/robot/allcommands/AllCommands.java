@@ -16,6 +16,7 @@ import frc.robot.subsystems.gripper.Gripper;
 import frc.robot.subsystems.leds.Leds;
 import frc.robot.subsystems.gripper.GripperCommands;
 import frc.robot.subsystems.leds.LedsCommands;
+import frc.robot.subsystems.leds.LedsConstants;
 import frc.robot.subsystems.pivot.Pivot;
 import frc.robot.subsystems.pivot.PivotCommands;
 
@@ -26,6 +27,7 @@ public class AllCommands {
     private final Pivot pivot;
     private final Funnel funnel;
     private final Leds[] ledStrips = Leds.LED_STRIPS;
+
 
     private final GripperCommands gripperCMDs;
     private final PivotCommands pivotCMDs;
@@ -44,19 +46,15 @@ public class AllCommands {
     }
 
     public Command setManualColor(){
-        if(gripper.getIsCoralIn() && !funnel.getIsCoralIn()){
-            return LedsCommands.colorForSeconds(Color.kGreen,0.1, ledStrips);
-        }
-        else if(funnel.getIsCoralIn() && !gripper.getIsCoralIn()){
-            return LedsCommands.colorForSeconds(Color.kRed,0.1, ledStrips);
-        }
-        else if(funnel.getIsCoralIn() && gripper.getIsCoralIn()){
-            return LedsCommands.colorForSeconds(Color.kYellow,0.1, ledStrips);
-        }
-        else{
-            Color color00bebe = new Color(0, 190, 190);
-            return LedsCommands.colorForSeconds(color00bebe,0.1, Leds.LED_STRIPS);
-        }
+        return LedsCommands.getStaticColorCommand(Color.kAqua, ledStrips);
+        // return Commands.either(LedsCommands.getStaticColorCommand(Color.kGreen, ledStrips),
+        //     Commands.either(
+        //         LedsCommands.getStaticColorCommand(Color.kYellow, ledStrips), 
+        //         Commands.either(LedsCommands.getStaticColorCommand(Color.kRed, ledStrips), 
+        //         LedsCommands.clearLeds(ledStrips),
+        //         () -> funnel.getIsCoralIn() && !gripper.getIsCoralIn()),
+        //         () -> funnel.getIsCoralIn() && gripper.getIsCoralIn()),
+        //         () -> gripper.getIsCoralIn() && !funnel.getIsCoralIn());
     }
 
     public Command clearLeds(){
@@ -64,7 +62,7 @@ public class AllCommands {
     }
 
     public Command scoreLedsCommand(){
-        return LedsCommands.colorForSeconds(Color.kBlue, 1, ledStrips)
+        return LedsCommands.colorForSeconds(Color.kBlue, LedsConstants.SECONDS_FOR_LEDS_DEFAULT, ledStrips)
         .withName("scoreLedsCommand");
     }
 
@@ -73,15 +71,21 @@ public class AllCommands {
     }
 
     public Command moveToAngleLedsCommand(){
-        return LedsCommands.colorForSeconds(Color.kPurple, 1, ledStrips);
+        return LedsCommands.colorForSeconds(Color.kPurple, LedsConstants.SECONDS_FOR_LEDS_DEFAULT, ledStrips);
     }
 
     public Command intake() {
-        return pivotCMDs.moveToAngle(PIVOT_ANGLE_FOR_INTAKE).until(() -> pivot.isAtAngle(PIVOT_ANGLE_FOR_INTAKE)).andThen(
-            funnelCMDs.loadCoral(FUNNEL_INTAKE_SPEED).andThen(funnelCMDs.passCoral(FUNNEL_INTAKE_SPEED, FUNNEL_PASSING_SPEED)
+        return pivotCMDs.moveToAngle(PIVOT_ANGLE_FOR_INTAKE)
+            .alongWith(Commands.waitUntil(() -> pivot.isAtAngle(PIVOT_ANGLE_FOR_INTAKE)).andThen(funnelCMDs.loadCoral(FUNNEL_INTAKE_SPEED)
+            .andThen(funnelCMDs.passCoral(FUNNEL_INTAKE_SPEED, FUNNEL_PASSING_SPEED)
             .alongWith(gripperCMDs.loadCoral(GRIPPER_BACK_LOADING_VOLTAGE, GRIPPER_RIGHT_LOADING_VOLTAGE, GRIPPER_LEFT_LOADING_VOLTAGE)))
             .until(() -> !funnel.getIsCoralIn() && gripper.getIsCoralIn()))
-            .andThen(LedsCommands.colorForSeconds(Color.kGreen, 1, ledStrips))
+            .finallyDo((intterapted) -> {
+                LedsCommands.getStaticColorCommand(Color.kGreen, ledStrips);
+                
+                funnel.stop();
+                gripper.stop();
+            }))
             .withName("Intake");
     }
 
@@ -91,32 +95,42 @@ public class AllCommands {
 
     public Command moveToL1() {
         return pivotCMDs.moveToAngle(PIVOT_ANGLE_FOR_L1)
-            .andThen(moveToAngleLedsCommand()).withName("moveToL1");
+            .alongWith(Commands.waitUntil(() -> pivot.isAtAngle(PIVOT_ANGLE_FOR_L1)).andThen(moveToAngleLedsCommand()))
+            .withName("moveToL1");
     }
 
     public Command moveToL1Static() {
         return funnelCMDs.passCoral(FUNNEL_INTAKE_SPEED, FUNNEL_PASSING_SPEED)
             .alongWith(gripperCMDs.loadCoral(GRIPPER_BACK_LOADING_VOLTAGE, GRIPPER_RIGHT_LOADING_VOLTAGE, GRIPPER_LEFT_LOADING_VOLTAGE))
-            .andThen(scoreLedsCommand()).withName("moveToL1Static");
+            .alongWith(scoreLedsCommand()).withName("moveToL1Static");
     }
 
     public Command moveToL2() {
         return pivotCMDs.moveToAngle(PIVOT_ANGLE_FOR_L2)
-            .andThen(moveToAngleLedsCommand()).withName("moveToL2");
+            .alongWith(Commands.waitUntil(() -> pivot.isAtAngle(PIVOT_ANGLE_FOR_L2)).andThen(moveToAngleLedsCommand()))
+            .withName("moveToL2");
     }
 
     public Command moveToL3() {
         return pivotCMDs.moveToAngle(PIVOT_ANGLE_FOR_L3)
-        .andThen(moveToAngleLedsCommand()).withName("moveToL3");
+            .alongWith(Commands.waitUntil(() -> pivot.isAtAngle(PIVOT_ANGLE_FOR_L3)).andThen(moveToAngleLedsCommand()))
+            .withName("moveToL3");
+    }
+
+    public Command moveToRest() {
+        return pivotCMDs.moveToAngle(PIVOT_ANGLE_FOR_REST)
+            .alongWith(Commands.waitUntil(() -> pivot.isAtAngle(PIVOT_ANGLE_FOR_L3))
+            .andThen(LedsCommands.colorForSeconds(Color.kDarkOrange, LedsConstants.SECONDS_FOR_LEDS_DEFAULT, ledStrips)))
+            .withName("moveToRest");
     }
 
     public Command scoreL1() {
         return gripperCMDs.score(GRIPPER_BACK_L1_VOLTAGE, GRIPPER_RIGHT_L1_VOLTAGE, GRIPPER_LEFT_L1_VOLTAGE)
-            .andThen(scoreLedsCommand()).withName("scoreL1");
+            .alongWith(scoreLedsCommand()).finallyDo(() -> gripper.stop()).withName("scoreL1");
     }
-    public Command scoreL3(){
+    public Command scoreL3() {
         return gripperCMDs.score(GRIPPER_BACK_L3_VOLTAGE, GRIPPER_OUTTAKE_L3_VOLTAGE, GRIPPER_OUTTAKE_L3_VOLTAGE)
-            .andThen(scoreLedsCommand()).withName("scoreL3");
+            .alongWith(scoreLedsCommand()).finallyDo(() -> gripper.stop()).withName("scoreL3");
     }
 
     public TuneableCommand getPivotReadyAndScore() {
@@ -133,7 +147,6 @@ public class AllCommands {
             .andThen(gripperCMDs.score(backGripperVoltage.get(), rightGripperVoltage.get(), leftGripperVoltage.get()))
                     .withName("getPivotAngleAndScore");
         });
-
     }
 
     /*
@@ -206,7 +219,7 @@ public class AllCommands {
     }
 
     public Command stopAll() {
-        return Commands.run(() -> {
+        return Commands.runOnce(() -> {
             gripper.stop();
             pivot.stop();
             funnel.stop();
