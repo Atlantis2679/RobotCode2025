@@ -1,15 +1,11 @@
 package frc.robot.allcommands;
 
-import java.util.Set;
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.DeferredCommand;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.RunCommand;
 import frc.lib.tuneables.extensions.TuneableCommand;
 import frc.lib.valueholders.DoubleHolder;
 import frc.robot.allcommands.AllCommandsConstants.ManualControllers;
@@ -22,7 +18,6 @@ import frc.robot.subsystems.leds.LedsCommands;
 import frc.robot.subsystems.leds.LedsConstants;
 import frc.robot.subsystems.pivot.Pivot;
 import frc.robot.subsystems.pivot.PivotCommands;
-import frc.robot.subsystems.swerve.Swerve;
 
 import static frc.robot.allcommands.AllCommandsConstants.*;
 
@@ -73,17 +68,17 @@ public class AllCommands {
     }
 
     public Command intake() {
-        return pivotCMDs.moveToAngle(PIVOT_ANGLE_FOR_INTAKE).until(() -> pivot.isAtAngle(PIVOT_ANGLE_FOR_INTAKE))
-        .andThen(moveToAngleLedsCommand()).andThen(funnelCMDs.loadCoral(FUNNEL_INTAKE_SPEED)
-        .andThen(funnelCMDs.passCoral(FUNNEL_INTAKE_SPEED, FUNNEL_PASSING_SPEED)
-        .alongWith(gripperCMDs.loadCoral(GRIPPER_BACK_LOADING_VOLTAGE, GRIPPER_RIGHT_LOADING_VOLTAGE, GRIPPER_LEFT_LOADING_VOLTAGE)))
-        .until(() -> !funnel.getIsCoralIn() && gripper.getIsCoralIn()))
+        return pivotCMDs.moveToAngle(PIVOT_ANGLE_FOR_INTAKE)
+            .alongWith(Commands.waitUntil(() -> pivot.isAtAngle(PIVOT_ANGLE_FOR_INTAKE)).andThen(funnelCMDs.loadCoral(FUNNEL_INTAKE_SPEED)
+            .andThen(funnelCMDs.passCoral(FUNNEL_INTAKE_SPEED, FUNNEL_PASSING_SPEED)
+            .alongWith(gripperCMDs.loadCoral(GRIPPER_BACK_LOADING_VOLTAGE, GRIPPER_RIGHT_LOADING_VOLTAGE, GRIPPER_LEFT_LOADING_VOLTAGE)))
+            .until(() -> !funnel.getIsCoralIn() && gripper.getIsCoralIn()))
             .finallyDo((intterapted) -> {
                 LedsCommands.getStaticColorCommand(Color.kGreen, ledStrips);
-                pivot.stop();
+                
                 funnel.stop();
                 gripper.stop();
-            })
+            }))
             .withName("Intake");
     }
 
@@ -93,33 +88,42 @@ public class AllCommands {
 
     public Command moveToL1() {
         return pivotCMDs.moveToAngle(PIVOT_ANGLE_FOR_L1)
-            .until(() -> pivot.isAtAngle(PIVOT_ANGLE_FOR_L1)).andThen(moveToAngleLedsCommand()).withName("moveToL1");
+            .alongWith(Commands.waitUntil(() -> pivot.isAtAngle(PIVOT_ANGLE_FOR_L1)).andThen(moveToAngleLedsCommand()))
+            .withName("moveToL1");
     }
 
     public Command moveToL1Static() {
         return funnelCMDs.passCoral(FUNNEL_INTAKE_SPEED, FUNNEL_PASSING_SPEED)
             .alongWith(gripperCMDs.loadCoral(GRIPPER_BACK_LOADING_VOLTAGE, GRIPPER_RIGHT_LOADING_VOLTAGE, GRIPPER_LEFT_LOADING_VOLTAGE))
-            .andThen(scoreLedsCommand()).withName("moveToL1Static");
+            .alongWith(scoreLedsCommand()).withName("moveToL1Static");
     }
 
     public Command moveToL2() {
         return pivotCMDs.moveToAngle(PIVOT_ANGLE_FOR_L2)
-        .until(() -> pivot.isAtAngle(PIVOT_ANGLE_FOR_L2)).andThen(moveToAngleLedsCommand()).withName("moveToL2");
+            .alongWith(Commands.waitUntil(() -> pivot.isAtAngle(PIVOT_ANGLE_FOR_L2)).andThen(moveToAngleLedsCommand()))
+            .withName("moveToL2");
     }
 
     public Command moveToL3() {
         return pivotCMDs.moveToAngle(PIVOT_ANGLE_FOR_L3)
-        .until(() -> pivot.isAtAngle(PIVOT_ANGLE_FOR_L3)).andThen(moveToAngleLedsCommand())
-                .withName("moveToL3");
+            .alongWith(Commands.waitUntil(() -> pivot.isAtAngle(PIVOT_ANGLE_FOR_L3)).andThen(moveToAngleLedsCommand()))
+            .withName("moveToL3");
+    }
+
+    public Command moveToRest() {
+        return pivotCMDs.moveToAngle(PIVOT_ANGLE_FOR_REST)
+            .alongWith(Commands.waitUntil(() -> pivot.isAtAngle(PIVOT_ANGLE_FOR_L3))
+            .andThen(LedsCommands.colorForSeconds(Color.kDarkOrange, LedsConstants.SECONDS_FOR_LEDS_DEFAULT, ledStrips)))
+            .withName("moveToRest");
     }
 
     public Command scoreL1() {
         return gripperCMDs.score(GRIPPER_BACK_L1_VOLTAGE, GRIPPER_RIGHT_L1_VOLTAGE, GRIPPER_LEFT_L1_VOLTAGE)
-            .finallyDo(() -> gripper.stop()).withName("scoreL1");
+            .alongWith(scoreLedsCommand()).finallyDo(() -> gripper.stop()).withName("scoreL1");
     }
     public Command scoreL3() {
         return gripperCMDs.score(GRIPPER_BACK_L3_VOLTAGE, GRIPPER_OUTTAKE_L3_VOLTAGE, GRIPPER_OUTTAKE_L3_VOLTAGE)
-        .finallyDo(() -> gripper.stop()).withName("scoreL3");
+            .alongWith(scoreLedsCommand()).finallyDo(() -> gripper.stop()).withName("scoreL3");
     }
 
     public TuneableCommand getPivotReadyAndScore() {
@@ -136,7 +140,6 @@ public class AllCommands {
             .andThen(gripperCMDs.score(backGripperVoltage.get(), rightGripperVoltage.get(), leftGripperVoltage.get()))
                     .withName("getPivotAngleAndScore");
         });
-
     }
  
     public Command manualGripperController(DoubleSupplier speed) {
