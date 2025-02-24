@@ -1,5 +1,7 @@
 package frc.robot.allcommands;
 
+import java.util.Set;
+
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
@@ -7,8 +9,10 @@ import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.DeferredCommand;
 import frc.lib.tuneables.extensions.TuneableCommand;
 import frc.lib.valueholders.DoubleHolder;
+import frc.robot.FieldConstants;
 import frc.robot.allcommands.AllCommandsConstants.ManualControllers;
 import frc.robot.subsystems.funnel.Funnel;
 import frc.robot.subsystems.funnel.FunnelCommands;
@@ -20,6 +24,8 @@ import frc.robot.subsystems.leds.LedsConstants;
 import frc.robot.subsystems.pivot.Pivot;
 import frc.robot.subsystems.pivot.PivotCommands;
 import frc.robot.subsystems.swerve.Swerve;
+import frc.robot.subsystems.swerve.SwerveCommands;
+import frc.robot.subsystems.swerve.SwerveContants;
 
 import static frc.robot.allcommands.AllCommandsConstants.*;
 
@@ -29,11 +35,13 @@ public class AllCommands {
     private final Funnel funnel;
     private final Swerve swerve;
     private final Leds[] ledStrips = Leds.LED_STRIPS;
+    private final Swerve swerve;
 
 
     private final GripperCommands gripperCMDs;
     private final PivotCommands pivotCMDs;
     private final FunnelCommands funnelCMDs;
+    private final SwerveCommands swerveCMDs;
 
     private final Color color00bebe = new Color(0, 190, 190);
 
@@ -46,6 +54,7 @@ public class AllCommands {
         this.gripperCMDs = new GripperCommands(gripper);
         this.pivotCMDs = new PivotCommands(pivot);
         this.funnelCMDs = new FunnelCommands(funnel);
+        this.swerveCMDs = new SwerveCommands(swerve);
     }
 
     public Command setManualColor(){
@@ -69,6 +78,10 @@ public class AllCommands {
         .withName("scoreLedsCommand");
     }
 
+    public Command setAlignToReefColor() {
+        return LedsCommands.colorForSeconds(Color.kChocolate, 1, ledStrips);
+    }
+  
     public Command wizardLedsNext() {
         return LedsCommands.colorForSeconds(Color.kWhite, 1, ledStrips);
     }
@@ -134,6 +147,22 @@ public class AllCommands {
     public Command scoreL3() {
         return gripperCMDs.score(GRIPPER_BACK_L3_VOLTAGE, GRIPPER_OUTTAKE_L3_VOLTAGE, GRIPPER_OUTTAKE_L3_VOLTAGE)
             .alongWith(scoreLedsCommand()).finallyDo(() -> gripper.stop()).withName("scoreL3");
+    }
+
+    public Command alignToReefRight(TuneableCommand driveCommand, BooleanSupplier lockOnPose) {
+        return new DeferredCommand(() -> swerveCMDs.driveToPoseWithPID(
+            lockOnPose.getAsBoolean() ? swerve.getLastCalculatedClosestPose() : 
+            swerve.getClosestPose(FieldConstants.REEF_RIGHT_BRANCHES_POSES),
+            driveCommand).andThen(setAlignToReefColor()), Set.of(swerve))
+        .onlyWhile(() -> swerve.getDistanceToPose(swerve.getLastCalculatedClosestPose()) <= SwerveContants.AlignToReef.MIN_DISTANCE_TO_AMPALIGN);
+    }
+
+    public Command alignToReefLeft(TuneableCommand driveCommand, BooleanSupplier lockOnPose) {
+        return new DeferredCommand(() -> swerveCMDs.driveToPoseWithPID(
+            lockOnPose.getAsBoolean() ? swerve.getLastCalculatedClosestPose() : 
+            swerve.getClosestPose(FieldConstants.REEF_LEFT_BRANCHES_POSES),
+            driveCommand).andThen(setAlignToReefColor()), Set.of(swerve))
+        .onlyWhile(() -> swerve.getDistanceToPose(swerve.getLastCalculatedClosestPose()) <= SwerveContants.AlignToReef.MIN_DISTANCE_TO_AMPALIGN);
     }
 
     public TuneableCommand getPivotReadyAndScore() {

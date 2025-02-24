@@ -39,9 +39,11 @@ public class RobotContainer {
             RobotMap.Controllers.OPERATOR_PORT);
 
     private final SwerveCommands swerveCommands = new SwerveCommands(swerve);
-    private final AllCommands allCommands = new AllCommands(gripper, pivot, funnel);
+    private final AllCommands allCommands = new AllCommands(gripper, pivot, funnel, swerve);
 
-    private boolean useStaticCommands = false;
+  private boolean useStaticCommands = false;
+
+    private boolean alignToReefLockOnPose = false;
 
     private boolean isCompetition = true;
 
@@ -67,6 +69,8 @@ public class RobotContainer {
                         : stream);
         SmartDashboard.putData("Auto Chooser", autoChooser);
         Field2d field = new Field2d();
+
+        swerve.registerCallbackOnPoseUpdate((pose, isRedAlliance) -> {field.setRobotPose(pose);});
         SmartDashboard.putData(field);
         autoChooser.onChange((command) -> {
             try {
@@ -91,8 +95,12 @@ public class RobotContainer {
         driverController.a().onTrue(new InstantCommand(swerve::resetYaw));
         driverController.leftTrigger().onTrue(new InstantCommand(() -> swerve.queueResetModulesToAbsolute()));
         driverController.x().onTrue(swerveCommands.xWheelLock());
-        driverController.b().onTrue(allCommands.setManualColor());
-        driverController.rightTrigger().onTrue(allCommands.clearLeds());
+        driverController.rightTrigger().or(driverController.leftTrigger()).toggleOnTrue(Commands.runOnce(() -> alignToReefLockOnPose = false))
+            .negate().onTrue(Commands.runOnce(() -> alignToReefLockOnPose = true));
+        driverController.rightTrigger().and(driverController.leftTrigger().negate())
+            .whileTrue(allCommands.alignToReefRight(driveCommand, () -> alignToReefLockOnPose));
+        driverController.leftTrigger().and(driverController.rightTrigger().negate())
+            .whileTrue(allCommands.alignToReefLeft(driveCommand, () -> alignToReefLockOnPose));
         driverController.y().onTrue(allCommands.stopAll());
 
         TuneablesManager.add("Swerve/modules control mode",
