@@ -8,10 +8,13 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.subsystems.NetworkAlertsManager;
+import frc.robot.subsystems.swerve.SwerveContants.PathPlanner;
 import frc.robot.subsystems.swerve.io.GyroIO;
 import frc.robot.subsystems.swerve.io.GyroIONavX;
 import frc.robot.subsystems.swerve.io.GyroIOSim;
@@ -34,6 +37,13 @@ import java.util.List;
 import java.util.function.BiConsumer;
 
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
+
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.config.ModuleConfig;
+import com.pathplanner.lib.config.PIDConstants;
+import com.pathplanner.lib.config.RobotConfig;
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+import com.pathplanner.lib.util.PathPlannerLogging;
 
 public class Swerve extends SubsystemBase implements Tuneable {
     private final LogFieldsTable fieldsTable = new LogFieldsTable(getName());
@@ -62,17 +72,17 @@ public class Swerve extends SubsystemBase implements Tuneable {
     // WPILib. For more info:
     // https://docs.wpilib.org/he/stable/docs/software/advanced-controls/geometry/coordinate-systems.html
     public final Translation2d FL_LOCATION = new Translation2d(
-            SwerveContants.TRACK_LENGTH_M / 2,
-            SwerveContants.TRACK_WIDTH_M / 2);
+            SwerveContants.TRACK_LENGTH_METERS / 2,
+            SwerveContants.TRACK_WIDTH_METERS / 2);
     public final Translation2d FR_LOCATION = new Translation2d(
-            SwerveContants.TRACK_LENGTH_M / 2,
-            -SwerveContants.TRACK_WIDTH_M / 2);
+            SwerveContants.TRACK_LENGTH_METERS / 2,
+            -SwerveContants.TRACK_WIDTH_METERS / 2);
     public final Translation2d BL_LOCATION = new Translation2d(
-            -SwerveContants.TRACK_LENGTH_M / 2,
-            SwerveContants.TRACK_WIDTH_M / 2);
+            -SwerveContants.TRACK_LENGTH_METERS / 2,
+            SwerveContants.TRACK_WIDTH_METERS / 2);
     public final Translation2d BR_LOCATION = new Translation2d(
-            -SwerveContants.TRACK_WIDTH_M / 2,
-            -SwerveContants.TRACK_LENGTH_M / 2);
+            -SwerveContants.TRACK_LENGTH_METERS / 2,
+            -SwerveContants.TRACK_WIDTH_METERS / 2);
 
     private final SwerveDriveKinematics swerveKinematics = new SwerveDriveKinematics(
             FL_LOCATION,
@@ -87,11 +97,15 @@ public class Swerve extends SubsystemBase implements Tuneable {
 
     private final LoggedDashboardChooser<Boolean> isRedAlliance = new LoggedDashboardChooser<>("alliance");
 
+    private Pose2d lastCaculatedClosestPose = new Pose2d();
+
     public Swerve() {
         fieldsTable.update();
-
+        queueResetModulesToAbsolute();
         isRedAlliance.addDefaultOption("blue", false);
         isRedAlliance.addOption("red", true);
+
+        fieldsTable.recordOutput("current command", getCurrentCommand() == null ? "none" : getCurrentCommand().getName());
 
         gyroYawHelperDegreesCCW = new RotationalSensorHelper(
                 Rotation2d.fromDegrees(gyroIO.isConnected.getAsBoolean() ? -gyroIO.yawDegreesCW.getAsDouble() : 0));
@@ -101,10 +115,52 @@ public class Swerve extends SubsystemBase implements Tuneable {
 
         TuneablesManager.add("Swerve", (Tuneable) this);
 
+        NetworkAlertsManager.addErrorAlert("Swerve: Gyro IS Disconnected!", () -> !gyroIO.isConnected.getAsBoolean());
+
         resetYaw();
+
+
+        ModuleConfig moduleConfig = new ModuleConfig(WHEEL_RADIUS_METERS, MAX_MODULE_VELOCITY_MPS, PathPlanner.FRICTION_WITH_CARPET, DCMotor.getFalcon500(1).withReduction(GEAR_RATIO_DRIVE), MAX_VOLTAGE, 2);
+
+        RobotConfig config = new RobotConfig(PathPlanner.ROBOT_MASS_KG, PathPlanner.MOMENT_OF_INERTIA, moduleConfig, FL_LOCATION, FR_LOCATION, BL_LOCATION, BR_LOCATION);
+
+        try {
+            config = RobotConfig.fromGUISettings();
+        } catch (Exception e) {
+            // Handle exception as needed
+            e.printStackTrace();
+        }
+
+        AutoBuilder.configure(
+            this::getPose,
+            this::resetPose,
+            this::getRobotRelativeChassisSpeeds,
+            (speeds, feedforward) -> driveChassisSpeed(speeds, true), 
+            new PPHolonomicDriveController(
+                new PIDConstants(
+                    PathPlanner.TRANSLATION_KP, 
+                    PathPlanner.TRANSLATION_KI, 
+                    PathPlanner.TRANSLATION_KD),
+                new PIDConstants(
+                    PathPlanner.ROTATION_KP, 
+                    PathPlanner.ROTATION_KI, 
+                    PathPlanner.ROTATION_KD)), 
+            config, 
+            this::getIsRedAlliance, 
+            this); 
+
+        PathPlannerLogging.setLogTargetPoseCallback((pose) -> {
+            fieldsTable.recordOutput("PathPlanner/desired pose", pose);
+        });
+        PathPlannerLogging.setLogCurrentPoseCallback((pose) -> {
+            fieldsTable.recordOutput("PathPlanner/current pose", pose);
+        });
+        PathPlannerLogging.setLogActivePathCallback((path) -> {
+            fieldsTable.recordOutput("PathPlanner/path", path.toArray(new Pose2d[0]));
+        });
+
         
         // In case the modules fail to reset to absolute:
-        // queueResetModulesToAbsolute();
     }
 
     @Override
@@ -251,6 +307,54 @@ public class Swerve extends SubsystemBase implements Tuneable {
                 modules[1].getModuleState(),
                 modules[2].getModuleState(),
                 modules[3].getModuleState());
+    }
+
+    public boolean atTranslationPosition(double currentPosition, double targetPosition, double currentVelocity) {
+        boolean atPosition = Math.abs(currentPosition - targetPosition) < SwerveContants.TRANSLATION_TOLERANCE_METERS;
+        boolean atVelocity = Math.abs(currentVelocity) < SwerveContants.TRANSLATION_VELOCITY_TOLERANCE;
+        fieldsTable.recordOutput("AtTargetPosition/isStill", atVelocity);
+        fieldsTable.recordOutput("atTargetPosition-" + targetPosition, atPosition);
+        return atPosition && atVelocity;
+    }
+
+    public boolean atAngle(Rotation2d targetAngle) {
+        double angleDifference = targetAngle.minus(getPose().getRotation()).getDegrees();
+        final boolean atTargetAngle = Math.abs(angleDifference) < SwerveContants.ROTATION_TOLERANCE_DEGREES;
+        double currentAngularVelocity = getRobotRelativeChassisSpeeds().omegaRadiansPerSecond;
+        final boolean isAngleStill = Math.abs(currentAngularVelocity) < SwerveContants.ROTATION_VELOCITY_TOLERANCE;
+        fieldsTable.recordOutput("AtTargetAngle/isStill", isAngleStill);
+        fieldsTable.recordOutput("atTargetAngle-" + targetAngle, atTargetAngle);
+        return atTargetAngle && isAngleStill;
+    }
+    public double getDistanceToPose(Pose2d targetPose) {
+        double deltaX = targetPose.getX() - getPose().getX();
+        double deltaY = targetPose.getY() - getPose().getY();
+        double distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+        fieldsTable.recordOutput("distanceTPose", distance);
+        return distance;
+    }
+    public double getAngularDistance(Pose2d targetPose){
+        double deltaTheta = targetPose.getRotation().minus(getPose().getRotation()).getRadians();
+        double angularDistance = Math.abs(deltaTheta); 
+        return angularDistance;
+    }
+
+    public Pose2d getClosestPose(Pose2d[] poses) {
+        Pose2d closestPose = null;
+        double minDistance = Double.MAX_VALUE;
+        for (Pose2d targetPose: poses) {
+            double distance = (getDistanceToPose(targetPose));
+            if (distance < minDistance) {
+                minDistance = distance;
+                closestPose = targetPose;
+            }
+        }
+        fieldsTable.recordOutput("lastCaculatedClosestPose", closestPose);
+        return lastCaculatedClosestPose = closestPose;
+    }
+
+    public Pose2d getLastCalculatedClosestPose() {
+        return lastCaculatedClosestPose;
     }
 
     public boolean getIsRedAlliance() {

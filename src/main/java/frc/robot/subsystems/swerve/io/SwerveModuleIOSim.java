@@ -8,6 +8,8 @@ import edu.wpi.first.wpilibj.simulation.FlywheelSim;
 import frc.lib.logfields.LogFieldsTable;
 import static frc.robot.subsystems.swerve.SwerveContants.*;
 
+import com.ctre.phoenix6.StatusCode;
+
 public class SwerveModuleIOSim extends SwerveModuleIO {
     private final FlywheelSim driveMotorSim;
     private final FlywheelSim turnMotorSim;
@@ -43,6 +45,7 @@ public class SwerveModuleIOSim extends SwerveModuleIO {
         simAbsoluteTurnRotations = calculateToAbsoluteRotations(
                 simAbsoluteTurnRotations + angleDiffRotations);
 
+        // Sim note - RPM stands for Radiands, not Rotations. Can be an incorrect use
         double driveVelocityRPS = driveMotorSim.getAngularVelocityRPM() / 60;
         double driveRotationsDiff = driveVelocityRPS * 0.02;
         simDriveRotations += driveRotationsDiff;
@@ -159,5 +162,56 @@ public class SwerveModuleIOSim extends SwerveModuleIO {
     @Override
     protected double getTurnStatorCurrent() {
         return turnMotorSim.getCurrentDrawAmps();
+    }
+
+    // For logging:
+    @Override
+    protected double getDriveMotorAcceleration() {
+        return driveMotorSim.getAngularAccelerationRadPerSecSq();
+    }
+
+    @Override
+    protected double getTurnMotorAcceleration() {
+        return turnMotorSim.getAngularAccelerationRadPerSecSq();
+    }
+
+    @Override
+    protected double getDriveMotorTemperature() {
+        return 0;
+    }
+
+    @Override
+    protected double getTurnMotorTemperature() {
+        return 0;
+    }
+
+    @Override
+    protected StatusCode getDriveMotorStatusCode() {
+        return StatusCode.valueOf(0);
+    }
+
+    @Override
+    protected StatusCode getDriveMotorConfigStatusCode() {
+        return StatusCode.valueOf(0);
+    }
+
+    @Override
+    protected StatusCode getTurnMotorStatusCode() {
+        return StatusCode.valueOf(0);
+    }
+
+    @Override
+    protected StatusCode getTurnMotorConfigStatusCode() {
+        return StatusCode.valueOf(0);
+    }
+
+    @Override
+    protected StatusCode getCanCoderStatusCode() {
+        return StatusCode.valueOf(0);
+    }
+
+    @Override
+    protected StatusCode getCanCoderConfigStatusCode() {
+        return StatusCode.valueOf(0);
     }
 }
