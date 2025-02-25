@@ -73,7 +73,7 @@ public class AllCommands {
     }
 
     public Command scoreLedsCommand(){
-        return LedsCommands.colorForSeconds(Color.kBlue, LedsConstants.SECONDS_FOR_LEDS_DEFAULT, ledStrips)
+        return LedsCommands.colorForSeconds(Color.kBlue, 1, ledStrips)
         .withName("scoreLedsCommand");
     }
 
@@ -92,12 +92,12 @@ public class AllCommands {
     public Command intake() {
         return pivotCMDs.moveToAngle(PIVOT_ANGLE_FOR_INTAKE)
             .alongWith(Commands.waitUntil(() -> pivot.isAtAngle(PIVOT_ANGLE_FOR_INTAKE)).andThen(funnelCMDs.loadCoral(FUNNEL_INTAKE_SPEED)
+            .alongWith(moveToAngleLedsCommand())
             .andThen(funnelCMDs.passCoral(FUNNEL_INTAKE_SPEED, FUNNEL_PASSING_SPEED)
             .alongWith(gripperCMDs.loadCoral(GRIPPER_BACK_LOADING_VOLTAGE, GRIPPER_RIGHT_LOADING_VOLTAGE, GRIPPER_LEFT_LOADING_VOLTAGE)))
             .until(() -> !funnel.getIsCoralIn() && gripper.getIsCoralIn()))
+            .andThen(LedsCommands.colorForSeconds(Color.kGreen, LedsConstants.SECONDS_FOR_LEDS_DEFAULT, ledStrips))
             .finallyDo((intterapted) -> {
-                LedsCommands.getStaticColorCommand(Color.kGreen, ledStrips);
-                
                 funnel.stop();
                 gripper.stop();
             }))
@@ -153,11 +153,19 @@ public class AllCommands {
 
     public Command scoreL1() {
         return gripperCMDs.score(GRIPPER_BACK_L1_VOLTAGE, GRIPPER_RIGHT_L1_VOLTAGE, GRIPPER_LEFT_L1_VOLTAGE)
-            .alongWith(scoreLedsCommand()).finallyDo(() -> gripper.stop()).withName("scoreL1");
+        // .alongWith(Commands.waitUntil(() -> !gripper.getIsCoralIn()).andThen(Commands.runOnce(() -> scoreLedsCommand())))
+        .finallyDo(
+        () -> {
+            gripper.stop();
+        }).withName("scoreL1");
     }
     public Command scoreL3() {
         return gripperCMDs.score(GRIPPER_BACK_L3_VOLTAGE, GRIPPER_OUTTAKE_L3_VOLTAGE, GRIPPER_OUTTAKE_L3_VOLTAGE)
-            .alongWith(scoreLedsCommand()).finallyDo(() -> gripper.stop()).withName("scoreL3");
+            // .alongWith(Commands.waitUntil(() -> !gripper.getIsCoralIn()).andThen(() -> scoreLedsCommand()))
+            .finallyDo(
+            () -> {
+            gripper.stop();
+            }).withName("scoreL3");
     }
 
     public Command alignToReefRight(TuneableCommand driveCommand, BooleanSupplier lockOnPose) {
