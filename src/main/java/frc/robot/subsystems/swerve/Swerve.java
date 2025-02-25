@@ -99,6 +99,8 @@ public class Swerve extends SubsystemBase implements Tuneable {
 
     private Pose2d lastCaculatedClosestPose = new Pose2d();
 
+    private RobotConfig config;
+
     public Swerve() {
         fieldsTable.update();
         queueResetModulesToAbsolute();
@@ -122,7 +124,7 @@ public class Swerve extends SubsystemBase implements Tuneable {
 
         ModuleConfig moduleConfig = new ModuleConfig(WHEEL_RADIUS_METERS, MAX_MODULE_VELOCITY_MPS, PathPlanner.FRICTION_WITH_CARPET, DCMotor.getFalcon500(1).withReduction(GEAR_RATIO_DRIVE), MAX_VOLTAGE, 2);
 
-        RobotConfig config = new RobotConfig(PathPlanner.ROBOT_MASS_KG, PathPlanner.MOMENT_OF_INERTIA, moduleConfig, FL_LOCATION, FR_LOCATION, BL_LOCATION, BR_LOCATION);
+        config = new RobotConfig(PathPlanner.ROBOT_MASS_KG, PathPlanner.MOMENT_OF_INERTIA, moduleConfig, FL_LOCATION, FR_LOCATION, BL_LOCATION, BR_LOCATION);
 
         try {
             config = RobotConfig.fromGUISettings();
@@ -359,6 +361,10 @@ public class Swerve extends SubsystemBase implements Tuneable {
 
     public boolean getIsRedAlliance() {
         return isRedAlliance.get() != null && isRedAlliance.get().booleanValue();
+    }
+
+    public RobotConfig getRobotConfig() {
+        return config;
     }
 
     public void enableCoast() {

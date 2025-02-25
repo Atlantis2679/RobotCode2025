@@ -25,6 +25,8 @@ public class AllCommandsConstants {
     public static final double GRIPPER_RIGHT_TUNEABLE_VOLTAGE = 0;
     public static final double GRIPPER_LEFT_TUNEABLE_VOLTAGE = 0;
 
+    public static final long TEST_WIZARD_DELAY = 1;
+
     public static class ManualControllers {
         public static final double FUNNEL_SPEED_MULTIPLAYER = 1;
         public static final double GRIPPER_LEFT_SPEED_MULTIPLAYER = 1;
