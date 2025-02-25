@@ -1,9 +1,12 @@
 package frc.robot;
 
-import java.util.function.BooleanSupplier;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.pathplanner.lib.path.PathPlannerPath;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -75,14 +78,21 @@ public class RobotContainer {
         swerve.registerCallbackOnPoseUpdate((pose, isRedAlliance) -> {field.setRobotPose(pose);});
         SmartDashboard.putData(field);
         autoChooser.onChange((command) -> {
-            try {
-                // List<Pose2d> poses = new ArrayList<>();
-                // for(PathPlannerPath path : paths) {
-                //     poses.add()
-                // }
-                field.getObject("Auto Trajectory").setPose(new Pose2d());;
-                        } catch (Exception e) {
-                System.out.println("Auto Trajectory Loading Failed!");
+            if(command.getName() != "None") {
+                try {
+                    List<PathPlannerPath> paths = PathPlannerAuto.getPathGroupFromAutoFile(command.getName());
+                    List<Pose2d> poses = new ArrayList<>();
+                    for(PathPlannerPath path : paths) {
+                        List<Pose2d> pathPoses = path.getPathPoses();
+                        for(Pose2d pose : pathPoses)
+                            poses.add(pose);
+                    }
+                    field.getObject("Auto Trajectory").setPoses(poses);
+                } catch (Exception e) {
+                    System.out.println("Auto Trajectory Loading Failed!");
+                }
+            } else {
+                field.getObject("Auto Trajectory").setPose(swerve.getPose());
             }
         });
     }
