@@ -13,13 +13,13 @@
         {
           "type": "named",
           "data": {
-            "name": "moveToL1"
+            "name": "autoMoveToL1"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "score"
+            "name": "scoreL1"
           }
         }
       ]
