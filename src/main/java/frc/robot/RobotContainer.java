@@ -1,12 +1,9 @@
 package frc.robot;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.function.BooleanSupplier;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
-import com.pathplanner.lib.commands.PathPlannerAuto;
-import com.pathplanner.lib.path.PathPlannerPath;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -79,10 +76,12 @@ public class RobotContainer {
         SmartDashboard.putData(field);
         autoChooser.onChange((command) -> {
             try {
-                
-                List<PathPlannerPath> paths = PathPlannerAuto.getPathGroupFromAutoFile(command.getName());
-                field.getObject("Auto Trajectory").setPoses(paths.get(0).getPathPoses()); // Not done yet.
-            } catch (Exception e) {
+                // List<Pose2d> poses = new ArrayList<>();
+                // for(PathPlannerPath path : paths) {
+                //     poses.add()
+                // }
+                field.getObject("Auto Trajectory").setPose(new Pose2d());;
+                        } catch (Exception e) {
                 System.out.println("Auto Trajectory Loading Failed!");
             }
         });
@@ -131,9 +130,12 @@ public class RobotContainer {
                 allCommands.manualGripperController(operatorController::getLeftX),
                 allCommands.manualPivotController(operatorController::getRightY)
         ));
+
         TuneablesManager.add("Test Operator Wizard", allCommands.testWizard(
-            () -> operatorController.povRight().getAsBoolean(),
-            operatorController::getRightY, operatorController::getLeftX, operatorController::getLeftY)
+            operatorController.povRight(),
+            operatorController::getRightY, 
+            operatorController::getLeftX, 
+            operatorController::getLeftY)
             .fullTuneable());
         pivot.setDefaultCommand(allCommands.moveToRest());
     }
