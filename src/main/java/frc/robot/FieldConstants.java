@@ -34,7 +34,7 @@ public class FieldConstants {
 
     public static final Pose2d[] REEF_RIGHT_BRANCHES_POSES = new Pose2d[] {
         new Pose2d(
-            new Translation2d(3.159, 3.869),
+            new Translation2d(3.05, 3.869),
             new Rotation2d(Math.toRadians(0))
         ),
         new Pose2d(

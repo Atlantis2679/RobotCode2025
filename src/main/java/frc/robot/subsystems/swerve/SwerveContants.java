@@ -64,17 +64,17 @@ public class SwerveContants {
     }
 
     public class DriveToPose {
-        public final static double Y_KP = 2.2;//1.7
+        public final static double Y_KP = 1.9;//1.7
         public final static double Y_KI = 0;
-        public final static double Y_KD = 0.75;
+        public final static double Y_KD = 0.05;
 
-        public final static double X_KP = 2.2;//2.1
+        public final static double X_KP = 2.3;//2.1
         public final static double X_KI = 0;
-        public final static double X_KD = 0.75;
+        public final static double X_KD = 0.05;
 
-        public final static double ANGLE_KP = 1.5;//1.1
+        public final static double ANGLE_KP = 0.3;//1.1
         public final static double ANGLE_KI = 0;
-        public final static double ANGLE_KD = 0.1;
+        public final static double ANGLE_KD = 0.01;
 
         public final static double MAX_VELOCITY_MPS = 0.5;
         public final static double MAX_ACCELERATION_MPS = 0.5;
