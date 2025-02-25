@@ -12,7 +12,7 @@
         "y": 2.5478065488038513
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "L2RightCycle1"
     },
     {
       "anchor": {
@@ -25,7 +25,7 @@
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "RightCoralStation"
     }
   ],
   "rotationTargets": [],
@@ -56,13 +56,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 52.657138937894715
+    "rotation": 55.0
   },
   "reversed": false,
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 120.53631161600116
+    "rotation": 119.99999999999999
   },
   "useDefaultConstraints": true
 }
