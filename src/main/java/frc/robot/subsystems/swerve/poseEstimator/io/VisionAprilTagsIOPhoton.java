@@ -91,4 +91,9 @@ public class VisionAprilTagsIOPhoton extends VisionAprilTagsIO {
         }
         return ambiguitys;
     }
+
+    @Override
+    protected boolean getIsCameraConnected() {
+        return camera.isConnected();
+    }
 }
