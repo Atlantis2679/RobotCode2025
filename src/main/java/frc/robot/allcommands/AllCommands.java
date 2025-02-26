@@ -175,24 +175,18 @@ public class AllCommands {
 
     public Command scoreL1() {
         return gripperCMDs.score(GRIPPER_BACK_L1_VOLTAGE, GRIPPER_RIGHT_L1_VOLTAGE, GRIPPER_LEFT_L1_VOLTAGE)
-                // .alongWith(Commands.waitUntil(() ->
-                // !gripper.getIsCoralIn()).andThen(Commands.runOnce(() -> scoreLedsCommand())))
-                .finallyDo(
-                        () -> {
-                            gripper.stop();
-                        })
-                .withName("scoreL1");
+        .alongWith(Commands.waitUntil(() -> !gripper.getIsCoralIn()).andThen(Commands.runOnce(() -> scoreLedsCommand())))
+        .finallyDo(() -> {
+            gripper.stop();
+        }).withName("scoreL1");
     }
 
     public Command scoreL3() {
         return gripperCMDs.score(GRIPPER_BACK_L3_VOLTAGE, GRIPPER_OUTTAKE_L3_VOLTAGE, GRIPPER_OUTTAKE_L3_VOLTAGE)
-                // .alongWith(Commands.waitUntil(() -> !gripper.getIsCoralIn()).andThen(() ->
-                // scoreLedsCommand()))
-                .finallyDo(
-                        () -> {
-                            gripper.stop();
-                        })
-                .withName("scoreL3");
+            .alongWith(Commands.waitUntil(() -> !gripper.getIsCoralIn()).andThen(() -> scoreLedsCommand()))
+            .finallyDo(() -> {
+                gripper.stop();
+            }).withName("scoreL3");
     }
 
     public Command alignToReefRight(TuneableCommand driveCommand, BooleanSupplier lockOnPose) {
