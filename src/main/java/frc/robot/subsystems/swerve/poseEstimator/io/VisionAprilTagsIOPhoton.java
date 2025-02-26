@@ -20,12 +20,12 @@ public class VisionAprilTagsIOPhoton extends VisionAprilTagsIO {
     private final PhotonPoseEstimator photonPoseEstimator;
     private final PhotonCamera camera;
     private List<PhotonPipelineResult> photonPipelineResults;
-    private List<EstimatedRobotPose> photonEstimatorResults;
+    private List<EstimatedRobotPose> photonEstimatorResults = new ArrayList<>();
     private final AprilTagFieldLayout tagLayout;
 
     public VisionAprilTagsIOPhoton(LogFieldsTable fieldsTable, String cameraName, AprilTagFieldLayout tagLayout,
             Transform3d robotToCameraTransform) {
-        super(fieldsTable);
+        super(fieldsTable.getSubTable(cameraName));
 
         this.tagLayout = tagLayout;
 
@@ -90,5 +90,10 @@ public class VisionAprilTagsIOPhoton extends VisionAprilTagsIO {
             }
         }
         return ambiguitys;
+    }
+
+    @Override
+    protected boolean getIsCameraConnected() {
+        return camera.isConnected();
     }
 }

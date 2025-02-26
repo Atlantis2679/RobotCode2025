@@ -12,20 +12,20 @@
         "y": 7.815362967569389
       },
       "isLocked": false,
-      "linkedName": "LeftStart"
+      "linkedName": null
     },
     {
       "anchor": {
-        "x": 5.238627049180328,
-        "y": 5.445543032786884
+        "x": 5.1,
+        "y": 5.4
       },
       "prevControl": {
-        "x": 5.140506656647876,
-        "y": 5.215603065470896
+        "x": 5.001879607467547,
+        "y": 5.170060032684012
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "L2LeftCycle1"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
@@ -56,13 +56,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -119.99999999999999
+    "rotation": -118.99084666597122
   },
   "reversed": false,
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 180.0
+    "rotation": -179.27477570094072
   },
   "useDefaultConstraints": true
 }

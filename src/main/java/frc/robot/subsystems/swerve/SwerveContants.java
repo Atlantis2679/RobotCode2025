@@ -8,7 +8,7 @@ public class SwerveContants {
     public final static double WHEEL_RADIUS_METERS = Units.inchesToMeters(2);
 
     public final static double MAX_VOLTAGE = 11;
-    public final static double MAX_MODULE_VELOCITY_MPS = 5; // for the max voltage
+    public final static double MAX_MODULE_VELOCITY_MPS = 5; // Was 5
     public final static double MODULE_TEMPERATORE_WARNING_THRESHOLD = 0;
 
     public final static double TRACK_WIDTH_METERS = 0.76 + 8.5;
@@ -16,10 +16,10 @@ public class SwerveContants {
     public final static double TRACK_RADIUS_METERS = 0.366;
 
 
-    public final static double MODULE_FL_ABSOLUTE_ANGLE_OFFSET_DEGREES = 155.390625;
-    public final static double MODULE_FR_ABSOLUTE_ANGLE_OFFSET_DEGREES = -56.6015625+180;
-    public final static double MODULE_BL_ABSOLUTE_ANGLE_OFFSET_DEGREES = -100.546875;
-    public final static double MODULE_BR_ABSOLUTE_ANGLE_OFFSET_DEGREES = 37.96875+180;
+    public final static double MODULE_FL_ABSOLUTE_ANGLE_OFFSET_DEGREES = -28.916015625 + 180;
+    public final static double MODULE_FR_ABSOLUTE_ANGLE_OFFSET_DEGREES = 122.783203125;
+    public final static double MODULE_BL_ABSOLUTE_ANGLE_OFFSET_DEGREES = 78.92578125 + 180;
+    public final static double MODULE_BR_ABSOLUTE_ANGLE_OFFSET_DEGREES = 35.595703125 + 180;
 
 
     public final static double MODULE_TURN_KP = 1.8 * 12;
