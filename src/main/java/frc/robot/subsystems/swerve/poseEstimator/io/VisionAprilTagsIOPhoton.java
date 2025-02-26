@@ -25,7 +25,7 @@ public class VisionAprilTagsIOPhoton extends VisionAprilTagsIO {
 
     public VisionAprilTagsIOPhoton(LogFieldsTable fieldsTable, String cameraName, AprilTagFieldLayout tagLayout,
             Transform3d robotToCameraTransform) {
-        super(fieldsTable);
+        super(fieldsTable.getSubTable(cameraName));
 
         this.tagLayout = tagLayout;
 

@@ -54,11 +54,13 @@ public class RobotContainer {
 
     public RobotContainer() {
         NamedCommands.registerCommand("intake", allCommands.intake());
-        NamedCommands.registerCommand("autoMoveToL1", allCommands.autoMoveToL1());
-        NamedCommands.registerCommand("autoMoveToL2", allCommands.autoMoveToL2());
+        NamedCommands.registerCommand("moveToL1", allCommands.autoMoveToL1());
+        NamedCommands.registerCommand("moveToL2", allCommands.autoMoveToL2());
         NamedCommands.registerCommand("scoreL3", allCommands.scoreL3());
-        NamedCommands.registerCommand("scoreL1", allCommands.scoreL1());
+        NamedCommands.registerCommand("score", allCommands.scoreL1());
         NamedCommands.registerCommand("stopAll", allCommands.stopAll());
+        NamedCommands.registerCommand("drive", allCommands.autoDrive());
+
 
         new Trigger(DriverStation::isDisabled).whileTrue(swerveCommands.stop()
                 .alongWith(allCommands.stopAll()));
@@ -69,7 +71,7 @@ public class RobotContainer {
 
         autoChooser = AutoBuilder.buildAutoChooserWithOptionsModifier(
                 (stream) -> isCompetition
-                        ? stream.filter(auto -> auto.getName().startsWith("comp"))
+                        ? stream.filter(auto -> auto.getName().startsWith("Test"))
                         : stream);
         SmartDashboard.putData("Auto Chooser", autoChooser);
         Field2d field = new Field2d();
@@ -125,7 +127,7 @@ public class RobotContainer {
 
     private void configureOperatorBindings() {
         operatorController.a().onTrue(Commands.either(allCommands.intakeStatic(), allCommands.intake(), () -> useStaticCommands));
-        operatorController.leftBumper().onTrue(Commands.runOnce(() -> useStaticCommands = !useStaticCommands));
+        // operatorController.leftBumper().onTrue(Commands.runOnce(() -> useStaticCommands = !useStaticCommands));
         operatorController.b().onTrue(allCommands.moveToL1());
         operatorController.y().onTrue(allCommands.moveToL2());
         operatorController.x().onTrue(allCommands.moveToL3());
@@ -154,6 +156,6 @@ public class RobotContainer {
     }
 
     public Command getAutonomousCommand() {
-        return autoChooser.getSelected();
+        return allCommands.autoDrive();
     }
 }
