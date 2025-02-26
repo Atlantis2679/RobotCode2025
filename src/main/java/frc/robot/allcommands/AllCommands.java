@@ -91,16 +91,16 @@ public class AllCommands {
 
     public Command intake() {
         return pivotCMDs.moveToAngle(PIVOT_ANGLE_FOR_INTAKE)
-            .alongWith(Commands.waitUntil(() -> pivot.isAtAngle(PIVOT_ANGLE_FOR_INTAKE)).andThen(funnelCMDs.loadCoral(FUNNEL_INTAKE_SPEED)
+            .withDeadline(Commands.waitUntil(() -> pivot.isAtAngle(PIVOT_ANGLE_FOR_INTAKE)).andThen(funnelCMDs.loadCoral(FUNNEL_INTAKE_SPEED)
             .alongWith(moveToAngleLedsCommand())
             .andThen(funnelCMDs.passCoral(FUNNEL_INTAKE_SPEED, FUNNEL_PASSING_SPEED)
             .alongWith(gripperCMDs.loadCoral(GRIPPER_BACK_LOADING_VOLTAGE, GRIPPER_RIGHT_LOADING_VOLTAGE, GRIPPER_LEFT_LOADING_VOLTAGE)))
             .until(() -> !funnel.getIsCoralIn() && gripper.getIsCoralIn()))
-            .andThen(LedsCommands.colorForSeconds(Color.kGreen, LedsConstants.SECONDS_FOR_LEDS_DEFAULT, ledStrips))
+            .andThen(LedsCommands.colorForSeconds(Color.kGreen, LedsConstants.SECONDS_FOR_LEDS_DEFAULT, ledStrips)))
             .finallyDo((intterapted) -> {
                 funnel.stop();
                 gripper.stop();
-            }))
+            })
             .withName("Intake");
     }
 
@@ -217,7 +217,7 @@ public class AllCommands {
      */
 
     public TuneableCommand testWizard(BooleanSupplier moveToNext, DoubleSupplier firstSpeed, DoubleSupplier secondSpeed, DoubleSupplier thirdSpeed) {
-        return TuneableCommand.wrap(tuneableBuilder -> {
+        return TuneableCommand.wrap((tuneableBuilder) -> {
             Command command = 
             
             Commands.print("Manual funnel conntroller")
@@ -239,10 +239,10 @@ public class AllCommands {
             .andThen(pivotCMDs.moveToAngle(PIVOT_ANGLE_FOR_INTAKE)
             .withDeadline(Commands.waitUntil(moveToNext).andThen(wizardLedsNext())
             
-            .andThen(Commands.print("Funnel load coral"))
-            .andThen(funnelCMDs.loadCoral(FUNNEL_INTAKE_SPEED)
-            .withDeadline(Commands.waitUntil(moveToNext)))
-            .andThen(wizardLedsNext())
+            // .andThen(Commands.print("Funnel load coral"))
+            // .andThen(funnelCMDs.loadCoral(FUNNEL_INTAKE_SPEED)
+            // .withDeadline(Commands.waitUntil(moveToNext)))
+            // .andThen(wizardLedsNext())
             
             .andThen(Commands.print("Funnel pass coral and gripper load coral"))
             .andThen(funnelCMDs.passCoral(FUNNEL_INTAKE_SPEED, FUNNEL_PASSING_SPEED)

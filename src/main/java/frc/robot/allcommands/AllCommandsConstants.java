@@ -5,8 +5,8 @@ public class AllCommandsConstants {
     public static final double FUNNEL_PASSING_SPEED = 0.45;
 
     public static final double GRIPPER_BACK_LOADING_VOLTAGE = 7.5;
-    public static final double GRIPPER_LEFT_LOADING_VOLTAGE = 0;
-    public static final double GRIPPER_RIGHT_LOADING_VOLTAGE = 0;
+    public static final double GRIPPER_LEFT_LOADING_VOLTAGE = 0.15;
+    public static final double GRIPPER_RIGHT_LOADING_VOLTAGE = 0.15;
     public static final double GRIPPER_BACK_L1_VOLTAGE = 5;
     public static final double GRIPPER_RIGHT_L1_VOLTAGE = 5.2;
     public static final double GRIPPER_LEFT_L1_VOLTAGE = 2.15;
