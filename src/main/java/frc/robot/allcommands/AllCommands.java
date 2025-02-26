@@ -93,9 +93,8 @@ public class AllCommands {
 
     public Command intake() {
         return pivotCMDs.moveToAngle(PIVOT_ANGLE_FOR_INTAKE)
-                .withDeadline(Commands.waitUntil(() -> pivot.isAtAngle(PIVOT_ANGLE_FOR_INTAKE))
+                .alongWith(Commands.waitUntil(() -> pivot.isAtAngle(PIVOT_ANGLE_FOR_INTAKE))
                         .andThen(funnelCMDs.loadCoral(FUNNEL_INTAKE_SPEED)
-                                .alongWith(moveToAngleLedsCommand())
                                 .andThen(funnelCMDs.passCoral(FUNNEL_INTAKE_SPEED, FUNNEL_PASSING_SPEED)
                                         .alongWith(gripperCMDs.loadCoral(GRIPPER_BACK_LOADING_VOLTAGE,
                                                 GRIPPER_RIGHT_LOADING_VOLTAGE, GRIPPER_LEFT_LOADING_VOLTAGE)))

@@ -14,7 +14,7 @@ public class AllCommandsConstants {
     public static final double GRIPPER_OUTTAKE_L3_VOLTAGE = -10;
     public static final double GRIPPER_BACK_L3_VOLTAGE = -5;
 
-    public static final double PIVOT_ANGLE_FOR_INTAKE = -106;
+    public static final double PIVOT_ANGLE_FOR_INTAKE = -105;
     public static final double PIVOT_ANGLE_FOR_L1 = -80;
     public static final double PIVOT_ANGLE_FOR_L2 = 17;//25
     public static final double PIVOT_ANGLE_FOR_L3 = 80;
