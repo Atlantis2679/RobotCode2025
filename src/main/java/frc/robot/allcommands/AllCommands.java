@@ -91,6 +91,10 @@ public class AllCommands {
         return LedsCommands.colorForSeconds(Color.kPurple, LedsConstants.SECONDS_FOR_LEDS_DEFAULT, ledStrips);
     }
 
+    public Command driveLeds() {
+        return LedsCommands.colorForSeconds(color00bebe, LedsConstants.SECONDS_FOR_LEDS_DEFAULT, ledStrips);
+    }
+
     public Command intake() {
         return pivotCMDs.moveToAngle(PIVOT_ANGLE_FOR_INTAKE)
                 .alongWith(Commands.waitUntil(() -> pivot.isAtAngle(PIVOT_ANGLE_FOR_INTAKE))

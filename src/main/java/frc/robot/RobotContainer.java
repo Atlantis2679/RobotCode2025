@@ -119,6 +119,7 @@ public class RobotContainer {
         driverController.leftTrigger().and(driverController.rightTrigger().negate())
             .whileTrue(allCommands.alignToReefLeft(driveCommand, () -> alignToReefLockOnPose));
         driverController.y().onTrue(allCommands.stopAll());
+        driverController.b().onTrue(allCommands.driveLeds());
 
         TuneablesManager.add("Swerve/modules control mode",
                 swerveCommands.controlModules(
