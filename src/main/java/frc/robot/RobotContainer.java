@@ -1,14 +1,14 @@
 package frc.robot;
 
-import java.util.ArrayList;
-import java.util.List;
+// import java.util.ArrayList;
+// import java.util.List;
 
-import com.pathplanner.lib.auto.AutoBuilder;
+// import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
-import com.pathplanner.lib.commands.PathPlannerAuto;
-import com.pathplanner.lib.path.PathPlannerPath;
+// import com.pathplanner.lib.commands.PathPlannerAuto;
+// import com.pathplanner.lib.path.PathPlannerPath;
 
-import edu.wpi.first.math.geometry.Pose2d;
+// import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -36,7 +36,7 @@ public class RobotContainer {
     private final Gripper gripper = new Gripper();
     private final PowerDistribution pdh = new PowerDistribution();
 
-    private final SendableChooser<Command> autoChooser;
+    private final SendableChooser<Command> autoChooser = new SendableChooser<>();
 
     private final NaturalXboxController driverController = new NaturalXboxController(
             RobotMap.Controllers.DRIVER_PORT);
@@ -46,19 +46,21 @@ public class RobotContainer {
     private final SwerveCommands swerveCommands = new SwerveCommands(swerve);
     private final AllCommands allCommands = new AllCommands(gripper, pivot, funnel, swerve);
 
-  private boolean useStaticCommands = false;
+    private boolean useStaticCommands = false;
 
     private boolean alignToReefLockOnPose = false;
 
-    private boolean isCompetition = true;
+    // private boolean isCompetition = true;
 
     public RobotContainer() {
         NamedCommands.registerCommand("intake", allCommands.intake());
-        NamedCommands.registerCommand("autoMoveToL1", allCommands.autoMoveToL1());
-        NamedCommands.registerCommand("autoMoveToL2", allCommands.autoMoveToL2());
+        NamedCommands.registerCommand("moveToL1", allCommands.autoMoveToL1());
+        NamedCommands.registerCommand("moveToL2", allCommands.autoMoveToL2());
         NamedCommands.registerCommand("scoreL3", allCommands.scoreL3());
-        NamedCommands.registerCommand("scoreL1", allCommands.scoreL1());
+        NamedCommands.registerCommand("score", allCommands.scoreL1());
         NamedCommands.registerCommand("stopAll", allCommands.stopAll());
+        NamedCommands.registerCommand("drive", allCommands.autoDrive());
+
 
         new Trigger(DriverStation::isDisabled).whileTrue(swerveCommands.stop()
                 .alongWith(allCommands.stopAll()));
@@ -67,33 +69,35 @@ public class RobotContainer {
         configureDriverBindings();
         configureOperatorBindings();
 
-        autoChooser = AutoBuilder.buildAutoChooserWithOptionsModifier(
-                (stream) -> isCompetition
-                        ? stream.filter(auto -> auto.getName().startsWith("comp"))
-                        : stream);
+        // autoChooser = AutoBuilder.buildAutoChooserWithOptionsModifier(
+        //         (stream) -> isCompetition
+        //                 ? stream.filter(auto -> auto.getName().startsWith("Test"))
+        //                 : stream);
+        autoChooser.addOption("DriveForwardScoreL1", allCommands.autoDriveScoreL1());
+        autoChooser.addOption("DriveForwardNoScore", allCommands.autoDrive());
         SmartDashboard.putData("Auto Chooser", autoChooser);
         Field2d field = new Field2d();
 
         swerve.registerCallbackOnPoseUpdate((pose, isRedAlliance) -> {field.setRobotPose(pose);});
         SmartDashboard.putData(field);
-        autoChooser.onChange((command) -> {
-            if(command.getName() != "None") {
-                try {
-                    List<PathPlannerPath> paths = PathPlannerAuto.getPathGroupFromAutoFile(command.getName());
-                    List<Pose2d> poses = new ArrayList<>();
-                    for(PathPlannerPath path : paths) {
-                        List<Pose2d> pathPoses = path.getPathPoses();
-                        for(Pose2d pose : pathPoses)
-                            poses.add(pose);
-                    }
-                    field.getObject("Auto Trajectory").setPoses(poses);
-                } catch (Exception e) {
-                    System.out.println("Auto Trajectory Loading Failed!");
-                }
-            } else {
-                field.getObject("Auto Trajectory").setPose(swerve.getPose());
-            }
-        });
+        // autoChooser.onChange((command) -> {
+        //     if(command.getName() != "None") {
+        //         try {
+        //             List<PathPlannerPath> paths = PathPlannerAuto.getPathGroupFromAutoFile(command.getName());
+        //             List<Pose2d> poses = new ArrayList<>();
+        //             for(PathPlannerPath path : paths) {
+        //                 List<Pose2d> pathPoses = path.getPathPoses();
+        //                 for(Pose2d pose : pathPoses)
+        //                     poses.add(pose);
+        //             }
+        //             field.getObject("Auto Trajectory").setPoses(poses);
+        //         } catch (Exception e) {
+        //             System.out.println("Auto Trajectory Loading Failed!");
+        //         }
+        //     } else {
+        //         field.getObject("Auto Trajectory").setPose(swerve.getPose());
+        //     }
+        // });
     }
 
     private void configureDriverBindings() {
@@ -125,7 +129,7 @@ public class RobotContainer {
 
     private void configureOperatorBindings() {
         operatorController.a().onTrue(Commands.either(allCommands.intakeStatic(), allCommands.intake(), () -> useStaticCommands));
-        operatorController.leftBumper().onTrue(Commands.runOnce(() -> useStaticCommands = !useStaticCommands));
+        // operatorController.leftBumper().onTrue(Commands.runOnce(() -> useStaticCommands = !useStaticCommands));
         operatorController.b().onTrue(allCommands.moveToL1());
         operatorController.y().onTrue(allCommands.moveToL2());
         operatorController.x().onTrue(allCommands.moveToL3());
@@ -154,6 +158,6 @@ public class RobotContainer {
     }
 
     public Command getAutonomousCommand() {
-        return autoChooser.getSelected();
+        return allCommands.autoDrive();
     }
 }
