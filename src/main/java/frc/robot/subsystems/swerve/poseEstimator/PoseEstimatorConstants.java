@@ -6,8 +6,8 @@ package frc.robot.subsystems.swerve.poseEstimator;
 
 import static edu.wpi.first.units.Units.Degrees;
 
-import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
 
 public class PoseEstimatorConstants {
@@ -15,20 +15,20 @@ public class PoseEstimatorConstants {
     //         new Translation3d(0.245, 0.13, 0.51),
     //         new Rotation3d(Degrees.of(0), Degrees.of(-12), Degrees.of(0)));
 
-    public final static Pose3d ROBOT_TO_CAMERA_TRANSFORM_PHOTON_FRONT = new Pose3d(
-            new Translation3d(0.245, -0.13, 0.51),
+    public final static Transform3d ROBOT_TO_CAMERA_TRANSFORM_PHOTON_FRONT = new Transform3d(
+            new Translation3d(0.20, 0.31, 0.385),
             new Rotation3d(Degrees.of(0), Degrees.of(12), Degrees.of(0)));
 
-    public final static Pose3d ROBOT_TO_CAMERA_TRANSFORM_PHOTON_BACK = new Pose3d(
-            new Translation3d(0, 0.295, 0.575),
+    public final static Transform3d ROBOT_TO_CAMERA_TRANSFORM_PHOTON_BACK = new Transform3d(
+            new Translation3d(0, -40, 0.59),
             new Rotation3d(Degrees.of(0), Degrees.of(-48), Degrees.of(180)));
 
-    public final static Pose3d ROBOT_TO_CAMERA_TRANSFORM_PHOTON_RIGHT = new Pose3d(
-            new Translation3d(0.255, 1.51, 0.425),
+    public final static Transform3d ROBOT_TO_CAMERA_TRANSFORM_PHOTON_RIGHT = new Transform3d(
+            new Translation3d(0.34, 0, 0.45),
             new Rotation3d(Degrees.of(24.95), Degrees.of(-38), Degrees.of(-118)));
 
-    public final static Pose3d ROBOT_TO_CAMERA_TRANSFORM_PHOTON_LEFT = new Pose3d(
-            new Translation3d(-0.255, 1.5, 0.425),
+    public final static Transform3d ROBOT_TO_CAMERA_TRANSFORM_PHOTON_LEFT = new Transform3d(
+            new Translation3d(-0.31, 0, 0.465),
             new Rotation3d(Degrees.of(24.95), Degrees.of(-38), Degrees.of(118)));
 
     public final static double VISION_MAX_TAG_ANBIGUITY_THRESHOLD = 0.7; // Need to check
