@@ -27,7 +27,7 @@ public class PivotIOSparkMax extends PivotIO {
             super(fieldsTable);
             config.smartCurrentLimit(PIVOT_CURRENT_LIMIT);
             config.inverted(true);
-            motorConfigError = pivotMotor.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+            motorConfigError = pivotMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         }
 
         // Outputs:
