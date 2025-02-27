@@ -158,6 +158,6 @@ public class RobotContainer {
     }
 
     public Command getAutonomousCommand() {
-        return allCommands.autoDrive();
+        return autoChooser.getSelected();
     }
 }

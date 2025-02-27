@@ -118,7 +118,8 @@ public class AllCommands {
         return Commands.runOnce(
                 () -> swerve.resetPose(new Pose2d(0, 0, Rotation2d.fromDegrees(swerve.getIsRedAlliance() ? 0 : 180))))
                 .andThen(swerveCMDs.driveForwardVoltage(() -> 0.2).withTimeout(1.5))
-                .andThen(gripperCMDs.score(GRIPPER_BACK_L1_VOLTAGE, GRIPPER_RIGHT_L1_VOLTAGE, GRIPPER_LEFT_L1_VOLTAGE))
+                .andThen(gripperCMDs.score(GRIPPER_BACK_L1_VOLTAGE, GRIPPER_RIGHT_L1_VOLTAGE, GRIPPER_LEFT_L1_VOLTAGE)
+                .withTimeout(1.5))
                 .withName("autoDriveScoreL1");
     }
 
