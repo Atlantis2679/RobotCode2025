@@ -2,15 +2,15 @@ package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 
-// import java.util.ArrayList;
-// import java.util.List;
+import java.util.ArrayList;
+import java.util.List;
 
-// import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
-// import com.pathplanner.lib.commands.PathPlannerAuto;
-// import com.pathplanner.lib.path.PathPlannerPath;
+import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.pathplanner.lib.events.EventTrigger;
+import com.pathplanner.lib.path.PathPlannerPath;
 
-// import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -56,14 +56,13 @@ public class RobotContainer {
     
         public RobotContainer() {
             NamedCommands.registerCommand("intake", allCommands.intake());
-            NamedCommands.registerCommand("moveToL1", allCommands.autoMoveToL1());
-            NamedCommands.registerCommand("moveToL2", allCommands.autoMoveToL2());
             NamedCommands.registerCommand("scoreL3", allCommands.scoreL3());
             NamedCommands.registerCommand("score", allCommands.scoreL1());
             NamedCommands.registerCommand("stopAll", allCommands.stopAll());
-            NamedCommands.registerCommand("drive", allCommands.autoDrive());
     
-    
+            new EventTrigger("moveToL1").whileTrue(allCommands.autoMoveToL1()).whileTrue(Commands.print("moveToL1"));
+            new EventTrigger("moveToL2").whileTrue(allCommands.autoMoveToL2()).whileTrue(Commands.print("moveToL2"));
+
             new Trigger(DriverStation::isDisabled).whileTrue(swerveCommands.stop()
                     .alongWith(allCommands.stopAll()));
             pdh.setSwitchableChannel(true);
@@ -82,24 +81,24 @@ public class RobotContainer {
 
         swerve.registerCallbackOnPoseUpdate((pose, isRedAlliance) -> {field.setRobotPose(pose);});
         SmartDashboard.putData(field);
-        // autoChooser.onChange((command) -> {
-        //     if(command.getName() != "None") {
-        //         try {
-        //             List<PathPlannerPath> paths = PathPlannerAuto.getPathGroupFromAutoFile(command.getName());
-        //             List<Pose2d> poses = new ArrayList<>();
-        //             for(PathPlannerPath path : paths) {
-        //                 List<Pose2d> pathPoses = path.getPathPoses();
-        //                 for(Pose2d pose : pathPoses)
-        //                     poses.add(pose);
-        //             }
-        //             field.getObject("Auto Trajectory").setPoses(poses);
-        //         } catch (Exception e) {
-        //             System.out.println("Auto Trajectory Loading Failed!");
-        //         }
-        //     } else {
-        //         field.getObject("Auto Trajectory").setPose(swerve.getPose());
-        //     }
-        // });
+        autoChooser.onChange((command) -> {
+            if(command.getName() != "None") {
+                try {
+                    List<PathPlannerPath> paths = PathPlannerAuto.getPathGroupFromAutoFile(command.getName());
+                    List<Pose2d> poses = new ArrayList<>();
+                    for(PathPlannerPath path : paths) {
+                        List<Pose2d> pathPoses = path.getPathPoses();
+                        for(Pose2d pose : pathPoses)
+                            poses.add(pose);
+                    }
+                    field.getObject("Auto Trajectory").setPoses(poses);
+                } catch (Exception e) {
+                    System.out.println("Auto Trajectory Loading Failed!");
+                }
+            } else {
+                field.getObject("Auto Trajectory").setPose(swerve.getPose());
+            }
+        });
     }
 
     private void configureDriverBindings() {

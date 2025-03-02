@@ -8,11 +8,11 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.8207690424878913,
-        "y": 1.6861257537758185
+        "x": 1.858898529889718,
+        "y": 1.6550846980635732
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "RightCoralStation"
     },
     {
       "anchor": {
@@ -20,12 +20,12 @@
         "y": 2.6
       },
       "prevControl": {
-        "x": 3.5985283147588,
-        "y": 2.448043838675342
+        "x": 3.765115109705052,
+        "y": 2.3895099375977105
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Cycle2Right"
     }
   ],
   "rotationTargets": [],
@@ -35,7 +35,7 @@
       "minWaypointRelativePos": 0,
       "maxWaypointRelativePos": 1.0,
       "constraints": {
-        "maxVelocity": 1.0,
+        "maxVelocity": 0.5,
         "maxAcceleration": 3.0,
         "maxAngularVelocity": 540.0,
         "maxAngularAcceleration": 720.0,
@@ -45,7 +45,14 @@
     }
   ],
   "pointTowardsZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "moveToL1",
+      "waypointRelativePos": 0,
+      "endWaypointRelativePos": null,
+      "command": null
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 3.0,
     "maxAcceleration": 3.0,
@@ -56,13 +63,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 58.70519684472419
+    "rotation": 59.99999999999999
   },
   "reversed": false,
-  "folder": null,
+  "folder": "Right",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 54.43815853926615
+    "rotation": 55.0
   },
   "useDefaultConstraints": true
 }

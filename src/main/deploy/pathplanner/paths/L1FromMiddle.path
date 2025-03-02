@@ -8,11 +8,11 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 8.015,
-        "y": 4.0
+        "x": 8.05987127820559,
+        "y": 3.9917356281875964
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "StartMid"
     },
     {
       "anchor": {
@@ -20,8 +20,8 @@
         "y": 4.0
       },
       "prevControl": {
-        "x": 5.75,
-        "y": 4.0
+        "x": 5.59179923551476,
+        "y": 4.001933612236615
       },
       "nextControl": null,
       "isLocked": false,
@@ -45,7 +45,14 @@
     }
   ],
   "pointTowardsZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "moveToL1",
+      "waypointRelativePos": 0,
+      "endWaypointRelativePos": null,
+      "command": null
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 3.0,
     "maxAcceleration": 3.0,
@@ -59,7 +66,7 @@
     "rotation": 180.0
   },
   "reversed": false,
-  "folder": null,
+  "folder": "Mid",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 180.0
