@@ -21,6 +21,12 @@
           "data": {
             "name": "scoreL1"
           }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": []
+          }
         }
       ]
     }

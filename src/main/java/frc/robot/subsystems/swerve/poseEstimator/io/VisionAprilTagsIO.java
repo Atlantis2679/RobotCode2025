@@ -4,6 +4,7 @@ import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Transform3d;
 import frc.lib.logfields.IOBase;
 import frc.lib.logfields.LogFieldsTable;
 
@@ -18,6 +19,8 @@ public abstract class VisionAprilTagsIO extends IOBase {
     protected VisionAprilTagsIO(LogFieldsTable fieldsTable) {
         super(fieldsTable);
     }
+
+    public abstract Transform3d getRobotToCameraTransform();
 
     protected abstract double[] getCameraTimestampsSeconds();
 

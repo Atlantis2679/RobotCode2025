@@ -9,7 +9,11 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.lib.logfields.LogFieldsTable;
+import frc.robot.FieldConstants;
 import frc.robot.subsystems.NetworkAlertsManager;
 import frc.robot.subsystems.swerve.poseEstimator.io.VisionAprilTagsIO;
 import frc.robot.subsystems.swerve.poseEstimator.io.VisionAprilTagsIOPhoton;
@@ -77,7 +81,7 @@ public class PoseEstimatorWithVision {
             Pose3d[] poses = visionIO.posesEstimates.get();
             for (int i = 0; i < poses.length; i++) {
                 LogFieldsTable cameraFieldsTable = fieldsTable.getSubTable(cameraName);
-                Pose3d poseEstimate = poses[i];
+                Pose3d poseEstimate = poses[i].transformBy(visionIO.getRobotToCameraTransform().inverse());
                 Pose3d[] tagsPoses = visionIO.tagsPoses.get()[i];
                 double[] tagsAmbiguities = visionIO.tagsAmbiguities.get()[i];
                 double cameraTimestampSeconds = visionIO.cameraTimestampsSeconds.get()[i];
@@ -89,14 +93,26 @@ public class PoseEstimatorWithVision {
                 if (trustLevel == -1)
                     continue;
 
+                if(poseEstimate.getRotation().getX() > 190 || poseEstimate.getRotation().getX() < -10|| poseEstimate.getRotation().getY() < -10 || poseEstimate.getRotation().getY() > 190){
+                    continue;
+                }
+                if(poseEstimate.getX() < 0 ||
+                 poseEstimate.getX() > FieldConstants.FIELD_LENGTH || 
+                 poseEstimate.getY() < 0 || 
+                 poseEstimate.getY() > FieldConstants.FIELD_WIDTH){
+                    continue;
+                }
+                if(poseEstimate.getTranslation().getZ() > 0.10 || poseEstimate.getTranslation().getZ() < -0.10){
+                    continue;
+                }
                 cameraFieldsTable.recordOutput("Pose3d", poseEstimate);
                 cameraFieldsTable.recordOutput("Pose2d", poseEstimate.toPose2d());
                 cameraFieldsTable.recordOutput("tagsPoses", tagsPoses);
                 cameraFieldsTable.recordOutput("tagsAmbiguities", tagsAmbiguities);
                 cameraFieldsTable.recordOutput("trustLevel", trustLevel);
 
-                double visionRotationTrustLevel = trustLevel * VISION_ROTATION_TRUST_LEVEL_MULTIPLAYER;
-                double visionTranslationTrustLevel = trustLevel * VISION_TRANSLATION_TRUST_LEVEL_MULTIPLAYER;
+                double visionRotationTrustLevel = trustLevel * trustLevel * VISION_ROTATION_TRUST_LEVEL_MULTIPLAYER;
+                double visionTranslationTrustLevel = trustLevel * trustLevel * VISION_TRANSLATION_TRUST_LEVEL_MULTIPLAYER;
                 poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(
                         visionTranslationTrustLevel,
                         visionTranslationTrustLevel,
