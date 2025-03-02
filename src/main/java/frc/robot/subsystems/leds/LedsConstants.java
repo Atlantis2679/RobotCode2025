@@ -7,8 +7,6 @@ import frc.robot.RobotMap;
 public class LedsConstants {
     public final static int TOTAL_LEDS_NUMBER = 74;
 
-    public final static int SECONDS_FOR_LEDS_DEFAULT = 1;
-
     static final AddressableLEDBuffer LED_BUFFER = new AddressableLEDBuffer(TOTAL_LEDS_NUMBER);
     static final AddressableLED LED = new AddressableLED(RobotMap.LEDS_ID);
     
