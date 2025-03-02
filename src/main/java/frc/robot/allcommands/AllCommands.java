@@ -90,20 +90,21 @@ public class AllCommands {
         return LedsCommands.colorForSeconds(Color.kPurple, SECONDS_FOR_LEDS_DEFAULT, ledStrips);
     }
 
+    public Command driveLeds() {
+        return LedsCommands.colorForSeconds(color00bebe, SECONDS_FOR_LEDS_DEFAULT, ledStrips);
+    }
+
     public Command intake() {
         return pivotCMDs.moveToAngle(PIVOT_ANGLE_FOR_INTAKE)
                 .alongWith(Commands.waitUntil(() -> pivot.isAtAngle(PIVOT_ANGLE_FOR_INTAKE))
                         .andThen(funnelCMDs.loadCoral(FUNNEL_INTAKE_SPEED)
-                                .andThen(funnelCMDs.passCoral(FUNNEL_INTAKE_SPEED, FUNNEL_PASSING_SPEED)
-                                        .alongWith(gripperCMDs.loadCoral(GRIPPER_BACK_LOADING_VOLTAGE,
-                                                GRIPPER_RIGHT_LOADING_VOLTAGE, GRIPPER_LEFT_LOADING_VOLTAGE)))
-                                .until(() -> !funnel.getIsCoralIn() && gripper.getIsCoralIn()))
+                        .andThen(funnelCMDs.passCoral(FUNNEL_INTAKE_SPEED, FUNNEL_PASSING_SPEED)
+                        .alongWith(gripperCMDs.spin(GRIPPER_BACK_LOADING_VOLTAGE,
+                                GRIPPER_RIGHT_LOADING_VOLTAGE, GRIPPER_LEFT_LOADING_VOLTAGE)))
+                        .until(() -> !funnel.getIsCoralIn() && gripper.getIsCoralIn()))
                         .andThen(LedsCommands.colorForSeconds(Color.kGreen, SECONDS_FOR_LEDS_DEFAULT,
                                 ledStrips)))
-                .finallyDo((intterapted) -> {
-                    funnel.stop();
-                    gripper.stop();
-                }).withName("Intake");
+                .withName("Intake");
     }
 
     public Command autoDrive() {
@@ -117,7 +118,7 @@ public class AllCommands {
         return Commands.runOnce(
                 () -> swerve.resetPose(new Pose2d(0, 0, Rotation2d.fromDegrees(swerve.getIsRedAlliance() ? 0 : 180))))
                 .andThen(swerveCMDs.driveForwardVoltage(() -> AUTO_DRIVE_VOLTAGE_PERCANTAGE).withTimeout(AUTO_DRIVE_SECONDS))
-                .andThen(gripperCMDs.score(GRIPPER_BACK_L1_VOLTAGE, GRIPPER_RIGHT_L1_VOLTAGE, GRIPPER_LEFT_L1_VOLTAGE)
+                .andThen(gripperCMDs.spin(GRIPPER_BACK_L1_VOLTAGE, GRIPPER_RIGHT_L1_VOLTAGE, GRIPPER_LEFT_L1_VOLTAGE)
                 .withTimeout(1.5))
                 .withName("autoDriveScoreL1");
     }
@@ -129,8 +130,9 @@ public class AllCommands {
     }
 
     public Command autoScoreL1() {
-        return gripperCMDs.score(GRIPPER_BACK_L1_VOLTAGE, GRIPPER_RIGHT_L1_VOLTAGE, GRIPPER_LEFT_L1_VOLTAGE)
-                .until(() -> !gripper.getIsCoralIn()).withName("scoreL1");
+        return gripperCMDs.spin(GRIPPER_BACK_L1_VOLTAGE, GRIPPER_RIGHT_L1_VOLTAGE, GRIPPER_LEFT_L1_VOLTAGE)
+                .until(() -> !gripper.getIsCoralIn())
+                .withName("scoreL1");
     }
 
     public Command autoMoveToL2() {
@@ -147,7 +149,7 @@ public class AllCommands {
 
     public Command intakeStatic() {
         return funnelCMDs.passCoral(FUNNEL_INTAKE_SPEED, FUNNEL_PASSING_SPEED)
-                .alongWith(gripperCMDs.loadCoral(GRIPPER_BACK_LOADING_VOLTAGE, GRIPPER_RIGHT_LOADING_VOLTAGE,
+                .alongWith(gripperCMDs.spin(GRIPPER_BACK_LOADING_VOLTAGE, GRIPPER_RIGHT_LOADING_VOLTAGE,
                         GRIPPER_LEFT_LOADING_VOLTAGE))
                 .alongWith(scoreLedsCommand())
                 .withName("moveToL1Static");
@@ -175,19 +177,15 @@ public class AllCommands {
     }
 
     public Command scoreL1() {
-        return gripperCMDs.score(GRIPPER_BACK_L1_VOLTAGE, GRIPPER_RIGHT_L1_VOLTAGE, GRIPPER_LEFT_L1_VOLTAGE)
+        return gripperCMDs.spin(GRIPPER_BACK_L1_VOLTAGE, GRIPPER_RIGHT_L1_VOLTAGE, GRIPPER_LEFT_L1_VOLTAGE)
                 .alongWith(Commands.waitUntil(() -> !gripper.getIsCoralIn()).andThen(Commands.runOnce(() -> scoreLedsCommand())))
-                .finallyDo(() -> {
-                        gripper.stop();
-                }).withName("scoreL1");
+                .withName("scoreL1");
     }
 
     public Command scoreL3() {
-        return gripperCMDs.score(GRIPPER_BACK_L3_VOLTAGE, GRIPPER_OUTTAKE_L3_VOLTAGE, GRIPPER_OUTTAKE_L3_VOLTAGE)
+        return gripperCMDs.spin(GRIPPER_BACK_L3_VOLTAGE, GRIPPER_OUTTAKE_L3_VOLTAGE, GRIPPER_OUTTAKE_L3_VOLTAGE)
                 .alongWith(Commands.waitUntil(() -> !gripper.getIsCoralIn()).andThen(() -> scoreLedsCommand()))
-                .finallyDo(() -> {
-                        gripper.stop();
-                }).withName("scoreL3");
+                .withName("scoreL3");
     }
 
     public Command alignToReefRight(TuneableCommand driveCommand, BooleanSupplier lockOnPose) {
@@ -196,7 +194,8 @@ public class AllCommands {
                         : swerve.getClosestPose(FieldConstants.REEF_RIGHT_BRANCHES_POSES), driveCommand)
                 .andThen(setAlignToReefColor()), Set.of(swerve))
                 .onlyWhile(() -> swerve.getDistanceToPose(
-                        swerve.getLastCalculatedClosestPose()) <= SwerveContants.AlignToReef.MIN_DISTANCE_TO_AMPALIGN);
+                        swerve.getLastCalculatedClosestPose()) <= SwerveContants.AlignToReef.MIN_DISTANCE_TO_AMPALIGN)
+                .withName("alignToReefRight");
     }
 
     public Command alignToReefLeft(TuneableCommand driveCommand, BooleanSupplier lockOnPose) {
@@ -205,7 +204,8 @@ public class AllCommands {
                         : swerve.getClosestPose(FieldConstants.REEF_LEFT_BRANCHES_POSES), driveCommand)
                 .andThen(setAlignToReefColor()), Set.of(swerve))
                 .onlyWhile(() -> swerve.getDistanceToPose(
-                        swerve.getLastCalculatedClosestPose()) <= SwerveContants.AlignToReef.MIN_DISTANCE_TO_AMPALIGN);
+                        swerve.getLastCalculatedClosestPose()) <= SwerveContants.AlignToReef.MIN_DISTANCE_TO_AMPALIGN)
+                .withName("alignToReefLeft");
     }
 
     public TuneableCommand getPivotReadyAndScore() {
@@ -219,7 +219,7 @@ public class AllCommands {
                     GRIPPER_RIGHT_TUNEABLE_VOLTAGE);
 
             return pivotCMDs.moveToAngle(angleHolder.get())
-                    .andThen(gripperCMDs.score(backGripperVoltage.get(), rightGripperVoltage.get(),
+                    .andThen(gripperCMDs.spin(backGripperVoltage.get(), rightGripperVoltage.get(),
                             leftGripperVoltage.get()))
                 .withName("getPivotAngleAndScore");
         });
@@ -247,74 +247,68 @@ public class AllCommands {
             DoubleSupplier thirdSpeed) {
         return TuneableCommand.wrap((tuneableBuilder) -> {
             Command command =
+                Commands.print("Manual funnel conntroller")
+                .andThen(manualFunnelController(firstSpeed)
+                        .withDeadline(Commands.waitUntil(moveToNext)))
+                .andThen(wizardLedsNext())
 
-                    Commands.print("Manual funnel conntroller")
-                            .andThen(manualFunnelController(firstSpeed)
-                                    .withDeadline(Commands.waitUntil(moveToNext)))
-                            .andThen(wizardLedsNext())
+                .andThen(Commands.print("Manual gripper conntroller"))
+                .andThen(gripperCMDs.manualController(
+                        () -> firstSpeed.getAsDouble() * ManualControllers.GRIPPER_BACK_SPEED_MULTIPLAYER,
+                        () -> secondSpeed.getAsDouble() * ManualControllers.GRIPPER_RIGHT_SPEED_MULTIPLAYER,
+                        () -> thirdSpeed.getAsDouble() * ManualControllers.GRIPPER_LEFT_SPEED_MULTIPLAYER)
+                        .withDeadline(Commands.waitUntil(moveToNext)))
+                .andThen(wizardLedsNext())
 
-                            .andThen(Commands.print("Manual gripper conntroller"))
-                            .andThen(gripperCMDs.manualController(
-                                    () -> firstSpeed.getAsDouble() * ManualControllers.GRIPPER_BACK_SPEED_MULTIPLAYER,
-                                    () -> secondSpeed.getAsDouble() * ManualControllers.GRIPPER_RIGHT_SPEED_MULTIPLAYER,
-                                    () -> thirdSpeed.getAsDouble() * ManualControllers.GRIPPER_LEFT_SPEED_MULTIPLAYER)
-                                    .withDeadline(Commands.waitUntil(moveToNext)))
-                            .andThen(wizardLedsNext())
+                .andThen(Commands.print("Manual pivot conntroller"))
+                .andThen(manualPivotController(firstSpeed)
+                        .withDeadline(Commands.waitUntil(moveToNext)))
+                .andThen(wizardLedsNext())
 
-                            .andThen(Commands.print("Manual pivot conntroller"))
-                            .andThen(manualPivotController(firstSpeed)
-                                    .withDeadline(Commands.waitUntil(moveToNext)))
-                            .andThen(wizardLedsNext())
+                .andThen(Commands.print("Pivot move to intake"))
+                .andThen(pivotCMDs.moveToAngle(PIVOT_ANGLE_FOR_INTAKE)
+                .withDeadline(Commands.waitUntil(moveToNext).andThen(wizardLedsNext())
 
-                            .andThen(Commands.print("Pivot move to intake"))
-                            .andThen(pivotCMDs.moveToAngle(PIVOT_ANGLE_FOR_INTAKE)
-                                    .withDeadline(Commands.waitUntil(moveToNext).andThen(wizardLedsNext())
+                .andThen(Commands.print("Funnel pass coral and gripper load coral"))
+                .andThen(funnelCMDs.passCoral(FUNNEL_INTAKE_SPEED, FUNNEL_PASSING_SPEED)
+                        .alongWith(gripperCMDs.spin(GRIPPER_BACK_LOADING_VOLTAGE,
+                                GRIPPER_RIGHT_LOADING_VOLTAGE,
+                                GRIPPER_LEFT_LOADING_VOLTAGE))
+                        .withDeadline(Commands.waitUntil(moveToNext)))
+                .andThen(wizardLedsNext())))
 
-                                            // .andThen(Commands.print("Funnel load coral"))
-                                            // .andThen(funnelCMDs.loadCoral(FUNNEL_INTAKE_SPEED)
-                                            // .withDeadline(Commands.waitUntil(moveToNext)))
-                                            // .andThen(wizardLedsNext())
+                .andThen(Commands.print("Pivot move to L1"))
+                .andThen(moveToL1().withDeadline(
+                        Commands.waitUntil(moveToNext)).andThen(wizardLedsNext())
+                        .andThen(Commands.print("Score L1"))
+                        .andThen(scoreL1()
+                                .withDeadline(Commands.waitUntil(moveToNext)))
+                        .andThen(wizardLedsNext()))
 
-                                            .andThen(Commands.print("Funnel pass coral and gripper load coral"))
-                                            .andThen(funnelCMDs.passCoral(FUNNEL_INTAKE_SPEED, FUNNEL_PASSING_SPEED)
-                                                    .alongWith(gripperCMDs.loadCoral(GRIPPER_BACK_LOADING_VOLTAGE,
-                                                            GRIPPER_RIGHT_LOADING_VOLTAGE,
-                                                            GRIPPER_LEFT_LOADING_VOLTAGE))
-                                                    .withDeadline(Commands.waitUntil(moveToNext)))
-                                            .andThen(wizardLedsNext())))
+                .andThen(Commands.print("Pivot move to intake + intake"))
+                .andThen(intake()
+                        .withDeadline(Commands.waitUntil(moveToNext)))
+                .andThen(wizardLedsNext())
 
-                            .andThen(Commands.print("Pivot move to L1"))
-                            .andThen(moveToL1().withDeadline(
-                                    Commands.waitUntil(moveToNext)).andThen(wizardLedsNext())
-                                    .andThen(Commands.print("Score L1"))
-                                    .andThen(scoreL1()
-                                            .withDeadline(Commands.waitUntil(moveToNext)))
-                                    .andThen(wizardLedsNext()))
+                .andThen(Commands.print("Move to L3"))
+                .andThen(moveToL3().withDeadline(
+                        Commands.waitUntil(moveToNext).andThen(wizardLedsNext())
+                                .andThen(Commands.print("Score L3"))
+                                .andThen(scoreL3().withDeadline(Commands.waitUntil(moveToNext)))
+                                .andThen(wizardLedsNext())))
 
-                            .andThen(Commands.print("Pivot move to intake + intake"))
-                            .andThen(intake()
-                                    .withDeadline(Commands.waitUntil(moveToNext)))
-                            .andThen(wizardLedsNext())
+                .andThen(Commands.print("Move to L2"))
+                .andThen(moveToL2().withDeadline(Commands.waitUntil(moveToNext)))
+                .andThen(wizardLedsNext())
 
-                            .andThen(Commands.print("Move to L3"))
-                            .andThen(moveToL3().withDeadline(
-                                    Commands.waitUntil(moveToNext).andThen(wizardLedsNext())
-                                            .andThen(Commands.print("Score L3"))
-                                            .andThen(scoreL3().withDeadline(Commands.waitUntil(moveToNext)))
-                                            .andThen(wizardLedsNext())))
+                .andThen(Commands.print("Move to rest"))
+                .andThen(moveToRest().withDeadline(Commands.waitUntil(moveToNext)))
+                .andThen(wizardLedsNext())
 
-                            .andThen(Commands.print("Move to L2"))
-                            .andThen(moveToL2().withDeadline(Commands.waitUntil(moveToNext)))
-                            .andThen(wizardLedsNext())
+                .andThen(Commands.print("Finished!"))
+                .andThen(LedsCommands.colorForSeconds(color00bebe, 1, ledStrips))
 
-                            .andThen(Commands.print("Move to rest"))
-                            .andThen(moveToRest().withDeadline(Commands.waitUntil(moveToNext)))
-                            .andThen(wizardLedsNext())
-
-                            .andThen(Commands.print("Finished!"))
-                            .andThen(LedsCommands.colorForSeconds(color00bebe, 1, ledStrips))
-
-                            .withName("testWizard").withInterruptBehavior(InterruptionBehavior.kCancelIncoming);
+                .withName("testWizard").withInterruptBehavior(InterruptionBehavior.kCancelIncoming);
 
             command.addRequirements(pivot, funnel, gripper, swerve);
             return command;
