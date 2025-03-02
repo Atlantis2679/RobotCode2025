@@ -21,11 +21,8 @@ public class Funnel extends SubsystemBase {
         io = Robot.isReal() ? new FunnelIOSparksMax(this.fieldsTable) : new FunnelIOSim(this.fieldsTable);
     }
 
-    public void setMotorVoltage(double voltageDemand) {
-        io.setVoltage(MathUtil.clamp(voltageDemand, -MOTOR_MAX_VOLTAGE, MOTOR_MAX_VOLTAGE));
-    }
-
     public void setMotorPercentageSpeed(double percentageSpeed)  {
+        fieldsTable.recordOutput("precentage speed", percentageSpeed);
         io.setPercentageSpeed(MathUtil.clamp(percentageSpeed, -1, 1));
     }
 
@@ -34,6 +31,7 @@ public class Funnel extends SubsystemBase {
     }
 
     public void stop() {
+        fieldsTable.recordOutput("precentage speed", 0);
         io.setPercentageSpeed(0);
     }
 }

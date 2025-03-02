@@ -15,8 +15,6 @@ public abstract class FunnelIO extends IOBase {
     }
 
     // Inputs:
-    public abstract void setVoltage(double voltageDemand);
-
     public abstract void setPercentageSpeed(double percentageSpeed);
 
     // Outputs:
