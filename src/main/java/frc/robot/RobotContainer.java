@@ -1,5 +1,7 @@
 package frc.robot;
 
+import com.pathplanner.lib.auto.AutoBuilder;
+
 // import java.util.ArrayList;
 // import java.util.List;
 
@@ -36,45 +38,45 @@ public class RobotContainer {
     private final Gripper gripper = new Gripper();
     private final PowerDistribution pdh = new PowerDistribution();
 
-    private final SendableChooser<Command> autoChooser = new SendableChooser<>();
-
-    private final NaturalXboxController driverController = new NaturalXboxController(
-            RobotMap.Controllers.DRIVER_PORT);
-    private final NaturalXboxController operatorController = new NaturalXboxController(
-            RobotMap.Controllers.OPERATOR_PORT);
-
-    private final SwerveCommands swerveCommands = new SwerveCommands(swerve);
-    private final AllCommands allCommands = new AllCommands(gripper, pivot, funnel, swerve);
-
-    private boolean useStaticCommands = false;
-
-    private boolean alignToReefLockOnPose = false;
-
-    // private boolean isCompetition = true;
-
-    public RobotContainer() {
-        NamedCommands.registerCommand("intake", allCommands.intake());
-        NamedCommands.registerCommand("moveToL1", allCommands.autoMoveToL1());
-        NamedCommands.registerCommand("moveToL2", allCommands.autoMoveToL2());
-        NamedCommands.registerCommand("scoreL3", allCommands.scoreL3());
-        NamedCommands.registerCommand("score", allCommands.scoreL1());
-        NamedCommands.registerCommand("stopAll", allCommands.stopAll());
-        NamedCommands.registerCommand("drive", allCommands.autoDrive());
-
-
-        new Trigger(DriverStation::isDisabled).whileTrue(swerveCommands.stop()
-                .alongWith(allCommands.stopAll()));
-        pdh.setSwitchableChannel(true);
-
-        configureDriverBindings();
-        configureOperatorBindings();
-
-        // autoChooser = AutoBuilder.buildAutoChooserWithOptionsModifier(
-        //         (stream) -> isCompetition
-        //                 ? stream.filter(auto -> auto.getName().startsWith("Test"))
-        //                 : stream);
-        autoChooser.addOption("DriveForwardScoreL1", allCommands.autoDriveScoreL1());
-        autoChooser.addOption("DriveForwardNoScore", allCommands.autoDrive());
+    private SendableChooser<Command> autoChooser = new SendableChooser<>();
+    
+        private final NaturalXboxController driverController = new NaturalXboxController(
+                RobotMap.Controllers.DRIVER_PORT);
+        private final NaturalXboxController operatorController = new NaturalXboxController(
+                RobotMap.Controllers.OPERATOR_PORT);
+    
+        private final SwerveCommands swerveCommands = new SwerveCommands(swerve);
+        private final AllCommands allCommands = new AllCommands(gripper, pivot, funnel, swerve);
+    
+        private boolean useStaticCommands = false;
+    
+        private boolean alignToReefLockOnPose = false;
+    
+        private boolean isCompetition = true;
+    
+        public RobotContainer() {
+            NamedCommands.registerCommand("intake", allCommands.intake());
+            NamedCommands.registerCommand("moveToL1", allCommands.autoMoveToL1());
+            NamedCommands.registerCommand("moveToL2", allCommands.autoMoveToL2());
+            NamedCommands.registerCommand("scoreL3", allCommands.scoreL3());
+            NamedCommands.registerCommand("score", allCommands.scoreL1());
+            NamedCommands.registerCommand("stopAll", allCommands.stopAll());
+            NamedCommands.registerCommand("drive", allCommands.autoDrive());
+    
+    
+            new Trigger(DriverStation::isDisabled).whileTrue(swerveCommands.stop()
+                    .alongWith(allCommands.stopAll()));
+            pdh.setSwitchableChannel(true);
+    
+            configureDriverBindings();
+            configureOperatorBindings();
+    
+            autoChooser = AutoBuilder.buildAutoChooserWithOptionsModifier(
+                (stream) -> isCompetition
+                        ? stream.filter(auto -> auto.getName().startsWith("comp"))
+                        : stream);
+        // autoChooser.addOption("DriveForwardScoreL1", allCommands.autoDriveScoreL1());
+        // autoChooser.addOption("DriveForwardNoScore", allCommands.autoDrive());
         SmartDashboard.putData("Auto Chooser", autoChooser);
         Field2d field = new Field2d();
 
@@ -159,6 +161,6 @@ public class RobotContainer {
     }
 
     public Command getAutonomousCommand() {
-        return allCommands.autoDrive();
+        return autoChooser.getSelected();
     }
 }
