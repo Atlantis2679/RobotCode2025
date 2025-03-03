@@ -9,10 +9,13 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
+import edu.wpi.first.wpilibj.Timer;
 import frc.lib.logfields.LogFieldsTable;
 import frc.robot.subsystems.NetworkAlertsManager;
+import frc.robot.subsystems.swerve.SwerveModule;
 import frc.robot.subsystems.swerve.poseEstimator.io.VisionAprilTagsIO;
 import frc.robot.subsystems.swerve.poseEstimator.io.VisionAprilTagsIOPhoton;
+import frc.robot.utils.BuiltInAccelerometerLogged;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -27,9 +30,15 @@ public class PoseEstimatorWithVision {
     private final Map<String, VisionAprilTagsIO> visionCameras = new HashMap<>();
     private final SwerveDrivePoseEstimator poseEstimator;
     private final LogFieldsTable fieldsTable;
+    private final BuiltInAccelerometerLogged accelerometer;
+
+    private final double[] lastModulesSpeeds = new double[4];
+    private double lastUpdateTimestamp = 0;
 
     public PoseEstimatorWithVision(LogFieldsTable fieldsTable, Rotation2d currentAngle,
-            SwerveModulePosition[] positions, SwerveDriveKinematics swerveKinematics) {
+            SwerveModulePosition[] positions, SwerveDriveKinematics swerveKinematics, BuiltInAccelerometerLogged accelerometer) {
+
+        this.accelerometer = accelerometer;
 
         AprilTagFieldLayout fieldLayout;
         try {
@@ -70,7 +79,22 @@ public class PoseEstimatorWithVision {
                 VecBuilder.fill(1, 1, 1));
     }
 
-    public void update(Rotation2d gyroMeasurmentCCW, SwerveModulePosition[] modulesPositions) {
+    public void update(Rotation2d gyroMeasurmentCCW, SwerveModule[] modules) {
+        SwerveModulePosition[] modulesPositions = new SwerveModulePosition[4];
+        // In order to check that the update wans't called twice in the same periodic, because this will cause a divison by zero:
+        double deltaTime = Timer.getFPGATimestamp() - lastUpdateTimestamp;
+        if (deltaTime == 0) return;
+        double[] modulesSpeeds = new double[4];
+        double[] modulesAcceleration = new double[4];
+        for (SwerveModule module : modules) {
+            int moduleNumber = module.getModuleNumber();
+            modulesPositions[moduleNumber] = module.getModulePosition();
+            modulesSpeeds[moduleNumber] = module.getVelocityMPS();
+            modulesAcceleration[moduleNumber] = (modulesSpeeds[moduleNumber] - lastModulesSpeeds[moduleNumber]) / (deltaTime);
+        }
+
+        lastUpdateTimestamp = Timer.getFPGATimestamp();
+
         poseEstimator.update(gyroMeasurmentCCW, modulesPositions);
 
         visionCameras.forEach((cameraName, visionIO) -> {
@@ -129,5 +153,10 @@ public class PoseEstimatorWithVision {
             }
         }
         return trustLevel != 0 ? 1 / trustLevel : -1;
+    }
+
+    private boolean isInCollision(double[] modulesAcceleration) {
+        // if ()
+        return false;
     }
 }
