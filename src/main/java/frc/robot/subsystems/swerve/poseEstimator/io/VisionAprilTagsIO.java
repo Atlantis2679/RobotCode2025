@@ -4,6 +4,7 @@ import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Transform3d;
 import frc.lib.logfields.IOBase;
 import frc.lib.logfields.LogFieldsTable;
 
@@ -28,4 +29,6 @@ public abstract class VisionAprilTagsIO extends IOBase {
     protected abstract double[][] getTagsAmbiguities();
 
     protected abstract boolean getIsCameraConnected();
+
+    public abstract Transform3d getCameraTransform();
 }
