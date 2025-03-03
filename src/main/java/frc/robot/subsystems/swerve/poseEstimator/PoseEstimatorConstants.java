@@ -27,14 +27,13 @@ public class PoseEstimatorConstants {
             new Translation3d(-0.01, 0.28, 0.44),
             new Rotation3d(Degrees.of(13), Degrees.of(-35), Degrees.of(107)));
 
-    public final static double VISION_MAX_TAG_ANBIGUITY_THRESHOLD = 0.5; // Need to check
-    public final static double VISION_MAX_TAG_DISTANCE_TO_POSE_METERS = 3; //need to check
-    public final static double VISION_MIN_TAG_DISTANCE_TO_POSE_METERS = 0.05; // Need to check
+    public final static double VISION_TAG_ANBIGUITY_THRESHOLD = 0.5; // Need to calibrate
+    public final static double VISION_MIN_TAG_DISTANCE_TO_POSE_METERS = 0.05; // Need to calibrate
 
-    public final static double VISION_ROTATION_TRUST_LEVEL_MULTIPLAYER = 1; // Need to check
-    public final static double VISION_TRANSLATION_TRUST_LEVEL_MULTIPLAYER = 1; // Need to check
+    public final static double VISION_ROTATION_TRUST_LEVEL_MULTIPLAYER = 2.5; // Need to calibrate
+    public final static double VISION_TRANSLATION_TRUST_LEVEL_MULTIPLAYER = 1.15; // Need to calibrate
 
-    public final static double STATE_TRUST_LEVEL_X = 0.9; // Need to check
-    public final static double STATE_TRUST_LEVEL_Y = 0.9; // Need to check
-    public final static double STATE_TRUST_LEVEL_Z = 0.9; // Need to check
+    public final static double STATE_TRUST_LEVEL_X = 2.5; // Need to calibrate
+    public final static double STATE_TRUST_LEVEL_Y = 2.5; // Need to calibrate
+    public final static double STATE_TRUST_LEVEL_ROTAION = 0.3; // Need to calibrate
 }
