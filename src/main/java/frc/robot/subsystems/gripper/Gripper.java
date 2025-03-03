@@ -2,6 +2,7 @@ package frc.robot.subsystems.gripper;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.Debouncer;
+import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.logfields.LogFieldsTable;
 import frc.robot.Robot;
@@ -13,7 +14,7 @@ import static frc.robot.subsystems.gripper.GripperConstants.*;
 
 public class Gripper extends SubsystemBase {
     private final LogFieldsTable fieldsTable = new LogFieldsTable(getName());
-    private final Debouncer isCoralInDebouncer = new Debouncer(DEBOUNCER_SECONDS);
+    private final Debouncer isCoralInDebouncer = new Debouncer(DEBOUNCER_SECONDS, DebounceType.kBoth);
 
     private final GripperIO io = Robot.isReal() ? 
         new GripperIOSparkMax(fieldsTable) : 

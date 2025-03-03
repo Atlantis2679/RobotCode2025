@@ -15,7 +15,7 @@ import static frc.robot.RobotMap.*;
 import static frc.robot.subsystems.funnel.FunnelConstants.MAX_CURRENT;
 
 public class FunnelIOSparksMax extends FunnelIO {
-    private SparkMax funnelMotor = new SparkMax(CANBUS.FUNNEL_MOTOR_ID, MotorType.kBrushless);
+    private SparkMax motor = new SparkMax(CANBUS.FUNNEL_MOTOR_ID, MotorType.kBrushless);
     private DigitalInput beamBrake = new DigitalInput(FUNNEL_BEAM_BRAKE_ID);
 
     private SparkMaxConfig motorConfig = new SparkMaxConfig();
@@ -23,18 +23,13 @@ public class FunnelIOSparksMax extends FunnelIO {
     public FunnelIOSparksMax(LogFieldsTable fieldsTable) {
         super(fieldsTable);
         motorConfig.smartCurrentLimit(MAX_CURRENT);
-        motorConfig.idleMode(IdleMode.kBrake);
-        funnelMotor.configure(motorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-    }
 
-    @Override
-    public void setVoltage(double voltageDemand) {
-        funnelMotor.setVoltage(voltageDemand);
+        motor.configure(motorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
-
+    
     @Override
     public void setPercentageSpeed(double percentageSpeed) {
-        funnelMotor.set(percentageSpeed);
+        motor.set(percentageSpeed);
     }
 
     @Override
@@ -44,6 +39,6 @@ public class FunnelIOSparksMax extends FunnelIO {
 
     @Override
     protected double getCurrent() {
-        return funnelMotor.getOutputCurrent();
+        return motor.getOutputCurrent();
     }
 }
