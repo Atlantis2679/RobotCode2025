@@ -6,8 +6,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.commands.PathPlannerAuto;
 // import com.pathplanner.lib.commands.PathPlannerAuto;
 // import com.pathplanner.lib.path.PathPlannerPath;
+import com.pathplanner.lib.events.EventTrigger;
+import com.pathplanner.lib.path.PathPlannerPath;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -63,8 +66,8 @@ public class RobotContainer {
             new EventTrigger("moveToL1").onTrue(allCommands.moveToL1()).whileTrue(Commands.print("moveToL1"));
             new EventTrigger("moveToL2").onTrue(allCommands.moveToL2()).whileTrue(Commands.print("moveToL2"));
 
-            new Trigger(DriverStation::isDisabled).whileTrue(swerveCommands.stop()
-                    .alongWith(allCommands.stopAll()));
+            new Trigger(DriverStation::isDisabled).onTrue(swerveCommands.stop()
+                    .alongWith(allCommands.stopAll()).withTimeout(0.1));
             pdh.setSwitchableChannel(true);
     
             configureDriverBindings();
