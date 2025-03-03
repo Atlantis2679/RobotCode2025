@@ -15,6 +15,12 @@
           "data": {
             "name": "score"
           }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": []
+          }
         }
       ]
     }
