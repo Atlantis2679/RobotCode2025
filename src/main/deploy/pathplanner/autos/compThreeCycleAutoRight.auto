@@ -7,7 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "CrossTheLineAndScoreLeft"
+            "pathName": "CrossTheLineAndScoreRight"
           }
         },
         {
@@ -19,7 +19,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "GetToCoralStationLeftCycle1"
+            "pathName": "GetToCoralStationRightCycle1"
           }
         },
         {
@@ -31,7 +31,31 @@
         {
           "type": "path",
           "data": {
-            "pathName": "SecondCycleLeft"
+            "pathName": "SecondCycleRight"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "score"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "GetToCoralStationRightCycle2"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "intake"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "SecondCycleRight"
           }
         },
         {
@@ -44,6 +68,6 @@
     }
   },
   "resetOdom": true,
-  "folder": "TwoCycles",
+  "folder": "ThreeCycles",
   "choreoAuto": false
 }

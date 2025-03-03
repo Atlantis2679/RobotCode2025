@@ -9,9 +9,10 @@
   ],
   "autoFolders": [
     "LeaveLine",
-    "TwoCycles",
-    "OneCycleMidL1",
-    "OneCycleMidL2"
+    "OneCycleL1",
+    "OneCycleL2",
+    "ThreeCycles",
+    "TwoCycles"
   ],
   "defaultMaxVel": 3.0,
   "defaultMaxAccel": 3.0,

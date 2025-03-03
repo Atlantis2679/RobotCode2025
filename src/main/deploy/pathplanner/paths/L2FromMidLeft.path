@@ -48,8 +48,8 @@
   "eventMarkers": [
     {
       "name": "moveToL2",
-      "waypointRelativePos": 0,
-      "endWaypointRelativePos": null,
+      "waypointRelativePos": 0.2295746117488171,
+      "endWaypointRelativePos": 0.5158676569885224,
       "command": null
     }
   ],

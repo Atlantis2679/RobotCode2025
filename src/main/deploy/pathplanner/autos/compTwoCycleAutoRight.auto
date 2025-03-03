@@ -13,19 +13,13 @@
         {
           "type": "named",
           "data": {
-            "name": "moveToL1"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "scoreL1"
+            "name": "score"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "GetToCoralStationRight"
+            "pathName": "GetToCoralStationRightCycle1"
           }
         },
         {
@@ -38,12 +32,6 @@
           "type": "path",
           "data": {
             "pathName": "SecondCycleRight"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "moveToL1"
           }
         },
         {

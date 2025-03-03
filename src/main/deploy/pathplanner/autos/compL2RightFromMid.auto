@@ -5,12 +5,6 @@
     "data": {
       "commands": [
         {
-          "type": "named",
-          "data": {
-            "name": "moveToL2"
-          }
-        },
-        {
           "type": "path",
           "data": {
             "pathName": "L2FromMidRight"
@@ -26,6 +20,6 @@
     }
   },
   "resetOdom": true,
-  "folder": "OneCycleMidL2",
+  "folder": "OneCycleL2",
   "choreoAuto": false
 }
