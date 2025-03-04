@@ -13,19 +13,13 @@
         {
           "type": "named",
           "data": {
-            "name": "moveToL1"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
             "name": "score"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "GetToCoralStationRight"
+            "pathName": "GetToCoralStationRightCycle1"
           }
         },
         {
@@ -43,12 +37,6 @@
         {
           "type": "named",
           "data": {
-            "name": "moveToL1"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
             "name": "score"
           }
         }
@@ -56,6 +44,6 @@
     }
   },
   "resetOdom": true,
-  "folder": null,
+  "folder": "TwoCycles",
   "choreoAuto": false
 }

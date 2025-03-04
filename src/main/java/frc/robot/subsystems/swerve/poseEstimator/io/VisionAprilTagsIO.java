@@ -20,6 +20,8 @@ public abstract class VisionAprilTagsIO extends IOBase {
         super(fieldsTable);
     }
 
+    public abstract Transform3d getRobotToCameraTransform();
+
     protected abstract double[] getCameraTimestampsSeconds();
 
     protected abstract Pose3d[] getRobotPoses();

@@ -4,28 +4,28 @@
     {
       "anchor": {
         "x": 5.1,
-        "y": 2.6
+        "y": 5.4
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.670941869418955,
-        "y": 2.5478065488038513
+        "x": 5.064529299189701,
+        "y": 5.930213396001741
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Cycle1Left"
     },
     {
       "anchor": {
         "x": 1.0,
-        "y": 1.2
+        "y": 6.8
       },
       "prevControl": {
-        "x": 1.6821876908988425,
-        "y": 1.556344519694226
+        "x": 2.087789200621848,
+        "y": 6.133077504964656
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "LeftCoralStation"
     }
   ],
   "rotationTargets": [],
@@ -35,7 +35,7 @@
       "minWaypointRelativePos": 0,
       "maxWaypointRelativePos": 1.0,
       "constraints": {
-        "maxVelocity": 0.5,
+        "maxVelocity": 1.5,
         "maxAcceleration": 3.0,
         "maxAngularVelocity": 540.0,
         "maxAngularAcceleration": 720.0,
@@ -56,13 +56,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 52.657138937894715
+    "rotation": -55.0
   },
   "reversed": false,
-  "folder": null,
+  "folder": "Left",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 120.53631161600116
+    "rotation": -119.99999999999999
   },
   "useDefaultConstraints": true
 }

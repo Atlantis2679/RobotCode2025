@@ -1,5 +1,6 @@
 package frc.robot;
 
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -31,6 +32,9 @@ public class FieldConstants {
     //         new Rotation2d(Math.toRadians(60))
     //     ) 
     // };
+
+    public static final double FIELD_LENGTH = 17.55;
+    public static final double FIELD_WIDTH = 8.05;
 
     public static final Pose2d[] REEF_RIGHT_BRANCHES_POSES = new Pose2d[] {
         new Pose2d(

@@ -39,11 +39,35 @@
           "data": {
             "name": "score"
           }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "GetToCoralStationLeftCycle2"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "intake"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "SecondCycleLeft"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "score"
+          }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": "TwoCycles",
+  "folder": "ThreeCycles",
   "choreoAuto": false
 }

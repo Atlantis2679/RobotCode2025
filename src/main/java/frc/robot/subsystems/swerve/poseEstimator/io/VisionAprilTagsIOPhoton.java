@@ -22,6 +22,8 @@ public class VisionAprilTagsIOPhoton extends VisionAprilTagsIO {
     private List<PhotonPipelineResult> photonPipelineResults;
     private List<EstimatedRobotPose> photonEstimatorResults = new ArrayList<>();
     private final AprilTagFieldLayout tagLayout;
+    private final Transform3d robotToCameraTransform;
+
     private final Transform3d cameraTransform;
 
     public VisionAprilTagsIOPhoton(LogFieldsTable fieldsTable, String cameraName, AprilTagFieldLayout tagLayout,
@@ -29,10 +31,12 @@ public class VisionAprilTagsIOPhoton extends VisionAprilTagsIO {
         super(fieldsTable.getSubTable(cameraName));
 
         this.tagLayout = tagLayout;
+        this.robotToCameraTransform = robotToCameraTransform;
 
         this.cameraTransform = robotToCameraTransform;
 
         camera = new PhotonCamera(cameraName);
+      
         photonPoseEstimator = new PhotonPoseEstimator(tagLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
                 new Transform3d());
     }
@@ -59,7 +63,9 @@ public class VisionAprilTagsIOPhoton extends VisionAprilTagsIO {
         return timestamps;
     }
 
-    
+    public Transform3d getRobotToCameraTransform() {
+        return robotToCameraTransform;
+    }
 
     @Override
     protected Pose3d[] getRobotPoses() {

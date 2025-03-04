@@ -111,7 +111,7 @@ public class AllCommands {
         return Commands.runOnce(
                 () -> swerve.resetPose(new Pose2d(0, 0, Rotation2d.fromDegrees(swerve.getIsRedAlliance() ? 0 : 180))))
                 .andThen(swerveCMDs.driveForwardVoltage(() -> AUTO_DRIVE_VOLTAGE_PERCANTAGE).withTimeout(AUTO_DRIVE_SECONDS))
-                .withName("autoDrive");
+                .withName("NotRealAutoDrive");
     }
 
     public Command autoDriveScoreL1() {
@@ -119,24 +119,7 @@ public class AllCommands {
                 () -> swerve.resetPose(new Pose2d(0, 0, Rotation2d.fromDegrees(swerve.getIsRedAlliance() ? 0 : 180))))
                 .andThen(swerveCMDs.driveForwardVoltage(() -> AUTO_DRIVE_VOLTAGE_PERCANTAGE).withTimeout(AUTO_DRIVE_SECONDS))
                 .andThen(gripperCMDs.spin(GRIPPER_BACK_L1_VOLTAGE, GRIPPER_RIGHT_L1_VOLTAGE, GRIPPER_LEFT_L1_VOLTAGE)
-                .withTimeout(1.5))
-                .withName("autoDriveScoreL1");
-    }
-
-    public Command autoMoveToL1() {
-        return pivotCMDs.moveToAngle(PIVOT_ANGLE_FOR_L1)
-                .until(() -> pivot.isAtAngle(PIVOT_ANGLE_FOR_L1))
-                .withName("autoMoveToL3");
-    }
-
-    public Command autoScoreL1() {
-        return gripperCMDs.spin(GRIPPER_BACK_L1_VOLTAGE, GRIPPER_RIGHT_L1_VOLTAGE, GRIPPER_LEFT_L1_VOLTAGE)
-                .until(() -> !gripper.getIsCoralIn())
-                .withName("scoreL1");
-    }
-
-    public Command autoMoveToL2() {
-        return pivotCMDs.moveToAngle(PIVOT_ANGLE_FOR_L2).withName("autoMoveToL3");
+                .withTimeout(1.5)).withName("NotRealAutoDriveScoreL1");
     }
 
     public Command moveToL1() {
@@ -331,7 +314,7 @@ public class AllCommands {
     }
 
     public Command stopAll() {
-        return Commands.runOnce(() -> {
+        return Commands.run(() -> {
             gripper.stop();
             pivot.stop();
             funnel.stop();
