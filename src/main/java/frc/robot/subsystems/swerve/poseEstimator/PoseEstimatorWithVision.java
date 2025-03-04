@@ -77,7 +77,7 @@ public class PoseEstimatorWithVision {
             Pose3d[] poses = visionIO.posesEstimates.get();
             for (int i = 0; i < poses.length; i++) {
                 LogFieldsTable cameraFieldsTable = fieldsTable.getSubTable(cameraName);
-                Pose3d poseEstimate = poses[i];
+                Pose3d poseEstimate = poses[i].plus(visionIO.getCameraTransform().inverse());
                 Pose3d[] tagsPoses = visionIO.tagsPoses.get()[i];
                 double[] tagsAmbiguities = visionIO.tagsAmbiguities.get()[i];
                 double cameraTimestampSeconds = visionIO.cameraTimestampsSeconds.get()[i];
