@@ -212,7 +212,7 @@ public class Swerve extends SubsystemBase implements Tuneable {
             desiredChassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
                     getIsRedAlliance() ? -forward : forward,
                     getIsRedAlliance() ? -sidewaysLeftPositive : sidewaysLeftPositive,
-                    angularVelocityCCW,getYawCCW());
+                    angularVelocityCCW, useGyro? getYawCCW(): getPose().getRotation());
                     fieldsTable.recordOutput("angle Pose", getPose().getRotation());
                     fieldsTable.recordOutput("angle gyro", getYawCCW());
         } else {

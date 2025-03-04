@@ -71,9 +71,9 @@ public class SwerveContants {
         public final static double X_KI = 0;
         public final static double X_KD = 1;
 
-        public final static double ANGLE_KP = 8;
+        public final static double ANGLE_KP = 10;
         public final static double ANGLE_KI = 0;
-        public final static double ANGLE_KD = 0.3;
+        public final static double ANGLE_KD = 0.2;
 
         public final static double MAX_VELOCITY_MPS = 0.5;
         public final static double MAX_ACCELERATION_MPS = 0.5;

@@ -110,7 +110,7 @@ public class SwerveCommands {
 
             xSpeed = MathUtil.clamp(swerve.getIsRedAlliance() ? -xSpeed : xSpeed, -2, 2);
             ySpeed = MathUtil.clamp(swerve.getIsRedAlliance() ? ySpeed : -ySpeed, -2, 2);
-            thetaSpeed = MathUtil.clamp(swerve.getIsRedAlliance()?thetaSpeed:-thetaSpeed, -3, 3);
+            thetaSpeed = MathUtil.clamp(-thetaSpeed, -3, 3);
 
             Logger.recordOutput("Swerve/Commands/desired pose", targetPose);
             swerve.drive(xSpeed, ySpeed, thetaSpeed, true, true, false);
