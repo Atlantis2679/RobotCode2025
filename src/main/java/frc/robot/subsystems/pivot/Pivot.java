@@ -96,6 +96,8 @@ public class Pivot extends SubsystemBase implements Tuneable {
     }
 
     public double calculateFeedForward(double desiredAngleDegrees, double desiredSpeed, boolean usePID) {
+        fieldsTable.recordOutput("desired angle", desiredAngleDegrees);
+        fieldsTable.recordOutput("desired speed", desiredSpeed);
         desiredPivotVisualizer.update(getAngleDegrees());
         double speed = pivotFeedforward.calculate(Math.toRadians(desiredAngleDegrees), desiredSpeed);
         if(usePID) {

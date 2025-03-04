@@ -1,8 +1,8 @@
 package frc.robot.allcommands;
 
 public class AllCommandsConstants {
-    public static final double FUNNEL_INTAKE_SPEED = 0.3;
-    public static final double FUNNEL_PASSING_SPEED = 0.45;
+    public static final double FUNNEL_INTAKE_SPEED = 0.5;
+    public static final double FUNNEL_PASSING_SPEED = 0.5;
 
     public static final double GRIPPER_BACK_LOADING_VOLTAGE = 7.5;
     public static final double GRIPPER_LEFT_LOADING_VOLTAGE = 0.15;
@@ -26,6 +26,11 @@ public class AllCommandsConstants {
     public static final double GRIPPER_LEFT_TUNEABLE_VOLTAGE = 0;
 
     public static final long TEST_WIZARD_DELAY = 1;
+
+    public final static int SECONDS_FOR_LEDS_DEFAULT = 1;
+
+    public final static double AUTO_DRIVE_SECONDS = 1.5;
+    public final static double AUTO_DRIVE_VOLTAGE_PERCANTAGE = 0.2;
 
     public static class ManualControllers {
         public static final double FUNNEL_SPEED_MULTIPLAYER = 0.5;

@@ -6,7 +6,6 @@ import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.logfields.LogFieldsTable;
 import frc.robot.Robot;
-import frc.robot.subsystems.NetworkAlertsManager;
 import frc.robot.subsystems.funnel.io.FunnelIO;
 import frc.robot.subsystems.funnel.io.FunnelIOSim;
 import frc.robot.subsystems.funnel.io.FunnelIOSparksMax;
@@ -20,16 +19,10 @@ public class Funnel extends SubsystemBase {
 
     public Funnel() {
         io = Robot.isReal() ? new FunnelIOSparksMax(this.fieldsTable) : new FunnelIOSim(this.fieldsTable);
-
-        NetworkAlertsManager.addRevLibErrorAlert("Funnel: Motor: ", io.motorConfigError);
-        NetworkAlertsManager.addSparkMotorAlert("Funnel: Motor: ", io.motorFaults, io.motorWarnings);
-    }
-
-    public void setMotorVoltage(double voltageDemand) {
-        io.setVoltage(MathUtil.clamp(voltageDemand, -MOTOR_MAX_VOLTAGE, MOTOR_MAX_VOLTAGE));
     }
 
     public void setMotorPercentageSpeed(double percentageSpeed)  {
+        fieldsTable.recordOutput("precentage speed", percentageSpeed);
         io.setPercentageSpeed(MathUtil.clamp(percentageSpeed, -1, 1));
     }
 
@@ -38,6 +31,7 @@ public class Funnel extends SubsystemBase {
     }
 
     public void stop() {
+        fieldsTable.recordOutput("precentage speed", 0);
         io.setPercentageSpeed(0);
     }
 }

@@ -31,4 +31,6 @@ public abstract class VisionAprilTagsIO extends IOBase {
     protected abstract double[][] getTagsAmbiguities();
 
     protected abstract boolean getIsCameraConnected();
+
+    public abstract Transform3d getCameraTransform();
 }

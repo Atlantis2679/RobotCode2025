@@ -7,8 +7,6 @@ import java.util.List;
 
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
-// import com.pathplanner.lib.commands.PathPlannerAuto;
-// import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.events.EventTrigger;
 import com.pathplanner.lib.path.PathPlannerPath;
 
@@ -41,67 +39,31 @@ public class RobotContainer {
     private final PowerDistribution pdh = new PowerDistribution();
 
     private SendableChooser<Command> autoChooser = new SendableChooser<>();
-    
-        private final NaturalXboxController driverController = new NaturalXboxController(
-                RobotMap.Controllers.DRIVER_PORT);
-        private final NaturalXboxController operatorController = new NaturalXboxController(
-                RobotMap.Controllers.OPERATOR_PORT);
-    
-        private final SwerveCommands swerveCommands = new SwerveCommands(swerve);
-        private final AllCommands allCommands = new AllCommands(gripper, pivot, funnel, swerve);
-    
-        private boolean useStaticCommands = false;
-    
-        private boolean alignToReefLockOnPose = false;
-    
-        private boolean isCompetition = true;
-    
-        public RobotContainer() {
-            NamedCommands.registerCommand("intake", allCommands.intake());
-            NamedCommands.registerCommand("scoreL3", allCommands.scoreL3());
-            NamedCommands.registerCommand("score", allCommands.scoreL1());
-            NamedCommands.registerCommand("stopAll", allCommands.stopAll());
-    
-            new EventTrigger("intake").whileTrue(allCommands.intake()).whileTrue(Commands.print("intake"));
-            new EventTrigger("moveToL1").onTrue(allCommands.moveToL1()).whileTrue(Commands.print("moveToL1"));
-            new EventTrigger("moveToL2").onTrue(allCommands.moveToL2()).whileTrue(Commands.print("moveToL2"));
 
-            new Trigger(DriverStation::isDisabled).onTrue(swerveCommands.stop()
-                    .alongWith(allCommands.stopAll()).withTimeout(0.1));
-            pdh.setSwitchableChannel(true);
-    
-            configureDriverBindings();
-            configureOperatorBindings();
-    
-            autoChooser = AutoBuilder.buildAutoChooserWithOptionsModifier(
-                (stream) -> isCompetition
-                        ? stream.filter(auto -> auto.getName().startsWith("comp"))
-                        : stream);
-        // autoChooser.addOption("DriveForwardScoreL1", allCommands.autoDriveScoreL1());
-        // autoChooser.addOption("DriveForwardNoScore", allCommands.autoDrive());
-        SmartDashboard.putData("Auto Chooser", autoChooser);
-        Field2d field = new Field2d();
+    private final NaturalXboxController driverController = new NaturalXboxController(
+            RobotMap.Controllers.DRIVER_PORT);
+    private final NaturalXboxController operatorController = new NaturalXboxController(
+            RobotMap.Controllers.OPERATOR_PORT);
 
-        swerve.registerCallbackOnPoseUpdate((pose, isRedAlliance) -> {field.setRobotPose(pose);});
-        SmartDashboard.putData(field);
-        autoChooser.onChange((command) -> {
-            if(command.getName() != "None") {
-                try {
-                    List<PathPlannerPath> paths = PathPlannerAuto.getPathGroupFromAutoFile(command.getName());
-                    List<Pose2d> poses = new ArrayList<>();
-                    for(PathPlannerPath path : paths) {
-                        List<Pose2d> pathPoses = path.getPathPoses();
-                        for(Pose2d pose : pathPoses)
-                            poses.add(pose);
-                    }
-                    field.getObject("Auto Trajectory").setPoses(poses);
-                } catch (Exception e) {
-                    System.out.println("Auto Trajectory Loading Failed!");
-                }
-            } else {
-                field.getObject("Auto Trajectory").setPose(swerve.getPose());
-            }
-        });
+    private final SwerveCommands swerveCommands = new SwerveCommands(swerve);
+    private final AllCommands allCommands = new AllCommands(gripper, pivot, funnel, swerve);
+
+    private boolean useStaticCommands = false;
+
+    private boolean alignToReefLockOnPose = false;
+
+    private boolean isCompetition = true;
+
+    public RobotContainer() {
+
+
+        new Trigger(DriverStation::isDisabled).whileTrue(swerveCommands.stop()
+                .alongWith(allCommands.stopAll()));
+        pdh.setSwitchableChannel(true);
+
+        configureDriverBindings();
+        configureOperatorBindings();
+        configureAuto();
     }
 
     private void configureDriverBindings() {
@@ -156,6 +118,46 @@ public class RobotContainer {
             operatorController::getLeftY)
             .fullTuneable());
         pivot.setDefaultCommand(allCommands.moveToRest());
+    }
+
+    public void configureAuto() {
+        NamedCommands.registerCommand("intake", allCommands.intake());
+        NamedCommands.registerCommand("scoreL3", allCommands.scoreL3());
+        NamedCommands.registerCommand("score", allCommands.scoreL1());
+        NamedCommands.registerCommand("stopAll", allCommands.stopAll());
+
+        new EventTrigger("intake").whileTrue(allCommands.intake()).whileTrue(Commands.print("intake"));
+        new EventTrigger("moveToL1").onTrue(allCommands.moveToL1()).whileTrue(Commands.print("moveToL1"));
+        new EventTrigger("moveToL2").onTrue(allCommands.moveToL2()).whileTrue(Commands.print("moveToL2"));
+
+        autoChooser = AutoBuilder.buildAutoChooserWithOptionsModifier(
+            (stream) -> isCompetition
+                    ? stream.filter(auto -> auto.getName().startsWith("comp"))
+                    : stream);
+      
+        SmartDashboard.putData("Auto Chooser", autoChooser);
+        Field2d field = new Field2d();
+
+        swerve.registerCallbackOnPoseUpdate((pose, isRedAlliance) -> {field.setRobotPose(pose);});
+        SmartDashboard.putData(field);
+        autoChooser.onChange((command) -> {
+            if(command.getName() != "None") {
+                try {
+                    List<PathPlannerPath> paths = PathPlannerAuto.getPathGroupFromAutoFile(command.getName());
+                    List<Pose2d> poses = new ArrayList<>();
+                    for(PathPlannerPath path : paths) {
+                        List<Pose2d> pathPoses = path.getPathPoses();
+                        for(Pose2d pose : pathPoses)
+                            poses.add(pose);
+                    }
+                    field.getObject("Auto Trajectory").setPoses(poses);
+                } catch (Exception e) {
+                    System.out.println("Auto Trajectory Loading Failed!");
+                }
+            } else {
+                field.getObject("Auto Trajectory").setPose(swerve.getPose());
+            }
+        });
     }
     
     public void setSubsystemsInTestModeState() {
