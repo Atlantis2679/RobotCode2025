@@ -91,6 +91,8 @@ public class PoseEstimatorWithVision {
                 if (trustLevel == -1)
                     continue;
 
+                if(!isOnField(poseEstimate)) continue;
+
                 cameraFieldsTable.recordOutput("Pose3d", poseEstimate);
                 cameraFieldsTable.recordOutput("Pose2d", poseEstimate.toPose2d());
                 cameraFieldsTable.recordOutput("tagsPoses", tagsPoses);
