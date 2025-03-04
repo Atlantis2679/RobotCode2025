@@ -46,9 +46,9 @@ public class Gripper extends SubsystemBase {
     }
 
     public void stop() {
-        fieldsTable.recordOutput("Right outtake voltage", 0);
-        fieldsTable.recordOutput("Left outtake voltage", 0);
-        fieldsTable.recordOutput("Back voltage", 0);
+        fieldsTable.recordOutput("Right outtake voltage", 0.0);
+        fieldsTable.recordOutput("Left outtake voltage", 0.0);
+        fieldsTable.recordOutput("Back voltage", 0.0);
 
         io.setRightOuttakeMotorVoltage(0);
         io.setLeftOuttakeMotorVoltage(0);

@@ -34,7 +34,7 @@ public class Funnel extends SubsystemBase {
     }
 
     public void stop() {
-        fieldsTable.recordOutput("precentage speed", 0);
+        fieldsTable.recordOutput("precentage speed", 0.0);
         io.setPercentageSpeed(0);
     }
 }

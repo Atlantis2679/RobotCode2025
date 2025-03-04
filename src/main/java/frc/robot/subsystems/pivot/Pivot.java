@@ -75,7 +75,7 @@ public class Pivot extends SubsystemBase implements Tuneable {
     }
 
     public void stop() {
-        fieldsTable.recordOutput("voltage", 0);
+        fieldsTable.recordOutput("voltage", 0.0);
         io.setVoltage(0);
     }
 

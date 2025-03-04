@@ -6,14 +6,15 @@ import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
+import org.littletonrobotics.junction.Logger;
+
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
-import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
-import frc.lib.tuneables.TuneablesManager;
 import frc.lib.tuneables.extensions.TuneableCommand;
 import frc.lib.tuneables.extensions.TuneableWrapperCommand;
 import frc.lib.valueholders.BooleanHolder;
@@ -35,7 +36,7 @@ public class SwerveCommands {
 
     // mostly for checking max module speed
     public Command driveForwardVoltage(DoubleSupplier forwardPrecentageSupplier) {
-        return swerve.run(() -> swerve.drive(forwardPrecentageSupplier.getAsDouble() * MAX_VOLTAGE, 0, 0, false, true));
+        return swerve.run(() -> swerve.drive(forwardPrecentageSupplier.getAsDouble() * MAX_VOLTAGE, 0, 0, false, true, true));
     }
 
     public TuneableCommand rotateToAngle(DoubleSupplier targetAngleDegreesCCW) {
@@ -44,8 +45,8 @@ public class SwerveCommands {
         return TuneableCommand.wrap(swerve.runOnce(() -> {
             pidController.reset();
         }).andThen(swerve.run(() -> {
-            swerve.drive(0, 0, pidController.calculate(swerve.getYawDegreesCCW().getDegrees(),
-                    targetAngleDegreesCCW.getAsDouble()), false, true);
+            swerve.drive(0, 0, pidController.calculate(swerve.getYawCCW().getDegrees(),
+                    targetAngleDegreesCCW.getAsDouble()), false, true, true);
         })), (builder) -> {
             builder.addChild("PIDController", pidController);
         });
@@ -88,7 +89,7 @@ public class SwerveCommands {
         });
     }
 
-    public Command driveToPosePID(Supplier<Pose2d> targetPoseSupplier) {
+    public TuneableCommand driveToPosePID(Supplier<Pose2d> targetPoseSupplier) {
         PIDController xController = new PIDController(DriveToPose.X_KP, DriveToPose.X_KI,
                 DriveToPose.X_KD);
         PIDController yController = new PIDController(DriveToPose.Y_KP, DriveToPose.Y_KI,
@@ -97,9 +98,6 @@ public class SwerveCommands {
                 DriveToPose.ANGLE_KI, DriveToPose.ANGLE_KD);
 
         thetaController.enableContinuousInput(-Math.PI, Math.PI);
-        TuneablesManager.add("Swerve/driveToPoseWithPID/xController", xController);
-        TuneablesManager.add("Swerve/driveToPoseWithPID/yController", yController);
-        TuneablesManager.add("Swerve/driveToPoseWithPID/thetaController", thetaController);
         return TuneableWrapperCommand.wrap(swerve.run(() -> {
             Pose2d currentPose = swerve.getPose();
             Pose2d targetPose = targetPoseSupplier.get();
@@ -107,20 +105,22 @@ public class SwerveCommands {
             double xSpeed = xController.calculate(currentPose.getX(), targetPose.getX());
             double ySpeed = yController.calculate(currentPose.getY(), targetPose.getY());
             double thetaSpeed = thetaController.calculate(
-                    currentPose.getRotation().getRadians(),
+                    swerve.getYawCCW().getRadians(),
                     targetPose.getRotation().getRadians());
 
-            xSpeed = swerve.getIsRedAlliance() ? -xSpeed : xSpeed;
-            ySpeed = swerve.getIsRedAlliance() ? ySpeed : -ySpeed;
+            xSpeed = MathUtil.clamp(swerve.getIsRedAlliance() ? -xSpeed : xSpeed, -2, 2);
+            ySpeed = MathUtil.clamp(swerve.getIsRedAlliance() ? ySpeed : -ySpeed, -2, 2);
+            thetaSpeed = MathUtil.clamp(swerve.getIsRedAlliance()?thetaSpeed:-thetaSpeed, -3, 3);
 
-            swerve.drive(xSpeed, ySpeed, -thetaSpeed, true, true);
+            Logger.recordOutput("Swerve/Commands/desired pose", targetPose);
+            swerve.drive(xSpeed, ySpeed, thetaSpeed, true, true, false);
         })
                 .finallyDo((interrupted) -> {
                     xController.reset();
                     yController.reset();
                     thetaController.reset();
                     swerve.stop();
-                }), (builder) -> {
+                }).withName("driveToPosePID"), (builder) -> {
                     builder.addChild("X PID", xController);
                     builder.addChild("Y PID", yController);
                     builder.addChild("Rotate PID", thetaController);
@@ -128,7 +128,6 @@ public class SwerveCommands {
     }
 
     public Command stop() {
-        return swerve.run(swerve::stop).ignoringDisable(true)
-                .withInterruptBehavior(InterruptionBehavior.kCancelIncoming);
+        return swerve.run(swerve::stop);
     }
 }

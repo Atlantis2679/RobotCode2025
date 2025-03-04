@@ -195,18 +195,21 @@ public class AllCommands {
                 return flippedPoses;
         }
 
-        public Command alignToReef(boolean isLeftSide) {
+        public TuneableCommand alignToReef(boolean isLeftSide) {
                 ValueHolder<Pose2d> desiredPose = new ValueHolder<Pose2d>(null);
                 Pose2d[] reefPoses = isLeftSide ? FieldConstants.REEF_LEFT_BRANCHES_POSES
                                 : FieldConstants.REEF_RIGHT_BRANCHES_POSES;
 
-                return Commands.runOnce(() -> {
+                TuneableCommand driveToDesiredPose = swerveCMDs.driveToPosePID(desiredPose::get);
+                return TuneableCommand.wrap(Commands.runOnce(() -> {
                         desiredPose.set(swerve.getPose().nearest(Arrays.asList(
                                         swerve.getIsRedAlliance() ? flipPosesArr(reefPoses) : reefPoses)));
                 }).andThen(Commands.waitUntil(() -> desiredPose.get().getTranslation()
                                 .getDistance(swerve.getPose().getTranslation()) < MAX_DISTANCE_FOR_GET_TO_POSE)
-                                .andThen(swerveCMDs.driveToPosePID(desiredPose::get).asProxy()))
-                                .withName("align to reef");
+                                .andThen(driveToDesiredPose.asProxy()))
+                                .withName("align to reef"), (builder) -> {
+                                        driveToDesiredPose.initTuneable(builder);
+                                });
         }
 
         public TuneableCommand getPivotReadyAndScore() {
@@ -350,7 +353,6 @@ public class AllCommands {
                         pivot.stop();
                         funnel.stop();
                         LedsCommands.clearLeds(ledStrips);
-                }, gripper, pivot, funnel)
-                                .ignoringDisable(true).withInterruptBehavior(InterruptionBehavior.kCancelIncoming);
+                }, gripper, pivot, funnel);
         }
 }

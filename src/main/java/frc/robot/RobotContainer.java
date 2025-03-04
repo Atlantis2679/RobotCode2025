@@ -11,6 +11,8 @@ import com.pathplanner.lib.events.EventTrigger;
 import com.pathplanner.lib.path.PathPlannerPath;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.units.Unit;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -53,9 +55,8 @@ public class RobotContainer {
     private boolean isCompetition = true;
 
     public RobotContainer() {
-
         new Trigger(DriverStation::isDisabled).whileTrue(swerveCommands.stop()
-                .alongWith(allCommands.stopAll()));
+                .alongWith(allCommands.stopAll()).ignoringDisable(true));
         pdh.setSwitchableChannel(true);
 
         configureDriverBindings();
@@ -76,13 +77,12 @@ public class RobotContainer {
         driverController.a().onTrue(new InstantCommand(swerve::resetYaw));
         driverController.x().onTrue(swerveCommands.xWheelLock());
 
+        TuneableCommand alignToReef = allCommands.alignToReef(true);
         driverController.leftTrigger()
-                .whileTrue(allCommands.alignToReef(true));
+                .whileTrue(alignToReef);
+        TuneablesManager.add("Swerve/align to reef", alignToReef.fullTuneable());
         driverController.rightTrigger()
                 .whileTrue(allCommands.alignToReef(false));
-                
-        driverController.y().onTrue(allCommands.stopAll());
-        driverController.b().onTrue(allCommands.driveLeds());
 
         TuneablesManager.add("Swerve/modules control mode",
                 swerveCommands.controlModules(

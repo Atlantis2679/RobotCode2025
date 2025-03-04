@@ -5,6 +5,7 @@ import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import frc.lib.logfields.LogFieldsTable;
@@ -21,7 +22,7 @@ public class PivotIOSparkMax extends PivotIO {
     public PivotIOSparkMax(LogFieldsTable fieldsTable) {
         super(fieldsTable);
         config.smartCurrentLimit(PIVOT_CURRENT_LIMIT);
-        config.inverted(true);
+        config.idleMode(IdleMode.kBrake);
         pivotMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         encoder.setDutyCycleRange(0, 1);
     }
