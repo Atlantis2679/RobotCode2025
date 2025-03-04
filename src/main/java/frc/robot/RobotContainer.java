@@ -50,12 +50,9 @@ public class RobotContainer {
 
     private boolean useStaticCommands = false;
 
-    private boolean alignToReefLockOnPose = false;
-
     private boolean isCompetition = true;
 
     public RobotContainer() {
-
 
         new Trigger(DriverStation::isDisabled).whileTrue(swerveCommands.stop()
                 .alongWith(allCommands.stopAll()));
@@ -78,12 +75,12 @@ public class RobotContainer {
         TuneablesManager.add("Swerve/drive command", driveCommand.fullTuneable());
         driverController.a().onTrue(new InstantCommand(swerve::resetYaw));
         driverController.x().onTrue(swerveCommands.xWheelLock());
-        driverController.rightTrigger().or(driverController.leftTrigger()).toggleOnTrue(Commands.runOnce(() -> alignToReefLockOnPose = false))
-            .negate().onTrue(Commands.runOnce(() -> alignToReefLockOnPose = true));
-        driverController.rightTrigger().and(driverController.leftTrigger().negate())
-            .whileTrue(allCommands.alignToReefRight(driveCommand, () -> alignToReefLockOnPose));
-        driverController.leftTrigger().and(driverController.rightTrigger().negate())
-            .whileTrue(allCommands.alignToReefLeft(driveCommand, () -> alignToReefLockOnPose));
+
+        driverController.leftTrigger()
+                .whileTrue(allCommands.alignToReef(true));
+        driverController.rightTrigger()
+                .whileTrue(allCommands.alignToReef(false));
+                
         driverController.y().onTrue(allCommands.stopAll());
         driverController.b().onTrue(allCommands.driveLeds());
 
@@ -95,28 +92,30 @@ public class RobotContainer {
     }
 
     private void configureOperatorBindings() {
-        operatorController.a().onTrue(Commands.either(allCommands.intakeStatic(), allCommands.intake(), () -> useStaticCommands));
-        // operatorController.leftBumper().onTrue(Commands.runOnce(() -> useStaticCommands = !useStaticCommands));
+        operatorController.a()
+                .onTrue(Commands.either(allCommands.intakeStatic(), allCommands.intake(), () -> useStaticCommands));
+        // operatorController.leftBumper().onTrue(Commands.runOnce(() ->
+        // useStaticCommands = !useStaticCommands));
         operatorController.b().onTrue(allCommands.moveToL1());
         operatorController.y().onTrue(allCommands.moveToL2());
         operatorController.x().onTrue(allCommands.moveToL3());
         TuneableCommand tuneableAngleAndScore = allCommands.getPivotReadyAndScore();
-        // operatorController.povUp().whileTrue(tuneableAngleAndScore); We want this disabled on the field!
+        // operatorController.povUp().whileTrue(tuneableAngleAndScore); We want this
+        // disabled on the field!
         TuneablesManager.add("ready to Angle and score", (Tuneable) tuneableAngleAndScore);
         operatorController.rightTrigger().whileTrue(allCommands.scoreL3());
         operatorController.leftTrigger().whileTrue(allCommands.scoreL1());
         operatorController.rightBumper().whileTrue(Commands.parallel(
                 allCommands.manualFunnelController(operatorController::getLeftY),
                 allCommands.manualGripperController(operatorController::getLeftX),
-                allCommands.manualPivotController(operatorController::getRightY)
-        ));
+                allCommands.manualPivotController(operatorController::getRightY)));
 
         TuneablesManager.add("Test Operator Wizard", allCommands.testWizard(
-            operatorController.povRight(),
-            operatorController::getRightY, 
-            operatorController::getLeftX, 
-            operatorController::getLeftY)
-            .fullTuneable());
+                operatorController.povRight(),
+                operatorController::getRightY,
+                operatorController::getLeftX,
+                operatorController::getLeftY)
+                .fullTuneable());
         pivot.setDefaultCommand(allCommands.moveToRest());
     }
 
@@ -131,23 +130,25 @@ public class RobotContainer {
         new EventTrigger("moveToL2").onTrue(allCommands.moveToL2()).whileTrue(Commands.print("moveToL2"));
 
         autoChooser = AutoBuilder.buildAutoChooserWithOptionsModifier(
-            (stream) -> isCompetition
-                    ? stream.filter(auto -> auto.getName().startsWith("comp"))
-                    : stream);
-      
+                (stream) -> isCompetition
+                        ? stream.filter(auto -> auto.getName().startsWith("comp"))
+                        : stream);
+
         SmartDashboard.putData("Auto Chooser", autoChooser);
         Field2d field = new Field2d();
 
-        swerve.registerCallbackOnPoseUpdate((pose, isRedAlliance) -> {field.setRobotPose(pose);});
+        swerve.registerCallbackOnPoseUpdate((pose, isRedAlliance) -> {
+            field.setRobotPose(pose);
+        });
         SmartDashboard.putData(field);
         autoChooser.onChange((command) -> {
-            if(command.getName() != "None") {
+            if (command.getName() != "None") {
                 try {
                     List<PathPlannerPath> paths = PathPlannerAuto.getPathGroupFromAutoFile(command.getName());
                     List<Pose2d> poses = new ArrayList<>();
-                    for(PathPlannerPath path : paths) {
+                    for (PathPlannerPath path : paths) {
                         List<Pose2d> pathPoses = path.getPathPoses();
-                        for(Pose2d pose : pathPoses)
+                        for (Pose2d pose : pathPoses)
                             poses.add(pose);
                     }
                     field.getObject("Auto Trajectory").setPoses(poses);
@@ -159,7 +160,7 @@ public class RobotContainer {
             }
         });
     }
-    
+
     public void setSubsystemsInTestModeState() {
         swerve.enableCoast();
     }

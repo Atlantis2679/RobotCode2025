@@ -2,23 +2,21 @@ package frc.robot.subsystems.swerve;
 
 import static frc.robot.subsystems.swerve.SwerveContants.*;
 
-import java.util.Set;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
+import java.util.function.Supplier;
+
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
-import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.DeferredCommand;
 import frc.lib.tuneables.TuneablesManager;
 import frc.lib.tuneables.extensions.TuneableCommand;
+import frc.lib.tuneables.extensions.TuneableWrapperCommand;
 import frc.lib.valueholders.BooleanHolder;
-import frc.robot.subsystems.swerve.SwerveContants.RotateToAngle;
 import frc.robot.subsystems.swerve.commands.SwerveDriverController;
 
 public class SwerveCommands {
@@ -90,51 +88,40 @@ public class SwerveCommands {
         });
     }
 
-    public Command driveToPoseWithPID(Pose2d targetPose, Command driveCommand) {
-        PIDController xController = new PIDController(SwerveContants.DriveToPose.X_KP,SwerveContants.DriveToPose.X_KI , SwerveContants.DriveToPose.X_KD); 
-        PIDController yController = new PIDController(SwerveContants.DriveToPose.Y_KP, SwerveContants.DriveToPose.Y_KI, SwerveContants.DriveToPose.Y_KD);
-        PIDController thetaController = new PIDController(SwerveContants.DriveToPose.ANGLE_KP, SwerveContants.DriveToPose.ANGLE_KI, SwerveContants.DriveToPose.ANGLE_KD); 
+    public Command driveToPosePID(Supplier<Pose2d> targetPoseSupplier) {
+        PIDController xController = new PIDController(DriveToPose.X_KP, DriveToPose.X_KI,
+                DriveToPose.X_KD);
+        PIDController yController = new PIDController(DriveToPose.Y_KP, DriveToPose.Y_KI,
+                DriveToPose.Y_KD);
+        PIDController thetaController = new PIDController(DriveToPose.ANGLE_KP,
+                DriveToPose.ANGLE_KI, DriveToPose.ANGLE_KD);
 
         thetaController.enableContinuousInput(-Math.PI, Math.PI);
         TuneablesManager.add("Swerve/driveToPoseWithPID/xController", xController);
         TuneablesManager.add("Swerve/driveToPoseWithPID/yController", yController);
         TuneablesManager.add("Swerve/driveToPoseWithPID/thetaController", thetaController);
-        return Commands.run(() -> {
+        return TuneableWrapperCommand.wrap(swerve.run(() -> {
             Pose2d currentPose = swerve.getPose();
+            Pose2d targetPose = targetPoseSupplier.get();
 
             double xSpeed = xController.calculate(currentPose.getX(), targetPose.getX());
             double ySpeed = yController.calculate(currentPose.getY(), targetPose.getY());
+            double thetaSpeed = thetaController.calculate(
+                    currentPose.getRotation().getRadians(),
+                    targetPose.getRotation().getRadians());
 
-            double angleError = targetPose.getRotation().minus(currentPose.getRotation()).getRadians();
-            double thetaSpeed = thetaController.calculate(0, angleError);
-
-            // int direction = swerve.getIsRedAlliance() ? -1 : 1;
-            int direction = currentPose.getRotation().getDegrees() < 90 && currentPose.getRotation().getDegrees() > -90 ? 1: -1;
-            swerve.drive(xSpeed*direction, ySpeed*-direction, -thetaSpeed, false, false);
-
-        }, swerve)
-        .until(() -> {
-            ChassisSpeeds chassisSpeeds = swerve.getRobotRelativeChassisSpeeds();
-
-            double currentXVelocity = chassisSpeeds.vxMetersPerSecond;
-            double currentYVelocity = chassisSpeeds.vyMetersPerSecond;
-
-            boolean atXPosition = swerve.atTranslationPosition(swerve.getPose().getX(), targetPose.getX(), currentXVelocity);
-            boolean atYPosition = swerve.atTranslationPosition(swerve.getPose().getY(), targetPose.getY(), currentYVelocity);
-            boolean atRotation = swerve.atAngle(targetPose.getRotation());
-            return atXPosition && atYPosition && atRotation;
+            swerve.drive(xSpeed, -ySpeed, -thetaSpeed, true, true);
         })
-        .finallyDo((interrupted) -> {
-            xController.close();
-            yController.close();
-            thetaController.close();
-            swerve.stop();
-            swerve.setDefaultCommand(driveCommand);
-        });        
-    }
-
-    public Command getToPose(Pose2d targetPose2d, TuneableCommand driveCommand){
-        return new DeferredCommand(() -> driveToPoseWithPID(targetPose2d, driveCommand), Set.of(swerve));
+                .finallyDo((interrupted) -> {
+                    xController.reset();
+                    yController.reset();
+                    thetaController.reset();
+                    swerve.stop();
+                }), (builder) -> {
+                    builder.addChild("X PID", xController);
+                    builder.addChild("Y PID", yController);
+                    builder.addChild("Rotate PID", thetaController);
+                });
     }
 
     public Command stop() {
