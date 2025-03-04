@@ -27,7 +27,7 @@ public class Pivot extends SubsystemBase implements Tuneable {
 
     private final PivotIO io = Robot.isSimulation() ? new PivotIOSim(fieldsTable) : new PivotIOSparkMax(fieldsTable);
 
-    private final PivotVisualizer pivotVisualizer = new PivotVisualizer(fieldsTable, "Real Mech2d",
+    private final PivotVisualizer realVisualizer = new PivotVisualizer(fieldsTable, "Real Visualizer",
             new Color8Bit(Color.kPurple));
     private final PivotVisualizer desiredPivotVisualizer = new PivotVisualizer(fieldsTable, "Desired Visualizer",
             new Color8Bit(Color.kYellow));
@@ -62,20 +62,20 @@ public class Pivot extends SubsystemBase implements Tuneable {
     @Override
     public void periodic() {
         pivotRotationalHelper.update(io.angle.getAsDouble());
-        pivotVisualizer.update(getAngleDegrees());
+        realVisualizer.update(getAngleDegrees());
         fieldsTable.recordOutput("Angle", getAngleDegrees());
         fieldsTable.recordOutput("feedForword", pivotFeedforward.getArmFeedforward());
         fieldsTable.recordOutput("velocity", pivotRotationalHelper.getVelocity() * Math.PI / 180);
     }
 
     public void setPivotVoltage(double voltage) {
-        fieldsTable.recordOutput("Voltage", voltage);
-        voltage = -MathUtil.clamp(voltage, -MAX_VOLTAGE, MAX_VOLTAGE);
+        fieldsTable.recordOutput("voltage", voltage);
+        voltage = MathUtil.clamp(voltage, -MAX_VOLTAGE, MAX_VOLTAGE);
         io.setVoltage(voltage);
     }
 
     public void stop() {
-        fieldsTable.recordOutput("Voltage", 0);
+        fieldsTable.recordOutput("voltage", 0);
         io.setVoltage(0);
     }
 

@@ -7,7 +7,7 @@ import frc.lib.logfields.LogFieldsTable;
 import frc.lib.tuneables.Tuneable;
 import frc.lib.tuneables.TuneableBuilder;
 import frc.robot.Robot;
-import frc.robot.subsystems.NetworkAlertsManager;
+import frc.robot.utils.NetworkAlertsManager;
 import frc.robot.subsystems.swerve.io.SwerveModuleIO;
 import frc.robot.subsystems.swerve.io.SwerveModuleIOFalcon;
 import frc.robot.subsystems.swerve.io.SwerveModuleIOSim;
@@ -58,11 +58,10 @@ public class SwerveModule implements Tuneable {
     }
 
     public void periodic() {
-        fieldsTable.recordOutput("reseted", encoderResetToAbsoluteQueued);
         absoluteAngleHelperDegrees.update(io.absoluteTurnAngleRotations.getAsDouble() * 360);
         lastDriveDistanceMeters = currDriveDistanceMeters;
         currDriveDistanceMeters = getDriveDistanceMeters();
-        fieldsTable.recordOutput("module " + moduleNumber + " drive distance meters", getDriveDistanceMeters());
+        fieldsTable.recordOutput("drive distance meters", getDriveDistanceMeters());
         fieldsTable.recordOutput("AbsoluteAngleDegrees", getAbsoluteAngleDegrees());
         fieldsTable.recordOutput("IntegratedAngleDegrees", getIntegratedAngleDegrees());
     }

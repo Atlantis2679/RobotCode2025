@@ -18,9 +18,7 @@ public class PivotIOSim extends PivotIO {
         Math.toRadians(TURNING_MAX_DEGREES),
         true,
         ANGLE_OFFSET);
-    
-    private double lastVoltage = 0;
-    
+        
     public PivotIOSim(LogFieldsTable fieldsTable) {
         super(fieldsTable);
     }
@@ -44,12 +42,6 @@ public class PivotIOSim extends PivotIO {
     // Inputs:
     @Override
     public void setVoltage(double voltage) {
-        lastVoltage = -voltage;
         pivotMotor.setInputVoltage(-voltage);
-    }
-
-    @Override
-    protected double getMotorVoltage() {
-        return lastVoltage;
     }
 }
