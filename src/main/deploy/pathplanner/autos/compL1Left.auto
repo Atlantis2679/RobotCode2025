@@ -13,13 +13,7 @@
         {
           "type": "named",
           "data": {
-            "name": "autoMoveToL1"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "scoreL1"
+            "name": "score"
           }
         },
         {
@@ -32,6 +26,6 @@
     }
   },
   "resetOdom": true,
-  "folder": null,
+  "folder": "OneCycleL1",
   "choreoAuto": false
 }
