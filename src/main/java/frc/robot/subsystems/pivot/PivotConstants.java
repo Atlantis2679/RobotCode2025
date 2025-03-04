@@ -4,7 +4,7 @@ public class PivotConstants {
     public static final int PIVOT_MAX_VOLTAGE = 12;
     public static final int PIVOT_CURRENT_LIMIT = 30;
 
-    public static final double INITIAL_OFFSET = -12;
+    public static final double ANGLE_OFFSET = -12;
     public static final double FULL_ROTATION = 360;
     public static final double UPPER_BOUND = 205;
     

@@ -1,11 +1,8 @@
 package frc.robot.subsystems.pivot.io;
 
-import com.revrobotics.REVLibError;
 import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.SparkBase.Faults;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
-import com.revrobotics.spark.SparkBase.Warnings;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
@@ -21,13 +18,11 @@ public class PivotIOSparkMax extends PivotIO {
         private final DutyCycleEncoder encoder = new DutyCycleEncoder(PIVOT_ENCODER_ID);
         private final SparkMaxConfig config = new SparkMaxConfig();
 
-        private final REVLibError motorConfigError;
-
         public PivotIOSparkMax(LogFieldsTable fieldsTable) {
             super(fieldsTable);
             config.smartCurrentLimit(PIVOT_CURRENT_LIMIT);
             config.inverted(true);
-            motorConfigError = pivotMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+            pivotMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         }
 
         // Outputs:
@@ -50,20 +45,5 @@ public class PivotIOSparkMax extends PivotIO {
         @Override
         public void setVoltage(double voltage) {
             pivotMotor.set(voltage);
-        }
-
-        @Override
-        protected REVLibError getMotorConfigError() {
-            return motorConfigError;
-        }
-
-        @Override
-        protected Faults getMotorFaults() {
-            return pivotMotor.getFaults();
-        }
-
-        @Override
-        protected Warnings getMotorWarnings() {
-            return pivotMotor.getWarnings();
         }
 }
