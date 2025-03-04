@@ -43,7 +43,6 @@ import com.pathplanner.lib.config.ModuleConfig;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
-import com.pathplanner.lib.util.FlippingUtil;
 import com.pathplanner.lib.util.PathPlannerLogging;
 
 public class Swerve extends SubsystemBase implements Tuneable {
@@ -359,5 +358,14 @@ public class Swerve extends SubsystemBase implements Tuneable {
 
         builder.addChild("reset to absolute",
                 new InstantCommand(this::queueResetModulesToAbsolute).ignoringDisable(true));
+        
+        builder.addChild("reset gyro", (Tuneable) (resetGyroBuilder) -> {
+            DoubleHolder angleToResetDegrees = new DoubleHolder(0);
+            resetGyroBuilder.addDoubleProperty("angle to reset degrees CWW", angleToResetDegrees::get,
+                angleToResetDegrees::set);
+            resetGyroBuilder.addChild("reset", new InstantCommand(() -> {
+                resetYawDegreesCW(-angleToResetDegrees.get());
+            }).ignoringDisable(true));
+        });
     }
 }
