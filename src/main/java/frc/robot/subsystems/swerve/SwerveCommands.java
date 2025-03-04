@@ -110,7 +110,10 @@ public class SwerveCommands {
                     currentPose.getRotation().getRadians(),
                     targetPose.getRotation().getRadians());
 
-            swerve.drive(xSpeed, -ySpeed, -thetaSpeed, true, true);
+            xSpeed = swerve.getIsRedAlliance() ? -xSpeed : xSpeed;
+            ySpeed = swerve.getIsRedAlliance() ? ySpeed : -ySpeed;
+
+            swerve.drive(xSpeed, ySpeed, -thetaSpeed, true, true);
         })
                 .finallyDo((interrupted) -> {
                     xController.reset();

@@ -4,6 +4,8 @@ import java.util.Arrays;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
+import com.pathplanner.lib.util.FlippingUtil;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.util.Color;
@@ -185,13 +187,26 @@ public class AllCommands {
                                 .withName("scoreL3");
         }
 
+        private static Pose2d[] flipPosesArr(Pose2d[] poses) {
+                Pose2d[] flippedPoses = new Pose2d[poses.length];
+                for (int i = 0; i < poses.length; i++) {
+                        flippedPoses[i] = FlippingUtil.flipFieldPose(poses[i]);
+                }
+                return flippedPoses;
+        }
+
         public Command alignToReef(boolean isLeftSide) {
                 ValueHolder<Pose2d> desiredPose = new ValueHolder<Pose2d>(null);
+                Pose2d[] reefPoses = isLeftSide ? FieldConstants.REEF_LEFT_BRANCHES_POSES
+                                : FieldConstants.REEF_RIGHT_BRANCHES_POSES;
+
                 return Commands.runOnce(() -> {
                         desiredPose.set(swerve.getPose().nearest(Arrays.asList(
-                                        isLeftSide ? FieldConstants.REEF_LEFT_BRANCHES_POSES
-                                                        : FieldConstants.REEF_RIGHT_BRANCHES_POSES)));
-                }).andThen(swerveCMDs.driveToPosePID(desiredPose::get)).withName("align to reef");
+                                        swerve.getIsRedAlliance() ? flipPosesArr(reefPoses) : reefPoses)));
+                }).andThen(Commands.waitUntil(() -> desiredPose.get().getTranslation()
+                                .getDistance(swerve.getPose().getTranslation()) < MAX_DISTANCE_FOR_GET_TO_POSE)
+                                .andThen(swerveCMDs.driveToPosePID(desiredPose::get).asProxy()))
+                                .withName("align to reef");
         }
 
         public TuneableCommand getPivotReadyAndScore() {

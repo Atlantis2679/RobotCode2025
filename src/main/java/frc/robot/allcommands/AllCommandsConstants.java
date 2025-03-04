@@ -32,6 +32,8 @@ public class AllCommandsConstants {
     public final static double AUTO_DRIVE_SECONDS = 1.5;
     public final static double AUTO_DRIVE_VOLTAGE_PERCANTAGE = 0.2;
 
+    public final static double MAX_DISTANCE_FOR_GET_TO_POSE = 1;
+
     public static class ManualControllers {
         public static final double FUNNEL_SPEED_MULTIPLAYER = 0.5;
         public static final double GRIPPER_LEFT_SPEED_MULTIPLAYER = 0.5;
