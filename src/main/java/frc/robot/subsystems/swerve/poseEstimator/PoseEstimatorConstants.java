@@ -36,4 +36,7 @@ public class PoseEstimatorConstants {
     public final static double STATE_TRUST_LEVEL_X = 2.5; // Need to calibrate
     public final static double STATE_TRUST_LEVEL_Y = 2.5; // Need to calibrate
     public final static double STATE_TRUST_LEVEL_ROTAION = 0.3; // Need to calibrate
+
+    public final static double MAX_Z_MESURMENT = 0.3;
+    public final static double MIN_Z_MESURMENT = -0.15;
 }

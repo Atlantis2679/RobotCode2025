@@ -10,6 +10,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import frc.lib.logfields.LogFieldsTable;
+import frc.robot.FieldConstants;
 import frc.robot.subsystems.NetworkAlertsManager;
 import frc.robot.subsystems.swerve.poseEstimator.io.VisionAprilTagsIO;
 import frc.robot.subsystems.swerve.poseEstimator.io.VisionAprilTagsIOPhoton;
@@ -129,5 +130,13 @@ public class PoseEstimatorWithVision {
             }
         }
         return trustLevel != 0 ? 1 / trustLevel : -1;
+    }
+
+    private static boolean isOnField(Pose3d pose) {
+        if(pose.getX() > FieldConstants.FIELD_LENGTH || pose.getX() < 0) return false;
+        if(pose.getY() > FieldConstants.FIELD_WIDTH || pose.getY() < 0) return false;
+        if(pose.getZ() > MAX_Z_MESURMENT || pose.getZ() < MIN_Z_MESURMENT) return false;
+        if(pose.getRotation().getZ() < -0.1) return false;
+        return true;
     }
 }

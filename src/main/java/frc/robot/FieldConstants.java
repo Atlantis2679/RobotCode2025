@@ -33,8 +33,8 @@ public class FieldConstants {
     //     ) 
     // };
 
-    public static final double FIELD_LENGTH = 8.229;
-    public static final double FIELD_WIDTH = 4.115;
+    public static final double FIELD_LENGTH = 17.55;
+    public static final double FIELD_WIDTH = 8.05;
 
     public static final Pose2d[] REEF_RIGHT_BRANCHES_POSES = new Pose2d[] {
         new Pose2d(
