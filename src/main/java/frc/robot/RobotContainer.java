@@ -75,12 +75,12 @@ public class RobotContainer {
         driverController.a().onTrue(new InstantCommand(swerve::resetYaw));
         driverController.x().onTrue(swerveCommands.xWheelLock());
 
-        TuneableCommand alignToReef = allCommands.alignToReef(true);
+        TuneableCommand alignToReef = swerveCommands.alignToReef(true);
         driverController.leftTrigger()
                 .whileTrue(alignToReef);
         TuneablesManager.add("Swerve/align to reef", alignToReef.fullTuneable());
         driverController.rightTrigger()
-                .whileTrue(allCommands.alignToReef(false));
+                .whileTrue(swerveCommands.alignToReef(false));
 
         TuneablesManager.add("Swerve/modules control mode",
                 swerveCommands.controlModules(

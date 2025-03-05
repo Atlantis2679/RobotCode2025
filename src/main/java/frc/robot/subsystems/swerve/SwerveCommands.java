@@ -2,11 +2,14 @@ package frc.robot.subsystems.swerve;
 
 import static frc.robot.subsystems.swerve.SwerveContants.*;
 
+import java.util.Arrays;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
 import org.littletonrobotics.junction.Logger;
+
+import com.pathplanner.lib.util.FlippingUtil;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
@@ -14,10 +17,13 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import frc.lib.tuneables.extensions.TuneableCommand;
 import frc.lib.tuneables.extensions.TuneableWrapperCommand;
 import frc.lib.valueholders.BooleanHolder;
+import frc.lib.valueholders.ValueHolder;
+import frc.robot.FieldConstants;
 import frc.robot.subsystems.swerve.commands.SwerveDriverController;
 
 public class SwerveCommands {
@@ -36,7 +42,8 @@ public class SwerveCommands {
 
     // mostly for checking max module speed
     public Command driveForwardVoltage(DoubleSupplier forwardPrecentageSupplier) {
-        return swerve.run(() -> swerve.drive(forwardPrecentageSupplier.getAsDouble() * MAX_VOLTAGE, 0, 0, false, true, true));
+        return swerve.run(
+                () -> swerve.drive(forwardPrecentageSupplier.getAsDouble() * MAX_VOLTAGE, 0, 0, false, true, true));
     }
 
     public TuneableCommand rotateToAngle(DoubleSupplier targetAngleDegreesCCW) {
@@ -124,6 +131,32 @@ public class SwerveCommands {
                     builder.addChild("X PID", xController);
                     builder.addChild("Y PID", yController);
                     builder.addChild("Rotate PID", thetaController);
+                });
+    }
+
+    private static Pose2d[] flipPosesArr(Pose2d[] poses) {
+        Pose2d[] flippedPoses = new Pose2d[poses.length];
+        for (int i = 0; i < poses.length; i++) {
+            flippedPoses[i] = FlippingUtil.flipFieldPose(poses[i]);
+        }
+        return flippedPoses;
+    }
+
+    public TuneableCommand alignToReef(boolean isLeftSide) {
+        ValueHolder<Pose2d> desiredPose = new ValueHolder<Pose2d>(null);
+        Pose2d[] reefPoses = isLeftSide ? FieldConstants.REEF_LEFT_BRANCHES_POSES
+                : FieldConstants.REEF_RIGHT_BRANCHES_POSES;
+
+        TuneableCommand driveToDesiredPose = driveToPosePID(desiredPose::get);
+
+        return TuneableCommand.wrap(Commands.runOnce(() -> {
+            desiredPose.set(swerve.getPose().nearest(Arrays.asList(
+                    swerve.getIsRedAlliance() ? flipPosesArr(reefPoses) : reefPoses)));
+        }).andThen(Commands.waitUntil(() -> desiredPose.get().getTranslation()
+                .getDistance(swerve.getPose().getTranslation()) < AlignToReef.MIN_DISTANCE)
+                .andThen(driveToDesiredPose.asProxy()))
+                .withName("align to reef"), (builder) -> {
+                    driveToDesiredPose.initTuneable(builder);
                 });
     }
 

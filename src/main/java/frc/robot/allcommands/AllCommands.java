@@ -187,31 +187,6 @@ public class AllCommands {
                                 .withName("scoreL3");
         }
 
-        private static Pose2d[] flipPosesArr(Pose2d[] poses) {
-                Pose2d[] flippedPoses = new Pose2d[poses.length];
-                for (int i = 0; i < poses.length; i++) {
-                        flippedPoses[i] = FlippingUtil.flipFieldPose(poses[i]);
-                }
-                return flippedPoses;
-        }
-
-        public TuneableCommand alignToReef(boolean isLeftSide) {
-                ValueHolder<Pose2d> desiredPose = new ValueHolder<Pose2d>(null);
-                Pose2d[] reefPoses = isLeftSide ? FieldConstants.REEF_LEFT_BRANCHES_POSES
-                                : FieldConstants.REEF_RIGHT_BRANCHES_POSES;
-
-                TuneableCommand driveToDesiredPose = swerveCMDs.driveToPosePID(desiredPose::get);
-                return TuneableCommand.wrap(Commands.runOnce(() -> {
-                        desiredPose.set(swerve.getPose().nearest(Arrays.asList(
-                                        swerve.getIsRedAlliance() ? flipPosesArr(reefPoses) : reefPoses)));
-                }).andThen(Commands.waitUntil(() -> desiredPose.get().getTranslation()
-                                .getDistance(swerve.getPose().getTranslation()) < MAX_DISTANCE_FOR_GET_TO_POSE)
-                                .andThen(driveToDesiredPose.asProxy()))
-                                .withName("align to reef"), (builder) -> {
-                                        driveToDesiredPose.initTuneable(builder);
-                                });
-        }
-
         public TuneableCommand movePivotToAngleTuneable() {
                 return TuneableCommand.wrap((tuneableTable) -> {
                         DoubleHolder angleHolder = tuneableTable.addNumber("angle", 0.0);

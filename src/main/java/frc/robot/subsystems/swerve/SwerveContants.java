@@ -84,7 +84,7 @@ public class SwerveContants {
         public final static boolean ROTATE_FAST = true;
     }
 
-    public class AlignToReef {
-        public static final double MIN_DISTANCE_TO_AMPALIGN = 1.5;
+    public static class AlignToReef {
+        public final static double MIN_DISTANCE = 0;
     }
 }
