@@ -53,9 +53,6 @@ public class Pivot extends SubsystemBase implements Tuneable {
         pivotRotationalHelper = new PrimitiveRotationalSensorHelper(io.angle.getAsDouble(), ANGLE_OFFSET);
         pivotRotationalHelper.enableContinousWrap(UPPER_BOUND, FULL_ROTATION);
 
-        fieldsTable.recordOutput("current command",
-                getCurrentCommand() == null ? "none" : getCurrentCommand().getName());
-
         TuneablesManager.add("Pivot", (Tuneable) this);
     }
 
@@ -63,14 +60,21 @@ public class Pivot extends SubsystemBase implements Tuneable {
     public void periodic() {
         pivotRotationalHelper.update(io.angle.getAsDouble());
         realVisualizer.update(getAngleDegrees());
+
+        fieldsTable.recordOutput("current command",
+                getCurrentCommand() == null ? "none" : getCurrentCommand().getName());
+
         fieldsTable.recordOutput("Angle", getAngleDegrees());
-        fieldsTable.recordOutput("feedForword", pivotFeedforward.getArmFeedforward());
-        fieldsTable.recordOutput("velocity", pivotRotationalHelper.getVelocity() * Math.PI / 180);
+        fieldsTable.recordOutput("velocity", pivotRotationalHelper.getVelocity());
     }
 
     public void setPivotVoltage(double voltage) {
-        fieldsTable.recordOutput("voltage", voltage);
+        if((getAngleDegrees() > MAX_ANGLE_DEGREES && voltage > 0)
+            || (getAngleDegrees() < MIN_ANGLE_DEGREES && voltage < 0)) {
+            voltage = 0.0;
+        }
         voltage = MathUtil.clamp(voltage, -MAX_VOLTAGE, MAX_VOLTAGE);
+        fieldsTable.recordOutput("voltage", voltage);
         io.setVoltage(voltage);
     }
 
@@ -92,7 +96,7 @@ public class Pivot extends SubsystemBase implements Tuneable {
         fieldsTable.recordOutput("desired speed", desiredSpeed);
         desiredPivotVisualizer.update(desiredAngleDegrees);
         double speed = pivotFeedforward.calculate(Math.toRadians(desiredAngleDegrees), desiredSpeed);
-        if (usePID) {
+        if (usePID && !isAtAngle(desiredAngleDegrees)) {
             speed += pivotPidController.calculate(getAngleDegrees(), desiredAngleDegrees);
         }
         return speed;

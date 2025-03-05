@@ -10,15 +10,15 @@ import frc.lib.logfields.LogFieldsTable;
 
 public class PivotIOSim extends PivotIO {
     private final SingleJointedArmSim pivotMotor = new SingleJointedArmSim(
-        DCMotor.getNEO(1),
-        JOINT_GEAR_RATIO,
-        JKG_METERS_SQUARED,
-        ARM_LENGTH,
-        Math.toRadians(TURNING_MIN_DEGREES),
-        Math.toRadians(TURNING_MAX_DEGREES),
-        true,
-        ANGLE_OFFSET);
-        
+            DCMotor.getNEO(1),
+            JOINT_GEAR_RATIO,
+            JKG_METERS_SQUARED,
+            ARM_LENGTH,
+            Math.toRadians(TURNING_MIN_DEGREES),
+            Math.toRadians(TURNING_MAX_DEGREES),
+            true,
+            ANGLE_OFFSET);
+
     public PivotIOSim(LogFieldsTable fieldsTable) {
         super(fieldsTable);
     }
@@ -28,7 +28,7 @@ public class PivotIOSim extends PivotIO {
         pivotMotor.update(0.02);
     }
 
-    // Outputs:    
+    // Inputs:
     @Override
     protected double getMotorCurrent() {
         return pivotMotor.getCurrentDrawAmps();
@@ -39,7 +39,7 @@ public class PivotIOSim extends PivotIO {
         return Math.toDegrees(pivotMotor.getAngleRads());
     }
 
-    // Inputs:
+    // Outputs:
     @Override
     public void setVoltage(double voltage) {
         pivotMotor.setInputVoltage(-voltage);

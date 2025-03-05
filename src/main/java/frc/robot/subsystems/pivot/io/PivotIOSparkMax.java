@@ -27,7 +27,7 @@ public class PivotIOSparkMax extends PivotIO {
         encoder.setDutyCycleRange(0, 1);
     }
 
-    // Outputs:
+    // Inputs:
     @Override
     protected double getMotorCurrent() {
         return pivotMotor.getOutputCurrent();
@@ -38,9 +38,9 @@ public class PivotIOSparkMax extends PivotIO {
         return encoder.get() * 360;
     }
 
-    // Inputs:
+    // Outputs:
     @Override
     public void setVoltage(double voltage) {
-        pivotMotor.set(voltage);
+        pivotMotor.setVoltage(voltage);
     }
 }

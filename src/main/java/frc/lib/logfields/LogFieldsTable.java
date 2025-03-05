@@ -10,6 +10,7 @@ import java.util.function.Supplier;
 import org.littletonrobotics.junction.LogTable;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.inputs.LoggableInputs;
+import org.littletonrobotics.junction.mechanism.LoggedMechanism2d;
 
 import edu.wpi.first.util.WPISerializable;
 import edu.wpi.first.util.function.FloatSupplier;
@@ -374,6 +375,10 @@ public class LogFieldsTable implements LoggableInputs {
     }
 
     public <T extends StructSerializable> void recordOutput(String name, T[][] value) {
+        Logger.recordOutput(prefix + name, value);
+    }
+
+    public <T extends WPISerializable> void recordOutput(String name, LoggedMechanism2d value) {
         Logger.recordOutput(prefix + name, value);
     }
 }

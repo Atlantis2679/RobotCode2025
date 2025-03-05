@@ -8,7 +8,6 @@ import com.pathplanner.lib.util.FlippingUtil;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
@@ -96,19 +95,18 @@ public class AllCommands {
         }
 
         public Command intake() {
-                return pivotCMDs.moveToAngle(PIVOT_ANGLE_FOR_INTAKE)
-                                .alongWith(Commands.waitUntil(() -> pivot.isAtAngle(PIVOT_ANGLE_FOR_INTAKE))
-                                                .andThen(funnelCMDs.loadCoral(FUNNEL_INTAKE_SPEED)
-                                                                .andThen(funnelCMDs
-                                                                                .passCoral(FUNNEL_INTAKE_SPEED,
-                                                                                                FUNNEL_PASSING_SPEED)
-                                                                                .alongWith(gripperCMDs.spin(
-                                                                                                GRIPPER_BACK_LOADING_VOLTAGE,
-                                                                                                GRIPPER_RIGHT_LOADING_VOLTAGE,
-                                                                                                GRIPPER_LEFT_LOADING_VOLTAGE)))
+                return Commands.parallel(
+                                pivotCMDs.moveToAngle(PIVOT_ANGLE_FOR_INTAKE),
+                                Commands.sequence(
+                                                Commands.waitUntil(() -> pivot.isAtAngle(PIVOT_ANGLE_FOR_INTAKE)),
+                                                funnelCMDs.passCoral(FUNNEL_INTAKE_SPEED, FUNNEL_PASSING_SPEED)
+                                                                .alongWith(gripperCMDs.spin(
+                                                                                GRIPPER_BACK_LOADING_VOLTAGE,
+                                                                                GRIPPER_RIGHT_LOADING_VOLTAGE,
+                                                                                GRIPPER_LEFT_LOADING_VOLTAGE))
                                                                 .until(() -> !funnel.getIsCoralIn()
-                                                                                && gripper.getIsCoralIn()))
-                                                .andThen(LedsCommands.colorForSeconds(Color.kGreen,
+                                                                                && gripper.getIsCoralIn()),
+                                                LedsCommands.colorForSeconds(Color.kGreen,
                                                                 SECONDS_FOR_LEDS_DEFAULT,
                                                                 ledStrips)))
                                 .withName("Intake");
@@ -167,10 +165,11 @@ public class AllCommands {
         }
 
         public Command moveToRest() {
-                return pivotCMDs.moveToAngle(PIVOT_ANGLE_FOR_REST)
-                                .alongWith(Commands.waitUntil(() -> pivot.isAtAngle(PIVOT_ANGLE_FOR_L3))
-                                                .andThen(LedsCommands.colorForSeconds(Color.kDarkOrange,
-                                                                SECONDS_FOR_LEDS_DEFAULT, ledStrips)))
+                return pivotCMDs.moveToAngle(PIVOT_ANGLE_FOR_REST).finallyDo(pivot::stop)
+                                .until(() -> pivot.isAtAngle(PIVOT_ANGLE_FOR_REST))
+                                .andThen(Commands.waitUntil(
+                                                () -> Math.abs(pivot.getAngleDegrees() - PIVOT_ANGLE_FOR_REST) > 17))
+                                .repeatedly()
                                 .withName("moveToRest");
         }
 
@@ -213,20 +212,11 @@ public class AllCommands {
                                 });
         }
 
-        public TuneableCommand getPivotReadyAndScore() {
+        public TuneableCommand movePivotToAngleTuneable() {
                 return TuneableCommand.wrap((tuneableTable) -> {
-                        DoubleHolder angleHolder = tuneableTable.addNumber("angle", PIVOT_TUNEABLE_ANGLE);
-                        DoubleHolder backGripperVoltage = tuneableTable.addNumber("back gripper voltage",
-                                        GRIPPER_BACK_TUNEABLE_VOLTAGE);
-                        DoubleHolder leftGripperVoltage = tuneableTable.addNumber("left gripper voltage",
-                                        GRIPPER_LEFT_TUNEABLE_VOLTAGE);
-                        DoubleHolder rightGripperVoltage = tuneableTable.addNumber("right gripper voltage",
-                                        GRIPPER_RIGHT_TUNEABLE_VOLTAGE);
+                        DoubleHolder angleHolder = tuneableTable.addNumber("angle", 0.0);
 
-                        return pivotCMDs.moveToAngle(angleHolder.get())
-                                        .andThen(gripperCMDs.spin(backGripperVoltage.get(), rightGripperVoltage.get(),
-                                                        leftGripperVoltage.get()))
-                                        .withName("getPivotAngleAndScore");
+                        return pivotCMDs.moveToAngle(angleHolder::get).withName("getPivotAngleAndScore");
                 });
         }
 

@@ -19,11 +19,6 @@ public class AllCommandsConstants {
     public static final double PIVOT_ANGLE_FOR_L2 = 17;//25
     public static final double PIVOT_ANGLE_FOR_L3 = 80;
     public static final double PIVOT_ANGLE_FOR_REST = -90;
-    
-    public static final double PIVOT_TUNEABLE_ANGLE = 0;
-    public static final double GRIPPER_BACK_TUNEABLE_VOLTAGE = 0; 
-    public static final double GRIPPER_RIGHT_TUNEABLE_VOLTAGE = 0;
-    public static final double GRIPPER_LEFT_TUNEABLE_VOLTAGE = 0;
 
     public static final long TEST_WIZARD_DELAY = 1;
 
@@ -39,6 +34,6 @@ public class AllCommandsConstants {
         public static final double GRIPPER_LEFT_SPEED_MULTIPLAYER = 0.5;
         public static final double GRIPPER_RIGHT_SPEED_MULTIPLAYER = 0.5;
         public static final double GRIPPER_BACK_SPEED_MULTIPLAYER = 0.5;
-        public static final double PIVOT_SPEED_MULTIPLAYER = 0.05;
+        public static final double PIVOT_SPEED_MULTIPLAYER = 0.5;
     }
 }

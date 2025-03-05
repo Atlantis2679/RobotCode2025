@@ -97,10 +97,11 @@ public class RobotContainer {
         operatorController.b().onTrue(allCommands.moveToL1());
         operatorController.y().onTrue(allCommands.moveToL2());
         operatorController.x().onTrue(allCommands.moveToL3());
-        TuneableCommand tuneableAngleAndScore = allCommands.getPivotReadyAndScore();
-        // operatorController.povUp().whileTrue(tuneableAngleAndScore); We want this
-        // disabled on the field!
-        TuneablesManager.add("ready to Angle and score", (Tuneable) tuneableAngleAndScore);
+
+        TuneableCommand tuneableMovePivotToAngle = allCommands.movePivotToAngleTuneable();
+        operatorController.povUp().whileTrue(tuneableMovePivotToAngle);
+
+        TuneablesManager.add("pivot move to angle", (Tuneable) tuneableMovePivotToAngle);
         operatorController.rightTrigger().whileTrue(allCommands.scoreL3());
         operatorController.leftTrigger().whileTrue(allCommands.scoreL1());
         operatorController.rightBumper().whileTrue(Commands.parallel(

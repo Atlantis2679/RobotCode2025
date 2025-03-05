@@ -13,11 +13,11 @@ public abstract class PivotIO extends IOBase {
         super(fieldsTable);
     }
 
-    // Outputs:
+    // Inputs:
     protected abstract double getMotorCurrent();
 
     protected abstract double getPivotAngleDegrees();
 
-    // Inputs:
+    // Outputs:
     public abstract void setVoltage(double voltage);
 }
