@@ -108,7 +108,7 @@ public class Pivot extends SubsystemBase implements Tuneable {
     }
 
     public boolean isAtAngle(double desiredAngleDegrees) {
-        return Math.abs(desiredAngleDegrees - getAngleDegrees()) < MESURED_ANGLE_TOLERENCE_DEGREES;
+        return Math.abs(desiredAngleDegrees - getAngleDegrees()) < ANGLE_TOLERENCE_DEGREES;
     }
 
     public void resetPID() {

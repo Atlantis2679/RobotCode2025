@@ -1,13 +1,11 @@
 package frc.robot.allcommands;
 
-import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.lib.tuneables.extensions.TuneableCommand;
 import frc.lib.valueholders.DoubleHolder;
@@ -91,9 +89,10 @@ public class AllCommands {
 
         public Command pivotToAngleWithLeds(double angle) {
                 return Commands.parallel(
-                                pivotCMDs.moveToAngle(PIVOT_ANGLE_FOR_L1),
-                                Commands.waitUntil(() -> pivot.isAtAngle(PIVOT_ANGLE_FOR_L1))
-                                                .andThen(ledsCMDs.blink(Color.kBlue, LEDS_BLINK_DEFAULT_SEC)))
+                                pivotCMDs.moveToAngle(angle),
+                                Commands.waitUntil(() -> pivot.isAtAngle(angle))
+                                                .andThen(ledsCMDs.staticColor(Color.kGreen))
+                                                .until(() -> !pivot.isAtAngle(angle)).repeatedly())
                                 .withName("pivotToAngleWithLeds");
         }
 
@@ -133,109 +132,6 @@ public class AllCommands {
                         DoubleHolder angleHolder = tuneableTable.addNumber("angle", 0.0);
 
                         return pivotCMDs.moveToAngle(angleHolder::get).withName("getPivotAngleAndScore");
-                });
-        }
-
-        /*
-         * The Expected Behavior:
-         * 1. Manual funnel conntroller
-         * 2. Manual gripper conntroller
-         * 3. Manual pivot conntroller
-         * 4. Pivot move to intake
-         * 5. Funnel load coral
-         * 6. Funnel pass coral and gripper load coral
-         * 7. Pivot move to L1
-         * 8. Score L1
-         * 9. Pivot move to intake + intake
-         * 11. Pivot move to L3
-         * 12. Score L3
-         * 13. Pivot move to L2
-         * 14. Pivot move to rest (-90)
-         * 15. Leds blink *color* (not finished)
-         */
-
-        private Command wizardLedsNext() {
-                return ledsCMDs.blink(Color.kFirebrick, LEDS_BLINK_DEFAULT_SEC);
-        }
-
-        public TuneableCommand testWizard(BooleanSupplier moveToNext, DoubleSupplier firstSpeed,
-                        DoubleSupplier secondSpeed,
-                        DoubleSupplier thirdSpeed) {
-                return TuneableCommand.wrap((tuneableBuilder) -> {
-                        Command command = Commands.print("Manual funnel conntroller")
-                                        .andThen(manualFunnelController(firstSpeed)
-                                                        .withDeadline(Commands.waitUntil(moveToNext)))
-                                        .andThen(wizardLedsNext())
-
-                                        .andThen(Commands.print("Manual gripper conntroller"))
-                                        .andThen(gripperCMDs.manualController(
-                                                        () -> firstSpeed.getAsDouble()
-                                                                        * ManualControllers.GRIPPER_BACK_SPEED_MULTIPLAYER,
-                                                        () -> secondSpeed.getAsDouble()
-                                                                        * ManualControllers.GRIPPER_RIGHT_SPEED_MULTIPLAYER,
-                                                        () -> thirdSpeed.getAsDouble()
-                                                                        * ManualControllers.GRIPPER_LEFT_SPEED_MULTIPLAYER)
-                                                        .withDeadline(Commands.waitUntil(moveToNext)))
-                                        .andThen(wizardLedsNext())
-
-                                        .andThen(Commands.print("Manual pivot conntroller"))
-                                        .andThen(manualPivotController(firstSpeed)
-                                                        .withDeadline(Commands.waitUntil(moveToNext)))
-                                        .andThen(wizardLedsNext())
-
-                                        .andThen(Commands.print("Pivot move to intake"))
-                                        .andThen(pivotCMDs.moveToAngle(PIVOT_ANGLE_FOR_INTAKE)
-                                                        .withDeadline(Commands.waitUntil(moveToNext)
-                                                                        .andThen(wizardLedsNext())
-
-                                                                        .andThen(Commands.print(
-                                                                                        "Funnel pass coral and gripper load coral"))
-                                                                        .andThen(funnelCMDs.passCoral(
-                                                                                        FUNNEL_INTAKE_SPEED,
-                                                                                        FUNNEL_PASSING_SPEED)
-                                                                                        .alongWith(gripperCMDs.spin(
-                                                                                                        GRIPPER_BACK_LOADING_VOLTAGE,
-                                                                                                        GRIPPER_RIGHT_LOADING_VOLTAGE,
-                                                                                                        GRIPPER_LEFT_LOADING_VOLTAGE))
-                                                                                        .withDeadline(Commands
-                                                                                                        .waitUntil(moveToNext)))
-                                                                        .andThen(wizardLedsNext())))
-
-                                        .andThen(Commands.print("Pivot move to L1"))
-                                        .andThen(moveToL1().withDeadline(
-                                                        Commands.waitUntil(moveToNext)).andThen(wizardLedsNext())
-                                                        .andThen(Commands.print("Score L1"))
-                                                        .andThen(scoreL1()
-                                                                        .withDeadline(Commands.waitUntil(moveToNext)))
-                                                        .andThen(wizardLedsNext()))
-
-                                        .andThen(Commands.print("Pivot move to intake + intake"))
-                                        .andThen(intake()
-                                                        .withDeadline(Commands.waitUntil(moveToNext)))
-                                        .andThen(wizardLedsNext())
-
-                                        .andThen(Commands.print("Move to L3"))
-                                        .andThen(moveToL3().withDeadline(
-                                                        Commands.waitUntil(moveToNext).andThen(wizardLedsNext())
-                                                                        .andThen(Commands.print("Score L3"))
-                                                                        .andThen(scoreL3().withDeadline(
-                                                                                        Commands.waitUntil(moveToNext)))
-                                                                        .andThen(wizardLedsNext())))
-
-                                        .andThen(Commands.print("Move to L2"))
-                                        .andThen(moveToL2().withDeadline(Commands.waitUntil(moveToNext)))
-                                        .andThen(wizardLedsNext())
-
-                                        .andThen(Commands.print("Move to rest"))
-                                        .andThen(moveToRest().withDeadline(Commands.waitUntil(moveToNext)))
-                                        .andThen(wizardLedsNext())
-
-                                        .andThen(Commands.print("Finished!"))
-                                        .andThen(ledsCMDs.blink(new Color("#00bebe"), LEDS_BLINK_DEFAULT_SEC))
-                                        .withName("testWizard")
-                                        .withInterruptBehavior(InterruptionBehavior.kCancelIncoming);
-                        command.addRequirements(pivot, funnel, gripper, swerve, leds);
-                        return command;
                 });
         }
 

@@ -17,18 +17,18 @@ public class LedsCommands {
     public Command blink(Color color, double seconds) {
         return leds.runOnce(() -> leds.applyColor(color))
                 .andThen(Commands.waitSeconds(seconds))
-                .andThen(() -> leds.clear());
+                .finallyDo(leds::clear);
     }
 
     public Command staticColor(Color color) {
-        return leds.runOnce(() -> {
+        return leds.startEnd(() -> {
             leds.applyColor(color);
-        });
+        }, leds::clear);
     }
 
     public Command rainbow(double seconds) {
         return leds.runOnce(() -> leds.applyPatern(LEDPattern.rainbow(RAINBOW_SATURATION, RAINBOW_VALUE)))
                 .andThen(Commands.waitSeconds(seconds))
-                .andThen(() -> leds.clear());
+                .finallyDo(leds::clear);
     }
 }

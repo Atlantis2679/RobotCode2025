@@ -108,12 +108,6 @@ public class RobotContainer {
                 allCommands.manualGripperController(operatorController::getLeftX),
                 allCommands.manualPivotController(operatorController::getRightY)));
 
-        TuneablesManager.add("Test Operator Wizard", allCommands.testWizard(
-                operatorController.povRight(),
-                operatorController::getRightY,
-                operatorController::getLeftX,
-                operatorController::getLeftY)
-                .fullTuneable());
         pivot.setDefaultCommand(allCommands.moveToRest());
     }
 
@@ -123,9 +117,9 @@ public class RobotContainer {
         NamedCommands.registerCommand("score", allCommands.scoreL1());
         NamedCommands.registerCommand("stopAll", allCommands.stopAll());
 
-        new EventTrigger("intake").whileTrue(allCommands.intake()).whileTrue(Commands.print("intake"));
-        new EventTrigger("moveToL1").onTrue(allCommands.moveToL1()).whileTrue(Commands.print("moveToL1"));
-        new EventTrigger("moveToL2").onTrue(allCommands.moveToL2()).whileTrue(Commands.print("moveToL2"));
+        new EventTrigger("intake").whileTrue(allCommands.intake());
+        new EventTrigger("moveToL1").whileTrue(allCommands.moveToL1());
+        new EventTrigger("moveToL2").whileTrue(allCommands.moveToL2());
 
         autoChooser = AutoBuilder.buildAutoChooserWithOptionsModifier(
                 (stream) -> isCompetition
