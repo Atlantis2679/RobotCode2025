@@ -1,5 +1,6 @@
 package frc.robot.subsystems.pivot.io;
 
+import com.revrobotics.REVLibError;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
@@ -9,6 +10,7 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import frc.lib.logfields.LogFieldsTable;
+import frc.robot.utils.NetworkAlertsManager;
 
 import static frc.robot.RobotMap.*;
 
@@ -23,8 +25,11 @@ public class PivotIOSparkMax extends PivotIO {
         super(fieldsTable);
         config.smartCurrentLimit(PIVOT_CURRENT_LIMIT);
         config.idleMode(IdleMode.kBrake);
-        pivotMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        REVLibError configError = pivotMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         encoder.setDutyCycleRange(0, 1);
+
+        NetworkAlertsManager.addRevLibErrorAlert("Pivot Motor Config", () -> configError);
+        NetworkAlertsManager.addSparkMotorAlert("Pivot Motor: ", pivotMotor::getFaults, pivotMotor::getWarnings);
     }
 
     // Inputs:

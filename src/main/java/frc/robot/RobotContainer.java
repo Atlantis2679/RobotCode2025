@@ -11,6 +11,7 @@ import com.pathplanner.lib.events.EventTrigger;
 import com.pathplanner.lib.path.PathPlannerPath;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -108,13 +109,12 @@ public class RobotContainer {
                 allCommands.manualFunnelController(operatorController::getLeftY),
                 allCommands.manualGripperController(operatorController::getLeftX),
                 allCommands.manualPivotController(operatorController::getRightY)));
-
-        TuneablesManager.add("Test Operator Wizard", allCommands.testWizard(
+        
+        TuneablesManager.add("Test Operator Wizard", (Sendable) allCommands.testWizard(
                 operatorController.povRight(),
                 operatorController::getRightY,
                 operatorController::getLeftX,
-                operatorController::getLeftY)
-                .fullTuneable());
+                operatorController::getLeftY));
         pivot.setDefaultCommand(allCommands.moveToRest());
     }
 
