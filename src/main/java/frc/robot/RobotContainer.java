@@ -10,6 +10,7 @@ import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.events.EventTrigger;
 import com.pathplanner.lib.path.PathPlannerPath;
 
+import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PowerDistribution;
@@ -58,6 +59,8 @@ public class RobotContainer {
                 .alongWith(allCommands.stopAll()).ignoringDisable(true));
         pdh.setSwitchableChannel(true);
 
+        CameraServer.startAutomaticCapture().setResolution(300, 300);
+        
         configureDriverBindings();
         configureOperatorBindings();
         configureAuto();

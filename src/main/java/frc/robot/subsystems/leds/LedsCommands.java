@@ -7,6 +7,8 @@ import edu.wpi.first.wpilibj2.command.Commands;
 
 import static frc.robot.subsystems.leds.LedsConstants.*;
 
+import java.util.function.BooleanSupplier;
+
 public class LedsCommands {
     private final Leds leds;
 
@@ -24,6 +26,12 @@ public class LedsCommands {
         return leds.startEnd(() -> {
             leds.applyColor(color);
         }, leds::clear);
+    }
+
+    public Command staticColorWhenTrue(BooleanSupplier condition, Color color) {
+        return Commands.waitUntil(condition)
+                .andThen(staticColor(Color.kGreen))
+                .until(() -> !condition.getAsBoolean()).repeatedly();
     }
 
     public Command rainbow(double seconds) {

@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.lib.tuneables.extensions.TuneableCommand;
 import frc.lib.valueholders.DoubleHolder;
+import frc.robot.allcommands.AllCommandsConstants.ManualControllers;
 import frc.robot.subsystems.funnel.Funnel;
 import frc.robot.subsystems.funnel.FunnelCommands;
 import frc.robot.subsystems.gripper.Gripper;
@@ -90,9 +91,7 @@ public class AllCommands {
         public Command pivotToAngleWithLeds(double angle) {
                 return Commands.parallel(
                                 pivotCMDs.moveToAngle(angle),
-                                Commands.waitUntil(() -> pivot.isAtAngle(angle))
-                                                .andThen(ledsCMDs.staticColor(Color.kGreen))
-                                                .until(() -> !pivot.isAtAngle(angle)).repeatedly())
+                                ledsCMDs.staticColorWhenTrue(() -> pivot.isAtAngle(angle), Color.kGreen))
                                 .withName("pivotToAngleWithLeds");
         }
 
