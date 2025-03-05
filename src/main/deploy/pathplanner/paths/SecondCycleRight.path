@@ -8,20 +8,20 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.858898529889718,
-        "y": 1.6550846980635732
+        "x": 1.8946574154185503,
+        "y": 1.683952762223982
       },
       "isLocked": false,
       "linkedName": "RightCoralStation"
     },
     {
       "anchor": {
-        "x": 3.9,
-        "y": 2.6
+        "x": 3.9686931818181814,
+        "y": 2.76359375
       },
       "prevControl": {
-        "x": 3.765115109705052,
-        "y": 2.3895099375977105
+        "x": 3.558789639858668,
+        "y": 2.5215186145114235
       },
       "nextControl": null,
       "isLocked": false,
@@ -29,21 +29,7 @@
     }
   ],
   "rotationTargets": [],
-  "constraintZones": [
-    {
-      "name": "Constraints Zone",
-      "minWaypointRelativePos": 0,
-      "maxWaypointRelativePos": 1.0,
-      "constraints": {
-        "maxVelocity": 1.5,
-        "maxAcceleration": 3.0,
-        "maxAngularVelocity": 540.0,
-        "maxAngularAcceleration": 720.0,
-        "nominalVoltage": 12.0,
-        "unlimited": false
-      }
-    }
-  ],
+  "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [
     {
@@ -72,7 +58,7 @@
     "rotation": 59.99999999999999
   },
   "reversed": false,
-  "folder": "Right",
+  "folder": null,
   "idealStartingState": {
     "velocity": 0,
     "rotation": 55.0
