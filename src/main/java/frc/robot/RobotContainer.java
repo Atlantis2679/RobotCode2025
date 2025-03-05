@@ -59,8 +59,9 @@ public class RobotContainer {
                 .alongWith(allCommands.stopAll()).ignoringDisable(true));
         pdh.setSwitchableChannel(true);
 
-        CameraServer.startAutomaticCapture().setResolution(300, 300);
-        
+        if (Robot.isReal())
+            CameraServer.startAutomaticCapture().setResolution(300, 300);
+
         configureDriverBindings();
         configureOperatorBindings();
         configureAuto();
