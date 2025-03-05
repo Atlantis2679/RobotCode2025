@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.LEDPattern;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.lib.logfields.LogFieldsTable;
 
 public class Leds extends SubsystemBase {
     AddressableLED leds = new AddressableLED(LEDS_ID);
@@ -15,6 +16,8 @@ public class Leds extends SubsystemBase {
     AddressableLEDBuffer ledsBuffer = new AddressableLEDBuffer(LEDS_LENGHT);
 
     LEDPattern lastAppliedPatern = LEDPattern.solid(Color.kBlack);
+
+    LogFieldsTable fieldsTable = new LogFieldsTable(getName());
 
     public Leds() {
         leds.setLength(LEDS_LENGHT);
@@ -25,6 +28,7 @@ public class Leds extends SubsystemBase {
     public void periodic() {
         lastAppliedPatern.applyTo(ledsBuffer);
         leds.setData(ledsBuffer);
+        fieldsTable.recordOutput("current command", getCurrentCommand() != null ? getCurrentCommand().getName() : null);
     }
 
     public void applyPatern(LEDPattern ledsPattern) {
