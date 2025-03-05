@@ -1,5 +1,6 @@
 package frc.robot.subsystems.funnel.io;
 
+import com.revrobotics.REVLibError;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
@@ -10,6 +11,7 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import edu.wpi.first.wpilibj.DigitalInput;
 import frc.lib.logfields.LogFieldsTable;
 import frc.robot.RobotMap.CANBUS;
+import frc.robot.utils.NetworkAlertsHelpers;
 
 import static frc.robot.RobotMap.*;
 import static frc.robot.subsystems.funnel.FunnelConstants.MAX_CURRENT;
@@ -25,7 +27,11 @@ public class FunnelIOSparksMax extends FunnelIO {
         motorConfig.smartCurrentLimit(MAX_CURRENT);
         motorConfig.idleMode(IdleMode.kCoast);
 
-        motor.configure(motorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        REVLibError motorConfigError = motor.configure(motorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+
+        NetworkAlertsHelpers.addRevLibErrorAlert("Funnel Motor Config: ", () -> motorConfigError);
+        NetworkAlertsHelpers.addMotorStuckAlert("Funnel Motor is Stuck!", motorCurrent, motor::getAppliedOutput);
+        NetworkAlertsHelpers.addSparkMotorAlert("Funnel Motor: ", motor::getFaults, motor::getWarnings);
     }
     
     @Override

@@ -1,5 +1,6 @@
 package frc.robot.subsystems.gripper.io;
 
+import com.revrobotics.REVLibError;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
@@ -9,6 +10,7 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.wpilibj.DigitalInput;
 import frc.lib.logfields.LogFieldsTable;
 import frc.robot.RobotMap.CANBUS;
+import frc.robot.utils.NetworkAlertsHelpers;
 
 import static frc.robot.RobotMap.*;
 import static frc.robot.subsystems.gripper.GripperConstants.*;
@@ -33,13 +35,26 @@ public class GripperIOSparkMax extends GripperIO {
         backMotorConfig.smartCurrentLimit(BACK_MOTOR_MAX_CURRENT);
 
         rightOuttakeMotorConfig.inverted(true);
+        backMotorConfig.inverted(true);
         
-        leftOuttakeMotor.configure(leftOuttakeMotorConfig, ResetMode.kResetSafeParameters,
+        REVLibError leftOuttakeMotorConfigError = leftOuttakeMotor.configure(leftOuttakeMotorConfig, ResetMode.kResetSafeParameters,
                 PersistMode.kPersistParameters);
-        rightOuttakeMotor.configure(rightOuttakeMotorConfig, ResetMode.kResetSafeParameters,
+        REVLibError rightOuttakeMotorConfigError = rightOuttakeMotor.configure(rightOuttakeMotorConfig, ResetMode.kResetSafeParameters,
                 PersistMode.kPersistParameters);
-        rightOuttakeMotor.configure(rightOuttakeMotorConfig, ResetMode.kResetSafeParameters,
+        REVLibError backMotorConfigError = backMotor.configure(backMotorConfig, ResetMode.kResetSafeParameters,
                 PersistMode.kPersistParameters);
+
+        NetworkAlertsHelpers.addRevLibErrorAlert("Gripper Left Motor Config: ", () -> leftOuttakeMotorConfigError);
+        NetworkAlertsHelpers.addRevLibErrorAlert("Gripper Right Motor Config: ", () -> rightOuttakeMotorConfigError);
+        NetworkAlertsHelpers.addRevLibErrorAlert("Gripper Back Motor Config: ", () -> backMotorConfigError);
+
+        NetworkAlertsHelpers.addMotorStuckAlert("Gripper Left Motor is Stuck!", leftOuttakeMotorCurrent, leftOuttakeMotor::getAppliedOutput);
+        NetworkAlertsHelpers.addMotorStuckAlert("Gripper Right Motor is Stuck!", rightOuttakeMotorCurrent, rightOuttakeMotor::getAppliedOutput);
+        NetworkAlertsHelpers.addMotorStuckAlert("Gripper Back Motor is Stuck!", backMotorCurrent, backMotor::getAppliedOutput);
+
+        NetworkAlertsHelpers.addSparkMotorAlert("Gripper Left Motor: ", leftOuttakeMotor::getFaults, leftOuttakeMotor::getWarnings);
+        NetworkAlertsHelpers.addSparkMotorAlert("Gripper Right Motor: ", rightOuttakeMotor::getFaults, rightOuttakeMotor::getWarnings);
+        NetworkAlertsHelpers.addSparkMotorAlert("Gripper Back Motor: ", backMotor::getFaults, backMotor::getWarnings);
     }
 
     // Outputs:
