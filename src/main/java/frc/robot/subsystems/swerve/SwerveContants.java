@@ -76,12 +76,7 @@ public class SwerveContants {
         public final static double ANGLE_KD = 0.5;
 
         public final static double MAX_VELOCITY_MPS = 0.5;
-        public final static double MAX_ACCELERATION_MPS = 0.5;
         public final static double MAX_ANGULAR_VELOCITY_RPS = Math.toRadians(270);
-        public final static double MAX_ANGULAR_ACCELERATION_RPS = Math.toRadians(620);
-        public final static double GOAL_VELOCITY = 0;
-
-        public final static boolean ROTATE_FAST = true;
     }
 
     public static class AlignToReef {
