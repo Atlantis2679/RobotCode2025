@@ -26,6 +26,7 @@ import frc.lib.tuneables.extensions.TuneableCommand;
 import frc.robot.subsystems.funnel.Funnel;
 import frc.robot.allcommands.AllCommands;
 import frc.robot.subsystems.gripper.Gripper;
+import frc.robot.subsystems.leds.Leds;
 import frc.robot.subsystems.pivot.Pivot;
 import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.subsystems.swerve.SwerveCommands;
@@ -36,6 +37,8 @@ public class RobotContainer {
     private final Funnel funnel = new Funnel();
     private final Pivot pivot = new Pivot();
     private final Gripper gripper = new Gripper();
+    private final Leds leds = new Leds();
+
     private final PowerDistribution pdh = new PowerDistribution();
 
     private SendableChooser<Command> autoChooser = new SendableChooser<>();
@@ -46,9 +49,7 @@ public class RobotContainer {
             RobotMap.Controllers.OPERATOR_PORT);
 
     private final SwerveCommands swerveCommands = new SwerveCommands(swerve);
-    private final AllCommands allCommands = new AllCommands(gripper, pivot, funnel, swerve);
-
-    private boolean useStaticCommands = false;
+    private final AllCommands allCommands = new AllCommands(gripper, pivot, funnel, swerve, leds);
 
     private boolean isCompetition = true;
 
@@ -90,16 +91,14 @@ public class RobotContainer {
     }
 
     private void configureOperatorBindings() {
-        operatorController.a()
-                .onTrue(Commands.either(allCommands.intakeStatic(), allCommands.intake(), () -> useStaticCommands));
-        // operatorController.leftBumper().onTrue(Commands.runOnce(() ->
-        // useStaticCommands = !useStaticCommands));
-        operatorController.b().onTrue(allCommands.moveToL1());
-        operatorController.y().onTrue(allCommands.moveToL2());
-        operatorController.x().onTrue(allCommands.moveToL3());
+        operatorController.a().whileTrue(allCommands.intake());
+
+        operatorController.b().whileTrue(allCommands.moveToL1());
+        operatorController.y().whileTrue(allCommands.moveToL2());
+        operatorController.x().whileTrue(allCommands.moveToL3());
 
         TuneableCommand tuneableMovePivotToAngle = allCommands.movePivotToAngleTuneable();
-        operatorController.povUp().whileTrue(tuneableMovePivotToAngle);
+        operatorController.povUp().and(TuneablesManager::isEnabled).whileTrue(tuneableMovePivotToAngle);
 
         TuneablesManager.add("pivot move to angle", (Tuneable) tuneableMovePivotToAngle);
         operatorController.rightTrigger().whileTrue(allCommands.scoreL3());

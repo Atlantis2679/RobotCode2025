@@ -11,7 +11,6 @@ import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.lib.tuneables.extensions.TuneableCommand;
 import frc.lib.valueholders.DoubleHolder;
-import frc.robot.allcommands.AllCommandsConstants.ManualControllers;
 import frc.robot.subsystems.funnel.Funnel;
 import frc.robot.subsystems.funnel.FunnelCommands;
 import frc.robot.subsystems.gripper.Gripper;
@@ -29,64 +28,27 @@ public class AllCommands {
         private final Gripper gripper;
         private final Pivot pivot;
         private final Funnel funnel;
-        private final Leds[] ledStrips = Leds.LED_STRIPS;
         private final Swerve swerve;
+        private final Leds leds;
 
         private final GripperCommands gripperCMDs;
         private final PivotCommands pivotCMDs;
         private final FunnelCommands funnelCMDs;
         private final SwerveCommands swerveCMDs;
+        private final LedsCommands ledsCMDs;
 
-        private final Color color00bebe = new Color(0, 190, 190);
-
-        public AllCommands(Gripper gripper, Pivot pivot, Funnel funnel, Swerve swerve) {
+        public AllCommands(Gripper gripper, Pivot pivot, Funnel funnel, Swerve swerve, Leds leds) {
                 this.gripper = gripper;
                 this.pivot = pivot;
                 this.funnel = funnel;
                 this.swerve = swerve;
+                this.leds = leds;
 
                 this.gripperCMDs = new GripperCommands(gripper);
                 this.pivotCMDs = new PivotCommands(pivot);
                 this.funnelCMDs = new FunnelCommands(funnel);
                 this.swerveCMDs = new SwerveCommands(swerve);
-        }
-
-        public Command setManualColor() {
-                return LedsCommands.colorForSeconds(Color.kAqua, SECONDS_FOR_LEDS_DEFAULT, ledStrips);
-                // return Commands.either(LedsCommands.getStaticColorCommand(Color.kGreen,
-                // ledStrips),
-                // Commands.either(
-                // LedsCommands.getStaticColorCommand(Color.kYellow, ledStrips),
-                // Commands.either(LedsCommands.getStaticColorCommand(Color.kRed, ledStrips),
-                // LedsCommands.clearLeds(ledStrips),
-                // () -> funnel.getIsCoralIn() && !gripper.getIsCoralIn()),
-                // () -> funnel.getIsCoralIn() && gripper.getIsCoralIn()),
-                // () -> gripper.getIsCoralIn() && !funnel.getIsCoralIn());
-        }
-
-        public Command clearLeds() {
-                return LedsCommands.clearLeds(ledStrips);
-        }
-
-        public Command scoreLedsCommand() {
-                return LedsCommands.colorForSeconds(Color.kBlue, SECONDS_FOR_LEDS_DEFAULT, ledStrips)
-                                .withName("scoreLedsCommand");
-        }
-
-        public Command setAlignToReefColor() {
-                return LedsCommands.colorForSeconds(Color.kChocolate, SECONDS_FOR_LEDS_DEFAULT, ledStrips);
-        }
-
-        public Command wizardLedsNext() {
-                return LedsCommands.colorForSeconds(Color.kWhite, SECONDS_FOR_LEDS_DEFAULT, ledStrips);
-        }
-
-        public Command moveToAngleLedsCommand() {
-                return LedsCommands.colorForSeconds(Color.kPurple, SECONDS_FOR_LEDS_DEFAULT, ledStrips);
-        }
-
-        public Command driveLeds() {
-                return LedsCommands.colorForSeconds(color00bebe, SECONDS_FOR_LEDS_DEFAULT, ledStrips);
+                this.ledsCMDs = new LedsCommands(leds);
         }
 
         public Command intake() {
@@ -101,9 +63,7 @@ public class AllCommands {
                                                                                 GRIPPER_LEFT_LOADING_VOLTAGE))
                                                                 .until(() -> !funnel.getIsCoralIn()
                                                                                 && gripper.getIsCoralIn()),
-                                                LedsCommands.colorForSeconds(Color.kGreen,
-                                                                SECONDS_FOR_LEDS_DEFAULT,
-                                                                ledStrips)))
+                                                ledsCMDs.blink(Color.kGreen, LEDS_BLINK_DEFAULT_SEC)))
                                 .withName("Intake");
         }
 
@@ -129,34 +89,24 @@ public class AllCommands {
                                 .withName("NotRealAutoDriveScoreL1");
         }
 
-        public Command moveToL1() {
-                return pivotCMDs.moveToAngle(PIVOT_ANGLE_FOR_L1)
-                                .alongWith(
-                                                Commands.waitUntil(() -> pivot.isAtAngle(PIVOT_ANGLE_FOR_L1))
-                                                                .andThen(moveToAngleLedsCommand()))
-                                .withName("moveToL1");
+        public Command pivotToAngleWithLeds(double angle) {
+                return Commands.parallel(
+                                pivotCMDs.moveToAngle(PIVOT_ANGLE_FOR_L1),
+                                Commands.waitUntil(() -> pivot.isAtAngle(PIVOT_ANGLE_FOR_L1))
+                                                .andThen(ledsCMDs.blink(Color.kBlue, LEDS_BLINK_DEFAULT_SEC)))
+                                .withName("pivotToAngleWithLeds");
         }
 
-        public Command intakeStatic() {
-                return funnelCMDs.passCoral(FUNNEL_INTAKE_SPEED, FUNNEL_PASSING_SPEED)
-                                .alongWith(gripperCMDs.spin(GRIPPER_BACK_LOADING_VOLTAGE, GRIPPER_RIGHT_LOADING_VOLTAGE,
-                                                GRIPPER_LEFT_LOADING_VOLTAGE))
-                                .alongWith(scoreLedsCommand())
-                                .withName("moveToL1Static");
+        public Command moveToL1() {
+                return pivotToAngleWithLeds(PIVOT_ANGLE_FOR_L1).withName("moveToL1");
         }
 
         public Command moveToL2() {
-                return pivotCMDs.moveToAngle(PIVOT_ANGLE_FOR_L2)
-                                .alongWith(Commands.waitUntil(() -> pivot.isAtAngle(PIVOT_ANGLE_FOR_L2))
-                                                .andThen(moveToAngleLedsCommand()))
-                                .withName("moveToL2");
+                return pivotToAngleWithLeds(PIVOT_ANGLE_FOR_L2).withName("moveToL2");
         }
 
         public Command moveToL3() {
-                return pivotCMDs.moveToAngle(PIVOT_ANGLE_FOR_L3)
-                                .alongWith(Commands.waitUntil(() -> pivot.isAtAngle(PIVOT_ANGLE_FOR_L3))
-                                                .andThen(moveToAngleLedsCommand()))
-                                .withName("moveToL3");
+                return pivotToAngleWithLeds(PIVOT_ANGLE_FOR_L3).withName("moveToL3");
         }
 
         public Command moveToRest() {
@@ -170,15 +120,11 @@ public class AllCommands {
 
         public Command scoreL1() {
                 return gripperCMDs.spin(GRIPPER_BACK_L1_VOLTAGE, GRIPPER_RIGHT_L1_VOLTAGE, GRIPPER_LEFT_L1_VOLTAGE)
-                                .alongWith(Commands.waitUntil(() -> !gripper.getIsCoralIn())
-                                                .andThen(Commands.runOnce(() -> scoreLedsCommand())))
                                 .withName("scoreL1");
         }
 
         public Command scoreL3() {
                 return gripperCMDs.spin(GRIPPER_BACK_L3_VOLTAGE, GRIPPER_OUTTAKE_L3_VOLTAGE, GRIPPER_OUTTAKE_L3_VOLTAGE)
-                                .alongWith(Commands.waitUntil(() -> !gripper.getIsCoralIn())
-                                                .andThen(() -> scoreLedsCommand()))
                                 .withName("scoreL3");
         }
 
@@ -207,6 +153,10 @@ public class AllCommands {
          * 14. Pivot move to rest (-90)
          * 15. Leds blink *color* (not finished)
          */
+
+        private Command wizardLedsNext() {
+                return ledsCMDs.blink(Color.kFirebrick, LEDS_BLINK_DEFAULT_SEC);
+        }
 
         public TuneableCommand testWizard(BooleanSupplier moveToNext, DoubleSupplier firstSpeed,
                         DoubleSupplier secondSpeed,
@@ -281,12 +231,10 @@ public class AllCommands {
                                         .andThen(wizardLedsNext())
 
                                         .andThen(Commands.print("Finished!"))
-                                        .andThen(LedsCommands.colorForSeconds(color00bebe, 1, ledStrips))
-
+                                        .andThen(ledsCMDs.blink(new Color("#00bebe"), LEDS_BLINK_DEFAULT_SEC))
                                         .withName("testWizard")
                                         .withInterruptBehavior(InterruptionBehavior.kCancelIncoming);
-
-                        command.addRequirements(pivot, funnel, gripper, swerve);
+                        command.addRequirements(pivot, funnel, gripper, swerve, leds);
                         return command;
                 });
         }
@@ -313,7 +261,7 @@ public class AllCommands {
                         gripper.stop();
                         pivot.stop();
                         funnel.stop();
-                        LedsCommands.clearLeds(ledStrips);
+                        leds.clear();
                 }, gripper, pivot, funnel);
         }
 }

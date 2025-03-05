@@ -22,7 +22,7 @@ public class AllCommandsConstants {
 
     public static final long TEST_WIZARD_DELAY = 1;
 
-    public final static int SECONDS_FOR_LEDS_DEFAULT = 1;
+    public final static int LEDS_BLINK_DEFAULT_SEC = 1;
 
     public final static double AUTO_DRIVE_SECONDS = 1.5;
     public final static double AUTO_DRIVE_VOLTAGE_PERCANTAGE = 0.2;
