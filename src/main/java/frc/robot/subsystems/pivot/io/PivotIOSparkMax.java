@@ -28,6 +28,8 @@ public class PivotIOSparkMax extends PivotIO {
         REVLibError configError = pivotMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         encoder.setDutyCycleRange(0, 1);
 
+        encoder.isConnected();
+
         NetworkAlertsManager.addRevLibErrorAlert("Pivot Motor Config", () -> configError);
         NetworkAlertsManager.addSparkMotorAlert("Pivot Motor: ", pivotMotor::getFaults, pivotMotor::getWarnings);
     }
