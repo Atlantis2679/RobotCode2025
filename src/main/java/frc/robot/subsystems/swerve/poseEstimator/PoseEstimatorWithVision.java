@@ -11,6 +11,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import frc.lib.logfields.LogFieldsTable;
 import frc.robot.FieldConstants;
+import frc.robot.Robot;
 import frc.robot.utils.NetworkAlertsManager;
 import frc.robot.subsystems.swerve.poseEstimator.io.VisionAprilTagsIO;
 import frc.robot.subsystems.swerve.poseEstimator.io.VisionAprilTagsIOPhoton;
@@ -40,21 +41,23 @@ public class PoseEstimatorWithVision {
             throw new RuntimeException();
         }
 
-        visionCameras.put(FRONT_PHOTON_CAMERA_NAME,
-                new VisionAprilTagsIOPhoton(fieldsTable, FRONT_PHOTON_CAMERA_NAME, fieldLayout,
-                        PoseEstimatorConstants.ROBOT_TO_CAMERA_TRANSFORM_PHOTON_FRONT));
+        if (Robot.isReal()) {
+            visionCameras.put(FRONT_PHOTON_CAMERA_NAME,
+                    new VisionAprilTagsIOPhoton(fieldsTable, FRONT_PHOTON_CAMERA_NAME, fieldLayout,
+                            PoseEstimatorConstants.ROBOT_TO_CAMERA_TRANSFORM_PHOTON_FRONT));
 
-        visionCameras.put(BACK_PHOTON_CAMERA_NAME,
-                new VisionAprilTagsIOPhoton(fieldsTable, BACK_PHOTON_CAMERA_NAME, fieldLayout,
-                        PoseEstimatorConstants.ROBOT_TO_CAMERA_TRANSFORM_PHOTON_BACK));
+            visionCameras.put(BACK_PHOTON_CAMERA_NAME,
+                    new VisionAprilTagsIOPhoton(fieldsTable, BACK_PHOTON_CAMERA_NAME, fieldLayout,
+                            PoseEstimatorConstants.ROBOT_TO_CAMERA_TRANSFORM_PHOTON_BACK));
 
-        visionCameras.put(LEFT_PHOTON_CAMERA_NAME,
-                new VisionAprilTagsIOPhoton(fieldsTable, LEFT_PHOTON_CAMERA_NAME, fieldLayout,
-                        PoseEstimatorConstants.ROBOT_TO_CAMERA_TRANSFORM_PHOTON_LEFT));
+            visionCameras.put(LEFT_PHOTON_CAMERA_NAME,
+                    new VisionAprilTagsIOPhoton(fieldsTable, LEFT_PHOTON_CAMERA_NAME, fieldLayout,
+                            PoseEstimatorConstants.ROBOT_TO_CAMERA_TRANSFORM_PHOTON_LEFT));
 
-        visionCameras.put(RIGHT_PHOTON_CAMERA_NAME,
-                new VisionAprilTagsIOPhoton(fieldsTable, RIGHT_PHOTON_CAMERA_NAME, fieldLayout,
-                        PoseEstimatorConstants.ROBOT_TO_CAMERA_TRANSFORM_PHOTON_RIGHT));
+            visionCameras.put(RIGHT_PHOTON_CAMERA_NAME,
+                    new VisionAprilTagsIOPhoton(fieldsTable, RIGHT_PHOTON_CAMERA_NAME, fieldLayout,
+                            PoseEstimatorConstants.ROBOT_TO_CAMERA_TRANSFORM_PHOTON_RIGHT));
+        }
 
         this.fieldsTable = fieldsTable;
 

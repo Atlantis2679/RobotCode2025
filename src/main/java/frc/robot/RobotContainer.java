@@ -52,8 +52,6 @@ public class RobotContainer {
     private final SwerveCommands swerveCommands = new SwerveCommands(swerve);
     private final AllCommands allCommands = new AllCommands(gripper, pivot, funnel, swerve, leds);
 
-    private boolean isCompetition = true;
-
     public RobotContainer() {
         new Trigger(DriverStation::isDisabled).whileTrue(swerveCommands.stop()
                 .alongWith(allCommands.stopAll()).ignoringDisable(true));
@@ -125,10 +123,7 @@ public class RobotContainer {
         new EventTrigger("moveToL1").whileTrue(allCommands.moveToL1());
         new EventTrigger("moveToL2").whileTrue(allCommands.moveToL2());
 
-        autoChooser = AutoBuilder.buildAutoChooserWithOptionsModifier(
-                (stream) -> isCompetition
-                        ? stream.filter(auto -> auto.getName().startsWith("comp"))
-                        : stream);
+        autoChooser = AutoBuilder.buildAutoChooser();
 
         SmartDashboard.putData("Auto Chooser", autoChooser);
         Field2d field = new Field2d();
