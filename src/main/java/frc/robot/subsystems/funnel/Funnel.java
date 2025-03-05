@@ -18,10 +18,13 @@ public class Funnel extends SubsystemBase {
     private final Debouncer isCoralInDebouncer = new Debouncer(DEBOUNCER_SECONDS, DebounceType.kBoth);
 
     public Funnel() {
+        fieldsTable.recordOutput("current command",
+                getCurrentCommand() == null ? "none" : getCurrentCommand().getName());
+
         io = Robot.isReal() ? new FunnelIOSparksMax(this.fieldsTable) : new FunnelIOSim(this.fieldsTable);
     }
 
-    public void setMotorPercentageSpeed(double percentageSpeed)  {
+    public void setMotorPercentageSpeed(double percentageSpeed) {
         fieldsTable.recordOutput("precentage speed", percentageSpeed);
         io.setPercentageSpeed(MathUtil.clamp(percentageSpeed, -1, 1));
     }
@@ -31,7 +34,7 @@ public class Funnel extends SubsystemBase {
     }
 
     public void stop() {
-        fieldsTable.recordOutput("precentage speed", 0);
+        fieldsTable.recordOutput("precentage speed", 0.0);
         io.setPercentageSpeed(0);
     }
 }

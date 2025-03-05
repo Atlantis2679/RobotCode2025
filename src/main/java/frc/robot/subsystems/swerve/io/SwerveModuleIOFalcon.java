@@ -8,7 +8,6 @@ import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.hardware.CANcoder;
-import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.Slot0Configs;
 
@@ -26,10 +25,6 @@ public class SwerveModuleIOFalcon extends SwerveModuleIO {
     private final DutyCycleOut drivePrecentageControl = new DutyCycleOut(0);
 
     private final Slot0Configs turnSlotConfigs;
-
-    private final StatusCode driveMotorConfigStatusCode;
-    private final StatusCode turnMotorConfigStatusCode;
-    private final StatusCode canCoderConfigStatusCode;
 
     public SwerveModuleIOFalcon(LogFieldsTable fieldsTable, int driveMotorID, int turnMotorID, int encoderID) {
         super(fieldsTable);
@@ -73,12 +68,9 @@ public class SwerveModuleIOFalcon extends SwerveModuleIO {
 
         CANcoderConfiguration canCoderConfiguration = new CANcoderConfiguration();
 
-        driveMotorConfigStatusCode = driveMotor.getConfigurator().apply(driveMotorConfiguration);
-
-        turnMotorConfigStatusCode = turnMotor.getConfigurator().apply(turnMotorConfiguration);
-
-        canCoderConfigStatusCode = canCoder.getConfigurator().apply(canCoderConfiguration);
-        
+        driveMotor.getConfigurator().apply(driveMotorConfiguration);
+        turnMotor.getConfigurator().apply(turnMotorConfiguration);
+        canCoder.getConfigurator().apply(canCoderConfiguration);
     }
 
     @Override
@@ -180,18 +172,6 @@ public class SwerveModuleIOFalcon extends SwerveModuleIO {
         return turnMotor.getStatorCurrent().getValueAsDouble();
     }
 
-    // For logging:
-
-    @Override
-    protected double getDriveMotorAcceleration() {
-        return driveMotor.getAcceleration().getValueAsDouble();
-    }
-
-    @Override
-    protected double getTurnMotorAcceleration() {
-        return turnMotor.getAcceleration().getValueAsDouble();
-    }
-
     @Override
     protected double getDriveMotorTemperature() {
         return driveMotor.getDeviceTemp().getValueAsDouble();
@@ -200,35 +180,5 @@ public class SwerveModuleIOFalcon extends SwerveModuleIO {
     @Override
     protected double getTurnMotorTemperature() {
         return turnMotor.getDeviceTemp().getValueAsDouble();
-    }
-
-    @Override
-    protected StatusCode getDriveMotorStatusCode() {
-        return driveMotor.getVersion().getStatus();
-    }
-
-    @Override
-    protected StatusCode getDriveMotorConfigStatusCode() {
-        return driveMotorConfigStatusCode;
-    }
-
-    @Override
-    protected StatusCode getTurnMotorStatusCode() {
-        return turnMotor.getVersion().getStatus();
-    }
-
-    @Override
-    protected StatusCode getTurnMotorConfigStatusCode() {
-        return turnMotorConfigStatusCode;
-    }
-
-    @Override
-    protected StatusCode getCanCoderStatusCode() {
-        return canCoder.getVersion().getStatus();
-    }
-
-    @Override
-    protected StatusCode getCanCoderConfigStatusCode() {
-        return canCoderConfigStatusCode;
     }
 }

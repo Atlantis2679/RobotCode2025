@@ -11,7 +11,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import frc.lib.logfields.LogFieldsTable;
 import frc.robot.FieldConstants;
-import frc.robot.subsystems.NetworkAlertsManager;
+import frc.robot.utils.NetworkAlertsManager;
 import frc.robot.subsystems.swerve.poseEstimator.io.VisionAprilTagsIO;
 import frc.robot.subsystems.swerve.poseEstimator.io.VisionAprilTagsIOPhoton;
 
@@ -45,21 +45,22 @@ public class PoseEstimatorWithVision {
                         PoseEstimatorConstants.ROBOT_TO_CAMERA_TRANSFORM_PHOTON_FRONT));
 
         visionCameras.put(BACK_PHOTON_CAMERA_NAME,
-            new VisionAprilTagsIOPhoton(fieldsTable, BACK_PHOTON_CAMERA_NAME, fieldLayout,
-                PoseEstimatorConstants.ROBOT_TO_CAMERA_TRANSFORM_PHOTON_BACK));      
+                new VisionAprilTagsIOPhoton(fieldsTable, BACK_PHOTON_CAMERA_NAME, fieldLayout,
+                        PoseEstimatorConstants.ROBOT_TO_CAMERA_TRANSFORM_PHOTON_BACK));
 
         visionCameras.put(LEFT_PHOTON_CAMERA_NAME,
-            new VisionAprilTagsIOPhoton(fieldsTable, LEFT_PHOTON_CAMERA_NAME, fieldLayout,
-                PoseEstimatorConstants.ROBOT_TO_CAMERA_TRANSFORM_PHOTON_LEFT));   
-                
+                new VisionAprilTagsIOPhoton(fieldsTable, LEFT_PHOTON_CAMERA_NAME, fieldLayout,
+                        PoseEstimatorConstants.ROBOT_TO_CAMERA_TRANSFORM_PHOTON_LEFT));
+
         visionCameras.put(RIGHT_PHOTON_CAMERA_NAME,
-            new VisionAprilTagsIOPhoton(fieldsTable, RIGHT_PHOTON_CAMERA_NAME, fieldLayout,
-                PoseEstimatorConstants.ROBOT_TO_CAMERA_TRANSFORM_PHOTON_RIGHT));
+                new VisionAprilTagsIOPhoton(fieldsTable, RIGHT_PHOTON_CAMERA_NAME, fieldLayout,
+                        PoseEstimatorConstants.ROBOT_TO_CAMERA_TRANSFORM_PHOTON_RIGHT));
 
         this.fieldsTable = fieldsTable;
 
         visionCameras.forEach((name, visionIO) -> {
-            NetworkAlertsManager.addErrorAlert(name + " Camera Is Discconected!", () -> !visionIO.isCameraConnected.getAsBoolean());
+            NetworkAlertsManager.addErrorAlert(name + " Camera Is Discconected!",
+                    () -> !visionIO.isCameraConnected.getAsBoolean());
         });
 
         poseEstimator = new SwerveDrivePoseEstimator(
@@ -78,20 +79,24 @@ public class PoseEstimatorWithVision {
             LogFieldsTable cameraFieldsTable = fieldsTable.getSubTable(cameraName);
             Pose3d[] poses = visionIO.posesEstimates.get();
             for (int i = 0; i < poses.length; i++) {
-                Pose3d poseEstimate = poses[i].transformBy(visionIO.getRobotToCameraTransform().inverse()); // This is becaus we don't want the transform to be present in the IO
+                Pose3d poseEstimate = poses[i].transformBy(visionIO.getRobotToCameraTransform().inverse());
                 Pose3d[] tagsPoses = visionIO.tagsPoses.get()[i];
                 double[] tagsAmbiguities = visionIO.tagsAmbiguities.get()[i];
                 double cameraTimestampSeconds = visionIO.cameraTimestampsSeconds.get()[i];
+
+                cameraFieldsTable.recordOutput("Pose3d unfiltered", poseEstimate);
 
                 double trustLevel = caculatePoseTrustLevel(
                         tagsPoses,
                         tagsAmbiguities,
                         poseEstimate);
-                
+
+                cameraFieldsTable.recordOutput("trust level unfiltered", Math.random());
                 if (trustLevel == -1)
                     continue;
 
-                if(!isOnField(poseEstimate)) continue;
+                if (!isOnField(poseEstimate))
+                    continue;
 
                 cameraFieldsTable.recordOutput("Pose3d", poseEstimate);
                 cameraFieldsTable.recordOutput("Pose2d", poseEstimate.toPose2d());
@@ -103,11 +108,10 @@ public class PoseEstimatorWithVision {
                 double visionTranslationTrustLevel = trustLevel * VISION_TRANSLATION_TRUST_LEVEL_MULTIPLAYER;
 
                 poseEstimator.addVisionMeasurement(
-                    poseEstimate.toPose2d(), cameraTimestampSeconds, VecBuilder.fill(
-                    visionTranslationTrustLevel,
-                    visionTranslationTrustLevel,
-                    visionRotationTrustLevel)
-                );
+                        poseEstimate.toPose2d(), cameraTimestampSeconds, VecBuilder.fill(
+                                visionTranslationTrustLevel,
+                                visionTranslationTrustLevel,
+                                visionRotationTrustLevel));
             }
         });
     }
@@ -124,7 +128,7 @@ public class PoseEstimatorWithVision {
             Pose3d estimatedRobotPose) {
         double trustLevel = 0;
         for (int i = 0; i < tagsPoses.length; i++) {
-            if (tagsAmbiguitys[i] <= VISION_TAG_ANBIGUITY_THRESHOLD && tagsAmbiguitys[i] >= 0) {
+            if (tagsAmbiguitys[i] <= VISION_TAG_ANBIGUITY_THRESHOLD) {
                 double tagEstimatedDistanceToPose = Math.max(
                         PhotonUtils.getDistanceToPose(estimatedRobotPose.toPose2d(), tagsPoses[i].toPose2d()),
                         VISION_MIN_TAG_DISTANCE_TO_POSE_METERS);
@@ -135,10 +139,10 @@ public class PoseEstimatorWithVision {
     }
 
     private static boolean isOnField(Pose3d pose) {
-        if(pose.getX() > FieldConstants.FIELD_LENGTH || pose.getX() < 0) return false;
-        if(pose.getY() > FieldConstants.FIELD_WIDTH || pose.getY() < 0) return false;
-        if(pose.getZ() > MAX_Z_MESURMENT || pose.getZ() < MIN_Z_MESURMENT) return false;
-        if(pose.getRotation().getZ() < -0.1) return false;
-        return true;
+        return pose.getX() < FieldConstants.FIELD_LENGTH || pose.getX() > 0
+                && pose.getY() < FieldConstants.FIELD_WIDTH || pose.getY() > 0
+                        && Math.abs(pose.getZ()) < MAX_VISION_Z_OFF
+                        && Math.abs(pose.getRotation().getX()) < MAX_ROTATION_OFF
+                        && Math.abs(pose.getRotation().getY()) < MAX_ROTATION_OFF;
     }
 }

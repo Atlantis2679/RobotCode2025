@@ -5,6 +5,7 @@ import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import frc.lib.logfields.LogFieldsTable;
@@ -22,6 +23,7 @@ public class FunnelIOSparksMax extends FunnelIO {
     public FunnelIOSparksMax(LogFieldsTable fieldsTable) {
         super(fieldsTable);
         motorConfig.smartCurrentLimit(MAX_CURRENT);
+        motorConfig.idleMode(IdleMode.kCoast);
 
         motor.configure(motorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }

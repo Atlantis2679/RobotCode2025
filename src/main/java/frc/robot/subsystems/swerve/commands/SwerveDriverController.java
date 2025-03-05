@@ -76,7 +76,7 @@ public class SwerveDriverController extends TuneableCommand {
                 sidewaysSlewRateLimiter.calculate(precentageSideways * MAX_MODULE_VELOCITY_MPS),
                 rotationSlewRateLimiter.calculate(precentageRotation * maxAngularVelocityRPS.get()),
                 isFieldRelative.getAsBoolean(),
-                false);
+                false, true);
     }
 
     @Override

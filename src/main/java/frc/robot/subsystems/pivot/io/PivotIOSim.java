@@ -2,11 +2,7 @@ package frc.robot.subsystems.pivot.io;
 
 import static frc.robot.subsystems.pivot.PivotConstants.Sim.*;
 
-import com.revrobotics.REVLibError;
-import com.revrobotics.spark.SparkBase.Faults;
-import com.revrobotics.spark.SparkBase.Warnings;
-
-import static frc.robot.subsystems.pivot.PivotConstants.INITIAL_OFFSET;
+import static frc.robot.subsystems.pivot.PivotConstants.ANGLE_OFFSET;
 
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
@@ -14,17 +10,15 @@ import frc.lib.logfields.LogFieldsTable;
 
 public class PivotIOSim extends PivotIO {
     private final SingleJointedArmSim pivotMotor = new SingleJointedArmSim(
-        DCMotor.getNEO(1),
-        JOINT_GEAR_RATIO,
-        JKG_METERS_SQUARED,
-        ARM_LENGTH,
-        Math.toRadians(TURNING_MIN_DEGREES),
-        Math.toRadians(TURNING_MAX_DEGREES),
-        true,
-        INITIAL_OFFSET);
-    
-    private double lastVoltage = 0;
-    
+            DCMotor.getNEO(1),
+            JOINT_GEAR_RATIO,
+            JKG_METERS_SQUARED,
+            ARM_LENGTH,
+            Math.toRadians(TURNING_MIN_DEGREES),
+            Math.toRadians(TURNING_MAX_DEGREES),
+            true,
+            ANGLE_OFFSET);
+
     public PivotIOSim(LogFieldsTable fieldsTable) {
         super(fieldsTable);
     }
@@ -34,7 +28,7 @@ public class PivotIOSim extends PivotIO {
         pivotMotor.update(0.02);
     }
 
-    // Outputs:    
+    // Inputs:
     @Override
     protected double getMotorCurrent() {
         return pivotMotor.getCurrentDrawAmps();
@@ -45,30 +39,9 @@ public class PivotIOSim extends PivotIO {
         return Math.toDegrees(pivotMotor.getAngleRads());
     }
 
-    // Inputs:
+    // Outputs:
     @Override
     public void setVoltage(double voltage) {
-        lastVoltage = -voltage;
         pivotMotor.setInputVoltage(-voltage);
-    }
-
-    @Override
-    protected double getMotorVoltage() {
-        return lastVoltage;
-    }
-
-    @Override
-    protected REVLibError getMotorConfigError() {
-        return REVLibError.fromInt(0);
-    }
-
-    @Override
-    protected Faults getMotorFaults() {
-        return new Faults(0);
-    }
-
-    @Override
-    protected Warnings getMotorWarnings() {
-        return new Warnings(0);
     }
 }

@@ -1,47 +1,42 @@
 package frc.robot.subsystems.leds;
 
-import java.util.function.Consumer;
-
+import edu.wpi.first.wpilibj.LEDPattern;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.RunCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.StartEndCommand;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.Commands;
+
+import static frc.robot.subsystems.leds.LedsConstants.*;
+
+import java.util.function.BooleanSupplier;
 
 public class LedsCommands {
+    private final Leds leds;
 
-    public static Command colorForSeconds(Color color, double seconds, Leds... ledStrips) {
-        return new SequentialCommandGroup(
-            new InstantCommand(() -> runForLEDs(ledStrip -> ledStrip.staticColor(color), ledStrips)),
-            new WaitCommand(seconds),
-            new InstantCommand(() -> {
-                runForLEDs(ledStrip -> ledStrip.clearLedColors(), ledStrips);
-            })
-        );
-    }
-    public static Command getStaticColorCommand(Color color, Leds... ledStrips) {
-        return new StartEndCommand(
-                () -> runForLEDs((ledStrip -> ledStrip.staticColor(color)), ledStrips),
-                () -> {
-                },
-                ledStrips
-        ).ignoringDisable(true);
-    }
-    public static Command clearLeds(Leds...ledStrips){
-        return new InstantCommand(() -> runForLEDs((ledStrip -> ledStrip.clearLedColors()), ledStrips));
-    }
-    public static Command getBlinkingCommand(Color color, double blinkingIntervalSeconds, Leds... ledStrips) {
-        return new RunCommand(
-                () -> runForLEDs((ledStrip -> ledStrip.blink(color, blinkingIntervalSeconds)), ledStrips),
-                ledStrips
-        ).ignoringDisable(true);
+    public LedsCommands(Leds leds) {
+        this.leds = leds;
     }
 
-    public static void runForLEDs(Consumer<Leds> action, Leds... ledStrips) {
-        for (Leds ledStrip : ledStrips)
-            action.accept(ledStrip);
+    public Command blink(Color color, double seconds) {
+        return leds.runOnce(() -> leds.applyColor(color))
+                .andThen(Commands.waitSeconds(seconds))
+                .finallyDo(leds::clear);
     }
 
+    public Command staticColor(Color color) {
+        return leds.startEnd(() -> {
+            leds.applyColor(color);
+        }, leds::clear);
+    }
+
+    public Command staticColorWhenTrue(BooleanSupplier condition, Color color) {
+        return Commands.waitUntil(condition)
+                .andThen(staticColor(Color.kGreen))
+                .until(() -> !condition.getAsBoolean()).repeatedly();
+    }
+
+    public Command rainbow(double seconds) {
+        return leds.runOnce(() -> leds.applyPatern(LEDPattern.rainbow(RAINBOW_SATURATION, RAINBOW_VALUE)))
+                .andThen(Commands.waitSeconds(seconds))
+                .finallyDo(leds::clear);
+    }
 }

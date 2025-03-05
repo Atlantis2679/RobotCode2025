@@ -16,15 +16,16 @@ public class Gripper extends SubsystemBase {
     private final LogFieldsTable fieldsTable = new LogFieldsTable(getName());
     private final Debouncer isCoralInDebouncer = new Debouncer(DEBOUNCER_SECONDS, DebounceType.kBoth);
 
-    private final GripperIO io = Robot.isReal() ? 
-        new GripperIOSparkMax(fieldsTable) : 
-        new GripperIOSim(fieldsTable);
+    private final GripperIO io = Robot.isReal() ? new GripperIOSparkMax(fieldsTable) : new GripperIOSim(fieldsTable);
 
     public Gripper() {
     }
 
     @Override
     public void periodic() {
+        fieldsTable.recordOutput("current command",
+                getCurrentCommand() == null ? "none" : getCurrentCommand().getName());
+
         fieldsTable.recordOutput("isCoralIn", getIsCoralIn());
     }
 
@@ -37,15 +38,17 @@ public class Gripper extends SubsystemBase {
         fieldsTable.recordOutput("Left outtake voltage", leftOuttakeVoltage);
         fieldsTable.recordOutput("Back voltage", backMotorVoltage);
 
-        io.setRightOuttakeMotorVoltage(MathUtil.clamp(rightOuttakeVoltage, -OUTTAKE_MOTORS_MAX_VOLTAGE, OUTTAKE_MOTORS_MAX_VOLTAGE));
-        io.setLeftOuttakeMotorVoltage(MathUtil.clamp(leftOuttakeVoltage, -OUTTAKE_MOTORS_MAX_VOLTAGE, OUTTAKE_MOTORS_MAX_VOLTAGE));
+        io.setRightOuttakeMotorVoltage(
+                MathUtil.clamp(rightOuttakeVoltage, -OUTTAKE_MOTORS_MAX_VOLTAGE, OUTTAKE_MOTORS_MAX_VOLTAGE));
+        io.setLeftOuttakeMotorVoltage(
+                MathUtil.clamp(leftOuttakeVoltage, -OUTTAKE_MOTORS_MAX_VOLTAGE, OUTTAKE_MOTORS_MAX_VOLTAGE));
         io.setBackMotorVoltage(MathUtil.clamp(backMotorVoltage, -BACK_MOTOR_MAX_VOLTAGE, BACK_MOTOR_MAX_VOLTAGE));
     }
 
     public void stop() {
-        fieldsTable.recordOutput("Right outtake voltage", 0);
-        fieldsTable.recordOutput("Left outtake voltage", 0);
-        fieldsTable.recordOutput("Back voltage", 0);
+        fieldsTable.recordOutput("Right outtake voltage", 0.0);
+        fieldsTable.recordOutput("Left outtake voltage", 0.0);
+        fieldsTable.recordOutput("Back voltage", 0.0);
 
         io.setRightOuttakeMotorVoltage(0);
         io.setLeftOuttakeMotorVoltage(0);
