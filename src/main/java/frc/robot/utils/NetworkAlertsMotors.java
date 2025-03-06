@@ -14,10 +14,10 @@ import edu.wpi.first.math.filter.Debouncer.DebounceType;
 
 import static frc.robot.utils.NetworkAlertsManager.*;
 
-public class NetworkAlertsHelpers {
+public class NetworkAlertsMotors{
     private static final double MOTOR_STUCK_RAISING_EDGE_DEBAUNCER = 0.2; // Need to check that works
     private static final double MOTOR_STUCK_CURRENT_THRESHOLD = 0.2; // Need to check that works
-    private static final double MOTOR_STUCK_VOLTAGE_THRESHOLD = 0.2; // Need to check that works
+    private static final double MOTOR_STUCK_VOLTAGE_THRESHOLD = 2; // Need to check that works
 
     public static Supplier<StatusCode> addStatusCodeAlert(String message, Supplier<StatusCode> statusCode) {
         addWarningAlert(() -> message + statusCode.get().getDescription(), () -> statusCode.get().isWarning());
@@ -41,7 +41,7 @@ public class NetworkAlertsHelpers {
         BooleanSupplier isActive = () -> raisingEdgeDebouncer.calculate(
             motorVoltage.getAsDouble() > MOTOR_STUCK_VOLTAGE_THRESHOLD && 
             motorCurrent.getAsDouble() < MOTOR_STUCK_CURRENT_THRESHOLD);
-        return addWarningAlert(message, isActive);
+        return addErrorAlert(message, isActive);
     }
 
     public static String getREVLibErrorMessage(REVLibError error) {
