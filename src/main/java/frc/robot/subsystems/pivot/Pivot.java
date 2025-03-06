@@ -66,6 +66,8 @@ public class Pivot extends SubsystemBase implements Tuneable {
 
         fieldsTable.recordOutput("current command",
                 getCurrentCommand() == null ? "none" : getCurrentCommand().getName());
+        fieldsTable.recordOutput("default command",
+                getDefaultCommand() == null ? "none" : getDefaultCommand().getName());
 
         fieldsTable.recordOutput("Angle", getAngleDegrees());
         fieldsTable.recordOutput("velocity", pivotRotationalHelper.getVelocity());

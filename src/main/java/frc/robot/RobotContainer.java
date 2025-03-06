@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.lib.tuneables.Tuneable;
@@ -99,7 +100,7 @@ public class RobotContainer {
         operatorController.a().whileTrue(allCommands.moveToL1());
         operatorController.b().whileTrue(allCommands.moveToL2());
         operatorController.y().whileTrue(allCommands.moveToL3());
-        
+
         Trigger scoreTrigger = operatorController.rightTrigger().or(operatorController.leftTrigger());
         operatorController.a().and(scoreTrigger).whileTrue(allCommands.scoreL1());
         operatorController.b().and(scoreTrigger).whileTrue(allCommands.scoreL3());
@@ -117,6 +118,15 @@ public class RobotContainer {
                 operatorController::getLeftY));
 
         pivot.setDefaultCommand(allCommands.moveToRest());
+        Command pivotDefaultRestLock = Commands
+                .runOnce(() -> pivot.setDefaultCommand(pivot.run(pivot::stop).finallyDo(() -> {
+                    if (DriverStation.isEnabled())
+                        pivot.setDefaultCommand(allCommands.moveToRest());
+                })))
+                .ignoringDisable(true);
+
+        new Trigger(DriverStation::isDSAttached).onFalse(pivotDefaultRestLock);
+        new Trigger(DriverStation::isDisabled).onTrue(pivotDefaultRestLock);
     }
 
     public void configureAuto() {

@@ -6,5 +6,5 @@ public class GripperConstants {
 
     public static final double OUTTAKE_MOTORS_MAX_VOLTAGE = 12;
     public static final double BACK_MOTOR_MAX_VOLTAGE = 12;
-    public static final double DEBOUNCER_SECONDS = 0.05;
+    public static final double DEBOUNCER_SECONDS = 0.0;
 }

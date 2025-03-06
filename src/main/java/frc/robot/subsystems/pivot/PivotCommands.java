@@ -21,9 +21,9 @@ public class PivotCommands {
             pivot.resetPID();
             referenceState.set(new TrapezoidProfile.State(pivot.getAngleDegrees(), pivot.getVelocity()));
         }).andThen(pivot.run(() -> {
-            if (referenceState.get().position == desiredAngleDeg.getAsDouble()
-                    && Math.abs(pivot.getAngleDegrees() - desiredAngleDeg.getAsDouble()) > 10)
-                referenceState.set(new TrapezoidProfile.State(pivot.getAngleDegrees(), pivot.getVelocity()));
+            // if (referenceState.get().position == desiredAngleDeg.getAsDouble()
+            //         && Math.abs(pivot.getAngleDegrees() - desiredAngleDeg.getAsDouble()) > 40)
+            //     referenceState.set(new TrapezoidProfile.State(pivot.getAngleDegrees(), pivot.getVelocity()));
 
             referenceState.set(pivot.calculateTrapezoidProfile(
                     0.02,

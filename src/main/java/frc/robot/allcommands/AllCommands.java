@@ -57,7 +57,7 @@ public class AllCommands {
                                 pivotCMDs.moveToAngle(PIVOT_ANGLE_FOR_INTAKE),
                                 Commands.sequence(
                                                 Commands.waitUntil(() -> pivot.isAtAngle(PIVOT_ANGLE_FOR_INTAKE)),
-                                                funnelCMDs.passCoral(FUNNEL_INTAKE_SPEED, FUNNEL_PASSING_SPEED)
+                                                funnelCMDs.passCoral(FUNNEL_PRECENTAGE_SPEED)
                                                                 .alongWith(gripperCMDs.spin(
                                                                                 GRIPPER_BACK_LOADING_VOLTAGE,
                                                                                 GRIPPER_RIGHT_LOADING_VOLTAGE,

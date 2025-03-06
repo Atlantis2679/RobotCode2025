@@ -34,7 +34,7 @@ public class GripperIOSparkMax extends GripperIO {
         leftOuttakeMotorConfig.smartCurrentLimit(OUTTAKE_MOTORS_MAX_CURRENT);
         backMotorConfig.smartCurrentLimit(BACK_MOTOR_MAX_CURRENT);
 
-        rightOuttakeMotorConfig.inverted(true);
+        leftOuttakeMotorConfig.inverted(true);
         
         REVLibError leftOuttakeMotorConfigError = leftOuttakeMotor.configure(leftOuttakeMotorConfig, ResetMode.kResetSafeParameters,
                 PersistMode.kPersistParameters);

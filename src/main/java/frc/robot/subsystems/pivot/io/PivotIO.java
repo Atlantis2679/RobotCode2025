@@ -9,7 +9,7 @@ import frc.lib.logfields.LogFieldsTable;
 public abstract class PivotIO extends IOBase {
     public final DoubleSupplier motorCurrent = fields.addDouble("motor current", this::getMotorCurrent);
     public final DoubleSupplier angle = fields.addDouble("angle", this::getPivotAngleDegrees);
-    public final BooleanSupplier isEncoderConnected = fields.addBoolean("isEncoderConnected", null);
+    public final BooleanSupplier isEncoderConnected = fields.addBoolean("isEncoderConnected", this::getIsEncoderConnected);
 
     public PivotIO(LogFieldsTable fieldsTable) {
         super(fieldsTable);
