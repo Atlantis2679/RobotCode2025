@@ -52,5 +52,4 @@ public class PivotCommands {
 
         }).withName("pivotManualController");
     }
-
 }

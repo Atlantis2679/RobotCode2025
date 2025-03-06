@@ -94,12 +94,13 @@ public class RobotContainer {
     }
 
     private void configureOperatorBindings() {
-        Trigger scoreTrigger = operatorController.rightTrigger().or(operatorController.leftTrigger());
         operatorController.x().whileTrue(allCommands.intake());
+
         operatorController.a().whileTrue(allCommands.moveToL1());
         operatorController.b().whileTrue(allCommands.moveToL2());
         operatorController.y().whileTrue(allCommands.moveToL3());
-
+        
+        Trigger scoreTrigger = operatorController.rightTrigger().or(operatorController.leftTrigger());
         operatorController.a().and(scoreTrigger).whileTrue(allCommands.scoreL1());
         operatorController.b().and(scoreTrigger).whileTrue(allCommands.scoreL3());
         operatorController.y().and(scoreTrigger).whileTrue(allCommands.scoreL3());
@@ -109,8 +110,11 @@ public class RobotContainer {
 
         TuneablesManager.add("pivot move to angle", (Tuneable) tuneableMovePivotToAngle);
 
-        operatorController.rightTrigger().whileTrue(allCommands.manualConntroller(scoreTrigger, operatorController.leftTrigger()
-            , operatorController.rightTrigger(), operatorController::getRightY, operatorController::getLeftY));
+        operatorController.rightBumper().whileTrue(allCommands.manualConntroller(
+                operatorController.leftTrigger(),
+                operatorController.rightTrigger(),
+                operatorController::getRightY,
+                operatorController::getLeftY));
 
         pivot.setDefaultCommand(allCommands.moveToRest());
     }

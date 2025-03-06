@@ -153,18 +153,18 @@ public class AllCommands {
                                 () -> speed.getAsDouble() * ManualControllers.PIVOT_SPEED_MULTIPLAYER);
         }
 
-        public Command manualConntroller(BooleanSupplier score, BooleanSupplier scoreL1, BooleanSupplier scoreL3,
-                DoubleSupplier pivotSpeed, DoubleSupplier funnelGripperSpeed) {
+        public Command manualConntroller(BooleanSupplier scoreL1, BooleanSupplier scoreL3,
+                        DoubleSupplier pivotSpeed, DoubleSupplier funnelGripperSpeed) {
                 return Commands.parallel(
-                        manualFunnelController(funnelGripperSpeed),
-                        AllCommands.dynamicSwitchBetweenCommands(
-                                score,
-                                AllCommands.dynamicSwitchBetweenCommands(scoreL3,
-                                        scoreL1,
-                                        moveToL3(), moveToL3()),
-                                manualGripperController(funnelGripperSpeed)),
-                        manualPivotController(pivotSpeed))
-                        .withInterruptBehavior(InterruptionBehavior.kCancelIncoming);
+                                manualFunnelController(funnelGripperSpeed),
+                                AllCommands.dynamicSwitchBetweenCommands(
+                                                () -> scoreL1.getAsBoolean() || scoreL3.getAsBoolean(),
+                                                AllCommands.dynamicSwitchBetweenCommands(
+                                                                scoreL1, scoreL3,
+                                                                scoreL1(), scoreL3()),
+                                                manualGripperController(funnelGripperSpeed)),
+                                manualPivotController(pivotSpeed))
+                                .withInterruptBehavior(InterruptionBehavior.kCancelIncoming);
         }
 
         public Command stopAll() {
@@ -180,11 +180,11 @@ public class AllCommands {
                 return dynamicSwitchBetweenCommands(condition, () -> !condition.getAsBoolean(), onTrue, onFalse);
         }
 
-        public static Command dynamicSwitchBetweenCommands(BooleanSupplier switchToFirst, BooleanSupplier switchToSecond,
-                Command first, Command second) {
+        public static Command dynamicSwitchBetweenCommands(BooleanSupplier switchToFirst,
+                        BooleanSupplier switchToSecond,
+                        Command first, Command second) {
                 return Commands.repeatingSequence(
-                        first.until(switchToSecond),
-                        second.until(switchToFirst)
-                );
+                                first.until(switchToSecond),
+                                second.until(switchToFirst));
         }
 }
