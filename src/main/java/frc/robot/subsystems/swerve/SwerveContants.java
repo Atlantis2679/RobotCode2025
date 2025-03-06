@@ -82,6 +82,6 @@ public class SwerveContants {
     }
 
     public static class AlignToReef {
-        public final static double MIN_DISTANCE = 0;
+        public final static double MIN_DISTANCE = 3;
     }
 }
