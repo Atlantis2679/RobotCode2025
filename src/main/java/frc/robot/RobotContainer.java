@@ -18,7 +18,6 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.lib.tuneables.Tuneable;
@@ -95,22 +94,23 @@ public class RobotContainer {
     }
 
     private void configureOperatorBindings() {
-        operatorController.a().whileTrue(allCommands.intake());
+        Trigger scoreTrigger = operatorController.rightTrigger().or(operatorController.leftTrigger());
+        operatorController.x().whileTrue(allCommands.intake());
+        operatorController.a().whileTrue(allCommands.moveToL1());
+        operatorController.b().whileTrue(allCommands.moveToL2());
+        operatorController.y().whileTrue(allCommands.moveToL3());
 
-        operatorController.b().whileTrue(allCommands.moveToL1());
-        operatorController.y().whileTrue(allCommands.moveToL2());
-        operatorController.x().whileTrue(allCommands.moveToL3());
+        operatorController.a().and(scoreTrigger).whileTrue(allCommands.scoreL1());
+        operatorController.b().and(scoreTrigger).whileTrue(allCommands.scoreL3());
+        operatorController.y().and(scoreTrigger).whileTrue(allCommands.scoreL3());
 
         TuneableCommand tuneableMovePivotToAngle = allCommands.movePivotToAngleTuneable();
         operatorController.povUp().and(TuneablesManager::isEnabled).whileTrue(tuneableMovePivotToAngle);
 
         TuneablesManager.add("pivot move to angle", (Tuneable) tuneableMovePivotToAngle);
-        operatorController.rightTrigger().whileTrue(allCommands.scoreL3());
-        operatorController.leftTrigger().whileTrue(allCommands.scoreL1());
-        operatorController.rightBumper().whileTrue(Commands.parallel(
-                allCommands.manualFunnelController(operatorController::getLeftY),
-                allCommands.manualGripperController(operatorController::getLeftX),
-                allCommands.manualPivotController(operatorController::getRightY)));
+
+        operatorController.rightTrigger().whileTrue(allCommands.manualConntroller(scoreTrigger, operatorController.leftTrigger()
+            , operatorController.rightTrigger(), operatorController::getRightY, operatorController::getLeftY));
 
         pivot.setDefaultCommand(allCommands.moveToRest());
     }
