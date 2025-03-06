@@ -1,5 +1,6 @@
 package frc.robot.allcommands;
 
+import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.geometry.Pose2d;
@@ -7,6 +8,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 import frc.lib.tuneables.extensions.TuneableCommand;
 import frc.lib.valueholders.DoubleHolder;
 import frc.robot.allcommands.AllCommandsConstants.ManualControllers;
@@ -151,6 +153,20 @@ public class AllCommands {
                                 () -> speed.getAsDouble() * ManualControllers.PIVOT_SPEED_MULTIPLAYER);
         }
 
+        public Command manualConntroller(BooleanSupplier scoreL1, BooleanSupplier scoreL3,
+                        DoubleSupplier pivotSpeed, DoubleSupplier funnelGripperSpeed) {
+                return Commands.parallel(
+                                manualFunnelController(funnelGripperSpeed),
+                                AllCommands.dynamicSwitchBetweenCommands(
+                                                () -> scoreL1.getAsBoolean() || scoreL3.getAsBoolean(),
+                                                AllCommands.dynamicSwitchBetweenCommands(
+                                                                scoreL1, scoreL3,
+                                                                scoreL1(), scoreL3()),
+                                                manualGripperController(funnelGripperSpeed)),
+                                manualPivotController(pivotSpeed))
+                                .withInterruptBehavior(InterruptionBehavior.kCancelIncoming);
+        }
+
         public Command stopAll() {
                 return Commands.run(() -> {
                         gripper.stop();
@@ -158,5 +174,17 @@ public class AllCommands {
                         funnel.stop();
                         leds.clear();
                 }, gripper, pivot, funnel);
+        }
+
+        public static Command dynamicSwitchBetweenCommands(BooleanSupplier condition, Command onTrue, Command onFalse) {
+                return dynamicSwitchBetweenCommands(condition, () -> !condition.getAsBoolean(), onTrue, onFalse);
+        }
+
+        public static Command dynamicSwitchBetweenCommands(BooleanSupplier switchToFirst,
+                        BooleanSupplier switchToSecond,
+                        Command first, Command second) {
+                return Commands.repeatingSequence(
+                                first.until(switchToSecond),
+                                second.until(switchToFirst));
         }
 }
