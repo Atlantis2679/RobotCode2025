@@ -123,11 +123,12 @@ public class Swerve extends SubsystemBase implements Tuneable {
                 MAX_MODULE_VELOCITY_MPS,
                 PathPlanner.FRICTION_WITH_CARPET,
                 DCMotor.getFalcon500(1).withReduction(GEAR_RATIO_DRIVE),
-                MAX_VOLTAGE,
+                130,
                 1);
 
         RobotConfig robotConfig = new RobotConfig(PathPlanner.ROBOT_MASS_KG, PathPlanner.MOMENT_OF_INERTIA,
                 moduleConfig, FL_LOCATION, FR_LOCATION, BL_LOCATION, BR_LOCATION);
+        robotConfig.hasValidConfig();
 
         AutoBuilder.configure(
                 this::getPose,
