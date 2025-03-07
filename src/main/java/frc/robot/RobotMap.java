@@ -11,9 +11,6 @@ public class RobotMap {
     public static final NavXComType NAVX_PORT = NavXComType.kMXP_SPI;
     public static final String FRONT_PHOTON_CAMERA_NAME = "FrontCam";
     public static final String BACK_PHOTON_CAMERA_NAME = "BackCam";
-    public static final String RIGHT_PHOTON_CAMERA_NAME = "RightCam";
-    public static final String LEFT_PHOTON_CAMERA_NAME = "LeftCam";
-    public static final String BACK_LIMELIGHT_CAMERA_NAME = "limelight-back";
     
     public static final int GRIPPER_BEAM_BRAKE_ID = 0;
 

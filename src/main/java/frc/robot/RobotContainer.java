@@ -28,6 +28,7 @@ import frc.robot.subsystems.funnel.Funnel;
 import frc.robot.allcommands.AllCommands;
 import frc.robot.subsystems.gripper.Gripper;
 import frc.robot.subsystems.leds.Leds;
+import frc.robot.subsystems.leds.LedsCommands;
 import frc.robot.subsystems.pivot.Pivot;
 import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.subsystems.swerve.SwerveCommands;
@@ -50,6 +51,7 @@ public class RobotContainer {
             RobotMap.Controllers.OPERATOR_PORT);
 
     private final SwerveCommands swerveCommands = new SwerveCommands(swerve);
+    private final LedsCommands ledsCommands = new LedsCommands(leds);
     private final AllCommands allCommands = new AllCommands(gripper, pivot, funnel, swerve, leds);
 
     public RobotContainer() {
@@ -87,6 +89,11 @@ public class RobotContainer {
         TuneablesManager.add("Swerve/align to reef", alignToReef.fullTuneable());
         driverController.rightTrigger()
                 .whileTrue(swerveCommands.alignToReef(false));
+
+        driverController.start()
+                .whileTrue(ledsCommands.rainbow().asProxy().unless(() -> leds.getCurrentCommand() != null));
+        driverController.back()
+                .whileTrue(ledsCommands.bebeGradient().asProxy().unless(() -> leds.getCurrentCommand() != null));
 
         TuneablesManager.add("Swerve/modules control mode",
                 swerveCommands.controlModules(
@@ -132,13 +139,14 @@ public class RobotContainer {
 
     public void configureAuto() {
         NamedCommands.registerCommand("intake", allCommands.intake());
-        NamedCommands.registerCommand("scoreL3", allCommands.scoreL3());
-        NamedCommands.registerCommand("score", allCommands.scoreL1());
+        NamedCommands.registerCommand("scoreL3", allCommands.scoreL3().withTimeout(1));
+        NamedCommands.registerCommand("score", allCommands.scoreL1().withTimeout(1));
         NamedCommands.registerCommand("stopAll", allCommands.stopAll());
 
-        new EventTrigger("intake").whileTrue(allCommands.intake());
-        new EventTrigger("moveToL1").whileTrue(allCommands.moveToL1());
-        new EventTrigger("moveToL2").whileTrue(allCommands.moveToL2());
+        new EventTrigger("intake").onTrue(allCommands.intake());
+        new EventTrigger("moveToL1").onTrue(allCommands.moveToL1());
+        new EventTrigger("moveToL2").onTrue(allCommands.moveToL2());
+        new EventTrigger("rest").onTrue(Commands.runOnce(pivot::stop));
 
         autoChooser = AutoBuilder.buildAutoChooser();
 

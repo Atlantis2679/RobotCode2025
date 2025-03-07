@@ -204,7 +204,7 @@ public class Swerve extends SubsystemBase implements Tuneable {
         fieldsTable.recordOutput("Yaw Degrees CW", -getYawCCW().getDegrees());
         SmartDashboard.putBoolean("isRedAlliance", getIsRedAlliance());
         fieldsTable.recordOutput("is red alliance", getIsRedAlliance());
-        fieldsTable.recordOutput("current command", getCurrentCommand() != null ? getCurrentCommand().getName() : null);
+        fieldsTable.recordOutput("current command", getCurrentCommand() != null ? getCurrentCommand().getName() : "none");
     }
 
     public void drive(double forward, double sidewaysRightPositive, double angularVelocityCW, boolean isFieldRelative,

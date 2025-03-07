@@ -8,6 +8,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.ScheduleCommand;
 import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 import frc.lib.tuneables.extensions.TuneableCommand;
 import frc.lib.valueholders.DoubleHolder;
@@ -61,10 +62,12 @@ public class AllCommands {
                                                                 .alongWith(gripperCMDs.spin(
                                                                                 GRIPPER_BACK_LOADING_VOLTAGE,
                                                                                 GRIPPER_RIGHT_LOADING_VOLTAGE,
-                                                                                GRIPPER_LEFT_LOADING_VOLTAGE))
-                                                                .until(() -> !funnel.getIsCoralIn()
-                                                                                && gripper.getIsCoralIn()),
+                                                                                GRIPPER_LEFT_LOADING_VOLTAGE))))
+                                .until(() -> !funnel.getIsCoralIn()
+                                                && gripper.getIsCoralIn())
+                                .andThen(new ScheduleCommand(
                                                 ledsCMDs.blink(Color.kBlue, LEDS_BLINK_DEFAULT_SEC)))
+
                                 .withName("Intake");
         }
 

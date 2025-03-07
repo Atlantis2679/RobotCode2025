@@ -41,22 +41,14 @@ public class PoseEstimatorWithVision {
             throw new RuntimeException();
         }
 
-        if (Robot.isReal()) {
-            visionCameras.put(FRONT_PHOTON_CAMERA_NAME,
-                    new VisionAprilTagsIOPhoton(fieldsTable, FRONT_PHOTON_CAMERA_NAME, fieldLayout,
-                            PoseEstimatorConstants.ROBOT_TO_CAMERA_TRANSFORM_PHOTON_FRONT));
+        visionCameras.put(FRONT_PHOTON_CAMERA_NAME,
+                new VisionAprilTagsIOPhoton(fieldsTable, FRONT_PHOTON_CAMERA_NAME, fieldLayout,
+                        PoseEstimatorConstants.ROBOT_TO_CAMERA_TRANSFORM_PHOTON_FRONT));
 
-        // visionCameras.put(BACK_PHOTON_CAMERA_NAME,
-        //         new VisionAprilTagsIOPhoton(fieldsTable, BACK_PHOTON_CAMERA_NAME, fieldLayout,
-        //                 PoseEstimatorConstants.ROBOT_TO_CAMERA_TRANSFORM_PHOTON_BACK));
-
-        // visionCameras.put(LEFT_PHOTON_CAMERA_NAME,
-        //         new VisionAprilTagsIOPhoton(fieldsTable, LEFT_PHOTON_CAMERA_NAME, fieldLayout,
-        //                 PoseEstimatorConstants.ROBOT_TO_CAMERA_TRANSFORM_PHOTON_LEFT));
-
-        // visionCameras.put(RIGHT_PHOTON_CAMERA_NAME,
-        //         new VisionAprilTagsIOPhoton(fieldsTable, RIGHT_PHOTON_CAMERA_NAME, fieldLayout,
-        //                 PoseEstimatorConstants.ROBOT_TO_CAMERA_TRANSFORM_PHOTON_RIGHT));
+        visionCameras.put(BACK_PHOTON_CAMERA_NAME,
+                new VisionAprilTagsIOPhoton(fieldsTable, BACK_PHOTON_CAMERA_NAME,
+                        fieldLayout,
+                        PoseEstimatorConstants.ROBOT_TO_CAMERA_TRANSFORM_PHOTON_BACK));
 
         this.fieldsTable = fieldsTable;
 
@@ -94,7 +86,7 @@ public class PoseEstimatorWithVision {
                         poseEstimate);
 
                 cameraFieldsTable.recordOutput("trust level unfiltered", Math.random());
-                
+
                 if (trustLevel == -1)
                     continue;
 
@@ -112,11 +104,12 @@ public class PoseEstimatorWithVision {
                 double visionRotationTrustLevel = trustLevel * VISION_ROTATION_TRUST_LEVEL_MULTIPLAYER;
                 double visionTranslationTrustLevel = trustLevel * VISION_TRANSLATION_TRUST_LEVEL_MULTIPLAYER;
 
-                poseEstimator.addVisionMeasurement(
-                        poseEstimate.toPose2d(), cameraTimestampSeconds, VecBuilder.fill(
-                                visionTranslationTrustLevel,
-                                visionTranslationTrustLevel,
-                                visionRotationTrustLevel));
+                if (cameraName == FRONT_PHOTON_CAMERA_NAME || Robot.isSimulation())
+                    poseEstimator.addVisionMeasurement(
+                            poseEstimate.toPose2d(), cameraTimestampSeconds, VecBuilder.fill(
+                                    visionTranslationTrustLevel,
+                                    visionTranslationTrustLevel,
+                                    visionRotationTrustLevel));
             }
         });
     }

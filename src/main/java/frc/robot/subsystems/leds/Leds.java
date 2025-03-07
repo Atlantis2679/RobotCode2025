@@ -28,7 +28,7 @@ public class Leds extends SubsystemBase {
     public void periodic() {
         lastAppliedPatern.applyTo(ledsBuffer);
         leds.setData(ledsBuffer);
-        fieldsTable.recordOutput("current command", getCurrentCommand() != null ? getCurrentCommand().getName() : null);
+        fieldsTable.recordOutput("current command", getCurrentCommand() != null ? getCurrentCommand().getName() : "None");
     }
 
     public void applyPatern(LEDPattern ledsPattern) {

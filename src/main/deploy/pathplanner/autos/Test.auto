@@ -9,6 +9,24 @@
           "data": {
             "pathName": "Test"
           }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "intake"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Test"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "score"
+          }
         }
       ]
     }
