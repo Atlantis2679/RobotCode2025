@@ -17,6 +17,10 @@ public class GripperIOSim extends GripperIO {
     // Outputs:
 
     @Override
+    public void setBreakMotor(boolean isBreak){
+    }
+
+    @Override
     public void setRightOuttakeMotorVoltage(double voltage) {
     }
 

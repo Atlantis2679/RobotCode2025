@@ -3,6 +3,7 @@ package frc.robot.subsystems.funnel;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.filter.Debouncer.DebounceType;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.logfields.LogFieldsTable;
 import frc.robot.Robot;
@@ -28,9 +29,14 @@ public class Funnel extends SubsystemBase {
         fieldsTable.recordOutput("precentage speed", percentageSpeed);
         io.setPercentageSpeed(MathUtil.clamp(percentageSpeed, -1, 1));
     }
-
+    @Override
+    public void periodic(){
+        fieldsTable.update();
+        SmartDashboard.putBoolean("CoralInFunnel", getIsCoralIn());
+        fieldsTable.recordOutput("CoralInFunnel", getIsCoralIn());
+    }
     public boolean getIsCoralIn() {
-        return !isCoralInDebouncer.calculate(io.isCoralIn.getAsBoolean());
+        return isCoralInDebouncer.calculate(io.isCoralIn.getAsBoolean());
     }
 
     public void stop() {

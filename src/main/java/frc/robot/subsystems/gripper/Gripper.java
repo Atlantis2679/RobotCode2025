@@ -3,6 +3,7 @@ package frc.robot.subsystems.gripper;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.filter.Debouncer.DebounceType;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.logfields.LogFieldsTable;
 import frc.robot.Robot;
@@ -25,12 +26,19 @@ public class Gripper extends SubsystemBase {
     public void periodic() {
         fieldsTable.recordOutput("current command",
                 getCurrentCommand() == null ? "none" : getCurrentCommand().getName());
-
+        SmartDashboard.putBoolean("coralIn Gripper", getIsCoralIn());
         fieldsTable.recordOutput("isCoralIn", getIsCoralIn());
     }
 
     public boolean getIsCoralIn() {
         return isCoralInDebouncer.calculate(io.isCoralIn.getAsBoolean());
+    }
+
+    public void setBreakMotors(){
+        io.setBreakMotor(true);
+    }
+    public void setCoastMotors(){
+        io.setBreakMotor(false);
     }
 
     public void setMotorsVoltages(double rightOuttakeVoltage, double leftOuttakeVoltage, double backMotorVoltage) {
