@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.064529299189701,
-        "y": 5.930213396001741
+        "x": 4.350176926766245,
+        "y": 5.9541391694449555
       },
       "isLocked": false,
       "linkedName": "Cycle1Left"
@@ -20,8 +20,8 @@
         "y": 6.8
       },
       "prevControl": {
-        "x": 2.087789200621848,
-        "y": 6.133077504964656
+        "x": 1.921848208724107,
+        "y": 6.559368838553388
       },
       "nextControl": null,
       "isLocked": false,
@@ -33,11 +33,11 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 3.0,
+    "maxVelocity": 4.632,
     "maxAcceleration": 3.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
-    "nominalVoltage": 12.0,
+    "nominalVoltage": 11.0,
     "unlimited": false
   },
   "goalEndState": {
@@ -45,7 +45,7 @@
     "rotation": -55.0
   },
   "reversed": false,
-  "folder": null,
+  "folder": "Left",
   "idealStartingState": {
     "velocity": 0,
     "rotation": -119.99999999999999

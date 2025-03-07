@@ -1,14 +1,17 @@
 package frc.robot.subsystems.gripper.io;
 
+import com.revrobotics.REVLibError;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import frc.lib.logfields.LogFieldsTable;
 import frc.robot.RobotMap.CANBUS;
+import frc.robot.utils.NetworkAlertsMotors;
 
 import static frc.robot.RobotMap.*;
 import static frc.robot.subsystems.gripper.GripperConstants.*;
@@ -32,17 +35,54 @@ public class GripperIOSparkMax extends GripperIO {
         leftOuttakeMotorConfig.smartCurrentLimit(OUTTAKE_MOTORS_MAX_CURRENT);
         backMotorConfig.smartCurrentLimit(BACK_MOTOR_MAX_CURRENT);
 
-        rightOuttakeMotorConfig.inverted(true);
-        
-        leftOuttakeMotor.configure(leftOuttakeMotorConfig, ResetMode.kResetSafeParameters,
+        rightOuttakeMotorConfig.idleMode(IdleMode.kCoast);
+        leftOuttakeMotorConfig.idleMode(IdleMode.kCoast);
+        backMotorConfig.idleMode(IdleMode.kCoast);
+
+        leftOuttakeMotorConfig.inverted(true);
+
+        REVLibError leftOuttakeMotorConfigError = leftOuttakeMotor.configure(leftOuttakeMotorConfig,
+                ResetMode.kResetSafeParameters,
                 PersistMode.kPersistParameters);
-        rightOuttakeMotor.configure(rightOuttakeMotorConfig, ResetMode.kResetSafeParameters,
+        REVLibError rightOuttakeMotorConfigError = rightOuttakeMotor.configure(rightOuttakeMotorConfig,
+                ResetMode.kResetSafeParameters,
                 PersistMode.kPersistParameters);
-        rightOuttakeMotor.configure(rightOuttakeMotorConfig, ResetMode.kResetSafeParameters,
+        REVLibError backMotorConfigError = backMotor.configure(backMotorConfig, ResetMode.kResetSafeParameters,
                 PersistMode.kPersistParameters);
+
+        NetworkAlertsMotors.addRevLibErrorAlert("Gripper Left Motor Config: ", () -> leftOuttakeMotorConfigError);
+        NetworkAlertsMotors.addRevLibErrorAlert("Gripper Left Motor Config: ", () -> rightOuttakeMotorConfigError);
+        NetworkAlertsMotors.addRevLibErrorAlert("Gripper Left Motor Config: ", () -> backMotorConfigError);
+
+        NetworkAlertsMotors.addMotorStuckAlert("Gripper Left Motor is Stuck!", leftOuttakeMotorCurrent,
+                leftOuttakeMotor::getAppliedOutput);
+        NetworkAlertsMotors.addMotorStuckAlert("Gripper Right Motor is Stuck!", rightOuttakeMotorCurrent,
+                rightOuttakeMotor::getAppliedOutput);
+        NetworkAlertsMotors.addMotorStuckAlert("Gripper Back Motor is Stuck!", backMotorCurrent,
+                backMotor::getAppliedOutput);
+
+        NetworkAlertsMotors.addSparkMotorAlert("Gripper Left Motor: ", leftOuttakeMotor::getFaults,
+                leftOuttakeMotor::getWarnings);
+        NetworkAlertsMotors.addSparkMotorAlert("Gripper Right Motor: ", rightOuttakeMotor::getFaults,
+                rightOuttakeMotor::getWarnings);
+        NetworkAlertsMotors.addSparkMotorAlert("Gripper Back Motor: ", backMotor::getFaults, backMotor::getWarnings);
     }
 
     // Outputs:
+
+    @Override
+    public void setBreakMotor(boolean isBreak) {
+        rightOuttakeMotorConfig.idleMode(isBreak ? IdleMode.kBrake : IdleMode.kCoast);
+        leftOuttakeMotorConfig.idleMode(isBreak ? IdleMode.kBrake : IdleMode.kCoast);
+        backMotorConfig.idleMode(isBreak ? IdleMode.kBrake : IdleMode.kCoast);
+        
+        rightOuttakeMotor.configure(rightOuttakeMotorConfig, ResetMode.kResetSafeParameters,
+                PersistMode.kPersistParameters);
+        leftOuttakeMotor.configure(leftOuttakeMotorConfig, ResetMode.kResetSafeParameters,
+                PersistMode.kPersistParameters);
+        backMotor.configure(backMotorConfig, ResetMode.kResetSafeParameters,
+                PersistMode.kPersistParameters);
+    }
 
     @Override
     public void setRightOuttakeMotorVoltage(double voltage) {

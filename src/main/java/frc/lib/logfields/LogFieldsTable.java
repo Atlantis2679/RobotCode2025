@@ -10,11 +10,7 @@ import java.util.function.Supplier;
 import org.littletonrobotics.junction.LogTable;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.inputs.LoggableInputs;
-
-import com.ctre.phoenix6.StatusCode;
-import com.revrobotics.REVLibError;
-import com.revrobotics.spark.SparkBase.Faults;
-import com.revrobotics.spark.SparkBase.Warnings;
+import org.littletonrobotics.junction.mechanism.LoggedMechanism2d;
 
 import edu.wpi.first.util.WPISerializable;
 import edu.wpi.first.util.function.FloatSupplier;
@@ -301,44 +297,6 @@ public class LogFieldsTable implements LoggableInputs {
         return registerField(new LogField<>(name, valueSupplier, LogTable::get, LogTable::put, defaultValue));
     }
 
-    // New Additions:
-
-    public Supplier<StatusCode> addStatusCode(String name, Supplier<StatusCode> valueSupplier, StatusCode defaultValue) {
-        LongSupplier value = addInteger(name, () -> (long)(valueSupplier.get().value), defaultValue.value);
-        return () -> StatusCode.valueOf((int)value.getAsLong());
-    }
-
-    public Supplier<StatusCode> addStatusCode(String name, Supplier<StatusCode> valueSupplier) {
-        return addStatusCode(name, valueSupplier, StatusCode.valueOf(0));
-    }
-
-    public Supplier<REVLibError> addREVLibError(String name, Supplier<REVLibError> valueSupplier, REVLibError defaultValue) {
-        LongSupplier value = addInteger(name, () -> (long)(valueSupplier.get().value), defaultValue.value);
-        return () -> REVLibError.fromInt((int)value.getAsLong());
-    }
-
-    public Supplier<REVLibError> addREVLibError(String name, Supplier<REVLibError> valueSupplier) {
-        return addREVLibError(name, valueSupplier, REVLibError.fromInt(0));
-    }
-
-    public Supplier<Faults> addSparkFaults(String name, Supplier<Faults> valueSupplier, Faults defaultValue) {
-        LongSupplier value = addInteger(name, () -> (long)(valueSupplier.get().rawBits), defaultValue.rawBits);
-        return () -> new Faults((int)value.getAsLong());
-    }
-
-    public Supplier<Faults> addSparkFaults(String name, Supplier<Faults> valueSupplier) {
-        return addSparkFaults(name, valueSupplier, new Faults(0));
-    }
-    
-    public Supplier<Warnings> addSparkWarnings(String name, Supplier<Warnings> valueSupplier, Warnings defaultValue) {
-        LongSupplier value = addInteger(name, () -> (long)(valueSupplier.get().rawBits), defaultValue.rawBits);
-        return () -> new Warnings((int)value.getAsLong());
-    }
-
-    public Supplier<Warnings> addSparkWarnings(String name, Supplier<Warnings> valueSupplier) {
-        return addSparkWarnings(name, valueSupplier, new Warnings(0));
-    }
-
     public void recordOutput(String name, byte[] value) {
         Logger.recordOutput(prefix + name, value);
     }
@@ -417,6 +375,10 @@ public class LogFieldsTable implements LoggableInputs {
     }
 
     public <T extends StructSerializable> void recordOutput(String name, T[][] value) {
+        Logger.recordOutput(prefix + name, value);
+    }
+
+    public <T extends WPISerializable> void recordOutput(String name, LoggedMechanism2d value) {
         Logger.recordOutput(prefix + name, value);
     }
 }

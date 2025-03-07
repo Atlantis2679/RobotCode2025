@@ -1,7 +1,5 @@
 package frc.robot.subsystems.pivot;
 
-import static frc.robot.subsystems.pivot.PivotConstants.MAX_ANGLE_DEGREES;
-import static frc.robot.subsystems.pivot.PivotConstants.MIN_ANGLE_DEGREES;
 import static frc.robot.subsystems.swerve.SwerveContants.MAX_VOLTAGE;
 
 import java.util.function.DoubleSupplier;
@@ -23,6 +21,10 @@ public class PivotCommands {
             pivot.resetPID();
             referenceState.set(new TrapezoidProfile.State(pivot.getAngleDegrees(), pivot.getVelocity()));
         }).andThen(pivot.run(() -> {
+            // if (referenceState.get().position == desiredAngleDeg.getAsDouble()
+            //         && Math.abs(pivot.getAngleDegrees() - desiredAngleDeg.getAsDouble()) > 40)
+            //     referenceState.set(new TrapezoidProfile.State(pivot.getAngleDegrees(), pivot.getVelocity()));
+
             referenceState.set(pivot.calculateTrapezoidProfile(
                     0.02,
                     referenceState.get(),
@@ -40,18 +42,14 @@ public class PivotCommands {
     public Command moveToAngle(double angle) {
         return moveToAngle(() -> angle);
     }
- 
+
     public Command manualController(DoubleSupplier pivotSpeed) {
         return pivot.run(() -> {
             Double demandSpeed = pivotSpeed.getAsDouble();
             double feedForward = pivot.calculateFeedForward(pivot.getAngleDegrees(), 0, false);
-            if((pivot.getAngleDegrees() > MAX_ANGLE_DEGREES && demandSpeed > 0)
-            || (pivot.getAngleDegrees() < MIN_ANGLE_DEGREES && demandSpeed < 0)) {
-            demandSpeed = 0.0;
-        }
+
             pivot.setPivotVoltage(feedForward + demandSpeed * MAX_VOLTAGE);
-        
+
         }).withName("pivotManualController");
     }
-
 }

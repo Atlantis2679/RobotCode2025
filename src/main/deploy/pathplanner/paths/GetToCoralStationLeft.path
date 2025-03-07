@@ -3,40 +3,40 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.5,
-        "y": 4.0
-      },
-      "prevControl": null,
-      "nextControl": {
-        "x": 6.705400363786008,
-        "y": 4.5609210010524555
-      },
-      "isLocked": false,
-      "linkedName": "StartMid"
-    },
-    {
-      "anchor": {
         "x": 5.1,
         "y": 5.4
       },
+      "prevControl": null,
+      "nextControl": {
+        "x": 5.064529299189701,
+        "y": 5.930213396001741
+      },
+      "isLocked": false,
+      "linkedName": "Cycle1Left"
+    },
+    {
+      "anchor": {
+        "x": 1.0,
+        "y": 6.8
+      },
       "prevControl": {
-        "x": 5.241986419653912,
-        "y": 5.173307187446603
+        "x": 2.087789200621848,
+        "y": 6.133077504964656
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Cycle1Left"
+      "linkedName": "LeftCoralStation"
     }
   ],
   "rotationTargets": [],
   "constraintZones": [
     {
-      "name": "BetterBeSafeThanSorry",
+      "name": "Constraints Zone",
       "minWaypointRelativePos": 0,
       "maxWaypointRelativePos": 1.0,
       "constraints": {
         "maxVelocity": 0.5,
-        "maxAcceleration": 1.0,
+        "maxAcceleration": 3.0,
         "maxAngularVelocity": 540.0,
         "maxAngularAcceleration": 720.0,
         "nominalVoltage": 12.0,
@@ -45,31 +45,24 @@
     }
   ],
   "pointTowardsZones": [],
-  "eventMarkers": [
-    {
-      "name": "moveToL2",
-      "waypointRelativePos": 0.2295746117488171,
-      "endWaypointRelativePos": 0.5158676569885224,
-      "command": null
-    }
-  ],
+  "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 4.632,
+    "maxVelocity": 3.0,
     "maxAcceleration": 3.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
-    "nominalVoltage": 11.0,
+    "nominalVoltage": 12.0,
     "unlimited": false
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -119.99999999999999
+    "rotation": -55.0
   },
   "reversed": false,
   "folder": "Left",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 180.0
+    "rotation": -119.99999999999999
   },
   "useDefaultConstraints": true
 }

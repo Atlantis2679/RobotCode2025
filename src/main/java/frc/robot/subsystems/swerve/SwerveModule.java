@@ -7,10 +7,10 @@ import frc.lib.logfields.LogFieldsTable;
 import frc.lib.tuneables.Tuneable;
 import frc.lib.tuneables.TuneableBuilder;
 import frc.robot.Robot;
-import frc.robot.subsystems.NetworkAlertsManager;
 import frc.robot.subsystems.swerve.io.SwerveModuleIO;
 import frc.robot.subsystems.swerve.io.SwerveModuleIOFalcon;
 import frc.robot.subsystems.swerve.io.SwerveModuleIOSim;
+import frc.robot.utils.NetworkAlertsManager;
 import frc.robot.utils.PrimitiveRotationalSensorHelper;
 
 import static frc.robot.subsystems.swerve.SwerveContants.*;
@@ -40,6 +40,14 @@ public class SwerveModule implements Tuneable {
                         absoluteAngleOffSetDegrees)
                 : new SwerveModuleIOFalcon(fieldsTable, driveMotorID, turnMotorID, encoderID);
 
+        NetworkAlertsManager.addWarningAlert(
+            () -> "Swerve Module " + positionName + " " + moduleNumber + " Drive Motor Temp: " + io.driveMotorTemperature.getAsDouble(),
+            () -> io.driveMotorTemperature.getAsDouble() > MODULE_TEMPERATORE_WARNING_THRESHOLD);
+
+        NetworkAlertsManager.addWarningAlert(
+            () -> "Swerve Module " + positionName + " " + moduleNumber + " Turn Motor Temp: " + io.turnMotorTemperature.getAsDouble(),
+            () -> io.turnMotorTemperature.getAsDouble() > MODULE_TEMPERATORE_WARNING_THRESHOLD);
+        
         fieldsTable.update();
 
         
@@ -51,39 +59,13 @@ public class SwerveModule implements Tuneable {
         currDriveDistanceMeters = getDriveDistanceMeters();
 
         io.resetIntegratedTurnAngleRotations(getAbsoluteAngleDegrees() / 360);
-        
-        NetworkAlertsManager.addWarningAlert(() -> "Swerve Module " + positionName + " " + moduleNumber + " Drive Motor Temperature: " + 
-            io.driveMotorTemperature, () -> io.driveMotorTemperature.getAsDouble() > MODULE_TEMPERATORE_WARNING_THRESHOLD);
-
-        NetworkAlertsManager.addWarningAlert(() -> "Swerve Module " + positionName + " " + moduleNumber + " Turn Motor Temperature: " + 
-            io.turnMotorTemperature, () -> io.turnMotorTemperature.getAsDouble() > MODULE_TEMPERATORE_WARNING_THRESHOLD);
-            
-        NetworkAlertsManager.addStatusCodeAlert("Swerve Module " + positionName + " " + moduleNumber + " Drive Motor: ",
-            io.driveMotorConfigStatusCode);
-
-        NetworkAlertsManager.addStatusCodeAlert("Swerve Module " + positionName + " " + moduleNumber + " Drive Motor: ",
-            io.driveMotorStatusCode);
-
-        NetworkAlertsManager.addStatusCodeAlert("Swerve Module " + positionName + " " + moduleNumber + " Turn Motor: ",
-            io.turnMotorConfigStatusCode);
-            
-        NetworkAlertsManager.addStatusCodeAlert("Swerve Module " + positionName + " " + moduleNumber + " Turn Motor: ",
-            io.turnMotorStatusCode);
-
-        NetworkAlertsManager.addStatusCodeAlert("Swerve Module " + positionName + " " + moduleNumber + " CanCoder: ",
-            io.canCoderConfigStatusCode);
-
-        NetworkAlertsManager.addStatusCodeAlert("Swerve Module " + positionName + " " + moduleNumber + " CanCoder: ",
-            io.canCoderStatusCode);
-
     }
 
     public void periodic() {
-        fieldsTable.recordOutput("reseted", encoderResetToAbsoluteQueued);
         absoluteAngleHelperDegrees.update(io.absoluteTurnAngleRotations.getAsDouble() * 360);
         lastDriveDistanceMeters = currDriveDistanceMeters;
         currDriveDistanceMeters = getDriveDistanceMeters();
-        fieldsTable.recordOutput("module " + moduleNumber + " drive distance meters", getDriveDistanceMeters());
+        fieldsTable.recordOutput("drive distance meters", getDriveDistanceMeters());
         fieldsTable.recordOutput("AbsoluteAngleDegrees", getAbsoluteAngleDegrees());
         fieldsTable.recordOutput("IntegratedAngleDegrees", getIntegratedAngleDegrees());
     }
