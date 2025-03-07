@@ -45,13 +45,13 @@ public class SwerveContants {
         public final static double ROBOT_MASS_KG = 1;
         public final static double MOMENT_OF_INERTIA = 0.5;
 
-        public final static double TRANSLATION_KP = 0;
+        public final static double TRANSLATION_KP = 7;
         public final static double TRANSLATION_KI = 0;
-        public final static double TRANSLATION_KD = 0;
+        public final static double TRANSLATION_KD = 0.1;
 
-        public final static double ROTATION_KP = 0;
+        public final static double ROTATION_KP = 11.3;
         public final static double ROTATION_KI = 0;
-        public final static double ROTATION_KD = 0;
+        public final static double ROTATION_KD = 0.1;
     }
 
     public static class RotateToAngle {
