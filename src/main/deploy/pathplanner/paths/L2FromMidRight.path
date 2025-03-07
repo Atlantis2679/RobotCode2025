@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.636747217098414,
-        "y": 3.4994957983351562
+        "x": 6.634461821231115,
+        "y": 3.5081220623891975
       },
       "isLocked": false,
       "linkedName": "StartMid"
@@ -20,8 +20,8 @@
         "y": 2.6
       },
       "prevControl": {
-        "x": 5.316101632183824,
-        "y": 2.7256983872907177
+        "x": 5.317496131822276,
+        "y": 2.723753158874174
       },
       "nextControl": null,
       "isLocked": false,
@@ -47,14 +47,14 @@
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "moveToL2",
+      "name": "moveToL1",
       "waypointRelativePos": 0,
       "endWaypointRelativePos": null,
       "command": null
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 3.0,
+    "maxVelocity": 4.632,
     "maxAcceleration": 3.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
@@ -66,7 +66,7 @@
     "rotation": 119.99999999999999
   },
   "reversed": false,
-  "folder": "Mid",
+  "folder": "Right",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 180.0

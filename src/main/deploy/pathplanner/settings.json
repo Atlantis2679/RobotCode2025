@@ -3,8 +3,8 @@
   "robotLength": 0.91,
   "holonomicMode": true,
   "pathFolders": [
+    "LeaveLine",
     "Left",
-    "Mid",
     "Right"
   ],
   "autoFolders": [
@@ -14,7 +14,7 @@
     "ThreeCycles",
     "TwoCycles"
   ],
-  "defaultMaxVel": 3.0,
+  "defaultMaxVel": 4.632,
   "defaultMaxAccel": 3.0,
   "defaultMaxAngVel": 540.0,
   "defaultMaxAngAccel": 720.0,
@@ -24,13 +24,13 @@
   "robotTrackwidth": 0.546,
   "driveWheelRadius": 0.0508,
   "driveGearing": 6.75,
-  "maxDriveSpeed": 3.0,
+  "maxDriveSpeed": 4.632,
   "driveMotorType": "falcon500",
-  "driveCurrentLimit": 120.0,
+  "driveCurrentLimit": 70.0,
   "wheelCOF": 10.0,
   "flModuleX": 0.27,
   "flModuleY": 0.27,
-  "frModuleX": 0.273,
+  "frModuleX": 0.27,
   "frModuleY": -0.27,
   "blModuleX": -0.27,
   "blModuleY": 0.27,

@@ -125,11 +125,13 @@ public class Swerve extends SubsystemBase implements Tuneable {
                 WHEEL_RADIUS_METERS,
                 MAX_MODULE_VELOCITY_MPS,
                 PathPlanner.FRICTION_WITH_CARPET,
-                DCMotor.getFalcon500(1).withReduction(GEAR_RATIO_DRIVE), MAX_VOLTAGE,
-                2);
+                DCMotor.getFalcon500(1).withReduction(GEAR_RATIO_DRIVE),
+                130,
+                1);
 
         RobotConfig robotConfig = new RobotConfig(PathPlanner.ROBOT_MASS_KG, PathPlanner.MOMENT_OF_INERTIA,
                 moduleConfig, FL_LOCATION, FR_LOCATION, BL_LOCATION, BR_LOCATION);
+        robotConfig.hasValidConfig();
 
         AutoBuilder.configure(
                 this::getPose,
@@ -202,7 +204,7 @@ public class Swerve extends SubsystemBase implements Tuneable {
         fieldsTable.recordOutput("Yaw Degrees CW", -getYawCCW().getDegrees());
         SmartDashboard.putBoolean("isRedAlliance", getIsRedAlliance());
         fieldsTable.recordOutput("is red alliance", getIsRedAlliance());
-        fieldsTable.recordOutput("current command", getCurrentCommand() != null ? getCurrentCommand().getName() : null);
+        fieldsTable.recordOutput("current command", getCurrentCommand() != null ? getCurrentCommand().getName() : "none");
     }
 
     public void drive(double forward, double sidewaysRightPositive, double angularVelocityCW, boolean isFieldRelative,
@@ -283,7 +285,6 @@ public class Swerve extends SubsystemBase implements Tuneable {
 
     public void registerCallbackOnPoseUpdate(BiConsumer<Pose2d, Boolean> callback) {
         callbacksOnPoseUpdate.add(callback);
-        callback.accept(getPose(), getIsRedAlliance()); // Why???
     }
 
     public SwerveModulePosition[] getModulesPositions() {

@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.858898529889718,
-        "y": 1.6550846980635732
+        "x": 1.8946574154185503,
+        "y": 1.683952762223982
       },
       "isLocked": false,
       "linkedName": "RightCoralStation"
@@ -20,8 +20,8 @@
         "y": 2.6
       },
       "prevControl": {
-        "x": 3.765115109705052,
-        "y": 2.3895099375977105
+        "x": 3.4900964580404863,
+        "y": 2.3579248645114235
       },
       "nextControl": null,
       "isLocked": false,
@@ -46,7 +46,7 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 3.0,
+    "maxVelocity": 4.632,
     "maxAcceleration": 3.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,

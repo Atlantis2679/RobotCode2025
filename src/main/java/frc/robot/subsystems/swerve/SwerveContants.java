@@ -8,7 +8,7 @@ public class SwerveContants {
     public final static double WHEEL_RADIUS_METERS = Units.inchesToMeters(2);
 
     public final static double MAX_VOLTAGE = 11;
-    public final static double MAX_MODULE_VELOCITY_MPS = 5; // Was 5
+    public final static double MAX_MODULE_VELOCITY_MPS = 4.632;
     public final static double MODULE_TEMPERATORE_WARNING_THRESHOLD = 40;
 
     public final static double TRACK_WIDTH_METERS = 0.595;
@@ -47,15 +47,13 @@ public class SwerveContants {
         public final static double ROBOT_MASS_KG = 1;
         public final static double MOMENT_OF_INERTIA = 0.5;
 
-        //
-        public final static double TRANSLATION_KP = 1.1;
+        public final static double TRANSLATION_KP = 7;
         public final static double TRANSLATION_KI = 0;
-        public final static double TRANSLATION_KD = 0;
+        public final static double TRANSLATION_KD = 0.1;
 
-        //
-        public final static double ROTATION_KP = 0.9;
+        public final static double ROTATION_KP = 11.3;
         public final static double ROTATION_KI = 0;
-        public final static double ROTATION_KD = 0;
+        public final static double ROTATION_KD = 0.1;
     }
 
     public static class RotateToAngle {

@@ -1,10 +1,13 @@
 package frc.robot.subsystems.leds;
 
 import edu.wpi.first.wpilibj.LEDPattern;
+import edu.wpi.first.wpilibj.LEDPattern.GradientType;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 
+import static edu.wpi.first.units.Units.Percent;
+import static edu.wpi.first.units.Units.Second;
 import static frc.robot.subsystems.leds.LedsConstants.*;
 
 import java.util.function.BooleanSupplier;
@@ -34,9 +37,23 @@ public class LedsCommands {
                 .until(() -> !condition.getAsBoolean()).repeatedly();
     }
 
-    public Command rainbow(double seconds) {
-        return leds.runOnce(() -> leds.applyPatern(LEDPattern.rainbow(RAINBOW_SATURATION, RAINBOW_VALUE)))
-                .andThen(Commands.waitSeconds(seconds))
-                .finallyDo(leds::clear);
+    public Command rainbow() {
+        return leds.startEnd(() -> {
+            leds.applyPatern(LEDPattern.rainbow(RAINBOW_SATURATION, RAINBOW_VALUE)
+                    .scrollAtRelativeSpeed(Percent.per(Second).of(50))
+                    .atBrightness(Percent.of(60)));
+        }, leds::clear);
+    }
+
+    public Command bebeGradient() {
+        return leds.startEnd(() -> {
+            leds.applyPatern(LEDPattern
+                    .gradient(GradientType.kContinuous,
+                            new Color("#091a79"),
+                            new Color("#00bebe"),
+                            new Color("#00c21e"))
+                    .scrollAtRelativeSpeed(Percent.per(Second).of(50))
+                    .atBrightness(Percent.of(60)));
+        }, leds::clear);
     }
 }

@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.523684087108702,
-        "y": 2.111581097511088
+        "x": 6.506657561618224,
+        "y": 1.706168103773583
       },
       "isLocked": false,
       "linkedName": "StartRight"
@@ -20,8 +20,8 @@
         "y": 2.6
       },
       "prevControl": {
-        "x": 5.473137398385643,
-        "y": 2.4865733847890548
+        "x": 5.258936330992415,
+        "y": 2.321033076109517
       },
       "nextControl": null,
       "isLocked": false,
@@ -33,14 +33,14 @@
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "moveToL2",
-      "waypointRelativePos": 0.0,
+      "name": "moveToL1",
+      "waypointRelativePos": 0,
       "endWaypointRelativePos": null,
       "command": null
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 3.0,
+    "maxVelocity": 4.632,
     "maxAcceleration": 3.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,

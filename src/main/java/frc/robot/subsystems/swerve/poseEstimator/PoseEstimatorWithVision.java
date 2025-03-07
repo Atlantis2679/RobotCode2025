@@ -11,6 +11,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import frc.lib.logfields.LogFieldsTable;
 import frc.robot.FieldConstants;
+import frc.robot.Robot;
 import frc.robot.utils.NetworkAlertsManager;
 import frc.robot.subsystems.swerve.poseEstimator.io.VisionAprilTagsIO;
 import frc.robot.subsystems.swerve.poseEstimator.io.VisionAprilTagsIOPhoton;
@@ -44,17 +45,10 @@ public class PoseEstimatorWithVision {
                 new VisionAprilTagsIOPhoton(fieldsTable, FRONT_PHOTON_CAMERA_NAME, fieldLayout,
                         PoseEstimatorConstants.ROBOT_TO_CAMERA_TRANSFORM_PHOTON_FRONT));
 
-        // visionCameras.put(BACK_PHOTON_CAMERA_NAME,
-        //         new VisionAprilTagsIOPhoton(fieldsTable, BACK_PHOTON_CAMERA_NAME, fieldLayout,
-        //                 PoseEstimatorConstants.ROBOT_TO_CAMERA_TRANSFORM_PHOTON_BACK));
-
-        // visionCameras.put(LEFT_PHOTON_CAMERA_NAME,
-        //         new VisionAprilTagsIOPhoton(fieldsTable, LEFT_PHOTON_CAMERA_NAME, fieldLayout,
-        //                 PoseEstimatorConstants.ROBOT_TO_CAMERA_TRANSFORM_PHOTON_LEFT));
-
-        // visionCameras.put(RIGHT_PHOTON_CAMERA_NAME,
-        //         new VisionAprilTagsIOPhoton(fieldsTable, RIGHT_PHOTON_CAMERA_NAME, fieldLayout,
-        //                 PoseEstimatorConstants.ROBOT_TO_CAMERA_TRANSFORM_PHOTON_RIGHT));
+        visionCameras.put(BACK_PHOTON_CAMERA_NAME,
+                new VisionAprilTagsIOPhoton(fieldsTable, BACK_PHOTON_CAMERA_NAME,
+                        fieldLayout,
+                        PoseEstimatorConstants.ROBOT_TO_CAMERA_TRANSFORM_PHOTON_BACK));
 
         this.fieldsTable = fieldsTable;
 
@@ -92,8 +86,11 @@ public class PoseEstimatorWithVision {
                         poseEstimate);
 
                 cameraFieldsTable.recordOutput("trust level unfiltered", Math.random());
+
                 if (trustLevel == -1)
                     continue;
+
+                trustLevel = trustLevel * trustLevel + trustLevel;
 
                 if (!isOnField(poseEstimate))
                     continue;
@@ -102,16 +99,17 @@ public class PoseEstimatorWithVision {
                 cameraFieldsTable.recordOutput("Pose2d", poseEstimate.toPose2d());
                 cameraFieldsTable.recordOutput("tagsPoses", tagsPoses);
                 cameraFieldsTable.recordOutput("tagsAmbiguities", tagsAmbiguities);
-                cameraFieldsTable.recordOutput("rawTrustLevel", trustLevel);
+                cameraFieldsTable.recordOutput("TrustLevel", trustLevel);
 
                 double visionRotationTrustLevel = trustLevel * VISION_ROTATION_TRUST_LEVEL_MULTIPLAYER;
                 double visionTranslationTrustLevel = trustLevel * VISION_TRANSLATION_TRUST_LEVEL_MULTIPLAYER;
 
-                poseEstimator.addVisionMeasurement(
-                        poseEstimate.toPose2d(), cameraTimestampSeconds, VecBuilder.fill(
-                                visionTranslationTrustLevel,
-                                visionTranslationTrustLevel,
-                                visionRotationTrustLevel));
+                if (cameraName == FRONT_PHOTON_CAMERA_NAME || Robot.isSimulation())
+                    poseEstimator.addVisionMeasurement(
+                            poseEstimate.toPose2d(), cameraTimestampSeconds, VecBuilder.fill(
+                                    visionTranslationTrustLevel,
+                                    visionTranslationTrustLevel,
+                                    visionRotationTrustLevel));
             }
         });
     }
@@ -139,10 +137,10 @@ public class PoseEstimatorWithVision {
     }
 
     private static boolean isOnField(Pose3d pose) {
-        return pose.getX() < FieldConstants.FIELD_LENGTH || pose.getX() > 0
-                && pose.getY() < FieldConstants.FIELD_WIDTH || pose.getY() > 0
-                        && Math.abs(pose.getZ()) < MAX_VISION_Z_OFF
-                        && Math.abs(pose.getRotation().getX()) < MAX_ROTATION_OFF
-                        && Math.abs(pose.getRotation().getY()) < MAX_ROTATION_OFF;
+        return (pose.getX() < FieldConstants.FIELD_LENGTH || pose.getX() > 0)
+                && (pose.getY() < FieldConstants.FIELD_WIDTH || pose.getY() > 0)
+                && Math.abs(pose.getZ()) < MAX_VISION_Z_OFF
+                && Math.abs(pose.getRotation().getX()) < MAX_ROTATION_OFF
+                && Math.abs(pose.getRotation().getY()) < MAX_ROTATION_OFF;
     }
 }
