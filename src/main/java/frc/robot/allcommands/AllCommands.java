@@ -64,7 +64,7 @@ public class AllCommands {
                                                                                 GRIPPER_LEFT_LOADING_VOLTAGE))
                                                                 .until(() -> !funnel.getIsCoralIn()
                                                                                 && gripper.getIsCoralIn()),
-                                                ledsCMDs.blink(Color.kGreen, LEDS_BLINK_DEFAULT_SEC)))
+                                                ledsCMDs.blink(Color.kBlue, LEDS_BLINK_DEFAULT_SEC)))
                                 .withName("Intake");
         }
 

@@ -1,7 +1,7 @@
 package frc.robot.allcommands;
 
 public class AllCommandsConstants {
-    public static final double FUNNEL_PRECENTAGE_SPEED = 0.5;
+    public static final double FUNNEL_PRECENTAGE_SPEED = 0.55;
 
     public static final double GRIPPER_BACK_LOADING_VOLTAGE = 7.5;
     public static final double GRIPPER_LEFT_LOADING_VOLTAGE = 0.15;
