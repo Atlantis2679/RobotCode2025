@@ -13,7 +13,7 @@ public class PoseEstimatorConstants {
 
     public final static Transform3d ROBOT_TO_CAMERA_TRANSFORM_PHOTON_BACK = new Transform3d(
             new Translation3d(-0.27, 0, 0.60),
-            new Rotation3d(Degrees.of(8.7), Degrees.of(-21.2), Degrees.of(81)));
+            new Rotation3d(Degrees.of(8.7), Degrees.of(-21.2), Degrees.of(155)));
 
     public final static Transform3d ROBOT_TO_CAMERA_TRANSFORM_PHOTON_RIGHT = new Transform3d(
             new Translation3d(-0.01, -0.28, 0.45),
@@ -23,11 +23,11 @@ public class PoseEstimatorConstants {
             new Translation3d(-0.01, 0.28, 0.44),
             new Rotation3d(Degrees.of(13), Degrees.of(-35), Degrees.of(107)));
 
-    public final static double VISION_TAG_ANBIGUITY_THRESHOLD = 1; // Need to calibrate
+    public final static double VISION_TAG_ANBIGUITY_THRESHOLD = 0.3; // Need to calibrate
     public final static double VISION_MIN_TAG_DISTANCE_TO_POSE_METERS = 0.05; // Need to calibrate
 
-    public final static double VISION_ROTATION_TRUST_LEVEL_MULTIPLAYER = 2.5; // Need to calibrate
-    public final static double VISION_TRANSLATION_TRUST_LEVEL_MULTIPLAYER = 1.15; // Need to calibrate
+    public final static double VISION_ROTATION_TRUST_LEVEL_MULTIPLAYER = 3.5; // Need to calibrate
+    public final static double VISION_TRANSLATION_TRUST_LEVEL_MULTIPLAYER = 2; // Need to calibrate
 
     public final static double STATE_TRUST_LEVEL_X = 2.5; // Need to calibrate
     public final static double STATE_TRUST_LEVEL_Y = 2.5; // Need to calibrate
