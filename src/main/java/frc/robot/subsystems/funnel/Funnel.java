@@ -29,14 +29,12 @@ public class Funnel extends SubsystemBase {
         fieldsTable.recordOutput("precentage speed", percentageSpeed);
         io.setPercentageSpeed(MathUtil.clamp(percentageSpeed, -1, 1));
     }
-
     @Override
     public void periodic(){
-        SmartDashboard.putBoolean("coralin", getIsCoralIn());
         fieldsTable.update();
-        fieldsTable.recordOutput("coralin", getIsCoralIn());
+        SmartDashboard.putBoolean("CoralInFunnel", getIsCoralIn());
+        fieldsTable.recordOutput("CoralInFunnel", getIsCoralIn());
     }
-
     public boolean getIsCoralIn() {
         return isCoralInDebouncer.calculate(io.isCoralIn.getAsBoolean());
     }

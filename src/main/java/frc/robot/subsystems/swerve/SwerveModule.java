@@ -7,10 +7,10 @@ import frc.lib.logfields.LogFieldsTable;
 import frc.lib.tuneables.Tuneable;
 import frc.lib.tuneables.TuneableBuilder;
 import frc.robot.Robot;
-import frc.robot.utils.NetworkAlertsManager;
 import frc.robot.subsystems.swerve.io.SwerveModuleIO;
 import frc.robot.subsystems.swerve.io.SwerveModuleIOFalcon;
 import frc.robot.subsystems.swerve.io.SwerveModuleIOSim;
+import frc.robot.utils.NetworkAlertsManager;
 import frc.robot.utils.PrimitiveRotationalSensorHelper;
 
 import static frc.robot.subsystems.swerve.SwerveContants.*;
@@ -40,6 +40,14 @@ public class SwerveModule implements Tuneable {
                         absoluteAngleOffSetDegrees)
                 : new SwerveModuleIOFalcon(fieldsTable, driveMotorID, turnMotorID, encoderID);
 
+        NetworkAlertsManager.addWarningAlert(
+            () -> "Swerve Module " + positionName + " " + moduleNumber + " Drive Motor Temp: " + io.driveMotorTemperature.getAsDouble(),
+            () -> io.driveMotorTemperature.getAsDouble() > MODULE_TEMPERATORE_WARNING_THRESHOLD);
+
+        NetworkAlertsManager.addWarningAlert(
+            () -> "Swerve Module " + positionName + " " + moduleNumber + " Turn Motor Temp: " + io.turnMotorTemperature.getAsDouble(),
+            () -> io.turnMotorTemperature.getAsDouble() > MODULE_TEMPERATORE_WARNING_THRESHOLD);
+        
         fieldsTable.update();
 
         
@@ -51,10 +59,6 @@ public class SwerveModule implements Tuneable {
         currDriveDistanceMeters = getDriveDistanceMeters();
 
         io.resetIntegratedTurnAngleRotations(getAbsoluteAngleDegrees() / 360);
-        
-        NetworkAlertsManager.addWarningAlert(() -> "Swerve Module " + positionName + " " + moduleNumber + " Drive Motor Temperature: " + 
-            io.driveMotorTemperature.getAsDouble(), () -> io.driveMotorTemperature.getAsDouble() > MODULE_TEMPERATORE_WARNING_THRESHOLD);
-
     }
 
     public void periodic() {

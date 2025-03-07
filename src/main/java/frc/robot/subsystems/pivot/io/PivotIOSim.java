@@ -44,4 +44,9 @@ public class PivotIOSim extends PivotIO {
     public void setVoltage(double voltage) {
         pivotMotor.setInputVoltage(-voltage);
     }
+
+    @Override
+    protected boolean getIsEncoderConnected() {
+        return true;
+    }
 }

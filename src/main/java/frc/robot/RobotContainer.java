@@ -57,6 +57,9 @@ public class RobotContainer {
                 .alongWith(allCommands.stopAll()).ignoringDisable(true));
         pdh.setSwitchableChannel(true);
 
+        new Trigger(DriverStation::isEnabled)
+                .whileTrue(Commands.startEnd(gripper::setBreakMotors, gripper::setCoastMotors));
+
         if (Robot.isReal())
             CameraServer.startAutomaticCapture().setResolution(300, 300);
 
@@ -93,24 +96,38 @@ public class RobotContainer {
     }
 
     private void configureOperatorBindings() {
-        operatorController.a().whileTrue(allCommands.intake());
+        operatorController.x().whileTrue(allCommands.intake());
 
-        operatorController.b().whileTrue(allCommands.moveToL1());
-        operatorController.y().whileTrue(allCommands.moveToL2());
-        operatorController.x().whileTrue(allCommands.moveToL3());
+        operatorController.a().whileTrue(allCommands.moveToL1());
+        operatorController.b().whileTrue(allCommands.moveToL2());
+        operatorController.y().whileTrue(allCommands.moveToL3());
+
+        Trigger scoreTrigger = operatorController.rightTrigger().or(operatorController.leftTrigger());
+        operatorController.a().and(scoreTrigger).whileTrue(allCommands.scoreL1());
+        operatorController.b().and(scoreTrigger).whileTrue(allCommands.scoreL3());
+        operatorController.y().and(scoreTrigger).whileTrue(allCommands.scoreL3());
 
         TuneableCommand tuneableMovePivotToAngle = allCommands.movePivotToAngleTuneable();
         operatorController.povUp().and(TuneablesManager::isEnabled).whileTrue(tuneableMovePivotToAngle);
 
         TuneablesManager.add("pivot move to angle", (Tuneable) tuneableMovePivotToAngle);
-        operatorController.rightTrigger().whileTrue(allCommands.scoreL3());
-        operatorController.leftTrigger().whileTrue(allCommands.scoreL1());
-        operatorController.rightBumper().whileTrue(Commands.parallel(
-                allCommands.manualFunnelController(operatorController::getLeftY),
-                allCommands.manualGripperController(operatorController::getLeftX),
-                allCommands.manualPivotController(operatorController::getRightY)));
+
+        operatorController.rightBumper().whileTrue(allCommands.manualConntroller(
+                operatorController.leftTrigger(),
+                operatorController.rightTrigger(),
+                operatorController::getRightY,
+                operatorController::getLeftY));
 
         pivot.setDefaultCommand(allCommands.moveToRest());
+        Command pivotDefaultRestLock = Commands
+                .runOnce(() -> pivot.setDefaultCommand(pivot.run(pivot::stop).finallyDo(() -> {
+                    if (DriverStation.isEnabled())
+                        pivot.setDefaultCommand(allCommands.moveToRest());
+                })))
+                .ignoringDisable(true);
+
+        new Trigger(DriverStation::isDSAttached).onFalse(pivotDefaultRestLock);
+        new Trigger(DriverStation::isDisabled).onTrue(pivotDefaultRestLock);
     }
 
     public void configureAuto() {

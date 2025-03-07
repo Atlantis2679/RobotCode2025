@@ -9,7 +9,7 @@ public class SwerveContants {
 
     public final static double MAX_VOLTAGE = 11;
     public final static double MAX_MODULE_VELOCITY_MPS = 4.632;
-    public final static double MODULE_TEMPERATORE_WARNING_THRESHOLD = 0;
+    public final static double MODULE_TEMPERATORE_WARNING_THRESHOLD = 40;
 
     public final static double TRACK_WIDTH_METERS = 0.595;
     public final static double TRACK_LENGTH_METERS = 0.595;
@@ -23,6 +23,8 @@ public class SwerveContants {
     public final static double MODULE_TURN_KP = 1.8 * 12;
     public final static double MODULE_TURN_KI = 0;
     public final static double MODULE_TURN_KD = 0;
+
+    public final static double GYRO_CONNECTED_DEBAUNCER_SEC = 0.1;
 
     static final double TRANSLATION_TOLERANCE_METERS = 0.02,
             ROTATION_TOLERANCE_DEGREES = 1,
@@ -78,6 +80,6 @@ public class SwerveContants {
     }
 
     public static class AlignToReef {
-        public final static double MIN_DISTANCE = 0;
+        public final static double MIN_DISTANCE = 3;
     }
 }

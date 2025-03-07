@@ -1,5 +1,6 @@
 package frc.robot.subsystems.swerve;
 
+import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -97,6 +98,8 @@ public class Swerve extends SubsystemBase implements Tuneable {
 
     private final LoggedDashboardChooser<Boolean> isRedAlliance = new LoggedDashboardChooser<>("alliance");
 
+    private final Debouncer gyroConnectedDebouncer = new Debouncer(GYRO_CONNECTED_DEBAUNCER_SEC);
+
     public Swerve() {
         fieldsTable.update();
         queueResetModulesToAbsolute();
@@ -114,7 +117,7 @@ public class Swerve extends SubsystemBase implements Tuneable {
 
         TuneablesManager.add("Swerve", (Tuneable) this);
 
-        NetworkAlertsManager.addErrorAlert("Swerve: Gyro IS Disconnected!", () -> !gyroIO.isConnected.getAsBoolean());
+        NetworkAlertsManager.addErrorAlert("Swerve: Gyro IS Disconnected!", () -> !getGyroConnectedDebouncer());
 
         resetYaw();
 
@@ -161,11 +164,12 @@ public class Swerve extends SubsystemBase implements Tuneable {
 
     @Override
     public void periodic() {
+
         for (SwerveModule module : modules) {
             module.periodic();
         }
 
-        if (gyroIO.isConnected.getAsBoolean()) {
+        if (getGyroConnectedDebouncer()) {
             gyroYawHelperDegreesCCW.update(Rotation2d.fromDegrees(-gyroIO.yawDegreesCW.getAsDouble()));
         } else {
             Twist2d twist = swerveKinematics.toTwist2d(
@@ -308,6 +312,10 @@ public class Swerve extends SubsystemBase implements Tuneable {
 
     public boolean getIsRedAlliance() {
         return isRedAlliance.get() != null && isRedAlliance.get().booleanValue();
+    }
+
+    public boolean getGyroConnectedDebouncer() {
+        return gyroConnectedDebouncer.calculate(gyroIO.isConnected.getAsBoolean());
     }
 
     public void enableCoast() {

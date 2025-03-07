@@ -20,6 +20,7 @@ import frc.robot.subsystems.pivot.PivotConstants.Sim;
 import frc.robot.subsystems.pivot.io.PivotIO;
 import frc.robot.subsystems.pivot.io.PivotIOSim;
 import frc.robot.subsystems.pivot.io.PivotIOSparkMax;
+import frc.robot.utils.NetworkAlertsManager;
 import frc.robot.utils.PrimitiveRotationalSensorHelper;
 
 public class Pivot extends SubsystemBase implements Tuneable {
@@ -54,6 +55,8 @@ public class Pivot extends SubsystemBase implements Tuneable {
         pivotRotationalHelper.enableContinousWrap(UPPER_BOUND, FULL_ROTATION);
 
         TuneablesManager.add("Pivot", (Tuneable) this);
+
+        NetworkAlertsManager.addErrorAlert("Pivot: Encoder is Disconnected!", () -> !io.isEncoderConnected.getAsBoolean());
     }
 
     @Override
@@ -63,6 +66,8 @@ public class Pivot extends SubsystemBase implements Tuneable {
 
         fieldsTable.recordOutput("current command",
                 getCurrentCommand() == null ? "none" : getCurrentCommand().getName());
+        fieldsTable.recordOutput("default command",
+                getDefaultCommand() == null ? "none" : getDefaultCommand().getName());
 
         fieldsTable.recordOutput("Angle", getAngleDegrees());
         fieldsTable.recordOutput("velocity", pivotRotationalHelper.getVelocity());
