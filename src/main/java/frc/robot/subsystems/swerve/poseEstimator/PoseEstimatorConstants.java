@@ -23,6 +23,7 @@ public class PoseEstimatorConstants {
         public final static double VISION_MIN_TAG_DISTANCE_TO_POSE_METERS = 0.05; // Need to calibrate
 
         public final static double VISION_ROTATION_TRUST_LEVEL_MULTIPLAYER = 3.5; // Need to calibrate
+        public final static double VISION_ROTATION_TRUST_LEVEL_MULTIPLAYER_WITHOUT_GYRO = 0.5; // Need to calibrate
         public final static double VISION_TRANSLATION_TRUST_LEVEL_MULTIPLAYER = 2; // Need to calibrate
 
         public final static double STATE_TRUST_LEVEL_X = 2.5; // Need to calibrate

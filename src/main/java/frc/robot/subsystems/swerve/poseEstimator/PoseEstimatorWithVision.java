@@ -70,7 +70,7 @@ public class PoseEstimatorWithVision {
                 VecBuilder.fill(1, 1, 1));
     }
 
-    public void update(Rotation2d gyroMeasurmentCCW, SwerveModulePosition[] modulesPositions) {
+    public void update(Rotation2d gyroMeasurmentCCW, SwerveModulePosition[] modulesPositions, boolean isGyroConnected) {
         poseEstimator.update(gyroMeasurmentCCW, modulesPositions);
 
         visionCameras.forEach((cameraName, visionIO) -> {
@@ -105,7 +105,7 @@ public class PoseEstimatorWithVision {
                 cameraFieldsTable.recordOutput("tagsAmbiguities", tagsAmbiguities);
                 cameraFieldsTable.recordOutput("TrustLevel", trustLevel);
 
-                double visionRotationTrustLevel = trustLevel * VISION_ROTATION_TRUST_LEVEL_MULTIPLAYER;
+                double visionRotationTrustLevel = trustLevel * (isGyroConnected ? VISION_ROTATION_TRUST_LEVEL_MULTIPLAYER : VISION_ROTATION_TRUST_LEVEL_MULTIPLAYER_WITHOUT_GYRO);
                 double visionTranslationTrustLevel = trustLevel * VISION_TRANSLATION_TRUST_LEVEL_MULTIPLAYER;
 
                 if (cameraName == RIGHT_FRONT_PHOTON_CAMERA_NAME || cameraName == LEFT_FRONT_PHOTON_CAMERA_NAME || Robot.isSimulation())

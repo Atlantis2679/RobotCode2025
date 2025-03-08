@@ -182,7 +182,7 @@ public class Swerve extends SubsystemBase implements Tuneable {
                     .update(gyroYawHelperDegreesCCW.getMeasuredAngle().plus(Rotation2d.fromRadians(twist.dtheta)));
         }
 
-        poseEstimator.update(gyroYawHelperDegreesCCW.getMeasuredAngle(), getModulesPositions());
+        poseEstimator.update(gyroYawHelperDegreesCCW.getMeasuredAngle(), getModulesPositions(), getGyroConnectedDebouncer());
         callbacksOnPoseUpdate.forEach(callback -> {
             callback.accept(getPose(), getIsRedAlliance());
         });
