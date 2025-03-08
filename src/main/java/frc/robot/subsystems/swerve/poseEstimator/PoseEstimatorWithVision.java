@@ -33,7 +33,7 @@ public class PoseEstimatorWithVision {
     public PoseEstimatorWithVision(LogFieldsTable fieldsTable, Rotation2d currentAngle,
             SwerveModulePosition[] positions, SwerveDriveKinematics swerveKinematics) {
 
-        AprilTagFieldLayout fieldLayout;
+        AprilTagFieldLayout fieldLayout;    
         try {
             fieldLayout = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2025ReefscapeWelded.m_resourceFile);
         } catch (IOException e) {
@@ -44,7 +44,7 @@ public class PoseEstimatorWithVision {
         visionCameras.put(RIGHT_FRONT_PHOTON_CAMERA_NAME,
                 new VisionAprilTagsIOPhoton(fieldsTable, RIGHT_FRONT_PHOTON_CAMERA_NAME, fieldLayout,
                         PoseEstimatorConstants.ROBOT_TO_CAMERA_TRANSFORM_PHOTON_FRONT_RIGHT));
-
+        
         visionCameras.put(LEFT_FRONT_PHOTON_CAMERA_NAME,
                 new VisionAprilTagsIOPhoton(fieldsTable, LEFT_FRONT_PHOTON_CAMERA_NAME, fieldLayout,
                         PoseEstimatorConstants.ROBOT_TO_CAMERA_TRANSFORM_PHOTON_FRONT_LEFT));

@@ -8,12 +8,12 @@ import edu.wpi.first.math.geometry.Translation3d;
 
 public class PoseEstimatorConstants {
         public final static Transform3d ROBOT_TO_CAMERA_TRANSFORM_PHOTON_FRONT_RIGHT = new Transform3d(
-                        new Translation3d(0.285, -0.195, 0.36),
-                        new Rotation3d(Degrees.of(2), Degrees.of(11), Degrees.of(0)));
+                        new Translation3d(0.285, -0.19, 0.355),
+                        new Rotation3d(Degrees.of(-0.76), Degrees.of(8.5), Degrees.of(-4)));
 
         public final static Transform3d ROBOT_TO_CAMERA_TRANSFORM_PHOTON_FRONT_LEFT = new Transform3d(
-                        new Translation3d(0.285, -0.195, 0.36),
-                        new Rotation3d(Degrees.of(2), Degrees.of(11), Degrees.of(0)));
+                        new Translation3d(0.31, 0.19, 0.22),
+                        new Rotation3d(Degrees.of(-1), Degrees.of(-13), Degrees.of(0)));
 
         public final static Transform3d ROBOT_TO_CAMERA_TRANSFORM_PHOTON_BACK = new Transform3d(
                         new Translation3d(-0.27, 0, 0.54),
