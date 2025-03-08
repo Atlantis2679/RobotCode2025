@@ -45,7 +45,7 @@ public class PivotCommands {
 
     public Command manualController(DoubleSupplier pivotSpeed) {
         return pivot.run(() -> {
-            Double demandSpeed = pivotSpeed.getAsDouble();
+            double demandSpeed = pivotSpeed.getAsDouble();
             double feedForward = pivot.calculateFeedForward(pivot.getAngleDegrees(), 0, false);
 
             pivot.setPivotVoltage(feedForward + demandSpeed * MAX_VOLTAGE);

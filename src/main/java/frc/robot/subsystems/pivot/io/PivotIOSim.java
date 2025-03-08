@@ -47,6 +47,6 @@ public class PivotIOSim extends PivotIO {
 
     @Override
     protected boolean getIsEncoderConnected() {
-        return true;
+        return false;
     }
 }

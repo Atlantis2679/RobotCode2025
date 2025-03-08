@@ -23,6 +23,8 @@ public class PivotConstants {
     public static final double KV = 0.048;
     public static final double KG = 0.18;
 
+    public static final double ENCODER_CONNECTED_DEBAUNCER_SEC = 0.1;
+
 
     public static class Sim {
         public static final double SIM_KS = 0;

@@ -1,19 +1,25 @@
 package frc.robot.subsystems.swerve.io;
 
+import static frc.robot.subsystems.swerve.SwerveContants.GEAR_RATIO_DRIVE;
+import static frc.robot.subsystems.swerve.SwerveContants.GEAR_RATIO_TURN;
+import static frc.robot.subsystems.swerve.SwerveContants.MODULE_TURN_KD;
+import static frc.robot.subsystems.swerve.SwerveContants.MODULE_TURN_KI;
+import static frc.robot.subsystems.swerve.SwerveContants.MODULE_TURN_KP;
+
+import com.ctre.phoenix6.StatusCode;
+import com.ctre.phoenix6.configs.CANcoderConfiguration;
+import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.CoastOut;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
+import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-import com.ctre.phoenix6.hardware.CANcoder;
-import com.ctre.phoenix6.configs.CANcoderConfiguration;
-import com.ctre.phoenix6.configs.Slot0Configs;
-
-import static frc.robot.subsystems.swerve.SwerveContants.*;
 
 import frc.lib.logfields.LogFieldsTable;
+import frc.robot.utils.NetworkAlertsMotors;
 
 public class SwerveModuleIOFalcon extends SwerveModuleIO {
     private final TalonFX driveMotor;
@@ -26,7 +32,7 @@ public class SwerveModuleIOFalcon extends SwerveModuleIO {
 
     private final Slot0Configs turnSlotConfigs;
 
-    public SwerveModuleIOFalcon(LogFieldsTable fieldsTable, int driveMotorID, int turnMotorID, int encoderID) {
+    public SwerveModuleIOFalcon(LogFieldsTable fieldsTable, int driveMotorID, int turnMotorID, int encoderID, int moduleNum) {
         super(fieldsTable);
 
         driveMotor = new TalonFX(driveMotorID);
@@ -68,9 +74,28 @@ public class SwerveModuleIOFalcon extends SwerveModuleIO {
 
         CANcoderConfiguration canCoderConfiguration = new CANcoderConfiguration();
 
-        driveMotor.getConfigurator().apply(driveMotorConfiguration);
-        turnMotor.getConfigurator().apply(turnMotorConfiguration);
-        canCoder.getConfigurator().apply(canCoderConfiguration);
+        StatusCode driveMotorConfigError = driveMotor.getConfigurator().apply(driveMotorConfiguration);
+        StatusCode turnMotorConfigError = turnMotor.getConfigurator().apply(turnMotorConfiguration);
+        StatusCode canCoderMotorConfigError = canCoder.getConfigurator().apply(canCoderConfiguration);
+
+        NetworkAlertsMotors.addStatusCodeAlert("Swerve Module " + moduleNum + " Drive Motor Config: ",
+            () -> driveMotorConfigError);
+        NetworkAlertsMotors.addStatusCodeAlert("Swerve Module " + moduleNum + " Turn Motor Config: ",
+            () -> turnMotorConfigError);
+        NetworkAlertsMotors.addStatusCodeAlert("Swerve Module " + moduleNum + " Can Coder Config: ",
+            () -> canCoderMotorConfigError);
+
+        NetworkAlertsMotors.addStatusCodeAlert("Swerve Module " + moduleNum + " Drive Motor: ",
+            () -> driveMotor.getVersion().getStatus());
+        NetworkAlertsMotors.addStatusCodeAlert("Swerve Module " + moduleNum + " Turn Motor: ",
+            () -> turnMotor.getVersion().getStatus());
+        NetworkAlertsMotors.addStatusCodeAlert("Swerve Module " + moduleNum + " CanCoder Motor: ",
+            () -> canCoder.getVersion().getStatus());
+
+        NetworkAlertsMotors.addMotorStuckAlert("Swerve Module " + moduleNum + " Drive Motor: ",
+            driveStatorCurrent, () -> driveMotor.getMotorVoltage().getValueAsDouble());
+        NetworkAlertsMotors.addMotorStuckAlert("Swerve Module " + moduleNum + " Turn Motor: ",
+            turnStatorCurrent, () -> turnMotor.getMotorVoltage().getValueAsDouble());
     }
 
     @Override

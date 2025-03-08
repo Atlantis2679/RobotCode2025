@@ -29,8 +29,8 @@ public class PivotIOSparkMax extends PivotIO {
         encoder.setDutyCycleRange(0, 1);
 
         NetworkAlertsMotors.addRevLibErrorAlert("Pivot Motor Config", () -> configError);
-        NetworkAlertsMotors.addSparkMotorAlert("Pivot Motor: ", pivotMotor::getFaults, pivotMotor::getWarnings);
         NetworkAlertsMotors.addMotorStuckAlert("Pivot Motor is Stuck!", motorCurrent, pivotMotor::getAppliedOutput);
+        NetworkAlertsMotors.addSparkMotorAlert("Pivot Motor: ", pivotMotor::getFaults, pivotMotor::getWarnings);
     }
 
     // Inputs:
