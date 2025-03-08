@@ -133,7 +133,7 @@ public class PoseEstimatorWithVision {
             double tagEstimatedDistanceToPose = Math.max(
                 PhotonUtils.getDistanceToPose(estimatedRobotPose.toPose2d(), tagsPoses[i].toPose2d()),
                 VISION_MIN_TAG_DISTANCE_TO_POSE_METERS);
-            double ambiguityMultiplayer = 1 - tagsAmbiguitys[i];
+            double ambiguityMultiplayer = 1 + tagsAmbiguitys[i];
             if(ambiguityMultiplayer == 0) return -1;
             trustLevel += (1 / tagEstimatedDistanceToPose * ambiguityMultiplayer);
         }
