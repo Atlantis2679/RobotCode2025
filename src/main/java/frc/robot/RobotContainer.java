@@ -183,6 +183,13 @@ public class RobotContainer {
         });
     }
 
+    /* Backup for comp in case the normal PathPlanner auto will be disfunctional.
+     * Should be tested more and be used with cation.*/
+    public void configureBackupAuto() {
+        autoChooser.addOption("Drive Forward No Score", allCommands.autoDrive());
+        autoChooser.addOption("Drive Forward Score L1", allCommands.autoDriveScoreL1());
+    }
+
     public void setSubsystemsInTestModeState() {
         swerve.enableCoast();
     }

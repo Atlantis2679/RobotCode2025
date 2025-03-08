@@ -3,11 +3,10 @@ package frc.robot.allcommands;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ScheduleCommand;
 import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 import frc.lib.tuneables.extensions.TuneableCommand;
@@ -22,7 +21,6 @@ import frc.robot.subsystems.leds.LedsCommands;
 import frc.robot.subsystems.pivot.Pivot;
 import frc.robot.subsystems.pivot.PivotCommands;
 import frc.robot.subsystems.swerve.Swerve;
-import frc.robot.subsystems.swerve.SwerveCommands;
 
 import static frc.robot.allcommands.AllCommandsConstants.*;
 
@@ -36,7 +34,6 @@ public class AllCommands {
         private final GripperCommands gripperCMDs;
         private final PivotCommands pivotCMDs;
         private final FunnelCommands funnelCMDs;
-        private final SwerveCommands swerveCMDs;
         private final LedsCommands ledsCMDs;
 
         public AllCommands(Gripper gripper, Pivot pivot, Funnel funnel, Swerve swerve, Leds leds) {
@@ -49,7 +46,6 @@ public class AllCommands {
                 this.gripperCMDs = new GripperCommands(gripper);
                 this.pivotCMDs = new PivotCommands(pivot);
                 this.funnelCMDs = new FunnelCommands(funnel);
-                this.swerveCMDs = new SwerveCommands(swerve);
                 this.ledsCMDs = new LedsCommands(leds);
         }
 
@@ -72,25 +68,18 @@ public class AllCommands {
         }
 
         public Command autoDrive() {
-                return Commands.runOnce(
-                                () -> swerve.resetPose(new Pose2d(0, 0,
-                                                Rotation2d.fromDegrees(swerve.getIsRedAlliance() ? 0 : 180))))
-                                .andThen(swerveCMDs.driveForwardVoltage(() -> AUTO_DRIVE_VOLTAGE_PERCANTAGE)
-                                                .withTimeout(AUTO_DRIVE_SECONDS))
-                                .withName("NotRealAutoDrive");
+                return (new InstantCommand(swerve::resetYaw))
+                        .andThen(swerve.run(() -> swerve.drive(
+                                AUTO_DRIVE_VOLTAGE_PERCANTAGE, 0, 0, true, true, true)))
+                        .withTimeout(AUTO_DRIVE_SECONDS).withName("autoDriveBackup");
         }
 
         public Command autoDriveScoreL1() {
-                return Commands.runOnce(
-                                () -> swerve.resetPose(new Pose2d(0, 0,
-                                                Rotation2d.fromDegrees(swerve.getIsRedAlliance() ? 0 : 180))))
-                                .andThen(swerveCMDs.driveForwardVoltage(() -> AUTO_DRIVE_VOLTAGE_PERCANTAGE)
-                                                .withTimeout(AUTO_DRIVE_SECONDS))
-                                .andThen(gripperCMDs
-                                                .spin(GRIPPER_BACK_L1_VOLTAGE, GRIPPER_RIGHT_L1_VOLTAGE,
-                                                                GRIPPER_LEFT_L1_VOLTAGE)
-                                                .withTimeout(1.5))
-                                .withName("NotRealAutoDriveScoreL1");
+                return (new InstantCommand(swerve::resetYaw))
+                        .andThen(swerve.run(() -> swerve.drive(
+                        AUTO_DRIVE_VOLTAGE_PERCANTAGE, 0, 0, true, true, true)))
+                        .withTimeout(AUTO_DRIVE_SECONDS)
+                        .andThen(scoreL1()).withName("autoDriveScoreL1Backup");
         }
 
         public Command pivotToAngleWithLeds(double angle) {

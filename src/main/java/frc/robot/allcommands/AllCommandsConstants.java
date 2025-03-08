@@ -19,14 +19,10 @@ public class AllCommandsConstants {
     public static final double PIVOT_ANGLE_FOR_L3 = 85;
     public static final double PIVOT_ANGLE_FOR_REST = -90;
 
-    public static final long TEST_WIZARD_DELAY = 1;
-
     public final static int LEDS_BLINK_DEFAULT_SEC = 1;
 
     public final static double AUTO_DRIVE_SECONDS = 1.5;
     public final static double AUTO_DRIVE_VOLTAGE_PERCANTAGE = 0.2;
-
-    public final static double MAX_DISTANCE_FOR_GET_TO_POSE = 2;
 
     public static class ManualControllers {
         public static final double FUNNEL_SPEED_MULTIPLAYER = 0.5;

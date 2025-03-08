@@ -37,7 +37,7 @@ public class VisionAprilTagsIOPhoton extends VisionAprilTagsIO {
 
         camera = new PhotonCamera(cameraName);
       
-        photonPoseEstimator = new PhotonPoseEstimator(tagLayout, PoseStrategy.LOWEST_AMBIGUITY,
+        photonPoseEstimator = new PhotonPoseEstimator(tagLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
                 new Transform3d());
     }
 
