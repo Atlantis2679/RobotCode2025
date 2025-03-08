@@ -127,6 +127,10 @@ public class RobotContainer {
             .whileTrue(ledsCommands.rainbow().asProxy().unless(() -> leds.getCurrentCommand() != null));
 
         pivot.setDefaultCommand(allCommands.moveToRest());
+
+        gripper.setDefaultCommand(allCommands.manualGripperController(operatorController::getLeftY));
+        funnel.setDefaultCommand(allCommands.manualFunnelController(operatorController::getLeftY));
+
         Command pivotDefaultRestLock = Commands
                 .runOnce(() -> pivot.setDefaultCommand(pivot.run(pivot::stop).finallyDo(() -> {
                     if (DriverStation.isEnabled())
