@@ -15,7 +15,7 @@ public class AllCommandsConstants {
 
     public static final double PIVOT_ANGLE_FOR_INTAKE = -105;
     public static final double PIVOT_ANGLE_FOR_L1 = -80;
-    public static final double PIVOT_ANGLE_FOR_L2 = 15;//40
+    public static final double PIVOT_ANGLE_FOR_L2 = 17;//15
     public static final double PIVOT_ANGLE_FOR_L3 = 85;
     public static final double PIVOT_ANGLE_FOR_REST = -90;
 
