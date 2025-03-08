@@ -33,7 +33,7 @@ public class PoseEstimatorWithVision {
     public PoseEstimatorWithVision(LogFieldsTable fieldsTable, Rotation2d currentAngle,
             SwerveModulePosition[] positions, SwerveDriveKinematics swerveKinematics) {
 
-        AprilTagFieldLayout fieldLayout;
+        AprilTagFieldLayout fieldLayout;    
         try {
             fieldLayout = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2025ReefscapeWelded.m_resourceFile);
         } catch (IOException e) {
@@ -41,9 +41,13 @@ public class PoseEstimatorWithVision {
             throw new RuntimeException();
         }
 
-        visionCameras.put(FRONT_PHOTON_CAMERA_NAME,
-                new VisionAprilTagsIOPhoton(fieldsTable, FRONT_PHOTON_CAMERA_NAME, fieldLayout,
-                        PoseEstimatorConstants.ROBOT_TO_CAMERA_TRANSFORM_PHOTON_FRONT));
+        visionCameras.put(RIGHT_FRONT_PHOTON_CAMERA_NAME,
+                new VisionAprilTagsIOPhoton(fieldsTable, RIGHT_FRONT_PHOTON_CAMERA_NAME, fieldLayout,
+                        PoseEstimatorConstants.ROBOT_TO_CAMERA_TRANSFORM_PHOTON_FRONT_RIGHT));
+
+        visionCameras.put(LEFT_FRONT_PHOTON_CAMERA_NAME,
+                new VisionAprilTagsIOPhoton(fieldsTable, LEFT_FRONT_PHOTON_CAMERA_NAME, fieldLayout,
+                        PoseEstimatorConstants.ROBOT_TO_CAMERA_TRANSFORM_PHOTON_FRONT_LEFT));
 
         visionCameras.put(BACK_PHOTON_CAMERA_NAME,
                 new VisionAprilTagsIOPhoton(fieldsTable, BACK_PHOTON_CAMERA_NAME,
@@ -66,7 +70,7 @@ public class PoseEstimatorWithVision {
                 VecBuilder.fill(1, 1, 1));
     }
 
-    public void update(Rotation2d gyroMeasurmentCCW, SwerveModulePosition[] modulesPositions) {
+    public void update(Rotation2d gyroMeasurmentCCW, SwerveModulePosition[] modulesPositions, boolean isGyroConnected) {
         poseEstimator.update(gyroMeasurmentCCW, modulesPositions);
 
         visionCameras.forEach((cameraName, visionIO) -> {
@@ -101,10 +105,10 @@ public class PoseEstimatorWithVision {
                 cameraFieldsTable.recordOutput("tagsAmbiguities", tagsAmbiguities);
                 cameraFieldsTable.recordOutput("TrustLevel", trustLevel);
 
-                double visionRotationTrustLevel = trustLevel * VISION_ROTATION_TRUST_LEVEL_MULTIPLAYER;
+                double visionRotationTrustLevel = trustLevel * (isGyroConnected ? VISION_ROTATION_TRUST_LEVEL_MULTIPLAYER : VISION_ROTATION_TRUST_LEVEL_MULTIPLAYER_WITHOUT_GYRO);
                 double visionTranslationTrustLevel = trustLevel * VISION_TRANSLATION_TRUST_LEVEL_MULTIPLAYER;
 
-                if (cameraName == FRONT_PHOTON_CAMERA_NAME || Robot.isSimulation())
+                if (cameraName == RIGHT_FRONT_PHOTON_CAMERA_NAME || cameraName == LEFT_FRONT_PHOTON_CAMERA_NAME || Robot.isSimulation())
                     poseEstimator.addVisionMeasurement(
                             poseEstimate.toPose2d(), cameraTimestampSeconds, VecBuilder.fill(
                                     visionTranslationTrustLevel,
@@ -126,12 +130,12 @@ public class PoseEstimatorWithVision {
             Pose3d estimatedRobotPose) {
         double trustLevel = 0;
         for (int i = 0; i < tagsPoses.length; i++) {
-            if (tagsAmbiguitys[i] <= VISION_TAG_ANBIGUITY_THRESHOLD) {
-                double tagEstimatedDistanceToPose = Math.max(
-                        PhotonUtils.getDistanceToPose(estimatedRobotPose.toPose2d(), tagsPoses[i].toPose2d()),
-                        VISION_MIN_TAG_DISTANCE_TO_POSE_METERS);
-                trustLevel += (1 / tagEstimatedDistanceToPose);
-            }
+            double tagEstimatedDistanceToPose = Math.max(
+                PhotonUtils.getDistanceToPose(estimatedRobotPose.toPose2d(), tagsPoses[i].toPose2d()),
+                VISION_MIN_TAG_DISTANCE_TO_POSE_METERS);
+            double ambiguityMultiplayer = 1 + tagsAmbiguitys[i];
+            if(ambiguityMultiplayer == 0) return -1;
+            trustLevel += (1 / tagEstimatedDistanceToPose * ambiguityMultiplayer);
         }
         return trustLevel != 0 ? 1 / trustLevel : -1;
     }

@@ -5,6 +5,7 @@ import static frc.robot.subsystems.swerve.SwerveContants.MAX_VOLTAGE;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
@@ -48,6 +49,8 @@ public class Pivot extends SubsystemBase implements Tuneable {
     private double minAngle = MIN_ANGLE_DEGREES;
 
     private double upperBound = UPPER_BOUND;
+    
+    private final Debouncer encoderConnectedDebouncer = new Debouncer(ENCODER_CONNECTED_DEBAUNCER_SEC);
 
     public Pivot() {
         fieldsTable.update();
@@ -56,7 +59,7 @@ public class Pivot extends SubsystemBase implements Tuneable {
 
         TuneablesManager.add("Pivot", (Tuneable) this);
 
-        NetworkAlertsManager.addErrorAlert("Pivot: Encoder is Disconnected!", () -> !io.isEncoderConnected.getAsBoolean());
+        NetworkAlertsManager.addErrorAlert("Pivot: Encoder is Disconnected!", () -> !getEncoderConnectedDebouncer());
     }
 
     @Override
@@ -64,13 +67,13 @@ public class Pivot extends SubsystemBase implements Tuneable {
         pivotRotationalHelper.update(io.angle.getAsDouble());
         realVisualizer.update(getAngleDegrees());
 
-        fieldsTable.recordOutput("current command",
-                getCurrentCommand() == null ? "none" : getCurrentCommand().getName());
-        fieldsTable.recordOutput("default command",
-                getDefaultCommand() == null ? "none" : getDefaultCommand().getName());
+        fieldsTable.recordOutput("current command", getCurrentCommand() != null ? getCurrentCommand().getName() : "None");
+    
+        fieldsTable.recordOutput("defualt command", getDefaultCommand() != null ? getDefaultCommand().getName() : "None");
 
-        fieldsTable.recordOutput("Angle", getAngleDegrees());
+        fieldsTable.recordOutput("angle", getAngleDegrees());
         fieldsTable.recordOutput("velocity", pivotRotationalHelper.getVelocity());
+        fieldsTable.recordOutput("is encoder connected", getEncoderConnectedDebouncer());
     }
 
     public void setPivotVoltage(double voltage) {
@@ -94,6 +97,10 @@ public class Pivot extends SubsystemBase implements Tuneable {
 
     public double getVelocity() {
         return pivotRotationalHelper.getVelocity();
+    }
+
+    public boolean getEncoderConnectedDebouncer() {
+        return encoderConnectedDebouncer.calculate(io.isEncoderConnected.getAsBoolean());
     }
 
     public double calculateFeedForward(double desiredAngleDegrees, double desiredSpeed, boolean usePID) {

@@ -19,14 +19,12 @@ public class Gripper extends SubsystemBase {
 
     private final GripperIO io = Robot.isReal() ? new GripperIOSparkMax(fieldsTable) : new GripperIOSim(fieldsTable);
 
-    public Gripper() {
-    }
+    public Gripper() {}
 
     @Override
     public void periodic() {
-        fieldsTable.recordOutput("current command",
-                getCurrentCommand() == null ? "none" : getCurrentCommand().getName());
-        SmartDashboard.putBoolean("coralIn Gripper", getIsCoralIn());
+        fieldsTable.recordOutput("current command", getCurrentCommand() != null ? getCurrentCommand().getName() : "None");
+        SmartDashboard.putBoolean("CoralInGripper", getIsCoralIn());
         fieldsTable.recordOutput("isCoralIn", getIsCoralIn());
     }
 
@@ -37,6 +35,7 @@ public class Gripper extends SubsystemBase {
     public void setBreakMotors(){
         io.setBreakMotor(true);
     }
+
     public void setCoastMotors(){
         io.setBreakMotor(false);
     }
@@ -50,7 +49,8 @@ public class Gripper extends SubsystemBase {
                 MathUtil.clamp(rightOuttakeVoltage, -OUTTAKE_MOTORS_MAX_VOLTAGE, OUTTAKE_MOTORS_MAX_VOLTAGE));
         io.setLeftOuttakeMotorVoltage(
                 MathUtil.clamp(leftOuttakeVoltage, -OUTTAKE_MOTORS_MAX_VOLTAGE, OUTTAKE_MOTORS_MAX_VOLTAGE));
-        io.setBackMotorVoltage(MathUtil.clamp(backMotorVoltage, -BACK_MOTOR_MAX_VOLTAGE, BACK_MOTOR_MAX_VOLTAGE));
+        io.setBackMotorVoltage(
+            MathUtil.clamp(backMotorVoltage, -BACK_MOTOR_MAX_VOLTAGE, BACK_MOTOR_MAX_VOLTAGE));
     }
 
     public void stop() {

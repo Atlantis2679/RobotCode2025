@@ -9,7 +9,8 @@ public class RobotMap {
     public static final ModuleType POWER_DISTRIBUATION_TYPE = ModuleType.kRev;
 
     public static final NavXComType NAVX_PORT = NavXComType.kMXP_SPI;
-    public static final String FRONT_PHOTON_CAMERA_NAME = "FrontCam";
+    public static final String RIGHT_FRONT_PHOTON_CAMERA_NAME = "FrontRightCam";
+    public static final String LEFT_FRONT_PHOTON_CAMERA_NAME = "FrontLeftCam";
     public static final String BACK_PHOTON_CAMERA_NAME = "BackCam";
     
     public static final int GRIPPER_BEAM_BRAKE_ID = 0;

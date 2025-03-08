@@ -91,8 +91,6 @@ public class RobotContainer {
                 .whileTrue(swerveCommands.alignToReef(false));
 
         driverController.start()
-                .whileTrue(ledsCommands.rainbow().asProxy().unless(() -> leds.getCurrentCommand() != null));
-        driverController.back()
                 .whileTrue(ledsCommands.bebeGradient().asProxy().unless(() -> leds.getCurrentCommand() != null));
 
         TuneablesManager.add("Swerve/modules control mode",
@@ -125,7 +123,14 @@ public class RobotContainer {
                 operatorController::getRightY,
                 operatorController::getLeftY));
 
+        operatorController.start()
+            .whileTrue(ledsCommands.rainbow().asProxy().unless(() -> leds.getCurrentCommand() != null));
+
         pivot.setDefaultCommand(allCommands.moveToRest());
+
+        gripper.setDefaultCommand(allCommands.manualGripperController(operatorController::getLeftY));
+        funnel.setDefaultCommand(allCommands.manualFunnelController(operatorController::getLeftY));
+
         Command pivotDefaultRestLock = Commands
                 .runOnce(() -> pivot.setDefaultCommand(pivot.run(pivot::stop).finallyDo(() -> {
                     if (DriverStation.isEnabled())
@@ -156,6 +161,7 @@ public class RobotContainer {
         swerve.registerCallbackOnPoseUpdate((pose, isRedAlliance) -> {
             field.setRobotPose(pose);
         });
+
         SmartDashboard.putData(field);
         autoChooser.onChange((command) -> {
             if (command.getName() != "None") {
@@ -175,6 +181,13 @@ public class RobotContainer {
                 field.getObject("Auto Trajectory").setPose(swerve.getPose());
             }
         });
+    }
+
+    /* Backup for comp in case the normal PathPlanner auto will be disfunctional.
+     * Should be tested more and be used with cation.*/
+    public void configureBackupAuto() {
+        autoChooser.addOption("Drive Forward No Score", allCommands.autoDrive());
+        autoChooser.addOption("Drive Forward Score L1", allCommands.autoDriveScoreL1());
     }
 
     public void setSubsystemsInTestModeState() {

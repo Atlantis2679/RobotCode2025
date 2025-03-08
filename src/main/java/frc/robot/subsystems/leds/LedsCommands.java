@@ -22,27 +22,28 @@ public class LedsCommands {
     public Command blink(Color color, double seconds) {
         return leds.runOnce(() -> leds.applyColor(color))
                 .andThen(Commands.waitSeconds(seconds))
-                .finallyDo(leds::clear);
+                .finallyDo(leds::clear).withName("blink");
     }
 
     public Command staticColor(Color color) {
         return leds.startEnd(() -> {
             leds.applyColor(color);
-        }, leds::clear);
+        }, leds::clear).withName("static color");
     }
 
     public Command staticColorWhenTrue(BooleanSupplier condition, Color color) {
         return Commands.waitUntil(condition)
-                .andThen(staticColor(Color.kGreen))
-                .until(() -> !condition.getAsBoolean()).repeatedly();
+                .andThen(staticColor(color))
+                .until(() -> !condition.getAsBoolean())
+                .repeatedly().withName("staticColorWhenTrue");
     }
 
     public Command rainbow() {
         return leds.startEnd(() -> {
             leds.applyPatern(LEDPattern.rainbow(RAINBOW_SATURATION, RAINBOW_VALUE)
-                    .scrollAtRelativeSpeed(Percent.per(Second).of(50))
-                    .atBrightness(Percent.of(60)));
-        }, leds::clear);
+                    .scrollAtRelativeSpeed(Percent.per(Second).of(ANIMATION_PERCENTSGE_SPEED))
+                    .atBrightness(Percent.of(ANIMATION_PERCENTAGE_BRIGHTNESS)));
+        }, leds::clear).withName("rainbow");
     }
 
     public Command bebeGradient() {
@@ -52,8 +53,8 @@ public class LedsCommands {
                             new Color("#091a79"),
                             new Color("#00bebe"),
                             new Color("#00c21e"))
-                    .scrollAtRelativeSpeed(Percent.per(Second).of(50))
-                    .atBrightness(Percent.of(60)));
-        }, leds::clear);
+                    .scrollAtRelativeSpeed(Percent.per(Second).of(ANIMATION_PERCENTSGE_SPEED))
+                    .atBrightness(Percent.of(ANIMATION_PERCENTAGE_BRIGHTNESS)));
+        }, leds::clear).withName("bebeGradient");
     }
 }
