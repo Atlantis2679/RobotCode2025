@@ -41,9 +41,13 @@ public class PoseEstimatorWithVision {
             throw new RuntimeException();
         }
 
-        visionCameras.put(FRONT_PHOTON_CAMERA_NAME,
-                new VisionAprilTagsIOPhoton(fieldsTable, FRONT_PHOTON_CAMERA_NAME, fieldLayout,
-                        PoseEstimatorConstants.ROBOT_TO_CAMERA_TRANSFORM_PHOTON_FRONT));
+        visionCameras.put(RIGHT_FRONT_PHOTON_CAMERA_NAME,
+                new VisionAprilTagsIOPhoton(fieldsTable, RIGHT_FRONT_PHOTON_CAMERA_NAME, fieldLayout,
+                        PoseEstimatorConstants.ROBOT_TO_CAMERA_TRANSFORM_PHOTON_FRONT_RIGHT));
+
+        visionCameras.put(LEFT_FRONT_PHOTON_CAMERA_NAME,
+                new VisionAprilTagsIOPhoton(fieldsTable, LEFT_FRONT_PHOTON_CAMERA_NAME, fieldLayout,
+                        PoseEstimatorConstants.ROBOT_TO_CAMERA_TRANSFORM_PHOTON_FRONT_LEFT));
 
         visionCameras.put(BACK_PHOTON_CAMERA_NAME,
                 new VisionAprilTagsIOPhoton(fieldsTable, BACK_PHOTON_CAMERA_NAME,
@@ -104,7 +108,7 @@ public class PoseEstimatorWithVision {
                 double visionRotationTrustLevel = trustLevel * VISION_ROTATION_TRUST_LEVEL_MULTIPLAYER;
                 double visionTranslationTrustLevel = trustLevel * VISION_TRANSLATION_TRUST_LEVEL_MULTIPLAYER;
 
-                if (cameraName == FRONT_PHOTON_CAMERA_NAME || Robot.isSimulation())
+                if (cameraName == RIGHT_FRONT_PHOTON_CAMERA_NAME || cameraName == LEFT_FRONT_PHOTON_CAMERA_NAME || Robot.isSimulation())
                     poseEstimator.addVisionMeasurement(
                             poseEstimate.toPose2d(), cameraTimestampSeconds, VecBuilder.fill(
                                     visionTranslationTrustLevel,
