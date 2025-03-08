@@ -44,7 +44,7 @@ public class PoseEstimatorWithVision {
         visionCameras.put(RIGHT_FRONT_PHOTON_CAMERA_NAME,
                 new VisionAprilTagsIOPhoton(fieldsTable, RIGHT_FRONT_PHOTON_CAMERA_NAME, fieldLayout,
                         PoseEstimatorConstants.ROBOT_TO_CAMERA_TRANSFORM_PHOTON_FRONT_RIGHT));
-        
+
         visionCameras.put(LEFT_FRONT_PHOTON_CAMERA_NAME,
                 new VisionAprilTagsIOPhoton(fieldsTable, LEFT_FRONT_PHOTON_CAMERA_NAME, fieldLayout,
                         PoseEstimatorConstants.ROBOT_TO_CAMERA_TRANSFORM_PHOTON_FRONT_LEFT));
@@ -130,12 +130,12 @@ public class PoseEstimatorWithVision {
             Pose3d estimatedRobotPose) {
         double trustLevel = 0;
         for (int i = 0; i < tagsPoses.length; i++) {
-            if (tagsAmbiguitys[i] <= VISION_TAG_ANBIGUITY_THRESHOLD) {
-                double tagEstimatedDistanceToPose = Math.max(
-                        PhotonUtils.getDistanceToPose(estimatedRobotPose.toPose2d(), tagsPoses[i].toPose2d()),
-                        VISION_MIN_TAG_DISTANCE_TO_POSE_METERS);
-                trustLevel += (1 / tagEstimatedDistanceToPose);
-            }
+            double tagEstimatedDistanceToPose = Math.max(
+                PhotonUtils.getDistanceToPose(estimatedRobotPose.toPose2d(), tagsPoses[i].toPose2d()),
+                VISION_MIN_TAG_DISTANCE_TO_POSE_METERS);
+            double ambiguityMultiplayer = 1 - tagsAmbiguitys[i];
+            if(ambiguityMultiplayer == 0) return -1;
+            trustLevel += (1 / tagEstimatedDistanceToPose * ambiguityMultiplayer);
         }
         return trustLevel != 0 ? 1 / trustLevel : -1;
     }

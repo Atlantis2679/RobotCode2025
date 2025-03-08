@@ -38,7 +38,7 @@ public class SwerveModule implements Tuneable {
         io = Robot.isSimulation()
                 ? new SwerveModuleIOSim(fieldsTable, driveMotorID, turnMotorID, encoderID,
                         absoluteAngleOffSetDegrees)
-                : new SwerveModuleIOFalcon(fieldsTable, driveMotorID, turnMotorID, encoderID);
+                : new SwerveModuleIOFalcon(fieldsTable, driveMotorID, turnMotorID, encoderID, moduleNumber);
 
         NetworkAlertsManager.addWarningAlert(
             () -> "Swerve Module " + positionName + " " + moduleNumber + " Drive Motor Temp: " + io.driveMotorTemperature.getAsDouble(),

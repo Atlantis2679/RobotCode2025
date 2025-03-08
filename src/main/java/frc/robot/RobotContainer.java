@@ -91,8 +91,6 @@ public class RobotContainer {
                 .whileTrue(swerveCommands.alignToReef(false));
 
         driverController.start()
-                .whileTrue(ledsCommands.rainbow().asProxy().unless(() -> leds.getCurrentCommand() != null));
-        driverController.back()
                 .whileTrue(ledsCommands.bebeGradient().asProxy().unless(() -> leds.getCurrentCommand() != null));
 
         TuneablesManager.add("Swerve/modules control mode",
@@ -125,6 +123,9 @@ public class RobotContainer {
                 operatorController::getRightY,
                 operatorController::getLeftY));
 
+        operatorController.start()
+            .whileTrue(ledsCommands.rainbow().asProxy().unless(() -> leds.getCurrentCommand() != null));
+
         pivot.setDefaultCommand(allCommands.moveToRest());
         Command pivotDefaultRestLock = Commands
                 .runOnce(() -> pivot.setDefaultCommand(pivot.run(pivot::stop).finallyDo(() -> {
@@ -156,6 +157,7 @@ public class RobotContainer {
         swerve.registerCallbackOnPoseUpdate((pose, isRedAlliance) -> {
             field.setRobotPose(pose);
         });
+
         SmartDashboard.putData(field);
         autoChooser.onChange((command) -> {
             if (command.getName() != "None") {

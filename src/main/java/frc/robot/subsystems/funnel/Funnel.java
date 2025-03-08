@@ -19,8 +19,7 @@ public class Funnel extends SubsystemBase {
     private final Debouncer isCoralInDebouncer = new Debouncer(DEBOUNCER_SECONDS, DebounceType.kBoth);
 
     public Funnel() {
-        fieldsTable.recordOutput("current command",
-                getCurrentCommand() == null ? "none" : getCurrentCommand().getName());
+        fieldsTable.recordOutput("current command", getCurrentCommand() != null ? getCurrentCommand().getName() : "None");
 
         io = Robot.isReal() ? new FunnelIOSparksMax(this.fieldsTable) : new FunnelIOSim(this.fieldsTable);
     }
@@ -31,9 +30,9 @@ public class Funnel extends SubsystemBase {
     }
     @Override
     public void periodic(){
-        fieldsTable.update();
+        // fieldsTable.update();
         SmartDashboard.putBoolean("CoralInFunnel", getIsCoralIn());
-        fieldsTable.recordOutput("CoralInFunnel", getIsCoralIn());
+        fieldsTable.recordOutput("isCoralIn", getIsCoralIn());
     }
     public boolean getIsCoralIn() {
         return isCoralInDebouncer.calculate(io.isCoralIn.getAsBoolean());
