@@ -15,7 +15,7 @@ public class FieldConstants {
         ),
         new Pose2d(
             new Translation2d(3.668, 5.086),
-            new Rotation2d(Math.toRadians(-60))//works and is 3 oclock
+            new Rotation2d(Math.toRadians(-50))//works and is 3 oclock
         ),
         new Pose2d(
             new Translation2d(5.023, 5.254),
