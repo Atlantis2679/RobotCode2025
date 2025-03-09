@@ -7,19 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Test"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "intake"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Test"
+            "pathName": "CrossTheLineAndScoreRight"
           }
         },
         {
@@ -27,11 +15,23 @@
           "data": {
             "name": "score"
           }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "GetToCoralStationRightCycle1"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "intake"
+          }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": null,
+  "folder": "ScoreAndSource",
   "choreoAuto": false
 }

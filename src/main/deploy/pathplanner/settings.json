@@ -9,9 +9,8 @@
   ],
   "autoFolders": [
     "LeaveLine",
-    "OneCycleL1",
-    "OneCycleL2",
-    "ThreeCycles",
+    "ScoreAndSource",
+    "OneCycle",
     "TwoCycles"
   ],
   "defaultMaxVel": 4.632,

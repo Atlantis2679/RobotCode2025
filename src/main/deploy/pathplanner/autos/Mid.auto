@@ -20,6 +20,6 @@
     }
   },
   "resetOdom": true,
-  "folder": "OneCycleL1",
+  "folder": "OneCycle",
   "choreoAuto": false
 }
