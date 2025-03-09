@@ -112,7 +112,7 @@ public class SwerveCommands {
             double xSpeed = xController.calculate(currentPose.getX(), targetPose.getX());
             double ySpeed = yController.calculate(currentPose.getY(), targetPose.getY());
             double thetaSpeed = thetaController.calculate(
-                    swerve.getYawCCW().getRadians(),
+                    swerve.getPose().getRotation().getRadians(),
                     targetPose.getRotation().getRadians());
 
             xSpeed = MathUtil.clamp(swerve.getIsRedAlliance() ? -xSpeed : xSpeed, -2, 2);

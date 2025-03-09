@@ -12,6 +12,9 @@ import com.pathplanner.lib.path.PathPlannerPath;
 
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.units.Unit;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -82,6 +85,7 @@ public class RobotContainer {
         TuneablesManager.add("Swerve/drive command", driveCommand.fullTuneable());
         driverController.a().onTrue(new InstantCommand(swerve::resetYaw));
         driverController.x().onTrue(swerveCommands.xWheelLock());
+        driverController.b().onTrue(swerveCommands.driveToPosePID(() -> new Pose2d(swerve.getPose().getTranslation(), new Rotation2d(0))));
 
         TuneableCommand alignToReef = swerveCommands.alignToReef(true);
         driverController.leftTrigger()
