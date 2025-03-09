@@ -68,7 +68,7 @@ public class RobotContainer {
 
         configureDriverBindings();
         configureOperatorBindings();
-        configureAuto();
+        configureBackupAuto();
     }
 
     private void configureDriverBindings() {
@@ -190,6 +190,7 @@ public class RobotContainer {
     public void configureBackupAuto() {
         autoChooser.addOption("Drive Forward No Score", allCommands.autoDrive());
         autoChooser.addOption("Drive Forward Score L1", allCommands.autoDriveScoreL1());
+        SmartDashboard.putData("Auto Chooser", autoChooser);
     }
 
     public void setSubsystemsInTestModeState() {

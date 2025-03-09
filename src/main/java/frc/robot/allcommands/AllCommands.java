@@ -71,7 +71,7 @@ public class AllCommands {
                 return (new InstantCommand(swerve::resetYaw))
                         .andThen(swerve.run(() -> swerve.drive(
                                 AUTO_DRIVE_VOLTAGE_PERCANTAGE, 0, 0, true, true, true)))
-                        .withTimeout(AUTO_DRIVE_SECONDS).withName("autoDriveBackup");
+                        .withName("autoDriveBackup");
         }
 
         public Command autoDriveScoreL1() {
