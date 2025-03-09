@@ -7,19 +7,25 @@
         {
           "type": "path",
           "data": {
-            "pathName": "L2FromMidRight"
+            "pathName": "CrossTheLineAndScoreRight"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "scoreL3"
+            "name": "score"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": []
           }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": "OneCycleL2",
+  "folder": "OneCycle",
   "choreoAuto": false
 }

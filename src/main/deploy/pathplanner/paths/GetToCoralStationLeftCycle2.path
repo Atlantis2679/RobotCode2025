@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 4.0,
-        "y": 5.25
+        "x": 3.95,
+        "y": 5.2
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.964529299189701,
-        "y": 5.7802133960017406
+        "x": 3.9145292991897014,
+        "y": 5.730213396001741
       },
       "isLocked": false,
       "linkedName": "Cycle2Left"

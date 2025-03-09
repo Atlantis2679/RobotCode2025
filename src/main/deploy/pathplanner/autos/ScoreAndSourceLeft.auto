@@ -7,7 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "CrossTheLineAndScoreRight"
+            "pathName": "CrossTheLineAndScoreLeft"
           }
         },
         {
@@ -17,15 +17,21 @@
           }
         },
         {
-          "type": "parallel",
+          "type": "path",
           "data": {
-            "commands": []
+            "pathName": "GetToCoralStationLeftCycle1"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "intake"
           }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": "OneCycleL1",
+  "folder": "ScoreAndSource",
   "choreoAuto": false
 }
