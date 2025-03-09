@@ -25,10 +25,10 @@ public class AllCommandsConstants {
     public final static double AUTO_DRIVE_VOLTAGE_PERCANTAGE = 0.2;
 
     public static class ManualControllers {
-        public static final double FUNNEL_SPEED_MULTIPLAYER = 0.5;
+        public static final double FUNNEL_SPEED_MULTIPLAYER = 0.6;
         public static final double GRIPPER_LEFT_SPEED_MULTIPLAYER = 0.5;
         public static final double GRIPPER_RIGHT_SPEED_MULTIPLAYER = 0.5;
         public static final double GRIPPER_BACK_SPEED_MULTIPLAYER = 0.5;
-        public static final double PIVOT_SPEED_MULTIPLAYER = 0.5;
+        public static final double PIVOT_SPEED_MULTIPLAYER = 0.7;
     }
 }
