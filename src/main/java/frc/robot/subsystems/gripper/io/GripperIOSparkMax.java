@@ -80,11 +80,11 @@ public class GripperIOSparkMax extends GripperIO {
         leftOuttakeMotorConfig.idleMode(isBreak ? IdleMode.kBrake : IdleMode.kCoast);
         backMotorConfig.idleMode(isBreak ? IdleMode.kBrake : IdleMode.kCoast);
         
-        leftOuttakeMotorConfigError = leftOuttakeMotor.configure(leftOuttakeMotorConfig, ResetMode.kResetSafeParameters,
+        leftOuttakeMotorConfigError = leftOuttakeMotor.configure(leftOuttakeMotorConfig, ResetMode.kNoResetSafeParameters,
                 PersistMode.kPersistParameters);
-        rightOuttakeMotorConfigError = rightOuttakeMotor.configure(rightOuttakeMotorConfig, ResetMode.kResetSafeParameters,
+        rightOuttakeMotorConfigError = rightOuttakeMotor.configure(rightOuttakeMotorConfig, ResetMode.kNoResetSafeParameters,
                 PersistMode.kPersistParameters);
-        backMotorConfigError = backMotor.configure(backMotorConfig, ResetMode.kResetSafeParameters,
+        backMotorConfigError = backMotor.configure(backMotorConfig, ResetMode.kNoResetSafeParameters,
                 PersistMode.kPersistParameters);
     }
 
