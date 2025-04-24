@@ -19,7 +19,6 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import frc.lib.logfields.LogFieldsTable;
-import frc.robot.utils.NetworkAlertsMotors;
 
 public class SwerveModuleIOFalcon extends SwerveModuleIO {
     private final TalonFX driveMotor;
@@ -77,25 +76,6 @@ public class SwerveModuleIOFalcon extends SwerveModuleIO {
         StatusCode driveMotorConfigError = driveMotor.getConfigurator().apply(driveMotorConfiguration);
         StatusCode turnMotorConfigError = turnMotor.getConfigurator().apply(turnMotorConfiguration);
         StatusCode canCoderMotorConfigError = canCoder.getConfigurator().apply(canCoderConfiguration);
-
-        NetworkAlertsMotors.addStatusCodeAlert("Swerve Module " + moduleNum + " Drive Motor Config: ",
-            () -> driveMotorConfigError);
-        NetworkAlertsMotors.addStatusCodeAlert("Swerve Module " + moduleNum + " Turn Motor Config: ",
-            () -> turnMotorConfigError);
-        NetworkAlertsMotors.addStatusCodeAlert("Swerve Module " + moduleNum + " Can Coder Config: ",
-            () -> canCoderMotorConfigError);
-
-        NetworkAlertsMotors.addStatusCodeAlert("Swerve Module " + moduleNum + " Drive Motor: ",
-            () -> driveMotor.getVersion().getStatus());
-        NetworkAlertsMotors.addStatusCodeAlert("Swerve Module " + moduleNum + " Turn Motor: ",
-            () -> turnMotor.getVersion().getStatus());
-        NetworkAlertsMotors.addStatusCodeAlert("Swerve Module " + moduleNum + " CanCoder Motor: ",
-            () -> canCoder.getVersion().getStatus());
-
-        NetworkAlertsMotors.addMotorStuckAlert("Swerve Module " + moduleNum + " Drive Motor: ",
-            driveStatorCurrent, () -> driveMotor.getMotorVoltage().getValueAsDouble());
-        NetworkAlertsMotors.addMotorStuckAlert("Swerve Module " + moduleNum + " Turn Motor: ",
-            turnStatorCurrent, () -> turnMotor.getMotorVoltage().getValueAsDouble());
     }
 
     @Override

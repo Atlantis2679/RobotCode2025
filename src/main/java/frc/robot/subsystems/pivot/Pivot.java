@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.logfields.LogFieldsTable;
+import frc.lib.networkalerts.NetworkAlertsManager;
 import frc.lib.tuneables.Tuneable;
 import frc.lib.tuneables.TuneableBuilder;
 import frc.lib.tuneables.TuneablesManager;
@@ -21,7 +22,6 @@ import frc.robot.subsystems.pivot.PivotConstants.Sim;
 import frc.robot.subsystems.pivot.io.PivotIO;
 import frc.robot.subsystems.pivot.io.PivotIOSim;
 import frc.robot.subsystems.pivot.io.PivotIOSparkMax;
-import frc.robot.utils.NetworkAlertsManager;
 import frc.robot.utils.PrimitiveRotationalSensorHelper;
 
 public class Pivot extends SubsystemBase implements Tuneable {
@@ -59,7 +59,7 @@ public class Pivot extends SubsystemBase implements Tuneable {
 
         TuneablesManager.add("Pivot", (Tuneable) this);
 
-        NetworkAlertsManager.addErrorAlert("Pivot: Encoder is Disconnected!", () -> !getEncoderConnectedDebouncer());
+        NetworkAlertsManager.addErrorAlert(() -> "Pivot: Encoder is Disconnected!", () -> !getEncoderConnectedDebouncer());
     }
 
     @Override

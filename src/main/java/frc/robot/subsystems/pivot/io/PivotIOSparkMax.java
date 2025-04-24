@@ -10,7 +10,6 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import frc.lib.logfields.LogFieldsTable;
-import frc.robot.utils.NetworkAlertsMotors;
 
 import static frc.robot.RobotMap.*;
 
@@ -27,10 +26,6 @@ public class PivotIOSparkMax extends PivotIO {
         config.idleMode(IdleMode.kBrake);
         REVLibError configError = pivotMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         encoder.setDutyCycleRange(0, 1);
-
-        NetworkAlertsMotors.addRevLibErrorAlert("Pivot Motor Config", () -> configError);
-        NetworkAlertsMotors.addMotorStuckAlert("Pivot Motor is Stuck!", motorCurrent, pivotMotor::getAppliedOutput);
-        NetworkAlertsMotors.addSparkMotorAlert("Pivot Motor: ", pivotMotor::getFaults, pivotMotor::getWarnings);
     }
 
     // Inputs:

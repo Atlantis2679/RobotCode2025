@@ -19,8 +19,8 @@ import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.lib.logfields.LogFieldsTable;
+import frc.lib.networkalerts.NetworkAlertsManager;
 import frc.lib.tuneables.TuneablesManager;
-import frc.robot.utils.NetworkAlertsManager;
 
 public class Robot extends LoggedRobot {
     private Command autonomousCommand;

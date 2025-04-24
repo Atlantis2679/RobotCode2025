@@ -1,4 +1,4 @@
-package frc.robot.utils;
+package frc.lib.networkalerts;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,48 +18,55 @@ public class NetworkAlertsManager {
         }
     }
 
-    public static BooleanSupplier addAlert(String message, AlertType alertType, BooleanSupplier isActive) {
-        return addAlert(() -> message, alertType, isActive);
-    }
-
     public static BooleanSupplier addAlert(Supplier<String> message, AlertType alertType, BooleanSupplier isActive) {
         alerts.add(new NetworkPeriodicAlert(message, alertType, isActive));
         return isActive;
     }
 
-    public static BooleanSupplier addInfoAlert(String message, BooleanSupplier isActive) {
-        return addAlert(message, AlertType.kInfo, isActive);
+    public static BooleanSupplier addAlert(String groupName, Supplier<String> message, AlertType alertType, BooleanSupplier isActive) {
+        alerts.add(new NetworkPeriodicAlert(groupName, message, alertType, isActive));
+        return isActive;
     }
 
     public static BooleanSupplier addInfoAlert(Supplier<String> message, BooleanSupplier isActive) {
         return addAlert(message, AlertType.kInfo, isActive);
     }
 
-    public static BooleanSupplier addWarningAlert(String message, BooleanSupplier isActive) {
-        return addAlert(message, AlertType.kWarning, isActive);
+    public static BooleanSupplier addInfoAlert(String groupName, Supplier<String> message, BooleanSupplier isActive) {
+        return addAlert(groupName, message, AlertType.kInfo, isActive);
     }
 
     public static BooleanSupplier addWarningAlert(Supplier<String> message, BooleanSupplier isActive) {
         return addAlert(message, AlertType.kWarning, isActive);
     }
 
-    public static BooleanSupplier addErrorAlert(String message, BooleanSupplier isActive) {
-        return addAlert(message, AlertType.kError, isActive);
+    public static BooleanSupplier addWarningAlert(String groupName, Supplier<String> message, BooleanSupplier isActive) {
+        return addAlert(groupName, message, AlertType.kWarning, isActive);
     }
 
     public static BooleanSupplier addErrorAlert(Supplier<String> message, BooleanSupplier isActive) {
         return addAlert(message, AlertType.kError, isActive);
     }
 
+    public static BooleanSupplier addErrorAlert(String groupName, Supplier<String> message, BooleanSupplier isActive) {
+        return addAlert(groupName, message, AlertType.kError, isActive);
+    }
+
+    public static BooleanSupplier addGenericError(Supplier<GenericError> error) {
+        if (error.get().alertGroup() != null)
+            return addAlert(error.get().alertGroup(), () -> error.get().message(), error.get().alertType(), () -> error.get().isActive());
+        else
+            return addAlert(() -> error.get().message(), error.get().alertType(), () -> error.get().isActive());
+    }
+
     private static class NetworkPeriodicAlert {
+        private static final String defaultGroupName = "NetworkAlerts";
         private final Supplier<String> messageSupplier;
         private final Alert alert;
         private final BooleanSupplier isActive;
 
         private NetworkPeriodicAlert(Supplier<String> messageSupplier, AlertType alertType, BooleanSupplier isActive) {
-            this.messageSupplier = messageSupplier;
-            this.alert = new Alert(messageSupplier.get(), alertType);
-            this.isActive = isActive;
+            this(defaultGroupName, messageSupplier, alertType, isActive);
         }
 
         private NetworkPeriodicAlert(String groupName, Supplier<String> messageSupplier, AlertType alertType, BooleanSupplier isActive) {

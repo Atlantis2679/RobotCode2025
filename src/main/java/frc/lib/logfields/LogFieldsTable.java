@@ -16,10 +16,13 @@ import edu.wpi.first.util.WPISerializable;
 import edu.wpi.first.util.function.FloatSupplier;
 import edu.wpi.first.util.struct.StructSerializable;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Alert.AlertType;
 import frc.lib.logfields.logfields.BooleanLogField;
 import frc.lib.logfields.logfields.DoubleLogField;
 import frc.lib.logfields.logfields.FloatLogField;
 import frc.lib.logfields.logfields.IntegerLogField;
+import frc.lib.logfields.logfields.LongLogField;
+import frc.lib.networkalerts.GenericError;
 import frc.lib.logfields.logfields.LogField;
 
 public class LogFieldsTable implements LoggableInputs {
@@ -119,15 +122,26 @@ public class LogFieldsTable implements LoggableInputs {
         return addBoolean(name, valueSupplier, false);
     }
 
-    public LongSupplier addInteger(
-            String name,
-            LongSupplier valueSupplier,
-            long defaultValue) {
+    public Supplier<Integer> addInteger(
+        String name,
+        Supplier<Integer> valueSupplier,
+        int defaultValue) {
         return registerField(new IntegerLogField(name, valueSupplier, defaultValue));
     }
 
-    public LongSupplier addInteger(String name, LongSupplier valueSupplier) {
+    public Supplier<Integer> addInteger(String name, Supplier<Integer> valueSupplier) {
         return addInteger(name, valueSupplier, 0);
+    }
+
+    public LongSupplier addLong(
+            String name,
+            LongSupplier valueSupplier,
+            long defaultValue) {
+        return registerField(new LongLogField(name, valueSupplier, defaultValue));
+    }
+
+    public LongSupplier addLong(String name, LongSupplier valueSupplier) {
+        return addLong(name, valueSupplier, 0);
     }
 
     public FloatSupplier addFloat(
@@ -174,15 +188,26 @@ public class LogFieldsTable implements LoggableInputs {
         return addBooleanArray(name, valueSupplier, new boolean[0]);
     }
 
-    public Supplier<long[]> addIntegerArray(
+    public Supplier<int[]> addIntegerArray(
+        String name,
+        Supplier<int[]> valueSupplier,
+        int[] defaultValue) {
+        return registerField(new LogField<>(name, valueSupplier, LogTable::get, LogTable::put, defaultValue));
+    }
+
+    public Supplier<int[]> addIntegerArray(String name, Supplier<int[]> valueSupplier) {
+        return addIntegerArray(name, valueSupplier, new int[0]);
+    }
+
+    public Supplier<long[]> addLongArray(
             String name,
             Supplier<long[]> valueSupplier,
             long[] defaultValue) {
         return registerField(new LogField<>(name, valueSupplier, LogTable::get, LogTable::put, defaultValue));
     }
 
-    public Supplier<long[]> addIntegerArray(String name, Supplier<long[]> valueSupplier) {
-        return addIntegerArray(name, valueSupplier, new long[0]);
+    public Supplier<long[]> addLongArray(String name, Supplier<long[]> valueSupplier) {
+        return addLongArray(name, valueSupplier, new long[0]);
     }
 
     public Supplier<float[]> addFloatArray(
@@ -230,15 +255,26 @@ public class LogFieldsTable implements LoggableInputs {
         return addBooleanMatrix(name, valueSupplier, new boolean[0][0]);
     }
 
-    public Supplier<long[][]> addIntegerMatrix(
+    public Supplier<int[][]> addIntegerMatrix(
+        String name,
+        Supplier<int[][]> valueSupplier,
+        int[][] defaultValue) {
+        return registerField(new LogField<>(name, valueSupplier, LogTable::get, LogTable::put, defaultValue));
+    }
+
+    public Supplier<int[][]> addIntegerMatrix(String name, Supplier<int[][]> valueSupplier) {
+        return addIntegerMatrix(name, valueSupplier, new int[0][0]);
+    }
+
+    public Supplier<long[][]> addLongMatrix(
             String name,
             Supplier<long[][]> valueSupplier,
             long[][] defaultValue) {
         return registerField(new LogField<>(name, valueSupplier, LogTable::get, LogTable::put, defaultValue));
     }
 
-    public Supplier<long[][]> addIntegerMatrix(String name, Supplier<long[][]> valueSupplier) {
-        return addIntegerMatrix(name, valueSupplier, new long[0][0]);
+    public Supplier<long[][]> addLongMatrix(String name, Supplier<long[][]> valueSupplier) {
+        return addLongMatrix(name, valueSupplier, new long[0][0]);
     }
 
     public Supplier<float[][]> addFloatMatrix(
@@ -275,6 +311,25 @@ public class LogFieldsTable implements LoggableInputs {
         return addStringMatrix(name, valueSupplier, new String[0][0]);
     }
 
+    public Supplier<GenericError> addGenericError(
+        String name,
+        Supplier<GenericError> valueSupplier,
+        GenericError defaultValue) {
+            LogFieldsTable subTable = getSubTable(name);
+            Supplier<String> message = subTable.addString(name, () -> valueSupplier.get().message());
+            Supplier<String> alertGroup = subTable.addString(name, () -> valueSupplier.get().alertGroup());
+            Supplier<String> errorType = subTable.addString(name, () -> valueSupplier.get().errorType());
+            Supplier<String> details = subTable.addString(name, () -> valueSupplier.get().details());
+            Supplier<Integer> errorCode = subTable.addInteger(name, () -> valueSupplier.get().errorCode());
+            BooleanSupplier isActive = subTable.addBoolean(name, () -> valueSupplier.get().isActive());
+            Supplier<String> alertType = subTable.addString(name, () -> valueSupplier.get().alertType().name());
+            return () -> new GenericError(message.get(), alertGroup.get(), errorType.get(), details.get(), errorCode.get(), isActive.getAsBoolean(), AlertType.valueOf(alertType.get()));
+    }
+
+    public Supplier<GenericError> addGenericError(String name, Supplier<GenericError> valueSupplier) {
+        return addGenericError(name, valueSupplier, new GenericError("none", valueSupplier.get().alertGroup(), "none", "none", 0, false, valueSupplier.get().alertType()));
+    }
+
     public <T extends WPISerializable> Supplier<T> addObject(
             String name,
             Supplier<T> valueSupplier,
@@ -309,6 +364,10 @@ public class LogFieldsTable implements LoggableInputs {
         Logger.recordOutput(prefix + name, value);
     }
 
+    public void recordOutput(String name, int value) {
+        Logger.recordOutput(prefix + name, value);
+    }
+
     public void recordOutput(String name, long value) {
         Logger.recordOutput(prefix + name, value);
     }
@@ -329,6 +388,10 @@ public class LogFieldsTable implements LoggableInputs {
         Logger.recordOutput(prefix + name, value);
     }
 
+    public void recordOutput(String name, int[] value) {
+        Logger.recordOutput(prefix + name, value);
+    }
+
     public void recordOutput(String name, long[] value) {
         Logger.recordOutput(prefix + name, value);
     }
@@ -346,6 +409,10 @@ public class LogFieldsTable implements LoggableInputs {
     }
 
     public void recordOutput(String name, boolean[][] value) {
+        Logger.recordOutput(prefix + name, value);
+    }
+
+    public void recordOutput(String name, int[][] value) {
         Logger.recordOutput(prefix + name, value);
     }
 
