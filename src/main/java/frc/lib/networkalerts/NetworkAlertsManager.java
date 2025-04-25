@@ -60,11 +60,12 @@ public class NetworkAlertsManager {
         return addAlert(groupName, message, AlertType.kError, isActive);
     }
 
-    public static BooleanSupplier addGenericError(Supplier<GenericError> error) {
+    public static Supplier<GenericError> addGenericError(Supplier<GenericError> error) {
         if (error.get().alertGroup() != null)
-            return addAlert(error.get().alertGroup(), () -> error.get().message(), error.get().alertType(), () -> error.get().isActive());
+            addAlert(error.get().alertGroup(), () -> error.get().message(), error.get().alertType(), () -> error.get().isActive());
         else
-            return addAlert(() -> error.get().message(), error.get().alertType(), () -> error.get().isActive());
+            addAlert(() -> error.get().message(), error.get().alertType(), () -> error.get().isActive());
+        return error;
     }
 
     private static class NetworkPeriodicAlert {
