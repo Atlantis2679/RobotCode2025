@@ -19,11 +19,19 @@ public class NetworkAlertsManager {
     }
 
     public static BooleanSupplier addAlert(Supplier<String> message, AlertType alertType, BooleanSupplier isActive) {
+        return addAlert(message, () -> alertType, isActive);
+    }
+
+    public static BooleanSupplier addAlert(String groupName, Supplier<String> message, AlertType alertType, BooleanSupplier isActive) {
+        return addAlert(() -> groupName, message, () -> alertType, isActive);
+    }
+
+    public static BooleanSupplier addAlert(Supplier<String> message, Supplier<AlertType> alertType, BooleanSupplier isActive) {
         alerts.add(new NetworkPeriodicAlert(message, alertType, isActive));
         return isActive;
     }
 
-    public static BooleanSupplier addAlert(String groupName, Supplier<String> message, AlertType alertType, BooleanSupplier isActive) {
+    public static BooleanSupplier addAlert(Supplier<String> groupName, Supplier<String> message, Supplier<AlertType> alertType, BooleanSupplier isActive) {
         alerts.add(new NetworkPeriodicAlert(groupName, message, alertType, isActive));
         return isActive;
     }
@@ -61,21 +69,31 @@ public class NetworkAlertsManager {
 
     private static class NetworkPeriodicAlert {
         private static final String defaultGroupName = "NetworkAlerts";
+        private final Supplier<String> groupSupplier;
         private final Supplier<String> messageSupplier;
-        private final Alert alert;
+        private String currentGruopName;
+        private final Supplier<AlertType> alertTypeSupplier;
+        private Alert alert;
         private final BooleanSupplier isActive;
 
-        private NetworkPeriodicAlert(Supplier<String> messageSupplier, AlertType alertType, BooleanSupplier isActive) {
-            this(defaultGroupName, messageSupplier, alertType, isActive);
+        private NetworkPeriodicAlert(Supplier<String> messageSupplier, Supplier<AlertType> alertTypeSupplier, BooleanSupplier isActive) {
+            this(() -> defaultGroupName, messageSupplier, alertTypeSupplier, isActive);
         }
 
-        private NetworkPeriodicAlert(String groupName, Supplier<String> messageSupplier, AlertType alertType, BooleanSupplier isActive) {
+        private NetworkPeriodicAlert(Supplier<String> groupSupplier, Supplier<String> messageSupplier, Supplier<AlertType> alertTypeSupplier, BooleanSupplier isActive) {
+            this.groupSupplier = groupSupplier;
+            this.currentGruopName = groupSupplier.get();
             this.messageSupplier = messageSupplier;
-            this.alert = new Alert(groupName, messageSupplier.get(), alertType);
+            this.alertTypeSupplier = alertTypeSupplier;
+            this.alert = new Alert(currentGruopName, messageSupplier.get(), alertTypeSupplier.get());
             this.isActive = isActive;
         }
 
         private void update() {
+            if (alert.getType() != alertTypeSupplier.get() || currentGruopName != groupSupplier.get()) {
+                this.currentGruopName = groupSupplier.get();
+                this.alert = new Alert(currentGruopName, messageSupplier.get(), alertTypeSupplier.get());
+            }
             alert.setText(messageSupplier.get());
             alert.set(isActive.getAsBoolean());
         }

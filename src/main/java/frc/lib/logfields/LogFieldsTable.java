@@ -316,13 +316,13 @@ public class LogFieldsTable implements LoggableInputs {
         Supplier<GenericError> valueSupplier,
         GenericError defaultValue) {
             LogFieldsTable subTable = getSubTable(name);
-            Supplier<String> message = subTable.addString(name, () -> valueSupplier.get().message());
-            Supplier<String> alertGroup = subTable.addString(name, () -> valueSupplier.get().alertGroup());
-            Supplier<String> errorType = subTable.addString(name, () -> valueSupplier.get().errorType());
-            Supplier<String> details = subTable.addString(name, () -> valueSupplier.get().details());
-            Supplier<Integer> errorCode = subTable.addInteger(name, () -> valueSupplier.get().errorCode());
-            BooleanSupplier isActive = subTable.addBoolean(name, () -> valueSupplier.get().isActive());
-            Supplier<String> alertType = subTable.addString(name, () -> valueSupplier.get().alertType().name());
+            Supplier<String> message = subTable.addString(name, () -> valueSupplier.get().message(), defaultValue.message());
+            Supplier<String> alertGroup = subTable.addString(name, () -> valueSupplier.get().alertGroup(), defaultValue.alertGroup());
+            Supplier<String> errorType = subTable.addString(name, () -> valueSupplier.get().errorType(), defaultValue.errorType());
+            Supplier<String> details = subTable.addString(name, () -> valueSupplier.get().details(), defaultValue.details());
+            Supplier<Integer> errorCode = subTable.addInteger(name, () -> valueSupplier.get().errorCode(), defaultValue.errorCode());
+            BooleanSupplier isActive = subTable.addBoolean(name, () -> valueSupplier.get().isActive(), defaultValue.isActive());
+            Supplier<String> alertType = subTable.addString(name, () -> valueSupplier.get().alertType().name(), defaultValue.alertType().name());
             return () -> new GenericError(message.get(), alertGroup.get(), errorType.get(), details.get(), errorCode.get(), isActive.getAsBoolean(), AlertType.valueOf(alertType.get()));
     }
 
