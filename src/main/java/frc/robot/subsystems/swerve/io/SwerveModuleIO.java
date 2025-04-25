@@ -1,9 +1,12 @@
 package frc.robot.subsystems.swerve.io;
 
 import java.util.function.DoubleSupplier;
+import java.util.function.Supplier;
 
 import frc.lib.logfields.IOBase;
 import frc.lib.logfields.LogFieldsTable;
+import frc.lib.networkalerts.GenericError;
+import frc.lib.networkalerts.NetworkAlertsManager;
 
 public abstract class SwerveModuleIO extends IOBase {
         public final DoubleSupplier absoluteTurnAngleRotations = fields.addDouble("absoluteTurnAngleRotations",
@@ -24,11 +27,17 @@ public abstract class SwerveModuleIO extends IOBase {
         public final DoubleSupplier TurnKP = fields.addDouble("Turn kP", this::getTurnKP);
         public final DoubleSupplier TurnKI = fields.addDouble("Turn kI", this::getTurnKI);
         public final DoubleSupplier TurnKD = fields.addDouble("Turn kD", this::getTurnKD);
-
         public final DoubleSupplier driveMotorTemperature = fields.addDouble(
                         "driveMotorTemperature", this::getDriveMotorTemperature);
         public final DoubleSupplier turnMotorTemperature = fields.addDouble(
                         "turnMotorTemperature", this::getTurnMotorTemperature);
+        public final Supplier<GenericError> driveMotorError = NetworkAlertsManager.addGenericError(fields.addGenericError(
+                "driveMotorError", this::getDriveMotorError));
+        public final Supplier<GenericError> turnMotorError = NetworkAlertsManager.addGenericError(fields.addGenericError(
+                "turnMotorError", this::getTurnMotorError));
+        public final Supplier<GenericError> canCoderError = NetworkAlertsManager.addGenericError(fields.addGenericError(
+                "canCoderError", this::getCanCoderError));
+
 
         public SwerveModuleIO(LogFieldsTable fieldsTable) {
                 super(fieldsTable);
@@ -61,6 +70,12 @@ public abstract class SwerveModuleIO extends IOBase {
         protected abstract double getDriveMotorTemperature();
 
         protected abstract double getTurnMotorTemperature();
+
+        protected abstract GenericError getDriveMotorError();
+
+        protected abstract GenericError getTurnMotorError();
+
+        protected abstract GenericError getCanCoderError();
 
         // Outputs
 

@@ -2,11 +2,17 @@ package frc.robot.subsystems.pivot.io;
 
 import static frc.robot.subsystems.pivot.PivotConstants.Sim.*;
 
+import com.revrobotics.REVLibError;
+import com.revrobotics.spark.SparkBase.Faults;
+import com.revrobotics.spark.SparkBase.Warnings;
+
 import static frc.robot.subsystems.pivot.PivotConstants.ANGLE_OFFSET;
 
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 import frc.lib.logfields.LogFieldsTable;
+import frc.lib.networkalerts.GenericError;
+import frc.robot.utils.GenericErrorGenerator;
 
 public class PivotIOSim extends PivotIO {
     private final SingleJointedArmSim pivotMotor = new SingleJointedArmSim(
@@ -48,5 +54,20 @@ public class PivotIOSim extends PivotIO {
     @Override
     protected boolean getIsEncoderConnected() {
         return false;
+    }
+
+    @Override
+    protected GenericError getMotorError() {
+        return GenericErrorGenerator.sparkMaxError(new Faults(0), "Pivot", "Motor");
+    }
+
+    @Override
+    protected GenericError getMotorWarning() {
+        return GenericErrorGenerator.sparkMaxWarning(new Warnings(0), "Pivot", "Motor");
+    }
+
+    @Override
+    protected GenericError getMotorConfigError() {
+        return GenericErrorGenerator.revError(REVLibError.kOk, "Pivot", "Motor Config");
     }
 }

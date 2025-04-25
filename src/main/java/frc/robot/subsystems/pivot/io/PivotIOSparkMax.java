@@ -10,6 +10,8 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import frc.lib.logfields.LogFieldsTable;
+import frc.lib.networkalerts.GenericError;
+import frc.robot.utils.GenericErrorGenerator;
 
 import static frc.robot.RobotMap.*;
 
@@ -19,12 +21,13 @@ public class PivotIOSparkMax extends PivotIO {
     private final SparkMax pivotMotor = new SparkMax(CANBUS.PIVOT_MOTOR_ID, MotorType.kBrushless);
     private final DutyCycleEncoder encoder = new DutyCycleEncoder(PIVOT_ENCODER_ID);
     private final SparkMaxConfig config = new SparkMaxConfig();
+    private final REVLibError configError;
 
     public PivotIOSparkMax(LogFieldsTable fieldsTable) {
         super(fieldsTable);
         config.smartCurrentLimit(PIVOT_CURRENT_LIMIT);
         config.idleMode(IdleMode.kBrake);
-        REVLibError configError = pivotMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        configError = pivotMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         encoder.setDutyCycleRange(0, 1);
     }
 
@@ -48,5 +51,20 @@ public class PivotIOSparkMax extends PivotIO {
     @Override
     protected boolean getIsEncoderConnected() {
         return encoder.isConnected();
+    }
+
+    @Override
+    protected GenericError getMotorError() {
+        return GenericErrorGenerator.sparkMaxError(pivotMotor.getFaults(), "Pivot", "Motor");
+    }
+
+    @Override
+    protected GenericError getMotorWarning() {
+        return GenericErrorGenerator.sparkMaxWarning(pivotMotor.getWarnings(), "Pivot", "Motor");
+    }
+
+    @Override
+    protected GenericError getMotorConfigError() {
+        return GenericErrorGenerator.revError(configError, "Pivot", "Motor Config");
     }
 }

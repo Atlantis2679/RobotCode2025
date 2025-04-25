@@ -6,7 +6,12 @@ import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.wpilibj.simulation.FlywheelSim;
 import frc.lib.logfields.LogFieldsTable;
+import frc.lib.networkalerts.GenericError;
+import frc.robot.utils.GenericErrorGenerator;
+
 import static frc.robot.subsystems.swerve.SwerveContants.*;
+
+import com.ctre.phoenix6.StatusCode;
 
 public class SwerveModuleIOSim extends SwerveModuleIO {
     private final FlywheelSim driveMotorSim;
@@ -14,11 +19,14 @@ public class SwerveModuleIOSim extends SwerveModuleIO {
     private double simAbsoluteTurnRotations;
     private double simIntegeratedTurnRotations = 0;
     private double simDriveRotations = 0;
+    private int moduleNum;
     private final PIDController turnPIDController = new PIDController(15, 0, 0);
 
     public SwerveModuleIOSim(LogFieldsTable fieldsTable, int driveMotorID, int angleMotorID, int encoderID,
-            double absoluteAngleOffsetDegrees) {
+            double absoluteAngleOffsetDegrees, int moduleNum) {
         super(fieldsTable);
+
+        this.moduleNum = moduleNum;
 
         simAbsoluteTurnRotations = calculateToAbsoluteRotations(absoluteAngleOffsetDegrees / 360);
 
@@ -170,5 +178,20 @@ public class SwerveModuleIOSim extends SwerveModuleIO {
     @Override
     protected double getTurnMotorTemperature() {
         return 0;
+    }
+
+        @Override
+    protected GenericError getDriveMotorError() {
+        return GenericErrorGenerator.phoenixError(StatusCode.OK, "Swerve Module " + moduleNum, "Drive Motor");
+    }
+
+    @Override
+    protected GenericError getTurnMotorError() {
+        return GenericErrorGenerator.phoenixError(StatusCode.OK, "Swerve Module " + moduleNum, "Turn Motor");
+    }
+
+    @Override
+    protected GenericError getCanCoderError() {
+        return GenericErrorGenerator.phoenixError(StatusCode.OK, "Swerve Module " + moduleNum, "CANCoder");
     }
 }

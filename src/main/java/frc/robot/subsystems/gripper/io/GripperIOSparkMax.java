@@ -14,7 +14,9 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import frc.lib.logfields.LogFieldsTable;
+import frc.lib.networkalerts.GenericError;
 import frc.robot.RobotMap.CANBUS;
+import frc.robot.utils.GenericErrorGenerator;
 
 public class GripperIOSparkMax extends GripperIO {
     private final SparkMax rightOuttakeMotor = new SparkMax(CANBUS.GRIPPER_RIGHT_OUTTAKE_MOTOR_ID, MotorType.kBrushless);
@@ -105,5 +107,50 @@ public class GripperIOSparkMax extends GripperIO {
     @Override
     protected double getBackMotorCurrent() {
         return backMotor.getOutputCurrent();
+    }
+
+    @Override
+    protected GenericError getRightOuttakeMotorError() {
+        return GenericErrorGenerator.sparkMaxError(rightOuttakeMotor.getFaults(), "Gripper", "Right Outtake Motor");
+    }
+
+    @Override
+    protected GenericError getLeftOuttakeMotorError() {
+        return GenericErrorGenerator.sparkMaxError(leftOuttakeMotor.getFaults(), "Gripper", "Left Outtake Motor");
+    }
+
+    @Override
+    protected GenericError getBackMotorError() {
+        return GenericErrorGenerator.sparkMaxError(backMotor.getFaults(), "Gripper", "Back Motor");
+    }
+
+    @Override
+    protected GenericError getRightOuttakeMotorWarning() {
+        return GenericErrorGenerator.sparkMaxWarning(rightOuttakeMotor.getWarnings(), "Gripper", "Right Outtake Motor");
+    }
+
+    @Override
+    protected GenericError getLeftOuttakeMotorWarning() {
+        return GenericErrorGenerator.sparkMaxWarning(leftOuttakeMotor.getWarnings(), "Gripper", "Left Outtake Motor");
+    }
+
+    @Override
+    protected GenericError getBackMotorWarning() {
+        return GenericErrorGenerator.sparkMaxWarning(backMotor.getWarnings(), "Gripper", "Back Motor");
+    }
+
+    @Override
+    protected GenericError getRightOuttakeMotorConfigError() {
+        return GenericErrorGenerator.revError(rightOuttakeMotorConfigError, "Gripper", "Right Outtake Motor");
+    }
+
+    @Override
+    protected GenericError getLeftOuttakeMotorConfigError() {
+        return GenericErrorGenerator.revError(leftOuttakeMotorConfigError, "Gripper", "Left Outtake Motor");
+    }
+
+    @Override
+    protected GenericError getBackMotorConfigError() {
+        return GenericErrorGenerator.revError(backMotorConfigError, "Gripper", "Back Motor");
     }
 }

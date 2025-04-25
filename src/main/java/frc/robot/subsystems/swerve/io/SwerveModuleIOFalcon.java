@@ -19,6 +19,8 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import frc.lib.logfields.LogFieldsTable;
+import frc.lib.networkalerts.GenericError;
+import frc.robot.utils.GenericErrorGenerator;
 
 public class SwerveModuleIOFalcon extends SwerveModuleIO {
     private final TalonFX driveMotor;
@@ -29,10 +31,18 @@ public class SwerveModuleIOFalcon extends SwerveModuleIO {
     private final VoltageOut driveVoltageControl = new VoltageOut(0);
     private final DutyCycleOut drivePrecentageControl = new DutyCycleOut(0);
 
+    private final StatusCode driveMotorConfigError;
+    private final StatusCode turnMotorConfigError;
+    private final StatusCode canCoderConfigError;
+
+    private final int moduleNum;
+
     private final Slot0Configs turnSlotConfigs;
 
     public SwerveModuleIOFalcon(LogFieldsTable fieldsTable, int driveMotorID, int turnMotorID, int encoderID, int moduleNum) {
         super(fieldsTable);
+
+        this.moduleNum = moduleNum;
 
         driveMotor = new TalonFX(driveMotorID);
         turnMotor = new TalonFX(turnMotorID);
@@ -73,9 +83,9 @@ public class SwerveModuleIOFalcon extends SwerveModuleIO {
 
         CANcoderConfiguration canCoderConfiguration = new CANcoderConfiguration();
 
-        StatusCode driveMotorConfigError = driveMotor.getConfigurator().apply(driveMotorConfiguration);
-        StatusCode turnMotorConfigError = turnMotor.getConfigurator().apply(turnMotorConfiguration);
-        StatusCode canCoderMotorConfigError = canCoder.getConfigurator().apply(canCoderConfiguration);
+        driveMotorConfigError = driveMotor.getConfigurator().apply(driveMotorConfiguration);
+        turnMotorConfigError = turnMotor.getConfigurator().apply(turnMotorConfiguration);
+        canCoderConfigError = canCoder.getConfigurator().apply(canCoderConfiguration);
     }
 
     @Override
@@ -185,5 +195,20 @@ public class SwerveModuleIOFalcon extends SwerveModuleIO {
     @Override
     protected double getTurnMotorTemperature() {
         return turnMotor.getDeviceTemp().getValueAsDouble();
+    }
+
+    @Override
+    protected GenericError getDriveMotorError() {
+        return GenericErrorGenerator.phoenixError(driveMotorConfigError, "Swerve Module " + moduleNum, "Drive Motor");
+    }
+
+    @Override
+    protected GenericError getTurnMotorError() {
+        return GenericErrorGenerator.phoenixError(turnMotorConfigError, "Swerve Module " + moduleNum, "Turn Motor");
+    }
+
+    @Override
+    protected GenericError getCanCoderError() {
+        return GenericErrorGenerator.phoenixError(canCoderConfigError, "Swerve Module " + moduleNum, "CANCoder");
     }
 }

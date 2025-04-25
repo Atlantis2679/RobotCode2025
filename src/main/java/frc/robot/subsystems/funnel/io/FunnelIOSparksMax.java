@@ -10,23 +10,26 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import frc.lib.logfields.LogFieldsTable;
+import frc.lib.networkalerts.GenericError;
 import frc.robot.RobotMap.CANBUS;
+import frc.robot.utils.GenericErrorGenerator;
 
 import static frc.robot.RobotMap.*;
 import static frc.robot.subsystems.funnel.FunnelConstants.MAX_CURRENT;
 
 public class FunnelIOSparksMax extends FunnelIO {
-    private SparkMax motor = new SparkMax(CANBUS.FUNNEL_MOTOR_ID, MotorType.kBrushless);
-    private DigitalInput beamBrake = new DigitalInput(FUNNEL_BEAM_BRAKE_ID);
+    private final SparkMax motor = new SparkMax(CANBUS.FUNNEL_MOTOR_ID, MotorType.kBrushless);
+    private final DigitalInput beamBrake = new DigitalInput(FUNNEL_BEAM_BRAKE_ID);
 
-    private SparkMaxConfig motorConfig = new SparkMaxConfig();
+    private final SparkMaxConfig motorConfig = new SparkMaxConfig();
+    private final REVLibError motorConfigError;
 
     public FunnelIOSparksMax(LogFieldsTable fieldsTable) {
         super(fieldsTable);
         motorConfig.smartCurrentLimit(MAX_CURRENT);
         motorConfig.idleMode(IdleMode.kCoast);
 
-        REVLibError motorConfigError = motor.configure(motorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        motorConfigError = motor.configure(motorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
     
     @Override
@@ -42,5 +45,20 @@ public class FunnelIOSparksMax extends FunnelIO {
     @Override
     protected double getCurrent() {
         return motor.getOutputCurrent();
+    }
+
+    @Override
+    protected GenericError getMotorError() {
+        return GenericErrorGenerator.sparkMaxError(motor.getFaults(), "Funnel", "Motor");
+    }
+
+    @Override
+    protected GenericError getMotorWarning() {
+        return GenericErrorGenerator.sparkMaxWarning(motor.getWarnings(), "Funnel", "Motor");
+    }
+
+    @Override
+    protected GenericError getMotorConfigError() {
+        return GenericErrorGenerator.revError(motorConfigError, "Funnel", "Motor");
     }
 }
