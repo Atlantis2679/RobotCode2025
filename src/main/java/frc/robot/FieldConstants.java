@@ -41,7 +41,7 @@ public class FieldConstants {
             new Rotation2d(Math.toRadians(0))
         ),
         new Pose2d(
-            new Translation2d(3.943, 5.280),
+            new Translation2d(5.280, 5.218),
             new Rotation2d(Math.toRadians(-60))
         ),
         new Pose2d(
@@ -53,7 +53,7 @@ public class FieldConstants {
             new Rotation2d(Math.toRadians(-180))
         ),
         new Pose2d(
-            new Translation2d(5.040, 2.760),
+            new Translation2d(5.011, 2.820),
             new Rotation2d(Math.toRadians(120))
         ),
         new Pose2d(

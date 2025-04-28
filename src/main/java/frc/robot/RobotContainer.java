@@ -65,6 +65,7 @@ public class RobotContainer {
 
         if (Robot.isReal())
             CameraServer.startAutomaticCapture().setResolution(300, 300);
+        
 
         configureDriverBindings();
         configureOperatorBindings();
@@ -128,6 +129,8 @@ public class RobotContainer {
         operatorController.start()
             .whileTrue(ledsCommands.rainbow().asProxy().unless(() -> leds.getCurrentCommand() != null));
 
+
+        leds.setDefaultCommand(ledsCommands.rainbow());
         pivot.setDefaultCommand(allCommands.moveToRest());
 
         gripper.setDefaultCommand(allCommands.manualGripperController(operatorController::getLeftY));
