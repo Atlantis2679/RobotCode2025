@@ -2,6 +2,7 @@ package frc.lib.logfields;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import java.util.function.LongSupplier;
@@ -16,13 +17,12 @@ import edu.wpi.first.util.WPISerializable;
 import edu.wpi.first.util.function.FloatSupplier;
 import edu.wpi.first.util.struct.StructSerializable;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Alert.AlertType;
 import frc.lib.logfields.logfields.BooleanLogField;
 import frc.lib.logfields.logfields.DoubleLogField;
 import frc.lib.logfields.logfields.FloatLogField;
 import frc.lib.logfields.logfields.IntegerLogField;
 import frc.lib.logfields.logfields.LongLogField;
-import frc.lib.networkalerts.GenericError;
+import frc.lib.networkalerts.NetworkPeriodicAlert;
 import frc.lib.logfields.logfields.LogField;
 
 public class LogFieldsTable implements LoggableInputs {
@@ -311,23 +311,18 @@ public class LogFieldsTable implements LoggableInputs {
         return addStringMatrix(name, valueSupplier, new String[0][0]);
     }
 
-    public Supplier<GenericError> addGenericError(
-        String name,
-        Supplier<GenericError> valueSupplier,
-        GenericError defaultValue) {
-            LogFieldsTable subTable = getSubTable(name);
-            Supplier<String> message = subTable.addString(name, () -> valueSupplier.get().message(), defaultValue.message());
-            Supplier<String> alertGroup = subTable.addString(name, () -> valueSupplier.get().alertGroup(), defaultValue.alertGroup());
-            Supplier<String> errorType = subTable.addString(name, () -> valueSupplier.get().errorType(), defaultValue.errorType());
-            Supplier<String> details = subTable.addString(name, () -> valueSupplier.get().details(), defaultValue.details());
-            Supplier<Integer> errorCode = subTable.addInteger(name, () -> valueSupplier.get().errorCode(), defaultValue.errorCode());
-            BooleanSupplier isActive = subTable.addBoolean(name, () -> valueSupplier.get().isActive(), defaultValue.isActive());
-            Supplier<String> alertType = subTable.addString(name, () -> valueSupplier.get().alertType().name(), defaultValue.alertType().name());
-            return () -> new GenericError(message.get(), alertGroup.get(), errorType.get(), details.get(), errorCode.get(), isActive.getAsBoolean(), AlertType.valueOf(alertType.get()));
+    public NetworkPeriodicAlert addNetworkPeriodicAlert(String name, NetworkPeriodicAlert valueSupplier) {
+        LogFieldsTable subTable = getSubTable(name);
+        BooleanSupplier isActive = subTable.addBoolean("isActive", valueSupplier::getIsActive);
+        Supplier<String> message = subTable.addString("message", valueSupplier::getMessage);
+        return new NetworkPeriodicAlert(valueSupplier.getGroup(), message, valueSupplier.getAlertType(), isActive);
     }
 
-    public Supplier<GenericError> addGenericError(String name, Supplier<GenericError> valueSupplier) {
-        return addGenericError(name, valueSupplier, new GenericError("none", valueSupplier.get().alertGroup(), "none", "none", 0, false, valueSupplier.get().alertType()));
+    public Map<String, NetworkPeriodicAlert> addNetworkPeriodicAlertsArray(String name, Map<String, NetworkPeriodicAlert> valueSupplier) {
+        LogFieldsTable 
+        valueSupplier.forEach((name, networkPeriodicAlert) -> {
+            
+        });
     }
 
     public <T extends WPISerializable> Supplier<T> addObject(
