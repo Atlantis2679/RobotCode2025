@@ -11,6 +11,10 @@ public class FloatHolder {
         return value;
     }
 
+    public void add(float value) {
+        this.value += value;
+    }
+
     public void set(float value) {
         this.value = value;
     }

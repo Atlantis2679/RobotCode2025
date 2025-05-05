@@ -11,6 +11,10 @@ public class LongHolder {
         return value;
     }
 
+    public void add(long value) {
+        this.value += value;
+    }
+
     public void set(long value) {
         this.value = value;
     }

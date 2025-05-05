@@ -11,6 +11,10 @@ public class DoubleHolder {
         return value;
     }
 
+    public void add(double value) {
+        this.value += value;
+    }
+
     public void set(double value) {
         this.value = value;
     }

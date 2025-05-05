@@ -11,6 +11,10 @@ public class IntHolder {
         return value;
     }
 
+    public void add(int value) {
+        this.value += value;
+    }
+
     public void set(int value) {
         this.value = value;
     }
