@@ -16,7 +16,7 @@ public class NetworkPeriodicAlert {
   public NetworkPeriodicAlert(String groupName, Supplier<String> messageSupplier, AlertType alertType, BooleanSupplier isActive) {
       if (groupName == null) groupName = defaultGroupName;
       this.messageSupplier = messageSupplier;
-      this.alert = new Alert(groupName, messageSupplier.get(), alertType);
+      this.alert = new Alert(groupName, "", alertType);
       this.groupName = groupName;
       this.isActive = isActive;
   }

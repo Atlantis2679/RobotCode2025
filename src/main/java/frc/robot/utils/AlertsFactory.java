@@ -14,18 +14,18 @@ import frc.lib.networkalerts.NetworkPeriodicAlert;
 
 public final class AlertsFactory {
     public static Map<String, NetworkPeriodicAlert> revMotor(
-            REVLibError configError, Supplier<Warnings> warningSupplier, Supplier<Faults> errorSupplier,
+            Supplier<REVLibError> configErrorSupplier, Supplier<Warnings> warningSupplier, Supplier<Faults> errorSupplier,
             String prefix, String motorName) {
         Map<String, NetworkPeriodicAlert> alerts = new HashMap<String, NetworkPeriodicAlert>();
-        alerts.put("configError", revError(configError, prefix, motorName));
+        alerts.put("configError", revError(configErrorSupplier, prefix, motorName));
         alerts.put("error", sparkMaxError(errorSupplier, prefix, motorName));
         alerts.put("warning", sparkMaxWarning(warningSupplier, prefix, motorName));
         return alerts;
     }
 
-    public static NetworkPeriodicAlert revError(REVLibError error, String prefix, String motorName) {
-        return new NetworkPeriodicAlert(
-            null, () -> prefix + ": " + motorName + ": " + error.name(), AlertType.kError, () -> error.value != 0);
+    public static NetworkPeriodicAlert revError(Supplier<REVLibError> errorSupplier, String prefix, String motorName) {
+        return new NetworkPeriodicAlert(null, () -> prefix + ": " + motorName + ": " + errorSupplier.get().name(),
+            AlertType.kError, () -> errorSupplier.get().value != 0);
     }
 
     public static NetworkPeriodicAlert sparkMaxWarning(Supplier<Warnings> warningSupplier, String prefix, String motorName) {

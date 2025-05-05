@@ -113,19 +113,19 @@ public class GripperIOSparkMax extends GripperIO {
 
     @Override
     protected Map<String, NetworkPeriodicAlert> getRightOuttakeMotorAlerts() {
-        return AlertsFactory.revMotor(rightOuttakeMotorConfigError, rightOuttakeMotor::getWarnings,
+        return AlertsFactory.revMotor(() -> rightOuttakeMotorConfigError, rightOuttakeMotor::getWarnings,
             rightOuttakeMotor::getFaults, "Gripper", "rightOuttakeMotor");
     }
 
     @Override
     protected Map<String, NetworkPeriodicAlert> getLeftOuttakeMotorAlerts() {
-        return AlertsFactory.revMotor(leftOuttakeMotorConfigError, leftOuttakeMotor::getWarnings,
+        return AlertsFactory.revMotor(() -> leftOuttakeMotorConfigError, leftOuttakeMotor::getWarnings,
             leftOuttakeMotor::getFaults, "Gripper", "leftOuttakeMotor");
     }
 
     @Override
     protected Map<String, NetworkPeriodicAlert> getBackMotorAlerts() {
-        return AlertsFactory.revMotor(backMotorConfigError, backMotor::getWarnings,
+        return AlertsFactory.revMotor(() -> backMotorConfigError, backMotor::getWarnings,
             backMotor::getFaults, "Gripper", "backMotor");
     }
 }

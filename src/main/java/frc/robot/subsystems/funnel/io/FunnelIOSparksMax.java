@@ -51,6 +51,6 @@ public class FunnelIOSparksMax extends FunnelIO {
 
     protected Map<String, NetworkPeriodicAlert> getMotorAlerts() {
         return AlertsFactory.revMotor(
-            motorConfigError, motor::getWarnings, motor::getFaults, "Funnel", "Motor");
+            () -> motorConfigError, motor::getWarnings, motor::getFaults, "Funnel", "Motor");
     }
 }

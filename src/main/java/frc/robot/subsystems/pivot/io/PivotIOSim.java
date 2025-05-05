@@ -61,6 +61,6 @@ public class PivotIOSim extends PivotIO {
     @Override
     protected Map<String, NetworkPeriodicAlert> getMotorAlerts() {
         return AlertsFactory.revMotor(
-            REVLibError.kOk, () -> new Warnings(0), () -> new Faults(0), "Pivot", "Motor");
+            () -> REVLibError.kOk, () -> new Warnings(0), () -> new Faults(0), "Pivot", "Motor");
     }
 }

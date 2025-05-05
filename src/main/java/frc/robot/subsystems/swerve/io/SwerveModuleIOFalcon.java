@@ -33,9 +33,9 @@ public class SwerveModuleIOFalcon extends SwerveModuleIO {
     private final VoltageOut driveVoltageControl = new VoltageOut(0);
     private final DutyCycleOut drivePrecentageControl = new DutyCycleOut(0);
 
-    private StatusCode driveMotorError;
-    private StatusCode turnMotorError;
-    private StatusCode canCoderError;
+    private StatusCode driveMotorError = StatusCode.OK;
+    private StatusCode turnMotorError = StatusCode.OK;
+    private StatusCode canCoderError = StatusCode.OK;
 
     private final int moduleNum;
 

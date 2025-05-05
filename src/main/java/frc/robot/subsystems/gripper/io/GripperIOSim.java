@@ -58,18 +58,18 @@ public class GripperIOSim extends GripperIO {
     @Override
     protected Map<String, NetworkPeriodicAlert> getRightOuttakeMotorAlerts() {
         return AlertsFactory.revMotor(
-            REVLibError.kOk, () -> new Warnings(0), () -> new Faults(0), "Gripper", "rightOuttakeMotor");   
+            () -> REVLibError.kOk, () -> new Warnings(0), () -> new Faults(0), "Gripper", "rightOuttakeMotor");   
     }
 
     @Override
     protected Map<String, NetworkPeriodicAlert> getLeftOuttakeMotorAlerts() {
         return AlertsFactory.revMotor(
-            REVLibError.kOk, () -> new Warnings(0), () -> new Faults(0), "Gripper", "leftOuttakeMotor");
+            () -> REVLibError.kOk, () -> new Warnings(0), () -> new Faults(0), "Gripper", "leftOuttakeMotor");
     }
 
     @Override
     protected Map<String, NetworkPeriodicAlert> getBackMotorAlerts() {
         return AlertsFactory.revMotor(
-            REVLibError.kOk, () -> new Warnings(0), () -> new Faults(0), "Gripper", "backMotor");
+            () -> REVLibError.kOk, () -> new Warnings(0), () -> new Faults(0), "Gripper", "backMotor");
     }
 }

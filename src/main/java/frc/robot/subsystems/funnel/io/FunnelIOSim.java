@@ -32,6 +32,6 @@ public class FunnelIOSim extends FunnelIO {
     @Override
     protected Map<String, NetworkPeriodicAlert> getMotorAlerts() {
         return AlertsFactory.revMotor(
-            REVLibError.kOk, () -> new Warnings(0), () -> new Faults(0), "Funnel", "Motor");
+            () -> REVLibError.kOk, () -> new Warnings(0), () -> new Faults(0), "Funnel", "Motor");
     }
 }
