@@ -1,12 +1,14 @@
 package frc.robot.subsystems.gripper.io;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.revrobotics.REVLibError;
 import com.revrobotics.spark.SparkBase.Warnings;
 import com.revrobotics.spark.SparkBase.Faults;
 
 import frc.lib.logfields.LogFieldsTable;
-import frc.lib.networkalerts.GenericError;
-import frc.robot.utils.GenericErrorGenerator;
+import frc.lib.networkalerts.NetworkPeriodicAlert;
 
 public class GripperIOSim extends GripperIO {
     public GripperIOSim(LogFieldsTable fieldsTable) {
@@ -54,47 +56,20 @@ public class GripperIOSim extends GripperIO {
     }
 
     @Override
-    protected GenericError getRightOuttakeMotorError() {
-        return GenericErrorGenerator.revError(REVLibError.kOk, "Gripper", "Right Outtake Motor");
+    protected Map<String, NetworkPeriodicAlert> getRightOuttakeMotorAlerts() {
+        Map<String, NetworkPeriodicAlert> alerts = new HashMap<String, NetworkPeriodicAlert>();
+        
     }
 
     @Override
-    protected GenericError getLeftOuttakeMotorError() {
-        return GenericErrorGenerator.revError(REVLibError.kOk, "Gripper", "Left Outtake Motor");
+    protected Map<String, NetworkPeriodicAlert> getLeftOuttakeMotorAlerts() {
+        Map<String, NetworkPeriodicAlert> alerts = new HashMap<String, NetworkPeriodicAlert>();
+
     }
 
     @Override
-    protected GenericError getBackMotorError() {
-        return GenericErrorGenerator.revError(REVLibError.kOk, "Gripper", "Back Motor");
-    }
+    protected Map<String, NetworkPeriodicAlert> getBackMotorAlerts() {
+        Map<String, NetworkPeriodicAlert> alerts = new HashMap<String, NetworkPeriodicAlert>();
 
-    @Override
-    protected GenericError getRightOuttakeMotorWarning() {
-        return GenericErrorGenerator.sparkMaxWarning(new Warnings(0), "Gripper", "Right Outtake Motor");
-    }
-
-    @Override
-    protected GenericError getLeftOuttakeMotorWarning() {
-        return GenericErrorGenerator.sparkMaxWarning(new Warnings(0), "Gripper", "Left Outtake Motor");
-    }
-
-    @Override
-    protected GenericError getBackMotorWarning() {
-        return GenericErrorGenerator.sparkMaxWarning(new Warnings(0), "Gripper", "Back Motor");
-    }
-
-    @Override
-    protected GenericError getRightOuttakeMotorConfigError() {
-        return GenericErrorGenerator.revError(REVLibError.kOk, "Gripper", "Right Outtake Motor");
-    }
-
-    @Override
-    protected GenericError getLeftOuttakeMotorConfigError() {
-        return GenericErrorGenerator.revError(REVLibError.kOk, "Gripper", "Left Outtake Motor");
-    }
-
-    @Override
-    protected GenericError getBackMotorConfigError() {
-        return GenericErrorGenerator.revError(REVLibError.kOk, "Gripper", "Back Motor");
     }
 }

@@ -10,8 +10,8 @@ import com.revrobotics.spark.SparkBase.Warnings;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import frc.lib.networkalerts.NetworkPeriodicAlert;
 
-public class NetworkPeriodicAlertFactory {
-      public static NetworkPeriodicAlert revError(REVLibError error, String prefix, String motorName, String alertGroup) {
+public final class AlertsFactory {
+    public static NetworkPeriodicAlert revError(REVLibError error, String prefix, String motorName, String alertGroup) {
         return new NetworkPeriodicAlert(alertGroup, () -> prefix + ": " + motorName + ": " + error.name(), AlertType.kError, () -> error.value != 0);
     }
 
@@ -58,17 +58,17 @@ public class NetworkPeriodicAlertFactory {
     }
 
     public static NetworkPeriodicAlert sparkMaxError(Supplier<Faults> errorSupplier, String prefix, String motorName) {
-        return sparkMaxError(errorSupplier, prefix, null);
+        return sparkMaxError(errorSupplier, prefix, motorName, null);
     }
 
     public static NetworkPeriodicAlert phoenixError(Supplier<StatusCode> statusSupplier, String prefix, String motorName, String alertGroup) {
-        return new NetworkPeriodicAlert(alertGroup, () -> prefix + ": " + motorName + ": " + statusSupplier.get().getName(), AlertType.kWarning , () -> statusSupplier.get().isWarning());
+        return new NetworkPeriodicAlert(alertGroup, () -> prefix + " " + motorName + ": " + statusSupplier.get().getName(), AlertType.kWarning , () -> statusSupplier.get().isWarning());
     }
 
     public static NetworkPeriodicAlert phoenixError(Supplier<StatusCode> statusSupplier, String prefix, String motorName) {
         return phoenixError(statusSupplier, prefix, motorName, null);
     }
-
+    
     // public static GenericError deviceDisconnectedError(boolean isConnected, String prefix, String deviceName, String alertGroup) {
     //     return new GenericError(prefix + ": " + deviceName + " Is Disconnected!", alertGroup, "DeviceDisconnected", "none", isConnected ? 0 : 1, !isConnected, AlertType.kError);
     // }

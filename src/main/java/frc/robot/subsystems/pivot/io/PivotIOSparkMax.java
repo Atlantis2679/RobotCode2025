@@ -65,6 +65,6 @@ public class PivotIOSparkMax extends PivotIO {
 
     @Override
     protected GenericError getMotorConfigError() {
-        return GenericErrorGenerator.revError(configError, "Pivot", "Motor Config");
+        return GenericErrorGenerator.revLibError(configError, "Pivot", "Motor Config");
     }
 }

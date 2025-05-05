@@ -1,12 +1,15 @@
 package frc.robot.subsystems.funnel.io;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.revrobotics.REVLibError;
 import com.revrobotics.spark.SparkBase.Faults;
 import com.revrobotics.spark.SparkBase.Warnings;
 
 import frc.lib.logfields.LogFieldsTable;
-import frc.lib.networkalerts.GenericError;
-import frc.robot.utils.GenericErrorGenerator;
+import frc.lib.networkalerts.NetworkPeriodicAlert;
+import frc.robot.utils.AlertsFactory;
 
 public class FunnelIOSim extends FunnelIO {
     public FunnelIOSim(LogFieldsTable fieldsTable) {
@@ -28,17 +31,11 @@ public class FunnelIOSim extends FunnelIO {
     }
 
     @Override
-    protected GenericError getMotorError() {
-        return GenericErrorGenerator.sparkMaxError(new Faults(0), "Funnel", "Motor");
-    }
-
-    @Override
-    protected GenericError getMotorWarning() {
-        return GenericErrorGenerator.sparkMaxWarning(new Warnings(0), "Funnel", "Motor");
-    }
-
-    @Override
-    protected GenericError getMotorConfigError() {
-        return GenericErrorGenerator.revError(REVLibError.kOk, "Funnel", "Motor");
+    protected Map<String, NetworkPeriodicAlert> getMotorAlerts() {
+        Map<String, NetworkPeriodicAlert> alerts = new HashMap<String, NetworkPeriodicAlert>();
+        alerts.put("configError", AlertsFactory.revError(REVLibError.kOk, "Funnel", "motor"));
+        alerts.put("error", AlertsFactory.sparkMaxError(() -> new Faults(0), "Funnel", "motor"));
+        alerts.put("warning", AlertsFactory.sparkMaxWarning(() -> new Warnings(0), "Funnel", "motor"));
+        return alerts;
     }
 }

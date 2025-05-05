@@ -141,16 +141,16 @@ public class GripperIOSparkMax extends GripperIO {
 
     @Override
     protected GenericError getRightOuttakeMotorConfigError() {
-        return GenericErrorGenerator.revError(rightOuttakeMotorConfigError, "Gripper", "Right Outtake Motor");
+        return GenericErrorGenerator.revLibError(rightOuttakeMotorConfigError, "Gripper", "Right Outtake Motor");
     }
 
     @Override
     protected GenericError getLeftOuttakeMotorConfigError() {
-        return GenericErrorGenerator.revError(leftOuttakeMotorConfigError, "Gripper", "Left Outtake Motor");
+        return GenericErrorGenerator.revLibError(leftOuttakeMotorConfigError, "Gripper", "Left Outtake Motor");
     }
 
     @Override
     protected GenericError getBackMotorConfigError() {
-        return GenericErrorGenerator.revError(backMotorConfigError, "Gripper", "Back Motor");
+        return GenericErrorGenerator.revLibError(backMotorConfigError, "Gripper", "Back Motor");
     }
 }

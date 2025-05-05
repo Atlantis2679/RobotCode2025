@@ -10,12 +10,15 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import frc.lib.logfields.LogFieldsTable;
-import frc.lib.networkalerts.GenericError;
+import frc.lib.networkalerts.NetworkPeriodicAlert;
 import frc.robot.RobotMap.CANBUS;
-import frc.robot.utils.GenericErrorGenerator;
+import frc.robot.utils.AlertsFactory;
 
 import static frc.robot.RobotMap.*;
 import static frc.robot.subsystems.funnel.FunnelConstants.MAX_CURRENT;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class FunnelIOSparksMax extends FunnelIO {
     private final SparkMax motor = new SparkMax(CANBUS.FUNNEL_MOTOR_ID, MotorType.kBrushless);
@@ -47,18 +50,11 @@ public class FunnelIOSparksMax extends FunnelIO {
         return motor.getOutputCurrent();
     }
 
-    @Override
-    protected GenericError getMotorError() {
-        return GenericErrorGenerator.sparkMaxError(motor.getFaults(), "Funnel", "Motor");
-    }
-
-    @Override
-    protected GenericError getMotorWarning() {
-        return GenericErrorGenerator.sparkMaxWarning(motor.getWarnings(), "Funnel", "Motor");
-    }
-
-    @Override
-    protected GenericError getMotorConfigError() {
-        return GenericErrorGenerator.revError(motorConfigError, "Funnel", "Motor");
+    protected Map<String, NetworkPeriodicAlert> getMotorAlerts() {
+        Map<String, NetworkPeriodicAlert> alerts = new HashMap<String, NetworkPeriodicAlert>();
+        alerts.put("configError", AlertsFactory.revError(motorConfigError, "Funnel", "motor"));
+        alerts.put("error", AlertsFactory.sparkMaxError(motor::getFaults, "Funnel", "motor"));
+        alerts.put("warning", AlertsFactory.sparkMaxWarning(motor::getWarnings, "Funnel", "motor"));
+        return alerts;
     }
 }

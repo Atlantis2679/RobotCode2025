@@ -68,6 +68,6 @@ public class PivotIOSim extends PivotIO {
 
     @Override
     protected GenericError getMotorConfigError() {
-        return GenericErrorGenerator.revError(REVLibError.kOk, "Pivot", "Motor Config");
+        return GenericErrorGenerator.revLibError(REVLibError.kOk, "Pivot", "Motor Config");
     }
 }
