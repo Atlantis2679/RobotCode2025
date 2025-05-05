@@ -6,14 +6,15 @@ import java.util.function.DoubleSupplier;
 
 import frc.lib.logfields.IOBase;
 import frc.lib.logfields.LogFieldsTable;
+import frc.lib.networkalerts.NetworkAlertsManager;
 import frc.lib.networkalerts.NetworkPeriodicAlert;
 
 public abstract class FunnelIO extends IOBase {
     public final BooleanSupplier isCoralIn = fields.addBoolean("isCoralIn", this::getIsCoralIn);
     public final DoubleSupplier motorCurrent = fields.addDouble("motorCurrent", this::getCurrent);
-    public final NetworkPeriodicAlert[] motoraAlerts = fields.addNetworkPeriodicAlertsArray(
-        "motorAlerts", getMotorAlerts());
-
+    public final NetworkPeriodicAlert[] motoraAlerts = NetworkAlertsManager.addNetworkPeriodicAlertsArray(
+        fields.addNetworkPeriodicAlertsArray("motorAlerts", getMotorAlerts()));
+    
     public FunnelIO(LogFieldsTable fieldsTable) {
         super(fieldsTable);
     }

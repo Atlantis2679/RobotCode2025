@@ -6,10 +6,12 @@ import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.wpilibj.simulation.FlywheelSim;
 import frc.lib.logfields.LogFieldsTable;
-import frc.lib.networkalerts.GenericError;
-import frc.robot.utils.GenericErrorGenerator;
+import frc.lib.networkalerts.NetworkPeriodicAlert;
+import frc.robot.utils.AlertsFactory;
 
 import static frc.robot.subsystems.swerve.SwerveContants.*;
+
+import java.util.Map;
 
 import com.ctre.phoenix6.StatusCode;
 
@@ -180,18 +182,18 @@ public class SwerveModuleIOSim extends SwerveModuleIO {
         return 0;
     }
 
-        @Override
-    protected GenericError getDriveMotorError() {
-        return GenericErrorGenerator.phoenixError(StatusCode.OK, "Swerve Module " + moduleNum, "Drive Motor");
+    @Override
+    protected Map<String, NetworkPeriodicAlert> getDriveMotorAlerts() {
+        return AlertsFactory.phoenixMotor(() -> StatusCode.OK, "Swerve Module " + moduleNum, "driveMotor");
     }
 
     @Override
-    protected GenericError getTurnMotorError() {
-        return GenericErrorGenerator.phoenixError(StatusCode.OK, "Swerve Module " + moduleNum, "Turn Motor");
+    protected Map<String, NetworkPeriodicAlert> getTurnMotorAlerts() {
+        return AlertsFactory.phoenixMotor(() -> StatusCode.OK, "Swerve Module " + moduleNum, "turnMotor");
     }
 
     @Override
-    protected GenericError getCanCoderError() {
-        return GenericErrorGenerator.phoenixError(StatusCode.OK, "Swerve Module " + moduleNum, "CANCoder");
+    protected Map<String, NetworkPeriodicAlert> getCanCoderAlerts() {
+        return AlertsFactory.phoenixMotor(() -> StatusCode.OK, "Swerve Module " + moduleNum, "canCoder");
     }
 }

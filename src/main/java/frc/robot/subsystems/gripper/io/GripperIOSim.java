@@ -1,6 +1,5 @@
 package frc.robot.subsystems.gripper.io;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import com.revrobotics.REVLibError;
@@ -9,6 +8,7 @@ import com.revrobotics.spark.SparkBase.Faults;
 
 import frc.lib.logfields.LogFieldsTable;
 import frc.lib.networkalerts.NetworkPeriodicAlert;
+import frc.robot.utils.AlertsFactory;
 
 public class GripperIOSim extends GripperIO {
     public GripperIOSim(LogFieldsTable fieldsTable) {
@@ -57,19 +57,19 @@ public class GripperIOSim extends GripperIO {
 
     @Override
     protected Map<String, NetworkPeriodicAlert> getRightOuttakeMotorAlerts() {
-        Map<String, NetworkPeriodicAlert> alerts = new HashMap<String, NetworkPeriodicAlert>();
-        
+        return AlertsFactory.revMotor(
+            REVLibError.kOk, () -> new Warnings(0), () -> new Faults(0), "Gripper", "rightOuttakeMotor");   
     }
 
     @Override
     protected Map<String, NetworkPeriodicAlert> getLeftOuttakeMotorAlerts() {
-        Map<String, NetworkPeriodicAlert> alerts = new HashMap<String, NetworkPeriodicAlert>();
-
+        return AlertsFactory.revMotor(
+            REVLibError.kOk, () -> new Warnings(0), () -> new Faults(0), "Gripper", "leftOuttakeMotor");
     }
 
     @Override
     protected Map<String, NetworkPeriodicAlert> getBackMotorAlerts() {
-        Map<String, NetworkPeriodicAlert> alerts = new HashMap<String, NetworkPeriodicAlert>();
-
+        return AlertsFactory.revMotor(
+            REVLibError.kOk, () -> new Warnings(0), () -> new Faults(0), "Gripper", "backMotor");
     }
 }

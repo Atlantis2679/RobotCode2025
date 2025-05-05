@@ -1,6 +1,5 @@
 package frc.robot.subsystems.funnel.io;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import com.revrobotics.REVLibError;
@@ -32,10 +31,7 @@ public class FunnelIOSim extends FunnelIO {
 
     @Override
     protected Map<String, NetworkPeriodicAlert> getMotorAlerts() {
-        Map<String, NetworkPeriodicAlert> alerts = new HashMap<String, NetworkPeriodicAlert>();
-        alerts.put("configError", AlertsFactory.revError(REVLibError.kOk, "Funnel", "motor"));
-        alerts.put("error", AlertsFactory.sparkMaxError(() -> new Faults(0), "Funnel", "motor"));
-        alerts.put("warning", AlertsFactory.sparkMaxWarning(() -> new Warnings(0), "Funnel", "motor"));
-        return alerts;
+        return AlertsFactory.revMotor(
+            REVLibError.kOk, () -> new Warnings(0), () -> new Faults(0), "Funnel", "Motor");
     }
 }

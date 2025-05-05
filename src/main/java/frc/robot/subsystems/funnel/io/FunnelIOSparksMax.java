@@ -17,7 +17,6 @@ import frc.robot.utils.AlertsFactory;
 import static frc.robot.RobotMap.*;
 import static frc.robot.subsystems.funnel.FunnelConstants.MAX_CURRENT;
 
-import java.util.HashMap;
 import java.util.Map;
 
 public class FunnelIOSparksMax extends FunnelIO {
@@ -51,10 +50,7 @@ public class FunnelIOSparksMax extends FunnelIO {
     }
 
     protected Map<String, NetworkPeriodicAlert> getMotorAlerts() {
-        Map<String, NetworkPeriodicAlert> alerts = new HashMap<String, NetworkPeriodicAlert>();
-        alerts.put("configError", AlertsFactory.revError(motorConfigError, "Funnel", "motor"));
-        alerts.put("error", AlertsFactory.sparkMaxError(motor::getFaults, "Funnel", "motor"));
-        alerts.put("warning", AlertsFactory.sparkMaxWarning(motor::getWarnings, "Funnel", "motor"));
-        return alerts;
+        return AlertsFactory.revMotor(
+            motorConfigError, motor::getWarnings, motor::getFaults, "Funnel", "Motor");
     }
 }

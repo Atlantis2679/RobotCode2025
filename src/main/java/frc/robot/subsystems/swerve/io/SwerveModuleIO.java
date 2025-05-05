@@ -1,12 +1,12 @@
 package frc.robot.subsystems.swerve.io;
 
+import java.util.Map;
 import java.util.function.DoubleSupplier;
-import java.util.function.Supplier;
 
 import frc.lib.logfields.IOBase;
 import frc.lib.logfields.LogFieldsTable;
-import frc.lib.networkalerts.GenericError;
 import frc.lib.networkalerts.NetworkAlertsManager;
+import frc.lib.networkalerts.NetworkPeriodicAlert;
 
 public abstract class SwerveModuleIO extends IOBase {
         public final DoubleSupplier absoluteTurnAngleRotations = fields.addDouble("absoluteTurnAngleRotations",
@@ -31,13 +31,13 @@ public abstract class SwerveModuleIO extends IOBase {
                         "driveMotorTemperature", this::getDriveMotorTemperature);
         public final DoubleSupplier turnMotorTemperature = fields.addDouble(
                         "turnMotorTemperature", this::getTurnMotorTemperature);
-        public final Supplier<GenericError> driveMotorError = NetworkAlertsManager.addGenericError(fields.addGenericError(
-                "driveMotorError", this::getDriveMotorError));
-        public final Supplier<GenericError> turnMotorError = NetworkAlertsManager.addGenericError(fields.addGenericError(
-                "turnMotorError", this::getTurnMotorError));
-        public final Supplier<GenericError> canCoderError = NetworkAlertsManager.addGenericError(fields.addGenericError(
-                "canCoderError", this::getCanCoderError));
-
+        public final NetworkPeriodicAlert[] driveMotorAlerts = NetworkAlertsManager.addNetworkPeriodicAlertsArray(
+                fields.addNetworkPeriodicAlertsArray("driveMotorAlerts", getDriveMotorAlerts()));
+        public final NetworkPeriodicAlert[] turnMotorAlerts = NetworkAlertsManager.addNetworkPeriodicAlertsArray(
+                fields.addNetworkPeriodicAlertsArray("turnMotorAlerts", getTurnMotorAlerts()));
+        public final NetworkPeriodicAlert[] canCoderAlerts = NetworkAlertsManager.addNetworkPeriodicAlertsArray(
+                fields.addNetworkPeriodicAlertsArray("canCoderAlerts", getCanCoderAlerts()));
+        
 
         public SwerveModuleIO(LogFieldsTable fieldsTable) {
                 super(fieldsTable);
@@ -71,11 +71,11 @@ public abstract class SwerveModuleIO extends IOBase {
 
         protected abstract double getTurnMotorTemperature();
 
-        protected abstract GenericError getDriveMotorError();
+        protected abstract Map<String, NetworkPeriodicAlert> getDriveMotorAlerts();
 
-        protected abstract GenericError getTurnMotorError();
+        protected abstract Map<String, NetworkPeriodicAlert> getTurnMotorAlerts();
 
-        protected abstract GenericError getCanCoderError();
+        protected abstract Map<String, NetworkPeriodicAlert> getCanCoderAlerts();
 
         // Outputs
 

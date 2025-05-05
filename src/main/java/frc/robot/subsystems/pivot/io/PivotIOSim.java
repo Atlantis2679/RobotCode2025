@@ -2,6 +2,8 @@ package frc.robot.subsystems.pivot.io;
 
 import static frc.robot.subsystems.pivot.PivotConstants.Sim.*;
 
+import java.util.Map;
+
 import com.revrobotics.REVLibError;
 import com.revrobotics.spark.SparkBase.Faults;
 import com.revrobotics.spark.SparkBase.Warnings;
@@ -11,8 +13,8 @@ import static frc.robot.subsystems.pivot.PivotConstants.ANGLE_OFFSET;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 import frc.lib.logfields.LogFieldsTable;
-import frc.lib.networkalerts.GenericError;
-import frc.robot.utils.GenericErrorGenerator;
+import frc.lib.networkalerts.NetworkPeriodicAlert;
+import frc.robot.utils.AlertsFactory;
 
 public class PivotIOSim extends PivotIO {
     private final SingleJointedArmSim pivotMotor = new SingleJointedArmSim(
@@ -57,17 +59,8 @@ public class PivotIOSim extends PivotIO {
     }
 
     @Override
-    protected GenericError getMotorError() {
-        return GenericErrorGenerator.sparkMaxError(new Faults(0), "Pivot", "Motor");
-    }
-
-    @Override
-    protected GenericError getMotorWarning() {
-        return GenericErrorGenerator.sparkMaxWarning(new Warnings(0), "Pivot", "Motor");
-    }
-
-    @Override
-    protected GenericError getMotorConfigError() {
-        return GenericErrorGenerator.revLibError(REVLibError.kOk, "Pivot", "Motor Config");
+    protected Map<String, NetworkPeriodicAlert> getMotorAlerts() {
+        return AlertsFactory.revMotor(
+            REVLibError.kOk, () -> new Warnings(0), () -> new Faults(0), "Pivot", "Motor");
     }
 }

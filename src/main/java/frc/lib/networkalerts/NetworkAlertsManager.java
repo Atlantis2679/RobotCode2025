@@ -22,6 +22,12 @@ public class NetworkAlertsManager {
         return periodicAlert::getIsActive;
     }
 
+    public static NetworkPeriodicAlert[] addNetworkPeriodicAlertsArray(NetworkPeriodicAlert[] periodicAlerts) {
+        for (NetworkPeriodicAlert periodicAlert : periodicAlerts)
+            alerts.add(periodicAlert);
+        return periodicAlerts;
+    }
+
     public static BooleanSupplier addAlert(Supplier<String> message, AlertType alertType, BooleanSupplier isActive) {
         return addAlert(null, message, alertType, isActive);
     }

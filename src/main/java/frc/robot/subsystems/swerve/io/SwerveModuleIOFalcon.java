@@ -6,6 +6,8 @@ import static frc.robot.subsystems.swerve.SwerveContants.MODULE_TURN_KD;
 import static frc.robot.subsystems.swerve.SwerveContants.MODULE_TURN_KI;
 import static frc.robot.subsystems.swerve.SwerveContants.MODULE_TURN_KP;
 
+import java.util.Map;
+
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.Slot0Configs;
@@ -19,8 +21,8 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import frc.lib.logfields.LogFieldsTable;
-import frc.lib.networkalerts.GenericError;
-import frc.robot.utils.GenericErrorGenerator;
+import frc.lib.networkalerts.NetworkPeriodicAlert;
+import frc.robot.utils.AlertsFactory;
 
 public class SwerveModuleIOFalcon extends SwerveModuleIO {
     private final TalonFX driveMotor;
@@ -31,9 +33,9 @@ public class SwerveModuleIOFalcon extends SwerveModuleIO {
     private final VoltageOut driveVoltageControl = new VoltageOut(0);
     private final DutyCycleOut drivePrecentageControl = new DutyCycleOut(0);
 
-    private final StatusCode driveMotorConfigError;
-    private final StatusCode turnMotorConfigError;
-    private final StatusCode canCoderConfigError;
+    private StatusCode driveMotorError;
+    private StatusCode turnMotorError;
+    private StatusCode canCoderError;
 
     private final int moduleNum;
 
@@ -83,9 +85,9 @@ public class SwerveModuleIOFalcon extends SwerveModuleIO {
 
         CANcoderConfiguration canCoderConfiguration = new CANcoderConfiguration();
 
-        driveMotorConfigError = driveMotor.getConfigurator().apply(driveMotorConfiguration);
-        turnMotorConfigError = turnMotor.getConfigurator().apply(turnMotorConfiguration);
-        canCoderConfigError = canCoder.getConfigurator().apply(canCoderConfiguration);
+        driveMotorError = driveMotor.getConfigurator().apply(driveMotorConfiguration);
+        turnMotorError = turnMotor.getConfigurator().apply(turnMotorConfiguration);
+        canCoderError = canCoder.getConfigurator().apply(canCoderConfiguration);
     }
 
     @Override
@@ -125,46 +127,46 @@ public class SwerveModuleIOFalcon extends SwerveModuleIO {
 
     @Override
     public void setDriveSpeedPrecentage(double demand) {
-        driveMotor.setControl(drivePrecentageControl.withOutput(demand));
+        driveMotorError = driveMotor.setControl(drivePrecentageControl.withOutput(demand));
     }
 
     @Override
     public void setDriveSpeedVoltage(double demandVoltage) {
-        driveMotor.setControl(driveVoltageControl.withOutput(demandVoltage));
+        driveMotorError = driveMotor.setControl(driveVoltageControl.withOutput(demandVoltage));
     }
 
     @Override
     public void setTurnAngleRotations(double angleRotations) {
-        turnMotor.setControl(turnPositionVoltageControl.withPosition(angleRotations));
+        turnMotorError = turnMotor.setControl(turnPositionVoltageControl.withPosition(angleRotations));
     }
 
     @Override
     public void resetIntegratedTurnAngleRotations(double angleRotations) {
-        turnMotor.setPosition(angleRotations);
+        turnMotorError = turnMotor.setPosition(angleRotations);
     }
 
     @Override
     public void coastAll() {
-        driveMotor.setControl(new CoastOut());
-        turnMotor.setControl(new CoastOut());
+        driveMotorError = driveMotor.setControl(new CoastOut());
+        turnMotorError = turnMotor.setControl(new CoastOut());
     }
 
     @Override
     public void setTurnKP(double p) {
         turnSlotConfigs.kP = p;
-        turnMotor.getConfigurator().apply(turnSlotConfigs);
+        turnMotorError = turnMotor.getConfigurator().apply(turnSlotConfigs);
     }
 
     @Override
     public void setTurnKI(double i) {
         turnSlotConfigs.kI = i;
-        turnMotor.getConfigurator().apply(turnSlotConfigs);
+        turnMotorError = turnMotor.getConfigurator().apply(turnSlotConfigs);
     }
 
     @Override
     public void setTurnKD(double d) {
         turnSlotConfigs.kD = d;
-        turnMotor.getConfigurator().apply(turnSlotConfigs);
+        turnMotorError = turnMotor.getConfigurator().apply(turnSlotConfigs);
     }
 
     @Override
@@ -198,17 +200,17 @@ public class SwerveModuleIOFalcon extends SwerveModuleIO {
     }
 
     @Override
-    protected GenericError getDriveMotorError() {
-        return GenericErrorGenerator.phoenixError(driveMotorConfigError, "Swerve Module " + moduleNum, "Drive Motor");
+    protected Map<String, NetworkPeriodicAlert> getDriveMotorAlerts() {
+        return AlertsFactory.phoenixMotor(() -> driveMotorError, "Swerve Module " + moduleNum, "driveMotor");
     }
 
     @Override
-    protected GenericError getTurnMotorError() {
-        return GenericErrorGenerator.phoenixError(turnMotorConfigError, "Swerve Module " + moduleNum, "Turn Motor");
+    protected Map<String, NetworkPeriodicAlert> getTurnMotorAlerts() {
+        return AlertsFactory.phoenixMotor(() -> turnMotorError, "Swerve Module " + moduleNum, "turnMotor");
     }
 
     @Override
-    protected GenericError getCanCoderError() {
-        return GenericErrorGenerator.phoenixError(canCoderConfigError, "Swerve Module " + moduleNum, "CANCoder");
+    protected Map<String, NetworkPeriodicAlert> getCanCoderAlerts() {
+        return AlertsFactory.phoenixMotor(() -> canCoderError, "Swerve Module " + moduleNum, "canCoder");
     }
 }

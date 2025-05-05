@@ -6,6 +6,7 @@ import java.util.function.DoubleSupplier;
 
 import frc.lib.logfields.IOBase;
 import frc.lib.logfields.LogFieldsTable;
+import frc.lib.networkalerts.NetworkAlertsManager;
 import frc.lib.networkalerts.NetworkPeriodicAlert;
 
 public abstract class GripperIO extends IOBase {
@@ -15,8 +16,12 @@ public abstract class GripperIO extends IOBase {
     public final DoubleSupplier leftOuttakeMotorCurrent = fields.addDouble("leftOuttakeMotorCurrent",
             this::getLeftOuttakeMotorCurrent);
     public final DoubleSupplier backMotorCurrent = fields.addDouble("backMotorCurrent", this::getBackMotorCurrent);
-    public final NetworkPeriodicAlert[] rightOuttakeMotorAlerts = fields.addNetworkPeriodicAlertsArray(
-        "rightOuttakeMotorAlerts", null);
+    public final NetworkPeriodicAlert[] rightOuttakeMotorAlerts = NetworkAlertsManager.addNetworkPeriodicAlertsArray(
+        fields.addNetworkPeriodicAlertsArray("rightOuttakeMotorAlerts", getRightOuttakeMotorAlerts()));
+    public final NetworkPeriodicAlert[] leftOuttakeMotorAlerts = NetworkAlertsManager.addNetworkPeriodicAlertsArray(
+        fields.addNetworkPeriodicAlertsArray("leftOuttakeMotorAlerts", getLeftOuttakeMotorAlerts()));
+    public final NetworkPeriodicAlert[] backMotorAlerts = NetworkAlertsManager.addNetworkPeriodicAlertsArray(
+        fields.addNetworkPeriodicAlertsArray("backMotorAlerts", getBackMotorAlerts()));
 
     public GripperIO(LogFieldsTable fieldsTable) {
         super(fieldsTable);
