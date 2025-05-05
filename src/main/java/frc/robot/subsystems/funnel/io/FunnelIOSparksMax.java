@@ -24,7 +24,7 @@ public class FunnelIOSparksMax extends FunnelIO {
     private final DigitalInput beamBrake = new DigitalInput(FUNNEL_BEAM_BRAKE_ID);
 
     private final SparkMaxConfig motorConfig = new SparkMaxConfig();
-    private final REVLibError motorConfigError;
+    private REVLibError motorConfigError = REVLibError.kOk;
 
     public FunnelIOSparksMax(LogFieldsTable fieldsTable) {
         super(fieldsTable);
@@ -51,6 +51,6 @@ public class FunnelIOSparksMax extends FunnelIO {
 
     protected Map<String, NetworkPeriodicAlert> getMotorAlerts() {
         return AlertsFactory.revMotor(
-            () -> motorConfigError, motor::getWarnings, motor::getFaults, "Funnel", "Motor");
+            () -> motorConfigError, () -> motor.getWarnings(), () -> motor.getFaults(), "Funnel", "Motor");
     }
 }

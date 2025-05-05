@@ -58,6 +58,6 @@ public class PivotIOSparkMax extends PivotIO {
     @Override
     protected Map<String, NetworkPeriodicAlert> getMotorAlerts() {
         return AlertsFactory.revMotor(
-           () -> configError, pivotMotor::getWarnings, pivotMotor::getFaults, "Pivot", "Motor");
+           () -> configError, () -> pivotMotor.getWarnings(), () -> pivotMotor.getFaults(), "Pivot", "Motor");
     }
 }
