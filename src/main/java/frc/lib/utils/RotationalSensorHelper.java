@@ -1,4 +1,4 @@
-package frc.robot.utils;
+package frc.lib.utils;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
@@ -7,7 +7,7 @@ import frc.lib.tuneables.Tuneable;
 import frc.lib.tuneables.TuneableBuilder;
 import frc.lib.valueholders.DoubleHolder;
 
-public class PrimitiveRotationalSensorHelper implements Tuneable {
+public class RotationalSensorHelper implements Tuneable {
     private double measuredAngle;
     private double offset;
     private double previousAngle;
@@ -16,18 +16,18 @@ public class PrimitiveRotationalSensorHelper implements Tuneable {
     private double calculatedAngle;
 
     private boolean continousWrapEnabled;
-    private double continousWrapUpperBound;
+    // private double continousWrapUpperBound;
     private double continousWrapLowerBound;
     private double fullRotation;
 
-    public PrimitiveRotationalSensorHelper(double initialMeasuredAngle, double initialOffset) {
+    public RotationalSensorHelper(double initialMeasuredAngle, double initialOffset) {
         measuredAngle = initialMeasuredAngle;
         offset = initialOffset;
         prevTimeSec = Timer.getFPGATimestamp();
         recalculateAngle();
     }
 
-    public PrimitiveRotationalSensorHelper(double initalMeasuredAngle) {
+    public RotationalSensorHelper(double initalMeasuredAngle) {
         this(initalMeasuredAngle, 0);
     }
 
@@ -56,13 +56,12 @@ public class PrimitiveRotationalSensorHelper implements Tuneable {
     public void recalculateAngle() {
         calculatedAngle = measuredAngle - offset;
         if (continousWrapEnabled) {
-            while (calculatedAngle > continousWrapUpperBound) {
-                calculatedAngle -= fullRotation;
-            }
-            while (calculatedAngle < continousWrapLowerBound) {
-                calculatedAngle += fullRotation;
-            }
+            calculatedAngle = warpAngle(calculatedAngle);
         }
+    }
+
+    private double warpAngle(double angle) {
+        return ((angle - continousWrapLowerBound) % fullRotation) + continousWrapLowerBound;
     }
 
     public double getAngle() {
@@ -73,15 +72,17 @@ public class PrimitiveRotationalSensorHelper implements Tuneable {
         setOffset(measuredAngle - newAngle);
     }
 
-    public void enableContinousWrap(double upperBound, double fullRotation) {
+    public void enableContinousWrap(double upperBound, double lowerBound) {
         continousWrapEnabled = true;
-        this.fullRotation = fullRotation;
-        continousWrapUpperBound = upperBound;
-        continousWrapLowerBound = upperBound - fullRotation;
+        // continousWrapUpperBound = upperBound;
+        continousWrapLowerBound = lowerBound;
+        this.fullRotation = upperBound - lowerBound;
         recalculateAngle();
     }
 
     public void setOffset(double offset) {
+        previousAngle += this.offset - offset;
+        if(continousWrapEnabled) warpAngle(previousAngle);
         this.offset = offset;
         recalculateAngle();
     }
