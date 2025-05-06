@@ -17,12 +17,12 @@ import frc.lib.tuneables.TuneableBuilder;
 import frc.lib.tuneables.TuneablesManager;
 import frc.lib.tuneables.extensions.TuneableArmFeedforward;
 import frc.lib.tuneables.extensions.TuneableTrapezoidProfile;
+import frc.lib.utils.RotationalSensorHelper;
 import frc.robot.Robot;
 import frc.robot.subsystems.pivot.PivotConstants.Sim;
 import frc.robot.subsystems.pivot.io.PivotIO;
 import frc.robot.subsystems.pivot.io.PivotIOSim;
 import frc.robot.subsystems.pivot.io.PivotIOSparkMax;
-import frc.robot.utils.PrimitiveRotationalSensorHelper;
 
 public class Pivot extends SubsystemBase implements Tuneable {
     private final LogFieldsTable fieldsTable = new LogFieldsTable(getName());
@@ -34,7 +34,7 @@ public class Pivot extends SubsystemBase implements Tuneable {
     private final PivotVisualizer desiredPivotVisualizer = new PivotVisualizer(fieldsTable, "Desired Visualizer",
             new Color8Bit(Color.kYellow));
 
-    private final PrimitiveRotationalSensorHelper pivotRotationalHelper;
+    private final RotationalSensorHelper pivotRotationalHelper;
 
     private final TuneableTrapezoidProfile pivotTrapezoid = new TuneableTrapezoidProfile(
             new TrapezoidProfile.Constraints(MAX_VELOCITY_DEG_PER_SEC, MAX_ACCELERATION));
@@ -54,7 +54,7 @@ public class Pivot extends SubsystemBase implements Tuneable {
 
     public Pivot() {
         fieldsTable.update();
-        pivotRotationalHelper = new PrimitiveRotationalSensorHelper(io.angle.getAsDouble(), ANGLE_OFFSET);
+        pivotRotationalHelper = new RotationalSensorHelper(io.angle.getAsDouble(), ANGLE_OFFSET);
         pivotRotationalHelper.enableContinousWrap(UPPER_BOUND, FULL_ROTATION);
 
         TuneablesManager.add("Pivot", (Tuneable) this);

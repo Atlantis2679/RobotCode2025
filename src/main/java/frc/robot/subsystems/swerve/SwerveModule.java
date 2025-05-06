@@ -7,11 +7,11 @@ import frc.lib.logfields.LogFieldsTable;
 import frc.lib.networkalerts.NetworkAlertsManager;
 import frc.lib.tuneables.Tuneable;
 import frc.lib.tuneables.TuneableBuilder;
+import frc.lib.utils.RotationalSensorHelper;
 import frc.robot.Robot;
 import frc.robot.subsystems.swerve.io.SwerveModuleIO;
 import frc.robot.subsystems.swerve.io.SwerveModuleIOFalcon;
 import frc.robot.subsystems.swerve.io.SwerveModuleIOSim;
-import frc.robot.utils.PrimitiveRotationalSensorHelper;
 
 import static frc.robot.subsystems.swerve.SwerveContants.*;
 
@@ -21,7 +21,7 @@ public class SwerveModule implements Tuneable {
     private final LogFieldsTable fieldsTable;
     private final SwerveModuleIO io;
 
-    private PrimitiveRotationalSensorHelper absoluteAngleHelperDegrees;
+    private RotationalSensorHelper absoluteAngleHelperDegrees;
 
     private double lastDriveDistanceMeters;
     private double currDriveDistanceMeters;
@@ -51,7 +51,7 @@ public class SwerveModule implements Tuneable {
         fieldsTable.update();
 
         
-        absoluteAngleHelperDegrees = new PrimitiveRotationalSensorHelper(
+        absoluteAngleHelperDegrees = new RotationalSensorHelper(
                 io.absoluteTurnAngleRotations.getAsDouble() * 360,
                 absoluteAngleOffSetDegrees);
 

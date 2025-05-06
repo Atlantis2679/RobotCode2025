@@ -1,5 +1,6 @@
 package frc.lib.utils;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -19,6 +20,8 @@ public class RotationalSensorHelper implements Tuneable {
     // private double continousWrapUpperBound;
     private double continousWrapLowerBound;
     private double fullRotation;
+
+    private Rotation2d rotation2d;
 
     public RotationalSensorHelper(double initialMeasuredAngle, double initialOffset) {
         measuredAngle = initialMeasuredAngle;
@@ -58,6 +61,7 @@ public class RotationalSensorHelper implements Tuneable {
         if (continousWrapEnabled) {
             calculatedAngle = warpAngle(calculatedAngle);
         }
+        rotation2d = new Rotation2d(calculatedAngle);
     }
 
     private double warpAngle(double angle) {
@@ -82,9 +86,14 @@ public class RotationalSensorHelper implements Tuneable {
 
     public void setOffset(double offset) {
         previousAngle += this.offset - offset;
-        if(continousWrapEnabled) warpAngle(previousAngle);
+        if(continousWrapEnabled)
+            previousAngle = warpAngle(previousAngle);
         this.offset = offset;
         recalculateAngle();
+    }
+    
+    public Rotation2d getRotation2d() {
+        return rotation2d;
     }
 
     public double getOffset() {

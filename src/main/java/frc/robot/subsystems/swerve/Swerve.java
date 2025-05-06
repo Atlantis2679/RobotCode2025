@@ -20,13 +20,13 @@ import frc.robot.subsystems.swerve.io.GyroIONavX;
 import frc.robot.subsystems.swerve.io.GyroIOSim;
 import frc.robot.subsystems.swerve.poseEstimator.PoseEstimatorWithVision;
 import frc.robot.utils.BuiltInAccelerometerLogged;
-import frc.robot.utils.RotationalSensorHelper;
 import frc.lib.logfields.LogFieldsTable;
 import frc.lib.networkalerts.NetworkAlertsManager;
 import frc.lib.tuneables.SendableType;
 import frc.lib.tuneables.Tuneable;
 import frc.lib.tuneables.TuneableBuilder;
 import frc.lib.tuneables.TuneablesManager;
+import frc.lib.utils.RotationalSensorHelper;
 import frc.lib.valueholders.DoubleHolder;
 import frc.robot.Robot;
 import frc.robot.RobotMap.CANBUS.*;
@@ -110,7 +110,7 @@ public class Swerve extends SubsystemBase implements Tuneable {
                 getCurrentCommand() == null ? "none" : getCurrentCommand().getName());
 
         gyroYawHelperDegreesCCW = new RotationalSensorHelper(
-                Rotation2d.fromDegrees(gyroIO.isConnected.getAsBoolean() ? -gyroIO.yawDegreesCW.getAsDouble() : 0));
+                gyroIO.isConnected.getAsBoolean() ? -gyroIO.yawDegreesCW.getAsDouble() : 0);
 
         poseEstimator = new PoseEstimatorWithVision(fieldsTable.getSubTable("poseEstimator"), getYawCCW(),
                 getModulesPositions(), swerveKinematics);
@@ -170,7 +170,7 @@ public class Swerve extends SubsystemBase implements Tuneable {
         }
 
         if (getGyroConnectedDebouncer()) {
-            gyroYawHelperDegreesCCW.update(Rotation2d.fromDegrees(-gyroIO.yawDegreesCW.getAsDouble()));
+            gyroYawHelperDegreesCCW.update(-gyroIO.yawDegreesCW.getAsDouble());
         } else {
             Twist2d twist = swerveKinematics.toTwist2d(
                     modules[0].getModulePositionDelta(),
@@ -178,11 +178,10 @@ public class Swerve extends SubsystemBase implements Tuneable {
                     modules[2].getModulePositionDelta(),
                     modules[3].getModulePositionDelta());
 
-            gyroYawHelperDegreesCCW
-                    .update(gyroYawHelperDegreesCCW.getMeasuredAngle().plus(Rotation2d.fromRadians(twist.dtheta)));
+            gyroYawHelperDegreesCCW.update(gyroYawHelperDegreesCCW.getAngle() + Math.toDegrees(twist.dtheta));
         }
 
-        poseEstimator.update(gyroYawHelperDegreesCCW.getMeasuredAngle(), getModulesPositions(), getGyroConnectedDebouncer());
+        poseEstimator.update(gyroYawHelperDegreesCCW.getRotation2d(), getModulesPositions(), getGyroConnectedDebouncer());
         callbacksOnPoseUpdate.forEach(callback -> {
             callback.accept(getPose(), getIsRedAlliance());
         });
@@ -257,7 +256,7 @@ public class Swerve extends SubsystemBase implements Tuneable {
     }
 
     public Rotation2d getYawCCW() {
-        return gyroYawHelperDegreesCCW.getAngle();
+        return gyroYawHelperDegreesCCW.getRotation2d();
     }
 
     public void resetYawDegreesCW(double newYawDegreesCW) {
@@ -298,8 +297,8 @@ public class Swerve extends SubsystemBase implements Tuneable {
     }
 
     public void resetPose(Pose2d pose2d) {
-        gyroYawHelperDegreesCCW.resetAngle(pose2d.getRotation());
-        poseEstimator.resetPosition(gyroYawHelperDegreesCCW.getMeasuredAngle(), getModulesPositions(), pose2d);
+        gyroYawHelperDegreesCCW.resetAngle(pose2d.getRotation().getDegrees());
+        poseEstimator.resetPosition(gyroYawHelperDegreesCCW.getRotation2d(), getModulesPositions(), pose2d);
     }
 
     public ChassisSpeeds getRobotRelativeChassisSpeeds() {
