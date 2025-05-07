@@ -1,12 +1,9 @@
 package frc.robot.subsystems.swerve.io;
 
-import java.util.Map;
 import java.util.function.DoubleSupplier;
 
 import frc.lib.logfields.IOBase;
 import frc.lib.logfields.LogFieldsTable;
-import frc.lib.networkalerts.NetworkAlertsManager;
-import frc.lib.networkalerts.NetworkPeriodicAlert;
 
 public abstract class SwerveModuleIO extends IOBase {
         public final DoubleSupplier absoluteTurnAngleRotations = fields.addDouble("absoluteTurnAngleRotations",
@@ -30,14 +27,7 @@ public abstract class SwerveModuleIO extends IOBase {
         public final DoubleSupplier driveMotorTemperature = fields.addDouble(
                         "driveMotorTemperature", this::getDriveMotorTemperature);
         public final DoubleSupplier turnMotorTemperature = fields.addDouble(
-                        "turnMotorTemperature", this::getTurnMotorTemperature);
-        public final NetworkPeriodicAlert[] driveMotorAlerts = NetworkAlertsManager.addNetworkPeriodicAlertsArray(
-                fields.addNetworkPeriodicAlertsArray("driveMotorAlerts", getDriveMotorAlerts()));
-        public final NetworkPeriodicAlert[] turnMotorAlerts = NetworkAlertsManager.addNetworkPeriodicAlertsArray(
-                fields.addNetworkPeriodicAlertsArray("turnMotorAlerts", getTurnMotorAlerts()));
-        public final NetworkPeriodicAlert[] canCoderAlerts = NetworkAlertsManager.addNetworkPeriodicAlertsArray(
-                fields.addNetworkPeriodicAlertsArray("canCoderAlerts", getCanCoderAlerts()));
-        
+                        "turnMotorTemperature", this::getTurnMotorTemperature);        
 
         public SwerveModuleIO(LogFieldsTable fieldsTable) {
                 super(fieldsTable);
@@ -70,12 +60,6 @@ public abstract class SwerveModuleIO extends IOBase {
         protected abstract double getDriveMotorTemperature();
 
         protected abstract double getTurnMotorTemperature();
-
-        protected abstract Map<String, NetworkPeriodicAlert> getDriveMotorAlerts();
-
-        protected abstract Map<String, NetworkPeriodicAlert> getTurnMotorAlerts();
-
-        protected abstract Map<String, NetworkPeriodicAlert> getCanCoderAlerts();
 
         // Outputs
 

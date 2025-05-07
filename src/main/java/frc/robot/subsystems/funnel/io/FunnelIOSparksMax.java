@@ -10,14 +10,12 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import frc.lib.logfields.LogFieldsTable;
-import frc.lib.networkalerts.NetworkPeriodicAlert;
+import frc.lib.networkalerts.NetworkAlertsGroup;
 import frc.robot.RobotMap.CANBUS;
 import frc.robot.utils.AlertsFactory;
 
 import static frc.robot.RobotMap.*;
 import static frc.robot.subsystems.funnel.FunnelConstants.MAX_CURRENT;
-
-import java.util.Map;
 
 public class FunnelIOSparksMax extends FunnelIO {
     private final SparkMax motor = new SparkMax(CANBUS.FUNNEL_MOTOR_ID, MotorType.kBrushless);
@@ -32,6 +30,9 @@ public class FunnelIOSparksMax extends FunnelIO {
         motorConfig.idleMode(IdleMode.kCoast);
 
         motorConfigError = motor.configure(motorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+
+        NetworkAlertsGroup.defaultInstance.addNetworkPeriodicAlertArray(
+            AlertsFactory.revMotor(() -> motorConfigError, motor::getWarnings, motor::getFaults, "Funnel: Motor: "));
     }
     
     @Override
@@ -47,10 +48,5 @@ public class FunnelIOSparksMax extends FunnelIO {
     @Override
     protected double getCurrent() {
         return motor.getOutputCurrent();
-    }
-
-    protected Map<String, NetworkPeriodicAlert> getMotorAlerts() {
-        return AlertsFactory.revMotor(
-            () -> motorConfigError, () -> motor.getWarnings(), () -> motor.getFaults(), "Funnel", "Motor");
     }
 }

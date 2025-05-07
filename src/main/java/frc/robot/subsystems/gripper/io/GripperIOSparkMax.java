@@ -4,8 +4,6 @@ import static frc.robot.RobotMap.GRIPPER_BEAM_BRAKE_ID;
 import static frc.robot.subsystems.gripper.GripperConstants.BACK_MOTOR_MAX_CURRENT;
 import static frc.robot.subsystems.gripper.GripperConstants.OUTTAKE_MOTORS_MAX_CURRENT;
 
-import java.util.Map;
-
 import com.revrobotics.REVLibError;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
@@ -16,7 +14,7 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import frc.lib.logfields.LogFieldsTable;
-import frc.lib.networkalerts.NetworkPeriodicAlert;
+import frc.lib.networkalerts.NetworkAlertsGroup;
 import frc.robot.RobotMap.CANBUS;
 import frc.robot.utils.AlertsFactory;
 
@@ -56,6 +54,15 @@ public class GripperIOSparkMax extends GripperIO {
                 PersistMode.kPersistParameters);
         backMotorConfigError = backMotor.configure(backMotorConfig, ResetMode.kResetSafeParameters,
                 PersistMode.kPersistParameters);
+        
+        NetworkAlertsGroup.defaultInstance.addNetworkPeriodicAlertArray(AlertsFactory.revMotor(() -> rightOuttakeMotorConfigError,
+            rightOuttakeMotor::getWarnings, rightOuttakeMotor::getFaults, "rightOuttakeMotor"));
+
+        NetworkAlertsGroup.defaultInstance.addNetworkPeriodicAlertArray(AlertsFactory.revMotor(() -> leftOuttakeMotorConfigError,
+            leftOuttakeMotor::getWarnings, leftOuttakeMotor::getFaults, "leftOuttakeMotor"));
+
+        NetworkAlertsGroup.defaultInstance.addNetworkPeriodicAlertArray(AlertsFactory.revMotor(() -> backMotorConfigError,
+            backMotor::getWarnings, backMotor::getFaults, "backMotor"));
     }
 
     // Outputs:
@@ -109,23 +116,5 @@ public class GripperIOSparkMax extends GripperIO {
     @Override
     protected double getBackMotorCurrent() {
         return backMotor.getOutputCurrent();
-    }
-
-    @Override
-    protected Map<String, NetworkPeriodicAlert> getRightOuttakeMotorAlerts() {
-        return AlertsFactory.revMotor(() -> rightOuttakeMotorConfigError, () -> rightOuttakeMotor.getWarnings(),
-            () -> rightOuttakeMotor.getFaults(), "Gripper", "rightOuttakeMotor");
-    }
-
-    @Override
-    protected Map<String, NetworkPeriodicAlert> getLeftOuttakeMotorAlerts() {
-        return AlertsFactory.revMotor(() -> leftOuttakeMotorConfigError, () -> leftOuttakeMotor.getWarnings(),
-            () -> leftOuttakeMotor.getFaults(), "Gripper", "leftOuttakeMotor");
-    }
-
-    @Override
-    protected Map<String, NetworkPeriodicAlert> getBackMotorAlerts() {
-        return AlertsFactory.revMotor(() -> backMotorConfigError, () -> backMotor.getWarnings(),
-            () -> backMotor.getFaults(), "Gripper", "backMotor");
     }
 }

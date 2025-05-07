@@ -7,17 +7,15 @@ import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 
 public class NetworkPeriodicAlert {
-  private static final String defaultGroupName = "NetworkAlerts";
+  private final NetworkAlertsGroup group;
   private final Supplier<String> messageSupplier;
   private final BooleanSupplier isActive;
-  private final String groupName;
   private final Alert alert;
 
-  public NetworkPeriodicAlert(String groupName, Supplier<String> messageSupplier, AlertType alertType, BooleanSupplier isActive) {
-      if (groupName == null) groupName = defaultGroupName;
+  public NetworkPeriodicAlert(NetworkAlertsGroup group, Supplier<String> messageSupplier, AlertType alertType, BooleanSupplier isActive) {
       this.messageSupplier = messageSupplier;
-      this.alert = new Alert(groupName, "", alertType);
-      this.groupName = groupName;
+      this.alert = new Alert(group.getName(), "", alertType);
+      this.group = group;
       this.isActive = isActive;
   }
 
@@ -38,7 +36,7 @@ public class NetworkPeriodicAlert {
     return alert.getType();
   }
 
-  public String getGroup() {
-    return groupName;
+  public NetworkAlertsGroup getGroup() {
+    return group;
   }
 }

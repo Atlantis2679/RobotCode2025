@@ -10,14 +10,12 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import frc.lib.logfields.LogFieldsTable;
-import frc.lib.networkalerts.NetworkPeriodicAlert;
+import frc.lib.networkalerts.NetworkAlertsGroup;
 import frc.robot.utils.AlertsFactory;
 
 import static frc.robot.RobotMap.*;
 
 import static frc.robot.subsystems.pivot.PivotConstants.*;
-
-import java.util.Map;
 
 public class PivotIOSparkMax extends PivotIO {
     private final SparkMax pivotMotor = new SparkMax(CANBUS.PIVOT_MOTOR_ID, MotorType.kBrushless);
@@ -31,6 +29,8 @@ public class PivotIOSparkMax extends PivotIO {
         config.idleMode(IdleMode.kBrake);
         configError = pivotMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         encoder.setDutyCycleRange(0, 1);
+        NetworkAlertsGroup.defaultInstance.addNetworkPeriodicAlertArray(
+            AlertsFactory.revMotor(() -> configError, pivotMotor::getWarnings, pivotMotor::getFaults, "Pivot"));
     }
 
     // Inputs:
@@ -53,11 +53,5 @@ public class PivotIOSparkMax extends PivotIO {
     @Override
     protected boolean getIsEncoderConnected() {
         return encoder.isConnected();
-    }
-
-    @Override
-    protected Map<String, NetworkPeriodicAlert> getMotorAlerts() {
-        return AlertsFactory.revMotor(
-           () -> configError, () -> pivotMotor.getWarnings(), () -> pivotMotor.getFaults(), "Pivot", "Motor");
     }
 }

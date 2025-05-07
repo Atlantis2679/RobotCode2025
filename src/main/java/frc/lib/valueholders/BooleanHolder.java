@@ -11,6 +11,10 @@ public class BooleanHolder {
         return value;
     }
 
+    public void not() {
+        value = !value;
+    }
+
     public void set(boolean value) {
         this.value = value;
     }

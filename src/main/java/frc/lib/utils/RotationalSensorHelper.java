@@ -17,7 +17,6 @@ public class RotationalSensorHelper implements Tuneable {
     private double calculatedAngle;
 
     private boolean continousWrapEnabled;
-    // private double continousWrapUpperBound;
     private double continousWrapLowerBound;
     private double fullRotation;
 
@@ -42,20 +41,6 @@ public class RotationalSensorHelper implements Tuneable {
         recalculateAngle();
     }
 
-    public double getMeasuredAngle() {
-        return measuredAngle;
-    }
-
-    public double getVelocity() {
-        double deltaTime = currTimeSec - prevTimeSec;
-        if (deltaTime == 0) {
-            DriverStation.reportWarning(
-                    "You should not request velocity after no time passed (probably called in initial loop).", true);
-            return 0;
-        }
-        return (getAngle() - previousAngle) / deltaTime;
-    }
-
     public void recalculateAngle() {
         calculatedAngle = measuredAngle - offset;
         if (continousWrapEnabled) {
@@ -68,17 +53,12 @@ public class RotationalSensorHelper implements Tuneable {
         return ((angle - continousWrapLowerBound) % fullRotation) + continousWrapLowerBound;
     }
 
-    public double getAngle() {
-        return calculatedAngle;
-    }
-
     public void resetAngle(double newAngle) {
         setOffset(measuredAngle - newAngle);
     }
 
     public void enableContinousWrap(double upperBound, double lowerBound) {
         continousWrapEnabled = true;
-        // continousWrapUpperBound = upperBound;
         continousWrapLowerBound = lowerBound;
         this.fullRotation = upperBound - lowerBound;
         recalculateAngle();
@@ -90,6 +70,24 @@ public class RotationalSensorHelper implements Tuneable {
             previousAngle = warpAngle(previousAngle);
         this.offset = offset;
         recalculateAngle();
+    }
+
+    public double getAngle() {
+        return calculatedAngle;
+    }
+
+    public double getMeasuredAngle() {
+        return measuredAngle;
+    }
+
+    public double getVelocity() {
+        double deltaTime = currTimeSec - prevTimeSec;
+        if (deltaTime == 0) {
+            DriverStation.reportWarning(
+                    "You should not request velocity after no time passed (probably called in initial loop).", true);
+            return 0;
+        }
+        return (getAngle() - previousAngle) / deltaTime;
     }
     
     public Rotation2d getRotation2d() {

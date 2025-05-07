@@ -6,8 +6,6 @@ import static frc.robot.subsystems.swerve.SwerveContants.MODULE_TURN_KD;
 import static frc.robot.subsystems.swerve.SwerveContants.MODULE_TURN_KI;
 import static frc.robot.subsystems.swerve.SwerveContants.MODULE_TURN_KP;
 
-import java.util.Map;
-
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.Slot0Configs;
@@ -21,7 +19,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import frc.lib.logfields.LogFieldsTable;
-import frc.lib.networkalerts.NetworkPeriodicAlert;
+import frc.lib.networkalerts.NetworkAlertsGroup;
 import frc.robot.utils.AlertsFactory;
 
 public class SwerveModuleIOFalcon extends SwerveModuleIO {
@@ -33,18 +31,14 @@ public class SwerveModuleIOFalcon extends SwerveModuleIO {
     private final VoltageOut driveVoltageControl = new VoltageOut(0);
     private final DutyCycleOut drivePrecentageControl = new DutyCycleOut(0);
 
-    private StatusCode driveMotorError = StatusCode.OK;
-    private StatusCode turnMotorError = StatusCode.OK;
-    private StatusCode canCoderError = StatusCode.OK;
-
-    private final int moduleNum;
+    private StatusCode driveMotorError;
+    private StatusCode turnMotorError;
+    private StatusCode canCoderError;
 
     private final Slot0Configs turnSlotConfigs;
 
     public SwerveModuleIOFalcon(LogFieldsTable fieldsTable, int driveMotorID, int turnMotorID, int encoderID, int moduleNum) {
         super(fieldsTable);
-
-        this.moduleNum = moduleNum;
 
         driveMotor = new TalonFX(driveMotorID);
         turnMotor = new TalonFX(turnMotorID);
@@ -88,6 +82,13 @@ public class SwerveModuleIOFalcon extends SwerveModuleIO {
         driveMotorError = driveMotor.getConfigurator().apply(driveMotorConfiguration);
         turnMotorError = turnMotor.getConfigurator().apply(turnMotorConfiguration);
         canCoderError = canCoder.getConfigurator().apply(canCoderConfiguration);
+
+        NetworkAlertsGroup.defaultInstance.addNetworkPeriodicAlertArray(
+            AlertsFactory.phoenixMotor(() -> driveMotorError, "Swerve module " + moduleNum + " drive motor"));
+        NetworkAlertsGroup.defaultInstance.addNetworkPeriodicAlertArray(
+            AlertsFactory.phoenixMotor(() -> turnMotorError, "Swerve module " + moduleNum + " turn motor"));
+        NetworkAlertsGroup.defaultInstance.addNetworkPeriodicAlertArray(
+            AlertsFactory.phoenixMotor(() -> canCoderError, "Swerve module " + moduleNum + " CANCoder"));
     }
 
     @Override
@@ -197,20 +198,5 @@ public class SwerveModuleIOFalcon extends SwerveModuleIO {
     @Override
     protected double getTurnMotorTemperature() {
         return turnMotor.getDeviceTemp().getValueAsDouble();
-    }
-
-    @Override
-    protected Map<String, NetworkPeriodicAlert> getDriveMotorAlerts() {
-        return AlertsFactory.phoenixMotor(() -> driveMotorError, "Swerve Module " + moduleNum, "driveMotor");
-    }
-
-    @Override
-    protected Map<String, NetworkPeriodicAlert> getTurnMotorAlerts() {
-        return AlertsFactory.phoenixMotor(() -> turnMotorError, "Swerve Module " + moduleNum, "turnMotor");
-    }
-
-    @Override
-    protected Map<String, NetworkPeriodicAlert> getCanCoderAlerts() {
-        return AlertsFactory.phoenixMotor(() -> canCoderError, "Swerve Module " + moduleNum, "canCoder");
     }
 }

@@ -4,7 +4,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import frc.lib.logfields.LogFieldsTable;
-import frc.lib.networkalerts.NetworkAlertsManager;
+import frc.lib.networkalerts.NetworkAlertsGroup;
 import frc.lib.tuneables.Tuneable;
 import frc.lib.tuneables.TuneableBuilder;
 import frc.lib.utils.RotationalSensorHelper;
@@ -40,11 +40,11 @@ public class SwerveModule implements Tuneable {
                         absoluteAngleOffSetDegrees, moduleNumber)
                 : new SwerveModuleIOFalcon(fieldsTable, driveMotorID, turnMotorID, encoderID, moduleNumber);
 
-        NetworkAlertsManager.addWarningAlert(
+        NetworkAlertsGroup.defaultInstance.addWarningAlert(
             () -> "Swerve Module " + positionName + " " + moduleNumber + " Drive Motor Temp: " + io.driveMotorTemperature.getAsDouble(),
             () -> io.driveMotorTemperature.getAsDouble() > MODULE_TEMPERATORE_WARNING_THRESHOLD);
 
-        NetworkAlertsManager.addWarningAlert(
+            NetworkAlertsGroup.defaultInstance.addWarningAlert(
             () -> "Swerve Module " + positionName + " " + moduleNumber + " Turn Motor Temp: " + io.turnMotorTemperature.getAsDouble(),
             () -> io.turnMotorTemperature.getAsDouble() > MODULE_TEMPERATORE_WARNING_THRESHOLD);
         

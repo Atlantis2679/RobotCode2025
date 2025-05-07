@@ -21,7 +21,7 @@ import frc.robot.subsystems.swerve.io.GyroIOSim;
 import frc.robot.subsystems.swerve.poseEstimator.PoseEstimatorWithVision;
 import frc.robot.utils.BuiltInAccelerometerLogged;
 import frc.lib.logfields.LogFieldsTable;
-import frc.lib.networkalerts.NetworkAlertsManager;
+import frc.lib.networkalerts.NetworkAlertsGroup;
 import frc.lib.tuneables.SendableType;
 import frc.lib.tuneables.Tuneable;
 import frc.lib.tuneables.TuneableBuilder;
@@ -117,7 +117,7 @@ public class Swerve extends SubsystemBase implements Tuneable {
 
         TuneablesManager.add("Swerve", (Tuneable) this);
 
-        NetworkAlertsManager.addErrorAlert(() -> "Swerve: Gyro IS Disconnected!", () -> !getGyroConnectedDebouncer());
+        NetworkAlertsGroup.defaultInstance.addErrorAlert(() -> "Swerve: Gyro IS Disconnected!", () -> !getGyroConnectedDebouncer());
 
         resetYaw();
 

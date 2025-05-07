@@ -2,7 +2,6 @@ package frc.lib.logfields;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import java.util.function.LongSupplier;
@@ -22,8 +21,6 @@ import frc.lib.logfields.logfields.DoubleLogField;
 import frc.lib.logfields.logfields.FloatLogField;
 import frc.lib.logfields.logfields.IntegerLogField;
 import frc.lib.logfields.logfields.LongLogField;
-import frc.lib.networkalerts.NetworkPeriodicAlert;
-import frc.lib.valueholders.IntHolder;
 import frc.lib.logfields.logfields.LogField;
 
 public class LogFieldsTable implements LoggableInputs {
@@ -310,24 +307,6 @@ public class LogFieldsTable implements LoggableInputs {
 
     public Supplier<String[][]> addStringMatrix(String name, Supplier<String[][]> valueSupplier) {
         return addStringMatrix(name, valueSupplier, new String[0][0]);
-    }
-
-    public NetworkPeriodicAlert addNetworkPeriodicAlert(String name, NetworkPeriodicAlert alert) {
-        LogFieldsTable subTable = getSubTable(name);
-        BooleanSupplier isActive = subTable.addBoolean("isActive", alert::getIsActive);
-        Supplier<String> message = subTable.addString("message", alert::getMessage);
-        return new NetworkPeriodicAlert(alert.getGroup(), message, alert.getAlertType(), isActive);
-    }
-
-    public NetworkPeriodicAlert[] addNetworkPeriodicAlertsArray(String name, Map<String, NetworkPeriodicAlert> alertFields) {
-        LogFieldsTable subTable = getSubTable(name);
-        NetworkPeriodicAlert[] periodicAlerts = new NetworkPeriodicAlert[alertFields.size()];
-        IntHolder count = new IntHolder(0);
-        alertFields.forEach((fieldName, alert) -> {
-            periodicAlerts[count.get()] = subTable.addNetworkPeriodicAlert(fieldName, alert);
-            count.add(1);;
-        });
-        return periodicAlerts;
     }
 
     public <T extends WPISerializable> Supplier<T> addObject(

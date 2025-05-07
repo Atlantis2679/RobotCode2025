@@ -6,14 +6,8 @@ import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.wpilibj.simulation.FlywheelSim;
 import frc.lib.logfields.LogFieldsTable;
-import frc.lib.networkalerts.NetworkPeriodicAlert;
-import frc.robot.utils.AlertsFactory;
 
 import static frc.robot.subsystems.swerve.SwerveContants.*;
-
-import java.util.Map;
-
-import com.ctre.phoenix6.StatusCode;
 
 public class SwerveModuleIOSim extends SwerveModuleIO {
     private final FlywheelSim driveMotorSim;
@@ -21,14 +15,11 @@ public class SwerveModuleIOSim extends SwerveModuleIO {
     private double simAbsoluteTurnRotations;
     private double simIntegeratedTurnRotations = 0;
     private double simDriveRotations = 0;
-    private int moduleNum;
     private final PIDController turnPIDController = new PIDController(15, 0, 0);
 
     public SwerveModuleIOSim(LogFieldsTable fieldsTable, int driveMotorID, int angleMotorID, int encoderID,
             double absoluteAngleOffsetDegrees, int moduleNum) {
         super(fieldsTable);
-
-        this.moduleNum = moduleNum;
 
         simAbsoluteTurnRotations = calculateToAbsoluteRotations(absoluteAngleOffsetDegrees / 360);
 
@@ -180,20 +171,5 @@ public class SwerveModuleIOSim extends SwerveModuleIO {
     @Override
     protected double getTurnMotorTemperature() {
         return 0;
-    }
-
-    @Override
-    protected Map<String, NetworkPeriodicAlert> getDriveMotorAlerts() {
-        return AlertsFactory.phoenixMotor(() -> StatusCode.OK, "Swerve Module " + moduleNum, "driveMotor");
-    }
-
-    @Override
-    protected Map<String, NetworkPeriodicAlert> getTurnMotorAlerts() {
-        return AlertsFactory.phoenixMotor(() -> StatusCode.OK, "Swerve Module " + moduleNum, "turnMotor");
-    }
-
-    @Override
-    protected Map<String, NetworkPeriodicAlert> getCanCoderAlerts() {
-        return AlertsFactory.phoenixMotor(() -> StatusCode.OK, "Swerve Module " + moduleNum, "canCoder");
     }
 }

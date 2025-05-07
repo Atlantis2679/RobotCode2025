@@ -11,7 +11,7 @@ import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.logfields.LogFieldsTable;
-import frc.lib.networkalerts.NetworkAlertsManager;
+import frc.lib.networkalerts.NetworkAlertsGroup;
 import frc.lib.tuneables.Tuneable;
 import frc.lib.tuneables.TuneableBuilder;
 import frc.lib.tuneables.TuneablesManager;
@@ -59,7 +59,7 @@ public class Pivot extends SubsystemBase implements Tuneable {
 
         TuneablesManager.add("Pivot", (Tuneable) this);
 
-        NetworkAlertsManager.addErrorAlert(() -> "Pivot: Encoder is Disconnected!", () -> !getEncoderConnectedDebouncer());
+        NetworkAlertsGroup.defaultInstance.addErrorAlert(() -> "Pivot: Encoder is Disconnected!", () -> !getEncoderConnectedDebouncer());
     }
 
     @Override
