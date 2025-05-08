@@ -31,8 +31,7 @@ public class FunnelIOSparksMax extends FunnelIO {
 
         motorConfigError = motor.configure(motorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
-        NetworkAlertsGroup.defaultInstance.addNetworkPeriodicAlertArray(
-            AlertsFactory.revMotor(() -> motorConfigError, motor::getWarnings, motor::getFaults, "Funnel: Motor: "));
+        AlertsFactory.revMotor(NetworkAlertsGroup.defaultInstance, () -> motorConfigError, motor::getWarnings, motor::getFaults, "Funnel: Motor: ");
     }
     
     @Override

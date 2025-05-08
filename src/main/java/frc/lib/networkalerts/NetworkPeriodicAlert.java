@@ -12,9 +12,9 @@ public class NetworkPeriodicAlert {
   private final BooleanSupplier isActive;
   private final Alert alert;
 
-  public NetworkPeriodicAlert(NetworkAlertsGroup group, Supplier<String> messageSupplier, AlertType alertType, BooleanSupplier isActive) {
+  public NetworkPeriodicAlert(NetworkAlertsGroup group, Supplier<String> messageSupplier, BooleanSupplier isActive, AlertType alertType) {
       this.messageSupplier = messageSupplier;
-      this.alert = new Alert(group.getName(), "", alertType);
+      this.alert = new Alert(group.getName(), messageSupplier.get(), alertType);
       this.group = group;
       this.isActive = isActive;
   }

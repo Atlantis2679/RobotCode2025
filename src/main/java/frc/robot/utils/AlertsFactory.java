@@ -1,5 +1,6 @@
 package frc.robot.utils;
 
+import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
 import com.ctre.phoenix6.StatusCode;
@@ -7,25 +8,23 @@ import com.revrobotics.REVLibError;
 import com.revrobotics.spark.SparkBase.Faults;
 import com.revrobotics.spark.SparkBase.Warnings;
 
-import edu.wpi.first.wpilibj.Alert.AlertType;
-import frc.lib.networkalerts.NetworkPeriodicAlert;
+import frc.lib.networkalerts.NetworkAlertsGroup;
 
 public final class AlertsFactory {
-    public static NetworkPeriodicAlert[] revMotor(Supplier<REVLibError> configErrorSupplier,
+    public static BooleanSupplier[] revMotor(NetworkAlertsGroup group ,Supplier<REVLibError> configErrorSupplier,
             Supplier<Warnings> warningSupplier, Supplier<Faults> errorSupplier, String prefix) {
-        NetworkPeriodicAlert[] periodicAlerts = new NetworkPeriodicAlert[3];
-        periodicAlerts[0] = revError(configErrorSupplier, prefix);
-        periodicAlerts[1] = sparkMaxWarning(warningSupplier, prefix);
-        periodicAlerts[2] = sparkMaxError(errorSupplier, prefix);
-        return periodicAlerts;
+        BooleanSupplier[] alertsActivations = new BooleanSupplier[3];
+        alertsActivations[0] = revError(group, configErrorSupplier, prefix);
+        alertsActivations[1] = sparkMaxWarning(group, warningSupplier, prefix);
+        alertsActivations[2] = sparkMaxError(group, errorSupplier, prefix);
+        return alertsActivations;
     }
 
-    public static NetworkPeriodicAlert revError(Supplier<REVLibError> errorSupplier, String prefix) {
-        return new NetworkPeriodicAlert(null, () -> prefix + ": " + errorSupplier.get().name(),
-            AlertType.kError, () -> errorSupplier.get().value != 0);
+    public static BooleanSupplier revError(NetworkAlertsGroup group, Supplier<REVLibError> errorSupplier, String prefix) {
+        return group.addErrorAlert(() -> prefix + ": " + errorSupplier.get().name(), () -> errorSupplier.get().value != 0);
     }
 
-    public static NetworkPeriodicAlert sparkMaxWarning(Supplier<Warnings> warningSupplier, String prefix) {
+    public static BooleanSupplier sparkMaxWarning(NetworkAlertsGroup group, Supplier<Warnings> warningSupplier, String prefix) {
         Supplier<String> messageSupplier = () -> {
           String message = prefix + ": ";
           Warnings warning = warningSupplier.get();
@@ -39,10 +38,10 @@ public final class AlertsFactory {
           if (warning.stall) message += "stall, ";
           return message;
         };
-        return new NetworkPeriodicAlert(null, messageSupplier, AlertType.kWarning, () -> warningSupplier.get().rawBits != 0);
+        return group.addWarningAlert(messageSupplier, () -> warningSupplier.get().rawBits != 0);
     }
 
-    public static NetworkPeriodicAlert sparkMaxError(Supplier<Faults> errorSupplier, String prefix) {
+    public static BooleanSupplier sparkMaxError(NetworkAlertsGroup group, Supplier<Faults> errorSupplier, String prefix) {
         Supplier<String> messageSupplier = () -> {
           String message = prefix + ": ";
           Faults error = errorSupplier.get();
@@ -56,23 +55,21 @@ public final class AlertsFactory {
           if (error.temperature) message += "temperature, ";
           return message;
         };
-        return new NetworkPeriodicAlert(null, messageSupplier, AlertType.kError, () -> errorSupplier.get().rawBits != 0);
+        return group.addErrorAlert(messageSupplier, () -> errorSupplier.get().rawBits != 0);
     }
 
-    public static NetworkPeriodicAlert phoenixWarning(Supplier<StatusCode> statusSupplier, String prefix) {
-        return new NetworkPeriodicAlert(null, () -> prefix + ": " + statusSupplier.get().getName(),
-            AlertType.kWarning , () -> statusSupplier.get().isWarning());
+    public static BooleanSupplier phoenixWarning(NetworkAlertsGroup group, Supplier<StatusCode> statusSupplier, String prefix) {
+        return group.addWarningAlert(() -> prefix + ": " + statusSupplier.get().getName(), () -> statusSupplier.get().isWarning());
     }
 
-    public static NetworkPeriodicAlert phoenixError(Supplier<StatusCode> statusSupplier, String prefix) {
-        return new NetworkPeriodicAlert(null, () -> prefix + ": " + statusSupplier.get().getName(),
-            AlertType.kError , () -> statusSupplier.get().isError());
+    public static BooleanSupplier phoenixError(NetworkAlertsGroup group, Supplier<StatusCode> statusSupplier, String prefix) {
+        return group.addErrorAlert(() -> prefix + ": " + statusSupplier.get().getName(), () -> statusSupplier.get().isError());
     }
 
-    public static NetworkPeriodicAlert[] phoenixMotor(Supplier<StatusCode> statusSupplier, String prefix) {
-        NetworkPeriodicAlert[] periodicAlerts = new NetworkPeriodicAlert[2];
-        periodicAlerts[0] = phoenixWarning(statusSupplier, prefix);
-        periodicAlerts[1] = phoenixError(statusSupplier, prefix);
-        return periodicAlerts;
+    public static BooleanSupplier[] phoenixMotor(NetworkAlertsGroup group, Supplier<StatusCode> statusSupplier, String prefix) {
+        BooleanSupplier[] alertsActivations = new BooleanSupplier[2];
+        alertsActivations[0] = phoenixWarning(group, statusSupplier, prefix);
+        alertsActivations[1] = phoenixError(group, statusSupplier, prefix);
+        return alertsActivations;
     }
 }

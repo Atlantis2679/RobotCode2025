@@ -17,29 +17,21 @@ public class NetworkAlertsGroup {
         return new NetworkAlertsGroup(groupName + "/" + subGroupName);
     }
 
-    public BooleanSupplier addNetworkPeriodicAlert(NetworkPeriodicAlert periodicAlert) {
-        return NetworkAlertsManager.addNetworkPeriodicAlert(periodicAlert);
-    }
-
-    public BooleanSupplier[] addNetworkPeriodicAlertArray(NetworkPeriodicAlert[] periodicAlerts) {
-        return NetworkAlertsManager.addNetworkPeriodicAlertArray(periodicAlerts); 
-    }
-
-    public BooleanSupplier addAlert(Supplier<String> message, AlertType alertType, BooleanSupplier isActive) {
-        NetworkPeriodicAlert periodicAlert = new NetworkPeriodicAlert(this, message, alertType, isActive);
+    public BooleanSupplier addAlert(Supplier<String> message, BooleanSupplier isActive, AlertType alertType) {
+        NetworkPeriodicAlert periodicAlert = new NetworkPeriodicAlert(this, message, isActive, alertType);
         return NetworkAlertsManager.addNetworkPeriodicAlert(periodicAlert);
     }
 
     public BooleanSupplier addInfoAlert(Supplier<String> message, BooleanSupplier isActive) {
-        return addAlert(message, AlertType.kInfo, isActive);
+        return addAlert(message, isActive, AlertType.kInfo);
     }
 
     public BooleanSupplier addWarningAlert(Supplier<String> message, BooleanSupplier isActive) {
-        return addAlert(message, AlertType.kWarning, isActive);
+        return addAlert(message, isActive, AlertType.kWarning);
     }
 
     public BooleanSupplier addErrorAlert(Supplier<String> message, BooleanSupplier isActive) {
-        return addAlert(message, AlertType.kError, isActive);
+        return addAlert(message, isActive, AlertType.kError);
     }
 
     public String getName() {

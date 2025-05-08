@@ -83,12 +83,9 @@ public class SwerveModuleIOFalcon extends SwerveModuleIO {
         turnMotorError = turnMotor.getConfigurator().apply(turnMotorConfiguration);
         canCoderError = canCoder.getConfigurator().apply(canCoderConfiguration);
 
-        NetworkAlertsGroup.defaultInstance.addNetworkPeriodicAlertArray(
-            AlertsFactory.phoenixMotor(() -> driveMotorError, "Swerve module " + moduleNum + " drive motor"));
-        NetworkAlertsGroup.defaultInstance.addNetworkPeriodicAlertArray(
-            AlertsFactory.phoenixMotor(() -> turnMotorError, "Swerve module " + moduleNum + " turn motor"));
-        NetworkAlertsGroup.defaultInstance.addNetworkPeriodicAlertArray(
-            AlertsFactory.phoenixMotor(() -> canCoderError, "Swerve module " + moduleNum + " CANCoder"));
+        AlertsFactory.phoenixMotor(NetworkAlertsGroup.defaultInstance, () -> driveMotorError, "Swerve module " + moduleNum + " drive motor");
+        AlertsFactory.phoenixMotor(NetworkAlertsGroup.defaultInstance, () -> turnMotorError, "Swerve module " + moduleNum + " turn motor");
+        AlertsFactory.phoenixMotor(NetworkAlertsGroup.defaultInstance, () -> canCoderError, "Swerve module " + moduleNum + " CANCoder");
     }
 
     @Override

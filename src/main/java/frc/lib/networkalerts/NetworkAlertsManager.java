@@ -18,12 +18,4 @@ public class NetworkAlertsManager {
         alerts.add(periodicAlert);
         return periodicAlert::getIsActive;
     }
-
-    public static BooleanSupplier[] addNetworkPeriodicAlertArray(NetworkPeriodicAlert[] periodicAlerts) {
-        BooleanSupplier[] activeSuppliers = new BooleanSupplier[periodicAlerts.length];
-        for (int i = 0; i < activeSuppliers.length; i++) {
-            activeSuppliers[i] = addNetworkPeriodicAlert(periodicAlerts[i]);
-        }
-        return activeSuppliers;
-    }
 }

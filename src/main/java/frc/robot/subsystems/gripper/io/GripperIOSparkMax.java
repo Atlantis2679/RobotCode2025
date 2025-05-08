@@ -55,14 +55,14 @@ public class GripperIOSparkMax extends GripperIO {
         backMotorConfigError = backMotor.configure(backMotorConfig, ResetMode.kResetSafeParameters,
                 PersistMode.kPersistParameters);
         
-        NetworkAlertsGroup.defaultInstance.addNetworkPeriodicAlertArray(AlertsFactory.revMotor(() -> rightOuttakeMotorConfigError,
-            rightOuttakeMotor::getWarnings, rightOuttakeMotor::getFaults, "rightOuttakeMotor"));
+        AlertsFactory.revMotor(NetworkAlertsGroup.defaultInstance, () -> rightOuttakeMotorConfigError,
+            rightOuttakeMotor::getWarnings, rightOuttakeMotor::getFaults, "rightOuttakeMotor");
 
-        NetworkAlertsGroup.defaultInstance.addNetworkPeriodicAlertArray(AlertsFactory.revMotor(() -> leftOuttakeMotorConfigError,
-            leftOuttakeMotor::getWarnings, leftOuttakeMotor::getFaults, "leftOuttakeMotor"));
+        AlertsFactory.revMotor(NetworkAlertsGroup.defaultInstance, () -> leftOuttakeMotorConfigError,
+            leftOuttakeMotor::getWarnings, leftOuttakeMotor::getFaults, "leftOuttakeMotor");
 
-        NetworkAlertsGroup.defaultInstance.addNetworkPeriodicAlertArray(AlertsFactory.revMotor(() -> backMotorConfigError,
-            backMotor::getWarnings, backMotor::getFaults, "backMotor"));
+        AlertsFactory.revMotor(NetworkAlertsGroup.defaultInstance, () -> backMotorConfigError,
+            backMotor::getWarnings, backMotor::getFaults, "backMotor");
     }
 
     // Outputs:
