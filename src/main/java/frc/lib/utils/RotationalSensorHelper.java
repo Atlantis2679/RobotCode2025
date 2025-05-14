@@ -50,7 +50,7 @@ public class RotationalSensorHelper implements Tuneable {
     }
 
     private double warpAngle(double angle) {
-        return ((angle - continousWrapLowerBound) % fullRotation) + continousWrapLowerBound;
+        return ((angle - continousWrapLowerBound) % fullRotation + fullRotation) % fullRotation + continousWrapLowerBound;
     }
 
     public void resetAngle(double newAngle) {

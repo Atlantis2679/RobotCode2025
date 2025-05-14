@@ -29,8 +29,7 @@ public class PivotIOSparkMax extends PivotIO {
         config.idleMode(IdleMode.kBrake);
         configError = pivotMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         encoder.setDutyCycleRange(0, 1);
-        NetworkAlertsGroup.defaultInstance.addNetworkPeriodicAlertArray(
-            AlertsFactory.revMotor(() -> configError, pivotMotor::getWarnings, pivotMotor::getFaults, "Pivot"));
+        AlertsFactory.revMotor(NetworkAlertsGroup.defaultInstance, () -> configError, pivotMotor::getWarnings, pivotMotor::getFaults, "Pivot");
     }
 
     // Inputs:
