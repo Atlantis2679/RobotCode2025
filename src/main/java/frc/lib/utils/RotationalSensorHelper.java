@@ -46,7 +46,6 @@ public class RotationalSensorHelper implements Tuneable {
         if (continousWrapEnabled) {
             calculatedAngle = warpAngle(calculatedAngle);
         }
-        rotation2d = new Rotation2d(calculatedAngle);
     }
 
     private double warpAngle(double angle) {
@@ -57,7 +56,7 @@ public class RotationalSensorHelper implements Tuneable {
         setOffset(measuredAngle - newAngle);
     }
 
-    public void enableContinousWrap(double upperBound, double lowerBound) {
+    public void enableContinousWrap(double lowerBound, double upperBound) {
         continousWrapEnabled = true;
         continousWrapLowerBound = lowerBound;
         this.fullRotation = upperBound - lowerBound;
