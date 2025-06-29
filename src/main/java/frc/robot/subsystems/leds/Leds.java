@@ -8,7 +8,7 @@ import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.LEDPattern;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.lib.logfields.LogFieldsTable;
+import atlantis2679.lib.logfields.LogFieldsTable;
 
 public class Leds extends SubsystemBase {
     AddressableLED leds = new AddressableLED(LEDS_ID);

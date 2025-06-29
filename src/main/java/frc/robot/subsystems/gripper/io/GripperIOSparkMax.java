@@ -13,7 +13,7 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.wpilibj.DigitalInput;
-import frc.lib.logfields.LogFieldsTable;
+import atlantis2679.lib.logfields.LogFieldsTable;
 import frc.robot.RobotMap.CANBUS;
 import frc.robot.utils.NetworkAlertsMotors;
 

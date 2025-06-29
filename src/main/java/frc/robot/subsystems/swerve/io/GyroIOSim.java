@@ -1,6 +1,6 @@
 package frc.robot.subsystems.swerve.io;
 
-import frc.lib.logfields.LogFieldsTable;
+import atlantis2679.lib.logfields.LogFieldsTable;
 
 public class GyroIOSim extends GyroIO{
     public GyroIOSim(LogFieldsTable fieldsTable) {

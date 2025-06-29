@@ -6,7 +6,7 @@ import static frc.robot.subsystems.pivot.PivotConstants.ANGLE_OFFSET;
 
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
-import frc.lib.logfields.LogFieldsTable;
+import atlantis2679.lib.logfields.LogFieldsTable;
 
 public class PivotIOSim extends PivotIO {
     private final SingleJointedArmSim pivotMotor = new SingleJointedArmSim(

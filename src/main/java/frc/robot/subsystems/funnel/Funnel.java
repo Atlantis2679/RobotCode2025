@@ -5,7 +5,7 @@ import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.lib.logfields.LogFieldsTable;
+import atlantis2679.lib.logfields.LogFieldsTable;
 import frc.robot.Robot;
 import frc.robot.subsystems.funnel.io.FunnelIO;
 import frc.robot.subsystems.funnel.io.FunnelIOSim;

@@ -3,25 +3,25 @@ package frc.robot.subsystems.swerve;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import frc.lib.logfields.LogFieldsTable;
-import frc.lib.tuneables.Tuneable;
-import frc.lib.tuneables.TuneableBuilder;
+import atlantis2679.lib.logfields.LogFieldsTable;
+import atlantis2679.lib.tunables.Tunable;
+import atlantis2679.lib.tunables.TunableBuilder;
 import frc.robot.Robot;
 import frc.robot.subsystems.swerve.io.SwerveModuleIO;
 import frc.robot.subsystems.swerve.io.SwerveModuleIOFalcon;
 import frc.robot.subsystems.swerve.io.SwerveModuleIOSim;
 import frc.robot.utils.NetworkAlertsManager;
-import frc.robot.utils.PrimitiveRotationalSensorHelper;
+import atlantis2679.lib.helpers.RotationalSensorHelper;
 
 import static frc.robot.subsystems.swerve.SwerveContants.*;
 
-public class SwerveModule implements Tuneable {
+public class SwerveModule implements Tunable {
     private final int moduleNumber;
 
     private final LogFieldsTable fieldsTable;
     private final SwerveModuleIO io;
 
-    private PrimitiveRotationalSensorHelper absoluteAngleHelperDegrees;
+    private RotationalSensorHelper absoluteAngleHelperDegrees;
 
     private double lastDriveDistanceMeters;
     private double currDriveDistanceMeters;
@@ -51,7 +51,7 @@ public class SwerveModule implements Tuneable {
         fieldsTable.update();
 
         
-        absoluteAngleHelperDegrees = new PrimitiveRotationalSensorHelper(
+        absoluteAngleHelperDegrees = new RotationalSensorHelper(
                 io.absoluteTurnAngleRotations.getAsDouble() * 360,
                 absoluteAngleOffSetDegrees);
 
@@ -179,7 +179,7 @@ public class SwerveModule implements Tuneable {
     }
 
     @Override
-    public void initTuneable(TuneableBuilder builder) {
+    public void initTunable(TunableBuilder builder) {
         builder.addDoubleProperty("Integrated Angle Degrees", this::getIntegratedAngleDegrees, null);
         builder.addDoubleProperty("Absolute Angle Degrees", this::getAbsoluteAngleDegrees, null);
         builder.addDoubleProperty("Tuneable Offset",

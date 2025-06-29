@@ -5,8 +5,8 @@ public class PivotConstants {
     public static final int PIVOT_CURRENT_LIMIT = 30;
 
     public static final double ANGLE_OFFSET = -12;
-    public static final double FULL_ROTATION = 360;
     public static final double UPPER_BOUND = 205;
+    public static final double LOWER_BOUND = -155;
     
     public static final double MAX_VELOCITY_DEG_PER_SEC = 250;
     public static final double MAX_ACCELERATION = 1000;
