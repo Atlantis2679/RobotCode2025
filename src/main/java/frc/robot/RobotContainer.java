@@ -22,9 +22,9 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.lib.tuneables.Tuneable;
-import frc.lib.tuneables.TuneablesManager;
-import frc.lib.tuneables.extensions.TuneableCommand;
+import atlantis2679.lib.tunables.Tunable;
+import atlantis2679.lib.tunables.TunablesManager;
+import atlantis2679.lib.tunables.extensions.TunableCommand;
 import frc.robot.subsystems.funnel.Funnel;
 import frc.robot.allcommands.AllCommands;
 import frc.robot.subsystems.gripper.Gripper;
@@ -72,7 +72,7 @@ public class RobotContainer {
     }
 
     private void configureDriverBindings() {
-        TuneableCommand driveCommand = swerveCommands.driverController(
+        TunableCommand driveCommand = swerveCommands.driverController(
                 () -> driverController.getLeftY(),
                 () -> driverController.getLeftX(),
                 () -> driverController.getRightX(),
@@ -80,26 +80,26 @@ public class RobotContainer {
                 driverController.rightBumper()::getAsBoolean);
 
         swerve.setDefaultCommand(driveCommand);
-        TuneablesManager.add("Swerve/drive command", driveCommand.fullTuneable());
+        TunablesManager.add("Swerve/drive command", driveCommand.fullTunable());
         driverController.a().onTrue(new InstantCommand(swerve::resetYaw));
         driverController.x().onTrue(swerveCommands.xWheelLock());
         driverController.b().onTrue(swerveCommands.driveToPosePID(() -> new Pose2d(swerve.getPose().getTranslation(), new Rotation2d(0))));
 
-        TuneableCommand alignToReef = swerveCommands.alignToReef(true);
+        TunableCommand alignToReef = swerveCommands.alignToReef(true);
         driverController.leftTrigger()
                 .whileTrue(alignToReef);
-        TuneablesManager.add("Swerve/align to reef", alignToReef.fullTuneable());
+        TunablesManager.add("Swerve/align to reef", alignToReef.fullTunable());
         driverController.rightTrigger()
                 .whileTrue(swerveCommands.alignToReef(false));
 
         driverController.start()
                 .whileTrue(ledsCommands.bebeGradient().asProxy().unless(() -> leds.getCurrentCommand() != null));
 
-        TuneablesManager.add("Swerve/modules control mode",
+        TunablesManager.add("Swerve/modules control mode",
                 swerveCommands.controlModules(
                         driverController::getLeftX,
                         driverController::getLeftY,
-                        driverController::getRightY).fullTuneable());
+                        driverController::getRightY).fullTunable());
     }
 
     private void configureOperatorBindings() {
@@ -114,10 +114,10 @@ public class RobotContainer {
         operatorController.b().and(scoreTrigger).whileTrue(allCommands.scoreL3());
         operatorController.y().and(scoreTrigger).whileTrue(allCommands.scoreL3());
 
-        TuneableCommand tuneableMovePivotToAngle = allCommands.movePivotToAngleTuneable();
-        operatorController.povUp().and(TuneablesManager::isEnabled).whileTrue(tuneableMovePivotToAngle);
+        TunableCommand tuneableMovePivotToAngle = allCommands.movePivotToAngleTuneable();
+        operatorController.povUp().and(TunablesManager::isEnabled).whileTrue(tuneableMovePivotToAngle);
 
-        TuneablesManager.add("pivot move to angle", (Tuneable) tuneableMovePivotToAngle);
+        TunablesManager.add("pivot move to angle", (Tunable) tuneableMovePivotToAngle);
 
         operatorController.rightBumper().whileTrue(allCommands.manualConntroller(
                 operatorController.leftTrigger(),

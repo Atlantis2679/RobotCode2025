@@ -10,21 +10,21 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.lib.logfields.LogFieldsTable;
-import frc.lib.tuneables.Tuneable;
-import frc.lib.tuneables.TuneableBuilder;
-import frc.lib.tuneables.TuneablesManager;
-import frc.lib.tuneables.extensions.TuneableArmFeedforward;
-import frc.lib.tuneables.extensions.TuneableTrapezoidProfile;
+import atlantis2679.lib.logfields.LogFieldsTable;
+import atlantis2679.lib.tunables.Tunable;
+import atlantis2679.lib.tunables.TunableBuilder;
+import atlantis2679.lib.tunables.TunablesManager;
+import atlantis2679.lib.tunables.extensions.TunableArmFeedforward;
+import atlantis2679.lib.tunables.extensions.TunableTrapezoidProfile;
+import atlantis2679.lib.helpers.RotationalSensorHelper;
 import frc.robot.Robot;
 import frc.robot.subsystems.pivot.PivotConstants.Sim;
 import frc.robot.subsystems.pivot.io.PivotIO;
 import frc.robot.subsystems.pivot.io.PivotIOSim;
 import frc.robot.subsystems.pivot.io.PivotIOSparkMax;
 import frc.robot.utils.NetworkAlertsManager;
-import frc.robot.utils.PrimitiveRotationalSensorHelper;
 
-public class Pivot extends SubsystemBase implements Tuneable {
+public class Pivot extends SubsystemBase implements Tunable {
     private final LogFieldsTable fieldsTable = new LogFieldsTable(getName());
 
     private final PivotIO io = Robot.isSimulation() ? new PivotIOSim(fieldsTable) : new PivotIOSparkMax(fieldsTable);
@@ -34,30 +34,31 @@ public class Pivot extends SubsystemBase implements Tuneable {
     private final PivotVisualizer desiredPivotVisualizer = new PivotVisualizer(fieldsTable, "Desired Visualizer",
             new Color8Bit(Color.kYellow));
 
-    private final PrimitiveRotationalSensorHelper pivotRotationalHelper;
+    private final RotationalSensorHelper pivotRotationalHelper;
 
-    private final TuneableTrapezoidProfile pivotTrapezoid = new TuneableTrapezoidProfile(
+    private final TunableTrapezoidProfile pivotTrapezoid = new TunableTrapezoidProfile(
             new TrapezoidProfile.Constraints(MAX_VELOCITY_DEG_PER_SEC, MAX_ACCELERATION));
 
     private PIDController pivotPidController = new PIDController(KP, KI, KD);
 
-    private TuneableArmFeedforward pivotFeedforward = Robot.isSimulation()
-            ? new TuneableArmFeedforward(Sim.SIM_KS, Sim.SIM_KG, Sim.SIM_KV, Sim.SIM_KA)
-            : new TuneableArmFeedforward(KS, KG, KV, KA);
+    private TunableArmFeedforward pivotFeedforward = Robot.isSimulation()
+            ? new TunableArmFeedforward(Sim.SIM_KS, Sim.SIM_KG, Sim.SIM_KV, Sim.SIM_KA)
+            : new TunableArmFeedforward(KS, KG, KV, KA);
 
     private double maxAngle = MAX_ANGLE_DEGREES;
     private double minAngle = MIN_ANGLE_DEGREES;
 
     private double upperBound = UPPER_BOUND;
+    private double lowerBound = LOWER_BOUND;
     
     private final Debouncer encoderConnectedDebouncer = new Debouncer(ENCODER_CONNECTED_DEBAUNCER_SEC);
 
     public Pivot() {
         fieldsTable.update();
-        pivotRotationalHelper = new PrimitiveRotationalSensorHelper(io.angle.getAsDouble(), ANGLE_OFFSET);
-        pivotRotationalHelper.enableContinousWrap(UPPER_BOUND, FULL_ROTATION);
+        pivotRotationalHelper = new RotationalSensorHelper(io.angle.getAsDouble(), ANGLE_OFFSET);
+        pivotRotationalHelper.enableContinuousWrap(lowerBound, upperBound);
 
-        TuneablesManager.add("Pivot", (Tuneable) this);
+        TunablesManager.add("Pivot", (Tunable) this);
 
         NetworkAlertsManager.addErrorAlert("Pivot: Encoder is Disconnected!", () -> !getEncoderConnectedDebouncer());
     }
@@ -127,7 +128,7 @@ public class Pivot extends SubsystemBase implements Tuneable {
         pivotPidController.reset();
     }
 
-    public void initTuneable(TuneableBuilder builder) {
+    public void initTunable(TunableBuilder builder) {
         builder.addChild("Pivot PID", pivotPidController);
         builder.addChild("Pivot feedforward", pivotFeedforward);
         builder.addChild("Pivot Trapezoid profile", pivotTrapezoid);
@@ -135,9 +136,14 @@ public class Pivot extends SubsystemBase implements Tuneable {
         builder.addDoubleProperty("Pivot max angle", () -> maxAngle, (angle) -> maxAngle = angle);
         builder.addDoubleProperty("Pivot min angle", () -> minAngle, (angle) -> minAngle = angle);
         builder.addDoubleProperty("Pivot upper bound", () -> upperBound,
-                (newUpperBound) -> {
-                    upperBound = newUpperBound;
-                    pivotRotationalHelper.enableContinousWrap(newUpperBound, FULL_ROTATION);
-                });
+            (newUpperBound) -> {
+                upperBound = newUpperBound;
+                pivotRotationalHelper.enableContinuousWrap(lowerBound, newUpperBound);
+            });
+        builder.addDoubleProperty("Pivot lower bound", () -> lowerBound,
+            (newLowerBound) -> {
+                lowerBound = newLowerBound;
+                pivotRotationalHelper.enableContinuousWrap(newLowerBound, upperBound);
+            });
     }
 }

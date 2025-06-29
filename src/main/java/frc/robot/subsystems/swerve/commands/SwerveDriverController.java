@@ -5,19 +5,19 @@ import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import frc.lib.tuneables.SendableType;
-import frc.lib.tuneables.TuneableBuilder;
-import frc.lib.tuneables.TuneablesTable;
-import frc.lib.tuneables.extensions.TuneableCommand;
-import frc.lib.valueholders.DoubleHolder;
+import atlantis2679.lib.tunables.SendableType;
+import atlantis2679.lib.tunables.TunableBuilder;
+import atlantis2679.lib.tunables.TunablesTable;
+import atlantis2679.lib.tunables.extensions.TunableCommand;
+import atlantis2679.lib.valueholders.DoubleHolder;
 import frc.robot.subsystems.swerve.Swerve;
 
 import static frc.robot.subsystems.swerve.SwerveContants.DriverController.*;
 import static frc.robot.subsystems.swerve.SwerveContants.*;
 
-public class SwerveDriverController extends TuneableCommand {
+public class SwerveDriverController extends TunableCommand {
     private final Swerve swerve;
-    private TuneablesTable tuneablesTable = new TuneablesTable(SendableType.LIST);
+    private TunablesTable tuneablesTable = new TunablesTable(SendableType.LIST);
 
     private DoubleSupplier sidewaysSupplier;
     private DoubleSupplier forwardSupplier;
@@ -89,7 +89,7 @@ public class SwerveDriverController extends TuneableCommand {
     }
 
     @Override
-    public void initTuneable(TuneableBuilder builder) {
-        tuneablesTable.initTuneable(builder);
+    public void initTunable(TunableBuilder builder) {
+        tuneablesTable.initTunable(builder);
     }
 }

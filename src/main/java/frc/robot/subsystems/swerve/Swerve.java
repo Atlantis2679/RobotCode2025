@@ -21,13 +21,13 @@ import frc.robot.subsystems.swerve.io.GyroIONavX;
 import frc.robot.subsystems.swerve.io.GyroIOSim;
 import frc.robot.subsystems.swerve.poseEstimator.PoseEstimatorWithVision;
 import frc.robot.utils.BuiltInAccelerometerLogged;
-import frc.robot.utils.RotationalSensorHelper;
-import frc.lib.logfields.LogFieldsTable;
-import frc.lib.tuneables.SendableType;
-import frc.lib.tuneables.Tuneable;
-import frc.lib.tuneables.TuneableBuilder;
-import frc.lib.tuneables.TuneablesManager;
-import frc.lib.valueholders.DoubleHolder;
+import atlantis2679.lib.helpers.RotationalSensorHelper;
+import atlantis2679.lib.logfields.LogFieldsTable;
+import atlantis2679.lib.tunables.SendableType;
+import atlantis2679.lib.tunables.Tunable;
+import atlantis2679.lib.tunables.TunableBuilder;
+import atlantis2679.lib.tunables.TunablesManager;
+import atlantis2679.lib.valueholders.DoubleHolder;
 import frc.robot.Robot;
 import frc.robot.RobotMap.CANBUS.*;
 
@@ -46,7 +46,7 @@ import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.util.PathPlannerLogging;
 
-public class Swerve extends SubsystemBase implements Tuneable {
+public class Swerve extends SubsystemBase implements Tunable {
     private final LogFieldsTable fieldsTable = new LogFieldsTable(getName());
 
     private final GyroIO gyroIO = Robot.isSimulation()
@@ -109,13 +109,12 @@ public class Swerve extends SubsystemBase implements Tuneable {
         fieldsTable.recordOutput("current command",
                 getCurrentCommand() == null ? "none" : getCurrentCommand().getName());
 
-        gyroYawHelperDegreesCCW = new RotationalSensorHelper(
-                Rotation2d.fromDegrees(gyroIO.isConnected.getAsBoolean() ? -gyroIO.yawDegreesCW.getAsDouble() : 0));
+        gyroYawHelperDegreesCCW = new RotationalSensorHelper(gyroIO.isConnected.getAsBoolean() ? -gyroIO.yawDegreesCW.getAsDouble() : 0);
 
         poseEstimator = new PoseEstimatorWithVision(fieldsTable.getSubTable("poseEstimator"), getYawCCW(),
                 getModulesPositions(), swerveKinematics);
 
-        TuneablesManager.add("Swerve", (Tuneable) this);
+        TunablesManager.add("Swerve", (Tunable) this);
 
         NetworkAlertsManager.addErrorAlert("Swerve: Gyro IS Disconnected!", () -> !getGyroConnectedDebouncer());
 
@@ -170,7 +169,7 @@ public class Swerve extends SubsystemBase implements Tuneable {
         }
 
         if (getGyroConnectedDebouncer()) {
-            gyroYawHelperDegreesCCW.update(Rotation2d.fromDegrees(-gyroIO.yawDegreesCW.getAsDouble()));
+            gyroYawHelperDegreesCCW.update(-gyroIO.yawDegreesCW.getAsDouble());
         } else {
             Twist2d twist = swerveKinematics.toTwist2d(
                     modules[0].getModulePositionDelta(),
@@ -179,10 +178,10 @@ public class Swerve extends SubsystemBase implements Tuneable {
                     modules[3].getModulePositionDelta());
 
             gyroYawHelperDegreesCCW
-                    .update(gyroYawHelperDegreesCCW.getMeasuredAngle().plus(Rotation2d.fromRadians(twist.dtheta)));
+                    .update(gyroYawHelperDegreesCCW.getMeasuredAngle() + Math.toDegrees(twist.dtheta));
         }
 
-        poseEstimator.update(gyroYawHelperDegreesCCW.getMeasuredAngle(), getModulesPositions(), getGyroConnectedDebouncer());
+        poseEstimator.update(Rotation2d.fromDegrees(gyroYawHelperDegreesCCW.getMeasuredAngle()), getModulesPositions(), getGyroConnectedDebouncer());
         callbacksOnPoseUpdate.forEach(callback -> {
             callback.accept(getPose(), getIsRedAlliance());
         });
@@ -257,7 +256,7 @@ public class Swerve extends SubsystemBase implements Tuneable {
     }
 
     public Rotation2d getYawCCW() {
-        return gyroYawHelperDegreesCCW.getAngle();
+        return Rotation2d.fromDegrees(gyroYawHelperDegreesCCW.getAngle());
     }
 
     public void resetYawDegreesCW(double newYawDegreesCW) {
@@ -298,8 +297,8 @@ public class Swerve extends SubsystemBase implements Tuneable {
     }
 
     public void resetPose(Pose2d pose2d) {
-        gyroYawHelperDegreesCCW.resetAngle(pose2d.getRotation());
-        poseEstimator.resetPosition(gyroYawHelperDegreesCCW.getMeasuredAngle(), getModulesPositions(), pose2d);
+        gyroYawHelperDegreesCCW.resetAngle(pose2d.getRotation().getDegrees());
+        poseEstimator.resetPosition(Rotation2d.fromDegrees(gyroYawHelperDegreesCCW.getMeasuredAngle()), getModulesPositions(), pose2d);
     }
 
     public ChassisSpeeds getRobotRelativeChassisSpeeds() {
@@ -325,10 +324,10 @@ public class Swerve extends SubsystemBase implements Tuneable {
     }
 
     @Override
-    public void initTuneable(TuneableBuilder builder) {
+    public void initTunable(TunableBuilder builder) {
         builder.addChild("Swerve Subsystem", (Sendable) this);
 
-        builder.addChild("Modules Angle PID", (Tuneable) (builderPID) -> {
+        builder.addChild("Modules Angle PID", (Tunable) (builderPID) -> {
             builderPID.setSendableType(SendableType.PIDController);
             builderPID.addDoubleProperty("p", modules[0]::getTurnKP, (p) -> {
                 for (SwerveModule module : modules) {
@@ -354,7 +353,7 @@ public class Swerve extends SubsystemBase implements Tuneable {
         builder.addChild("Module 2 BL", modules[2]);
         builder.addChild("Module 3 BR", modules[3]);
 
-        builder.addChild("reset modules absolute position", (Tuneable) (resetModulesBuilder) -> {
+        builder.addChild("reset modules absolute position", (Tunable) (resetModulesBuilder) -> {
             DoubleHolder angleToResetDegrees = new DoubleHolder(0);
             resetModulesBuilder.addDoubleProperty("angle to reset degrees", angleToResetDegrees::get,
                     angleToResetDegrees::set);
@@ -368,7 +367,7 @@ public class Swerve extends SubsystemBase implements Tuneable {
         builder.addChild("reset to absolute",
                 new InstantCommand(this::queueResetModulesToAbsolute).ignoringDisable(true));
         
-        builder.addChild("reset gyro", (Tuneable) (resetGyroBuilder) -> {
+        builder.addChild("reset gyro", (Tunable) (resetGyroBuilder) -> {
             DoubleHolder angleToResetDegrees = new DoubleHolder(0);
             resetGyroBuilder.addDoubleProperty("angle to reset degrees CWW", angleToResetDegrees::get,
                 angleToResetDegrees::set);

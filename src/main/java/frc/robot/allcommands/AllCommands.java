@@ -9,8 +9,8 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ScheduleCommand;
 import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
-import frc.lib.tuneables.extensions.TuneableCommand;
-import frc.lib.valueholders.DoubleHolder;
+import atlantis2679.lib.tunables.extensions.TunableCommand;
+import atlantis2679.lib.valueholders.DoubleHolder;
 import frc.robot.allcommands.AllCommandsConstants.ManualControllers;
 import frc.robot.subsystems.funnel.Funnel;
 import frc.robot.subsystems.funnel.FunnelCommands;
@@ -120,8 +120,8 @@ public class AllCommands {
                                 .withName("scoreL3");
         }
 
-        public TuneableCommand movePivotToAngleTuneable() {
-                return TuneableCommand.wrap((tuneableTable) -> {
+        public TunableCommand movePivotToAngleTuneable() {
+                return TunableCommand.wrap((tuneableTable) -> {
                         DoubleHolder angleHolder = tuneableTable.addNumber("angle", 0.0);
 
                         return pivotCMDs.moveToAngle(angleHolder::get).withName("getPivotAngleAndScore");

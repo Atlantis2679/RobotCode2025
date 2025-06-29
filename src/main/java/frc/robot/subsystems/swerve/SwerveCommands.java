@@ -19,10 +19,10 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.RunCommand;
-import frc.lib.tuneables.extensions.TuneableCommand;
-import frc.lib.tuneables.extensions.TuneableWrapperCommand;
-import frc.lib.valueholders.BooleanHolder;
-import frc.lib.valueholders.ValueHolder;
+import atlantis2679.lib.tunables.extensions.TunableCommand;
+import atlantis2679.lib.tunables.extensions.TunableWrapperCommand;
+import atlantis2679.lib.valueholders.BooleanHolder;
+import atlantis2679.lib.valueholders.ValueHolder;
 import frc.robot.FieldConstants;
 import frc.robot.subsystems.swerve.commands.SwerveDriverController;
 
@@ -33,7 +33,7 @@ public class SwerveCommands {
         this.swerve = swerve;
     }
 
-    public TuneableCommand driverController(DoubleSupplier forwardSupplier, DoubleSupplier sidewaysSupplier,
+    public TunableCommand driverController(DoubleSupplier forwardSupplier, DoubleSupplier sidewaysSupplier,
             DoubleSupplier rotationSupplier, BooleanSupplier isFieldRelativeSupplier, BooleanSupplier isSensetiveMode) {
 
         return new SwerveDriverController(swerve, forwardSupplier, sidewaysSupplier, rotationSupplier,
@@ -46,10 +46,10 @@ public class SwerveCommands {
                 () -> swerve.drive(forwardPrecentageSupplier.getAsDouble() * MAX_VOLTAGE, 0, 0, false, true, true));
     }
 
-    public TuneableCommand rotateToAngle(DoubleSupplier targetAngleDegreesCCW) {
+    public TunableCommand rotateToAngle(DoubleSupplier targetAngleDegreesCCW) {
         PIDController pidController = new PIDController(RotateToAngle.KP, RotateToAngle.KI, RotateToAngle.KD);
         pidController.enableContinuousInput(-180, 180);
-        return TuneableCommand.wrap(swerve.runOnce(() -> {
+        return TunableCommand.wrap(swerve.runOnce(() -> {
             pidController.reset();
         }).andThen(swerve.run(() -> {
             swerve.drive(0, 0, pidController.calculate(swerve.getYawCCW().getDegrees(),
@@ -59,9 +59,9 @@ public class SwerveCommands {
         });
     }
 
-    public TuneableCommand controlModules(DoubleSupplier turnXSupplier, DoubleSupplier turnYSupplier,
+    public TunableCommand controlModules(DoubleSupplier turnXSupplier, DoubleSupplier turnYSupplier,
             DoubleSupplier speedSupplier) {
-        return TuneableCommand.wrap(tuneableBuilder -> {
+        return TunableCommand.wrap(tuneableBuilder -> {
             BooleanHolder optimizeState = tuneableBuilder.addBoolean("optimize state", true);
             return new RunCommand(() -> {
                 double turnY = turnYSupplier.getAsDouble();
@@ -96,7 +96,7 @@ public class SwerveCommands {
         });
     }
 
-    public TuneableCommand driveToPosePID(Supplier<Pose2d> targetPoseSupplier) {
+    public TunableCommand driveToPosePID(Supplier<Pose2d> targetPoseSupplier) {
         PIDController xController = new PIDController(DriveToPose.X_KP, DriveToPose.X_KI,
                 DriveToPose.X_KD);
         PIDController yController = new PIDController(DriveToPose.Y_KP, DriveToPose.Y_KI,
@@ -105,7 +105,7 @@ public class SwerveCommands {
                 DriveToPose.ANGLE_KI, DriveToPose.ANGLE_KD);
 
         thetaController.enableContinuousInput(-Math.PI, Math.PI);
-        return TuneableWrapperCommand.wrap(swerve.run(() -> {
+        return TunableWrapperCommand.wrap(swerve.run(() -> {
             Pose2d currentPose = swerve.getPose();
             Pose2d targetPose = targetPoseSupplier.get();
 
@@ -122,16 +122,16 @@ public class SwerveCommands {
             Logger.recordOutput("Swerve/Commands/desired pose", targetPose);
             swerve.drive(xSpeed, ySpeed, thetaSpeed, true, true, false);
         })
-                .finallyDo((interrupted) -> {
-                    xController.reset();
-                    yController.reset();
-                    thetaController.reset();
-                    swerve.stop();
-                }).withName("driveToPosePID"), (builder) -> {
-                    builder.addChild("X PID", xController);
-                    builder.addChild("Y PID", yController);
-                    builder.addChild("Rotate PID", thetaController);
-                });
+        .finallyDo((interrupted) -> {
+            xController.reset();
+            yController.reset();
+            thetaController.reset();
+            swerve.stop();
+        }).withName("driveToPosePID"), (builder) -> {
+            builder.addChild("X PID", xController);
+            builder.addChild("Y PID", yController);
+            builder.addChild("Rotate PID", thetaController);
+        });
     }
 
     private static Pose2d[] flipPosesArr(Pose2d[] poses) {
@@ -142,21 +142,21 @@ public class SwerveCommands {
         return flippedPoses;
     }
 
-    public TuneableCommand alignToReef(boolean isLeftSide) {
+    public TunableCommand alignToReef(boolean isLeftSide) {
         ValueHolder<Pose2d> desiredPose = new ValueHolder<Pose2d>(null);
         Pose2d[] reefPoses = isLeftSide ? FieldConstants.REEF_LEFT_BRANCHES_POSES
                 : FieldConstants.REEF_RIGHT_BRANCHES_POSES;
 
-        TuneableCommand driveToDesiredPose = driveToPosePID(desiredPose::get);
+        TunableCommand driveToDesiredPose = driveToPosePID(desiredPose::get);
 
-        return TuneableCommand.wrap(Commands.runOnce(() -> {
+        return TunableCommand.wrap(Commands.runOnce(() -> {
             desiredPose.set(swerve.getPose().nearest(Arrays.asList(
                     swerve.getIsRedAlliance() ? flipPosesArr(reefPoses) : reefPoses)));
         }).andThen(Commands.waitUntil(() -> desiredPose.get().getTranslation()
                 .getDistance(swerve.getPose().getTranslation()) < AlignToReef.MIN_DISTANCE)
                 .andThen(driveToDesiredPose.asProxy()))
                 .withName("align to reef"), (builder) -> {
-                    driveToDesiredPose.initTuneable(builder);
+                    driveToDesiredPose.initTunable(builder);
                 });
     }
 
