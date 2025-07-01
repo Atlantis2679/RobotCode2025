@@ -1,6 +1,6 @@
 package frc.robot.subsystems.swerve.io;
 
-import atlantis2679.lib.logfields.LogFieldsTable;
+import team2679.atlantiskit.logfields.LogFieldsTable;
 
 import static frc.robot.RobotMap.*;
 

@@ -18,7 +18,7 @@ import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
-import atlantis2679.lib.logfields.LogFieldsTable;
+import team2679.atlantiskit.logfields.LogFieldsTable;
 import frc.robot.utils.NetworkAlertsMotors;
 
 public class SwerveModuleIOFalcon extends SwerveModuleIO {

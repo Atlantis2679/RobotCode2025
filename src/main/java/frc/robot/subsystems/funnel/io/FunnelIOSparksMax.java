@@ -9,7 +9,7 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import edu.wpi.first.wpilibj.DigitalInput;
-import atlantis2679.lib.logfields.LogFieldsTable;
+import team2679.atlantiskit.logfields.LogFieldsTable;
 import frc.robot.RobotMap.CANBUS;
 import frc.robot.utils.NetworkAlertsMotors;
 

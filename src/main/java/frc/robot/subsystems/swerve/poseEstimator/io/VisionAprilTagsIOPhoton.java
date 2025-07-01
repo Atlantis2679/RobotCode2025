@@ -14,7 +14,7 @@ import org.photonvision.targeting.PhotonTrackedTarget;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Transform3d;
-import atlantis2679.lib.logfields.LogFieldsTable;
+import team2679.atlantiskit.logfields.LogFieldsTable;
 
 public class VisionAprilTagsIOPhoton extends VisionAprilTagsIO {
     private final PhotonPoseEstimator photonPoseEstimator;

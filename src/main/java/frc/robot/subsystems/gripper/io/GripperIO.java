@@ -3,8 +3,8 @@ package frc.robot.subsystems.gripper.io;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
-import atlantis2679.lib.logfields.IOBase;
-import atlantis2679.lib.logfields.LogFieldsTable;
+import team2679.atlantiskit.logfields.IOBase;
+import team2679.atlantiskit.logfields.LogFieldsTable;
 
 public abstract class GripperIO extends IOBase {
     public final BooleanSupplier isCoralIn = fields.addBoolean("isCoralIn", this::getIsCoralIn);

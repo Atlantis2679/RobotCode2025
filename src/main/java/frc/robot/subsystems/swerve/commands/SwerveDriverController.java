@@ -5,11 +5,11 @@ import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import atlantis2679.lib.tunables.SendableType;
-import atlantis2679.lib.tunables.TunableBuilder;
-import atlantis2679.lib.tunables.TunablesTable;
-import atlantis2679.lib.tunables.extensions.TunableCommand;
-import atlantis2679.lib.valueholders.DoubleHolder;
+import team2679.atlantiskit.tunables.SendableType;
+import team2679.atlantiskit.tunables.TunableBuilder;
+import team2679.atlantiskit.tunables.TunablesTable;
+import team2679.atlantiskit.tunables.extensions.TunableCommand;
+import team2679.atlantiskit.valueholders.DoubleHolder;
 import frc.robot.subsystems.swerve.Swerve;
 
 import static frc.robot.subsystems.swerve.SwerveContants.DriverController.*;

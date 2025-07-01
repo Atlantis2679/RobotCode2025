@@ -5,8 +5,8 @@ import java.util.function.Supplier;
 
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Transform3d;
-import atlantis2679.lib.logfields.IOBase;
-import atlantis2679.lib.logfields.LogFieldsTable;
+import team2679.atlantiskit.logfields.IOBase;
+import team2679.atlantiskit.logfields.LogFieldsTable;
 
 public abstract class VisionAprilTagsIO extends IOBase {
     public final Supplier<Pose3d[]> posesEstimates = fields.addObjectArray("poseEstimates", this::getRobotPoses, new Pose3d[0]);

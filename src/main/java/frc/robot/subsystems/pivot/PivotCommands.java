@@ -6,7 +6,7 @@ import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.Command;
-import atlantis2679.lib.valueholders.ValueHolder;
+import team2679.atlantiskit.valueholders.ValueHolder;
 
 public class PivotCommands {
     private final Pivot pivot;
