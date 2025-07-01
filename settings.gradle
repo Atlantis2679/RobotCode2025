@@ -26,7 +26,7 @@ pluginManagement {
     }
 }
 
-includeBuild "../AtlantisLib"
+// includeBuild "../AtlantisLib"
 
 Properties props = System.getProperties();
 props.setProperty("org.gradle.internal.native.headers.unresolved.dependencies.ignore", "true");

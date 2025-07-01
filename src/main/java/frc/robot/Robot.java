@@ -18,9 +18,9 @@ import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import atlantis2679.lib.logfields.LogFieldsTable;
-import atlantis2679.lib.periodicalerts.PeriodicAlertsManager;
-import atlantis2679.lib.tunables.TunablesManager;
+import team2679.atlantiskit.logfields.LogFieldsTable;
+import team2679.atlantiskit.periodicalerts.PeriodicAlertsManager;
+import team2679.atlantiskit.tunables.TunablesManager;
 
 public class Robot extends LoggedRobot {
     private Command autonomousCommand;

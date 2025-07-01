@@ -3,7 +3,7 @@ package frc.robot.utils;
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.wpilibj.BuiltInAccelerometer;
-import atlantis2679.lib.logfields.LogFieldsTable;
+import team2679.atlantiskit.logfields.LogFieldsTable;
 
 public class BuiltInAccelerometerLogged extends BuiltInAccelerometer{
     private final DoubleSupplier x;

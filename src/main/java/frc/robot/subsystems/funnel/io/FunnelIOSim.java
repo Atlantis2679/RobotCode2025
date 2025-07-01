@@ -1,6 +1,6 @@
 package frc.robot.subsystems.funnel.io;
 
-import atlantis2679.lib.logfields.LogFieldsTable;
+import team2679.atlantiskit.logfields.LogFieldsTable;
 
 public class FunnelIOSim extends FunnelIO {
     public FunnelIOSim(LogFieldsTable fieldsTable) {

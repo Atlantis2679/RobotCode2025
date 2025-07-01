@@ -3,15 +3,15 @@ package frc.robot.subsystems.swerve;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import atlantis2679.lib.logfields.LogFieldsTable;
-import atlantis2679.lib.tunables.Tunable;
-import atlantis2679.lib.tunables.TunableBuilder;
+import team2679.atlantiskit.logfields.LogFieldsTable;
+import team2679.atlantiskit.tunables.Tunable;
+import team2679.atlantiskit.tunables.TunableBuilder;
 import frc.robot.Robot;
 import frc.robot.subsystems.swerve.io.SwerveModuleIO;
 import frc.robot.subsystems.swerve.io.SwerveModuleIOFalcon;
 import frc.robot.subsystems.swerve.io.SwerveModuleIOSim;
 import frc.robot.utils.NetworkAlertsManager;
-import atlantis2679.lib.helpers.RotationalSensorHelper;
+import team2679.atlantiskit.helpers.RotationalSensorHelper;
 
 import static frc.robot.subsystems.swerve.SwerveContants.*;
 
