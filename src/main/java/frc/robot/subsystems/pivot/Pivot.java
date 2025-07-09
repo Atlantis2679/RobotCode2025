@@ -10,19 +10,19 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import atlantis2679.lib.logfields.LogFieldsTable;
-import atlantis2679.lib.tunables.Tunable;
-import atlantis2679.lib.tunables.TunableBuilder;
-import atlantis2679.lib.tunables.TunablesManager;
-import atlantis2679.lib.tunables.extensions.TunableArmFeedforward;
-import atlantis2679.lib.tunables.extensions.TunableTrapezoidProfile;
-import atlantis2679.lib.helpers.RotationalSensorHelper;
+import team2679.atlantiskit.logfields.LogFieldsTable;
+import team2679.atlantiskit.periodicalerts.PeriodicAlertsGroup;
+import team2679.atlantiskit.tunables.Tunable;
+import team2679.atlantiskit.tunables.TunableBuilder;
+import team2679.atlantiskit.tunables.TunablesManager;
+import team2679.atlantiskit.tunables.extensions.TunableArmFeedforward;
+import team2679.atlantiskit.tunables.extensions.TunableTrapezoidProfile;
+import team2679.atlantiskit.helpers.RotationalSensorHelper;
 import frc.robot.Robot;
 import frc.robot.subsystems.pivot.PivotConstants.Sim;
 import frc.robot.subsystems.pivot.io.PivotIO;
 import frc.robot.subsystems.pivot.io.PivotIOSim;
 import frc.robot.subsystems.pivot.io.PivotIOSparkMax;
-import frc.robot.utils.NetworkAlertsManager;
 
 public class Pivot extends SubsystemBase implements Tunable {
     private final LogFieldsTable fieldsTable = new LogFieldsTable(getName());
@@ -60,7 +60,7 @@ public class Pivot extends SubsystemBase implements Tunable {
 
         TunablesManager.add("Pivot", (Tunable) this);
 
-        NetworkAlertsManager.addErrorAlert("Pivot: Encoder is Disconnected!", () -> !getEncoderConnectedDebouncer());
+        PeriodicAlertsGroup.defaultInstance.addErrorAlert(() -> "Pivot: Encoder Disconnected!", () -> !getEncoderConnectedDebouncer());
     }
 
     @Override

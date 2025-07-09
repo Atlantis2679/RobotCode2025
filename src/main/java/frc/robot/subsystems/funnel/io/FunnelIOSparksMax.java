@@ -9,9 +9,10 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import edu.wpi.first.wpilibj.DigitalInput;
-import atlantis2679.lib.logfields.LogFieldsTable;
+import team2679.atlantiskit.logfields.LogFieldsTable;
+import team2679.atlantiskit.periodicalerts.PeriodicAlertsGroup;
 import frc.robot.RobotMap.CANBUS;
-import frc.robot.utils.NetworkAlertsMotors;
+import frc.robot.utils.AlertsFactory;
 
 import static frc.robot.RobotMap.*;
 import static frc.robot.subsystems.funnel.FunnelConstants.MAX_CURRENT;
@@ -29,9 +30,8 @@ public class FunnelIOSparksMax extends FunnelIO {
 
         REVLibError motorConfigError = motor.configure(motorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
-        NetworkAlertsMotors.addRevLibErrorAlert("Funnel Motor Config: ", () -> motorConfigError);
-        NetworkAlertsMotors.addMotorStuckAlert("Funnel Motor is Stuck!", motorCurrent, motor::getAppliedOutput);
-        NetworkAlertsMotors.addSparkMotorAlert("Funnel Motor: ", motor::getFaults, motor::getWarnings);
+        AlertsFactory.revMotor(PeriodicAlertsGroup.defaultInstance, "Funnel: Motor",
+            () -> motorConfigError, motor::getWarnings, motor::getFaults);
     }
     
     @Override

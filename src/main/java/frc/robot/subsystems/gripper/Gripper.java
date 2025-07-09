@@ -5,7 +5,7 @@ import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import atlantis2679.lib.logfields.LogFieldsTable;
+import team2679.atlantiskit.logfields.LogFieldsTable;
 import frc.robot.Robot;
 import frc.robot.subsystems.gripper.io.GripperIO;
 import frc.robot.subsystems.gripper.io.GripperIOSim;

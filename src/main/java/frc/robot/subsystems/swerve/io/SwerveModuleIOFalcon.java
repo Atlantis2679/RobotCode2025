@@ -18,8 +18,11 @@ import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
-import atlantis2679.lib.logfields.LogFieldsTable;
-import frc.robot.utils.NetworkAlertsMotors;
+import team2679.atlantiskit.logfields.LogFieldsTable;
+import team2679.atlantiskit.periodicalerts.PeriodicAlertsGroup;
+import frc.robot.utils.AlertsFactory;
+
+import static frc.robot.subsystems.swerve.SwerveContants.MODULE_TEMPERATORE_WARNING_THRESHOLD;
 
 public class SwerveModuleIOFalcon extends SwerveModuleIO {
     private final TalonFX driveMotor;
@@ -76,26 +79,24 @@ public class SwerveModuleIOFalcon extends SwerveModuleIO {
 
         StatusCode driveMotorConfigError = driveMotor.getConfigurator().apply(driveMotorConfiguration);
         StatusCode turnMotorConfigError = turnMotor.getConfigurator().apply(turnMotorConfiguration);
-        StatusCode canCoderMotorConfigError = canCoder.getConfigurator().apply(canCoderConfiguration);
+        StatusCode canCoderConfigError = canCoder.getConfigurator().apply(canCoderConfiguration);
 
-        NetworkAlertsMotors.addStatusCodeAlert("Swerve Module " + moduleNum + " Drive Motor Config: ",
+        AlertsFactory.phoenixMotor(PeriodicAlertsGroup.defaultInstance, "Swerve Module " + moduleNum + " Drive Motor Config: ",
             () -> driveMotorConfigError);
-        NetworkAlertsMotors.addStatusCodeAlert("Swerve Module " + moduleNum + " Turn Motor Config: ",
+        
+        AlertsFactory.phoenixMotor(PeriodicAlertsGroup.defaultInstance, "Swerve Module " + moduleNum + " Turn Motor Config: ", 
             () -> turnMotorConfigError);
-        NetworkAlertsMotors.addStatusCodeAlert("Swerve Module " + moduleNum + " Can Coder Config: ",
-            () -> canCoderMotorConfigError);
 
-        NetworkAlertsMotors.addStatusCodeAlert("Swerve Module " + moduleNum + " Drive Motor: ",
-            () -> driveMotor.getVersion().getStatus());
-        NetworkAlertsMotors.addStatusCodeAlert("Swerve Module " + moduleNum + " Turn Motor: ",
-            () -> turnMotor.getVersion().getStatus());
-        NetworkAlertsMotors.addStatusCodeAlert("Swerve Module " + moduleNum + " CanCoder Motor: ",
-            () -> canCoder.getVersion().getStatus());
+        AlertsFactory.phoenixMotor(PeriodicAlertsGroup.defaultInstance, "Swerve Module " + moduleNum + " Can Coder Config: ", 
+            () -> canCoderConfigError);
 
-        NetworkAlertsMotors.addMotorStuckAlert("Swerve Module " + moduleNum + " Drive Motor: ",
-            driveStatorCurrent, () -> driveMotor.getMotorVoltage().getValueAsDouble());
-        NetworkAlertsMotors.addMotorStuckAlert("Swerve Module " + moduleNum + " Turn Motor: ",
-            turnStatorCurrent, () -> turnMotor.getMotorVoltage().getValueAsDouble());
+        PeriodicAlertsGroup.defaultInstance.addWarningAlert(
+            () -> "Swerve Module " + moduleNum + " Drive Motor Temp: " + driveMotor.getDeviceTemp().getValueAsDouble(),
+            () -> {return driveMotor.getDeviceTemp().getValueAsDouble() > MODULE_TEMPERATORE_WARNING_THRESHOLD;});
+
+        PeriodicAlertsGroup.defaultInstance.addWarningAlert(
+            () -> "Swerve Module " + moduleNum + " Turn Motor Temp: " + turnMotor.getDeviceTemp().getValueAsDouble(),
+            () -> {return turnMotor.getDeviceTemp().getValueAsDouble() > MODULE_TEMPERATORE_WARNING_THRESHOLD;});
     }
 
     @Override

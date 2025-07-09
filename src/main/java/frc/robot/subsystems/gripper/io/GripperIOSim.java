@@ -1,6 +1,6 @@
 package frc.robot.subsystems.gripper.io;
 
-import atlantis2679.lib.logfields.LogFieldsTable;
+import team2679.atlantiskit.logfields.LogFieldsTable;
 
 public class GripperIOSim extends GripperIO {
     public GripperIOSim(LogFieldsTable fieldsTable) {

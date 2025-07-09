@@ -14,20 +14,20 @@ import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.utils.NetworkAlertsManager;
 import frc.robot.subsystems.swerve.SwerveContants.PathPlanner;
 import frc.robot.subsystems.swerve.io.GyroIO;
 import frc.robot.subsystems.swerve.io.GyroIONavX;
 import frc.robot.subsystems.swerve.io.GyroIOSim;
 import frc.robot.subsystems.swerve.poseEstimator.PoseEstimatorWithVision;
 import frc.robot.utils.BuiltInAccelerometerLogged;
-import atlantis2679.lib.helpers.RotationalSensorHelper;
-import atlantis2679.lib.logfields.LogFieldsTable;
-import atlantis2679.lib.tunables.SendableType;
-import atlantis2679.lib.tunables.Tunable;
-import atlantis2679.lib.tunables.TunableBuilder;
-import atlantis2679.lib.tunables.TunablesManager;
-import atlantis2679.lib.valueholders.DoubleHolder;
+import team2679.atlantiskit.helpers.RotationalSensorHelper;
+import team2679.atlantiskit.logfields.LogFieldsTable;
+import team2679.atlantiskit.periodicalerts.PeriodicAlertsGroup;
+import team2679.atlantiskit.tunables.SendableType;
+import team2679.atlantiskit.tunables.Tunable;
+import team2679.atlantiskit.tunables.TunableBuilder;
+import team2679.atlantiskit.tunables.TunablesManager;
+import team2679.atlantiskit.valueholders.DoubleHolder;
 import frc.robot.Robot;
 import frc.robot.RobotMap.CANBUS.*;
 
@@ -116,7 +116,7 @@ public class Swerve extends SubsystemBase implements Tunable {
 
         TunablesManager.add("Swerve", (Tunable) this);
 
-        NetworkAlertsManager.addErrorAlert("Swerve: Gyro IS Disconnected!", () -> !getGyroConnectedDebouncer());
+        PeriodicAlertsGroup.defaultInstance.addErrorAlert(() -> "Swerve: Gyro IS Disconnected!", () -> !getGyroConnectedDebouncer());
 
         resetYaw();
 
