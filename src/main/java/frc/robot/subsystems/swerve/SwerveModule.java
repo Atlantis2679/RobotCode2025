@@ -4,13 +4,13 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import team2679.atlantiskit.logfields.LogFieldsTable;
+import team2679.atlantiskit.periodicalerts.PeriodicAlertsGroup;
 import team2679.atlantiskit.tunables.Tunable;
 import team2679.atlantiskit.tunables.TunableBuilder;
 import frc.robot.Robot;
 import frc.robot.subsystems.swerve.io.SwerveModuleIO;
 import frc.robot.subsystems.swerve.io.SwerveModuleIOFalcon;
 import frc.robot.subsystems.swerve.io.SwerveModuleIOSim;
-import frc.robot.utils.NetworkAlertsManager;
 import team2679.atlantiskit.helpers.RotationalSensorHelper;
 
 import static frc.robot.subsystems.swerve.SwerveContants.*;
@@ -40,11 +40,11 @@ public class SwerveModule implements Tunable {
                         absoluteAngleOffSetDegrees)
                 : new SwerveModuleIOFalcon(fieldsTable, driveMotorID, turnMotorID, encoderID, moduleNumber);
 
-        NetworkAlertsManager.addWarningAlert(
+        PeriodicAlertsGroup.defaultInstance.addWarningAlert(
             () -> "Swerve Module " + positionName + " " + moduleNumber + " Drive Motor Temp: " + io.driveMotorTemperature.getAsDouble(),
             () -> io.driveMotorTemperature.getAsDouble() > MODULE_TEMPERATORE_WARNING_THRESHOLD);
 
-        NetworkAlertsManager.addWarningAlert(
+        PeriodicAlertsGroup.defaultInstance.addWarningAlert(
             () -> "Swerve Module " + positionName + " " + moduleNumber + " Turn Motor Temp: " + io.turnMotorTemperature.getAsDouble(),
             () -> io.turnMotorTemperature.getAsDouble() > MODULE_TEMPERATORE_WARNING_THRESHOLD);
         

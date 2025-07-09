@@ -14,8 +14,9 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import team2679.atlantiskit.logfields.LogFieldsTable;
+import team2679.atlantiskit.periodicalerts.PeriodicAlertsGroup;
 import frc.robot.RobotMap.CANBUS;
-import frc.robot.utils.NetworkAlertsMotors;
+import frc.robot.utils.AlertsFactory;
 
 public class GripperIOSparkMax extends GripperIO {
     private final SparkMax rightOuttakeMotor = new SparkMax(CANBUS.GRIPPER_RIGHT_OUTTAKE_MOTOR_ID, MotorType.kBrushless);
@@ -53,23 +54,14 @@ public class GripperIOSparkMax extends GripperIO {
                 PersistMode.kPersistParameters);
         backMotorConfigError = backMotor.configure(backMotorConfig, ResetMode.kResetSafeParameters,
                 PersistMode.kPersistParameters);
+        
+        AlertsFactory.revMotor(PeriodicAlertsGroup.defaultInstance, "Gripper: Left Motor",
+            () -> leftOuttakeMotorConfigError , leftOuttakeMotor::getWarnings, leftOuttakeMotor::getFaults);
+        AlertsFactory.revMotor(PeriodicAlertsGroup.defaultInstance, "Gripper: Right Motor",
+            () -> rightOuttakeMotorConfigError , rightOuttakeMotor::getWarnings, rightOuttakeMotor::getFaults);
+        AlertsFactory.revMotor(PeriodicAlertsGroup.defaultInstance, "Gripper: Left Motor",
+            () -> backMotorConfigError , backMotor::getWarnings, backMotor::getFaults);
 
-        NetworkAlertsMotors.addRevLibErrorAlert("Gripper Left Motor Config: ", () -> leftOuttakeMotorConfigError);
-        NetworkAlertsMotors.addRevLibErrorAlert("Gripper Left Motor Config: ", () -> rightOuttakeMotorConfigError);
-        NetworkAlertsMotors.addRevLibErrorAlert("Gripper Left Motor Config: ", () -> backMotorConfigError);
-
-        NetworkAlertsMotors.addMotorStuckAlert("Gripper Left Motor is Stuck!", leftOuttakeMotorCurrent,
-                leftOuttakeMotor::getAppliedOutput);
-        NetworkAlertsMotors.addMotorStuckAlert("Gripper Right Motor is Stuck!", rightOuttakeMotorCurrent,
-                rightOuttakeMotor::getAppliedOutput);
-        NetworkAlertsMotors.addMotorStuckAlert("Gripper Back Motor is Stuck!", backMotorCurrent,
-                backMotor::getAppliedOutput);
-
-        NetworkAlertsMotors.addSparkMotorAlert("Gripper Left Motor: ", leftOuttakeMotor::getFaults,
-                leftOuttakeMotor::getWarnings);
-        NetworkAlertsMotors.addSparkMotorAlert("Gripper Right Motor: ", rightOuttakeMotor::getFaults,
-                rightOuttakeMotor::getWarnings);
-        NetworkAlertsMotors.addSparkMotorAlert("Gripper Back Motor: ", backMotor::getFaults, backMotor::getWarnings);
     }
 
     // Outputs:

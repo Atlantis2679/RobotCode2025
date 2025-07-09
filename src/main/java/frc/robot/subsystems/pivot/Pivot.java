@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import team2679.atlantiskit.logfields.LogFieldsTable;
+import team2679.atlantiskit.periodicalerts.PeriodicAlertsGroup;
 import team2679.atlantiskit.tunables.Tunable;
 import team2679.atlantiskit.tunables.TunableBuilder;
 import team2679.atlantiskit.tunables.TunablesManager;
@@ -22,7 +23,6 @@ import frc.robot.subsystems.pivot.PivotConstants.Sim;
 import frc.robot.subsystems.pivot.io.PivotIO;
 import frc.robot.subsystems.pivot.io.PivotIOSim;
 import frc.robot.subsystems.pivot.io.PivotIOSparkMax;
-import frc.robot.utils.NetworkAlertsManager;
 
 public class Pivot extends SubsystemBase implements Tunable {
     private final LogFieldsTable fieldsTable = new LogFieldsTable(getName());
@@ -60,7 +60,7 @@ public class Pivot extends SubsystemBase implements Tunable {
 
         TunablesManager.add("Pivot", (Tunable) this);
 
-        NetworkAlertsManager.addErrorAlert("Pivot: Encoder is Disconnected!", () -> !getEncoderConnectedDebouncer());
+        PeriodicAlertsGroup.defaultInstance.addErrorAlert(() -> "Pivot: Encoder Disconnected!", () -> !getEncoderConnectedDebouncer());
     }
 
     @Override
