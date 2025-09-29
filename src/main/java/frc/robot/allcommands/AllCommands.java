@@ -54,13 +54,10 @@ public class AllCommands {
                                 pivotCMDs.moveToAngle(PIVOT_ANGLE_FOR_INTAKE),
                                 Commands.sequence(
                                                 Commands.waitUntil(() -> pivot.isAtAngle(PIVOT_ANGLE_FOR_INTAKE)),
-                                                funnelCMDs.passCoral(FUNNEL_PRECENTAGE_SPEED)
-                                                                .alongWith(gripperCMDs.spin(
-                                                                                GRIPPER_BACK_LOADING_VOLTAGE,
-                                                                                GRIPPER_RIGHT_LOADING_VOLTAGE,
-                                                                                GRIPPER_LEFT_LOADING_VOLTAGE))))
-                                .until(() -> !funnel.getIsCoralIn()
-                                                && gripper.getIsCoralIn())
+                                                funnelCMDs.inPut(FUNNEL_VOLTAGE)
+                                                                .alongWith(gripperCMDs.inPut())))
+                                .until(() -> !funnel.getIsCoralDetectedPostDebouncer()
+                                                && gripper.getisCoralInPostDebouncer())
                                 .andThen(new ScheduleCommand(
                                                 ledsCMDs.blink(Color.kBlue, LEDS_BLINK_DEFAULT_SEC)))
 
@@ -111,12 +108,12 @@ public class AllCommands {
         }
 
         public Command scoreL1() {
-                return gripperCMDs.spin(GRIPPER_BACK_L1_VOLTAGE, GRIPPER_RIGHT_L1_VOLTAGE, GRIPPER_LEFT_L1_VOLTAGE)
+                return gripperCMDs.outPutL1()
                                 .withName("scoreL1");
         }
 
         public Command scoreL3() {
-                return gripperCMDs.spin(GRIPPER_BACK_L3_VOLTAGE, GRIPPER_OUTTAKE_L3_VOLTAGE, GRIPPER_OUTTAKE_L3_VOLTAGE)
+                return gripperCMDs.outPutL2L3()
                                 .withName("scoreL3");
         }
 
@@ -131,12 +128,13 @@ public class AllCommands {
         public Command manualGripperController(DoubleSupplier speed) {
                 return gripperCMDs.manualController(
                                 () -> speed.getAsDouble() * ManualControllers.GRIPPER_BACK_SPEED_MULTIPLAYER,
+
                                 () -> speed.getAsDouble() * ManualControllers.GRIPPER_RIGHT_SPEED_MULTIPLAYER,
                                 () -> speed.getAsDouble() * ManualControllers.GRIPPER_LEFT_SPEED_MULTIPLAYER);
         }
 
         public Command manualFunnelController(DoubleSupplier speed) {
-                return funnelCMDs.manualController(
+                return funnelCMDs.manualConntroller(
                                 () -> speed.getAsDouble() * ManualControllers.FUNNEL_SPEED_MULTIPLAYER);
         }
 

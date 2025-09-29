@@ -1,45 +1,44 @@
 package frc.robot.subsystems.funnel;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.Debouncer;
-import edu.wpi.first.math.filter.Debouncer.DebounceType;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import team2679.atlantiskit.logfields.LogFieldsTable;
 import frc.robot.Robot;
-import frc.robot.subsystems.funnel.io.FunnelIO;
-import frc.robot.subsystems.funnel.io.FunnelIOSim;
-import frc.robot.subsystems.funnel.io.FunnelIOSparksMax;
+import frc.robot.subsystems.funnel.io.FunneIO;
+import frc.robot.subsystems.funnel.io.FunneIOSparkMax;
+import team2679.atlantiskit.logfields.LogFieldsTable;
 
-import static frc.robot.subsystems.funnel.FunnelConstants.*;
+public class Funnel extends SubsystemBase{
 
-public class Funnel extends SubsystemBase {
-    private final FunnelIO io;
-    private final LogFieldsTable fieldsTable = new LogFieldsTable(getName());
-    private final Debouncer isCoralInDebouncer = new Debouncer(DEBOUNCER_SECONDS, DebounceType.kBoth);
+  LogFieldsTable fieldsTable;
+  FunneIO funnleIO;
+  Debouncer debouncer;
 
-    public Funnel() {
-        fieldsTable.recordOutput("current command", getCurrentCommand() != null ? getCurrentCommand().getName() : "None");
+  private double lastDesiredVoltage = 0;
 
-        io = Robot.isReal() ? new FunnelIOSparksMax(this.fieldsTable) : new FunnelIOSim(this.fieldsTable);
+  public Funnel(){
+    debouncer = new Debouncer(FunnelConstants.debounceTimeSec);
+    fieldsTable = new LogFieldsTable(getName());
+    if(Robot.isReal()){
+      funnleIO = new FunneIOSparkMax(fieldsTable);
     }
+  }
 
-    public void setMotorPercentageSpeed(double percentageSpeed) {
-        fieldsTable.recordOutput("precentage speed", percentageSpeed);
-        io.setPercentageSpeed(MathUtil.clamp(percentageSpeed, -1, 1));
-    }
-    @Override
-    public void periodic(){
-        // fieldsTable.update();
-        SmartDashboard.putBoolean("CoralInFunnel", getIsCoralIn());
-        fieldsTable.recordOutput("isCoralIn", getIsCoralIn());
-    }
-    public boolean getIsCoralIn() {
-        return isCoralInDebouncer.calculate(io.isCoralIn.getAsBoolean());
-    }
+  @Override
+  public void periodic() {
+    fieldsTable.recordOutput("desired voltage", lastDesiredVoltage);
+  }
 
-    public void stop() {
-        fieldsTable.recordOutput("precentage speed", 0.0);
-        io.setPercentageSpeed(0);
-    }
+  public void stop(){
+    funnleIO.setMotorVolt(0);
+  }
+
+  public void setMotorVolt(double volt){
+    lastDesiredVoltage = volt;
+    funnleIO.setMotorVolt(volt);
+  }
+
+  public boolean getIsCoralDetectedPostDebouncer(){
+    return debouncer.calculate(funnleIO.isCoralDetected.getAsBoolean());
+  }
+  
 }

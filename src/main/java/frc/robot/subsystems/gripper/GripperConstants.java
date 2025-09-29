@@ -1,10 +1,17 @@
 package frc.robot.subsystems.gripper;
 
-public class GripperConstants {
-    public static final int OUTTAKE_MOTORS_MAX_CURRENT = 20;
-    public static final int BACK_MOTOR_MAX_CURRENT = 30;
+public final class GripperConstants {
+  public static final double debounceTimeSec = 1;
 
-    public static final double OUTTAKE_MOTORS_MAX_VOLTAGE = 12;
-    public static final double BACK_MOTOR_MAX_VOLTAGE = 12;
-    public static final double DEBOUNCER_SECONDS = 0.0;
+  public static final double L1BackMotorVolt = 10;
+  public static final double L1LeftMotorVolt = 11;
+  public static final double L1RightMotorVolt = 10;
+
+  public static final double L2L3BackMotorVolt = 10;
+  public static final double L2L3LeftMotorVolt = 10;
+  public static final double L2L3RightMotorVolt = 10;
+
+  public static final double InTakeBackMotorVolt = 11;
+  public static final double InTakeLeftMotorVolt = 11;
+  public static final double InTakeRightMotorVolt = 11;
 }

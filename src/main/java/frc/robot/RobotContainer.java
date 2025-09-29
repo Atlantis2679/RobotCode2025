@@ -60,8 +60,8 @@ public class RobotContainer {
                 .alongWith(allCommands.stopAll()).ignoringDisable(true));
         pdh.setSwitchableChannel(true);
 
-        new Trigger(DriverStation::isEnabled)
-                .whileTrue(Commands.startEnd(gripper::setBreakMotors, gripper::setCoastMotors));
+        // new Trigger(DriverStation::isEnabled)
+        //         .whileTrue(Commands.startEnd(gripper::setBreakMotors, gripper::setCoastMotors));
 
         if (Robot.isReal())
             CameraServer.startAutomaticCapture().setResolution(300, 300);
