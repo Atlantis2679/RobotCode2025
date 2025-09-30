@@ -9,7 +9,7 @@ public class PivotConstants {
     public static final double LOWER_BOUND = -155;
     
     public static final double MAX_VELOCITY_DEG_PER_SEC = 250;
-    public static final double MAX_ACCELERATION = 1000;
+    public static final double MAX_ACCELERATION_DEG_PER_SEC_SQUARED = 1000;
     public static final double MAX_ANGLE_DEGREES = 95; // was 120
     public static final double MIN_ANGLE_DEGREES = -110;
     public static final double ANGLE_TOLERENCE_DEGREES = 4;
@@ -25,7 +25,6 @@ public class PivotConstants {
 
     public static final double ENCODER_CONNECTED_DEBAUNCER_SEC = 0.1;
 
-
     public static class Sim {
         public static final double SIM_KS = 0;
         public static final double SIM_KA = 0;
@@ -37,6 +36,6 @@ public class PivotConstants {
         public static final double TURNING_MIN_DEGREES = 115;
         public static final double TURNING_MAX_DEGREES = 110;    
 
-        public static final double ARM_LENGTH = 50;
+        public static final double ARM_LENGTH_M = 0.42;
     }
 }
