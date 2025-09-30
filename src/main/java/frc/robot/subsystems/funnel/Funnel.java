@@ -14,8 +14,8 @@ import frc.robot.subsystems.funnel.io.FunnelIOSparksMax;
 import static frc.robot.subsystems.funnel.FunnelConstants.*;
 
 public class Funnel extends SubsystemBase {
-    private final FunnelIO io = Robot.isReal() ? new FunnelIOSparksMax(this.fieldsTable) : new FunnelIOSim(this.fieldsTable);
     private final LogFieldsTable fieldsTable = new LogFieldsTable(getName());
+    private final FunnelIO io = Robot.isReal() ? new FunnelIOSparksMax(this.fieldsTable) : new FunnelIOSim(this.fieldsTable);
     private final Debouncer isCoralInDebouncer = new Debouncer(DEBOUNCER_SECONDS, DebounceType.kBoth);
 
     public Funnel() {}

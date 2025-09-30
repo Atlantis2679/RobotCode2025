@@ -6,6 +6,8 @@ import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.wpilibj.simulation.FlywheelSim;
 import team2679.atlantiskit.logfields.LogFieldsTable;
+
+import static frc.robot.subsystems.pivot.PivotConstants.KP;
 import static frc.robot.subsystems.swerve.SwerveContants.*;
 
 public class SwerveModuleIOSim extends SwerveModuleIO {
@@ -14,7 +16,7 @@ public class SwerveModuleIOSim extends SwerveModuleIO {
     private double simAbsoluteTurnRotations;
     private double simIntegeratedTurnRotations = 0;
     private double simDriveRotations = 0;
-    private final PIDController turnPIDController = new PIDController(15, 0, 0);
+    private final PIDController turnPIDController = new PIDController(KP, 0, 0);
 
     public SwerveModuleIOSim(LogFieldsTable fieldsTable, int driveMotorID, int angleMotorID, int encoderID,
             double absoluteAngleOffsetDegrees) {
@@ -160,15 +162,5 @@ public class SwerveModuleIOSim extends SwerveModuleIO {
     @Override
     protected double getTurnStatorCurrent() {
         return turnMotorSim.getCurrentDrawAmps();
-    }
-
-    @Override
-    protected double getDriveMotorTemperature() {
-        return 0;
-    }
-
-    @Override
-    protected double getTurnMotorTemperature() {
-        return 0;
     }
 }

@@ -7,9 +7,8 @@ public class SwerveContants {
     public final static double GEAR_RATIO_TURN = 12.8;
     public final static double WHEEL_RADIUS_METERS = Units.inchesToMeters(2);
 
-    public final static double MAX_VOLTAGE = 11;
-    public final static double MAX_MODULE_VELOCITY_MPS = 4.632;
-    public final static double MODULE_TEMPERATORE_WARNING_THRESHOLD = 40;
+    public final static double MAX_VOLTAGE = 12;
+    public final static double MAX_MODULE_VELOCITY_MPS = 4.78536;
 
     public final static double TRACK_WIDTH_METERS = 0.595;
     public final static double TRACK_LENGTH_METERS = 0.595;

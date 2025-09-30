@@ -22,8 +22,6 @@ import team2679.atlantiskit.logfields.LogFieldsTable;
 import team2679.atlantiskit.periodicalerts.PeriodicAlertsGroup;
 import frc.robot.utils.AlertsFactory;
 
-import static frc.robot.subsystems.swerve.SwerveContants.MODULE_TEMPERATORE_WARNING_THRESHOLD;
-
 public class SwerveModuleIOFalcon extends SwerveModuleIO {
     private final TalonFX driveMotor;
     private final TalonFX turnMotor;
@@ -89,14 +87,6 @@ public class SwerveModuleIOFalcon extends SwerveModuleIO {
 
         AlertsFactory.phoenixMotor(PeriodicAlertsGroup.defaultInstance, "Swerve Module " + moduleNum + " Can Coder Config: ", 
             () -> canCoderConfigError);
-
-        PeriodicAlertsGroup.defaultInstance.addWarningAlert(
-            () -> "Swerve Module " + moduleNum + " Drive Motor Temp: " + driveMotor.getDeviceTemp().getValueAsDouble(),
-            () -> {return driveMotor.getDeviceTemp().getValueAsDouble() > MODULE_TEMPERATORE_WARNING_THRESHOLD;});
-
-        PeriodicAlertsGroup.defaultInstance.addWarningAlert(
-            () -> "Swerve Module " + moduleNum + " Turn Motor Temp: " + turnMotor.getDeviceTemp().getValueAsDouble(),
-            () -> {return turnMotor.getDeviceTemp().getValueAsDouble() > MODULE_TEMPERATORE_WARNING_THRESHOLD;});
     }
 
     @Override
@@ -196,15 +186,5 @@ public class SwerveModuleIOFalcon extends SwerveModuleIO {
     @Override
     protected double getTurnStatorCurrent() {
         return turnMotor.getStatorCurrent().getValueAsDouble();
-    }
-
-    @Override
-    protected double getDriveMotorTemperature() {
-        return driveMotor.getDeviceTemp().getValueAsDouble();
-    }
-
-    @Override
-    protected double getTurnMotorTemperature() {
-        return turnMotor.getDeviceTemp().getValueAsDouble();
     }
 }
