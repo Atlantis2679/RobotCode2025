@@ -25,158 +25,161 @@ import frc.robot.subsystems.swerve.Swerve;
 import static frc.robot.allcommands.AllCommandsConstants.*;
 
 public class AllCommands {
-        private final Gripper gripper;
-        private final Pivot pivot;
-        private final Funnel funnel;
-        private final Swerve swerve;
-        private final Leds leds;
+    private final Gripper gripper;
+    private final Pivot pivot;
+    private final Funnel funnel;
+    private final Swerve swerve;
+    private final Leds leds;
 
-        private final GripperCommands gripperCMDs;
-        private final PivotCommands pivotCMDs;
-        private final FunnelCommands funnelCMDs;
-        private final LedsCommands ledsCMDs;
+    private final GripperCommands gripperCMDs;
+    private final PivotCommands pivotCMDs;
+    private final FunnelCommands funnelCMDs;
+    private final LedsCommands ledsCMDs;
 
-        public AllCommands(Gripper gripper, Pivot pivot, Funnel funnel, Swerve swerve, Leds leds) {
-                this.gripper = gripper;
-                this.pivot = pivot;
-                this.funnel = funnel;
-                this.swerve = swerve;
-                this.leds = leds;
+    public AllCommands(Gripper gripper, Pivot pivot, Funnel funnel, Swerve swerve, Leds leds) {
+        this.gripper = gripper;
+        this.pivot = pivot;
+        this.funnel = funnel;
+        this.swerve = swerve;
+        this.leds = leds;
 
-                this.gripperCMDs = new GripperCommands(gripper);
-                this.pivotCMDs = new PivotCommands(pivot);
-                this.funnelCMDs = new FunnelCommands(funnel);
-                this.ledsCMDs = new LedsCommands(leds);
-        }
+        this.gripperCMDs = new GripperCommands(gripper);
+        this.pivotCMDs = new PivotCommands(pivot);
+        this.funnelCMDs = new FunnelCommands(funnel);
+        this.ledsCMDs = new LedsCommands(leds);
+    }
 
-        public Command intake() {
-                return Commands.parallel(
-                                pivotCMDs.moveToAngle(PIVOT_ANGLE_FOR_INTAKE),
-                                Commands.sequence(
-                                                Commands.waitUntil(() -> pivot.isAtAngle(PIVOT_ANGLE_FOR_INTAKE)),
-                                                funnelCMDs.passCoral(FUNNEL_PRECENTAGE_SPEED)
-                                                                .alongWith(gripperCMDs.spin(
-                                                                                GRIPPER_BACK_LOADING_VOLTAGE,
-                                                                                GRIPPER_RIGHT_LOADING_VOLTAGE,
-                                                                                GRIPPER_LEFT_LOADING_VOLTAGE))))
-                                .until(() -> !funnel.getIsCoralIn()
-                                                && gripper.getIsCoralIn())
-                                .andThen(new ScheduleCommand(
-                                                ledsCMDs.blink(Color.kBlue, LEDS_BLINK_DEFAULT_SEC)))
+    public Command intake() {
+        return Commands.parallel(
+            pivotCMDs.moveToAngle(PIVOT_ANGLE_FOR_INTAKE),
+            Commands.sequence(
+                Commands.waitUntil(() -> pivot.isAtAngle(PIVOT_ANGLE_FOR_INTAKE)),
+                funnelCMDs.passCoral(FUNNEL_PRECENTAGE_SPEED)
+                    .alongWith(gripperCMDs.spin(
+                        GRIPPER_BACK_LOADING_VOLTAGE,
+                        GRIPPER_RIGHT_LOADING_VOLTAGE,
+                        GRIPPER_LEFT_LOADING_VOLTAGE))))
+            .until(() -> !funnel.getIsCoralIn()
+                            && gripper.getIsCoralIn())
+            // Schedule to end the command without waiting for blink to finish
+            .andThen(new ScheduleCommand(
+                            ledsCMDs.blink(Color.kBlue, LEDS_BLINK_DEFAULT_SEC)))
+            .withName("Intake");
+    }
 
-                                .withName("Intake");
-        }
+    public Command autoDrive() {
+        return (new InstantCommand(swerve::resetYaw))
+            .andThen(swerve.run(() -> swerve.drive(
+                AUTO_DRIVE_VOLTAGE_PERCANTAGE, 0, 0, true, true, true)))
+            .withTimeout(AUTO_DRIVE_SECONDS).withName("autoDriveBackup");
+    }
 
-        public Command autoDrive() {
-                return (new InstantCommand(swerve::resetYaw))
-                        .andThen(swerve.run(() -> swerve.drive(
-                                AUTO_DRIVE_VOLTAGE_PERCANTAGE, 0, 0, true, true, true)))
-                        .withTimeout(AUTO_DRIVE_SECONDS).withName("autoDriveBackup");
-        }
+    public Command autoDriveScoreL1() {
+        return (new InstantCommand(swerve::resetYaw))
+            .andThen(swerve.run(() -> swerve.drive(
+                AUTO_DRIVE_VOLTAGE_PERCANTAGE, 0, 0, true, true, true)))
+            .withTimeout(AUTO_DRIVE_SECONDS)
+            .andThen(scoreL1()).withName("autoDriveScoreL1Backup");
+    }
 
-        public Command autoDriveScoreL1() {
-                return (new InstantCommand(swerve::resetYaw))
-                        .andThen(swerve.run(() -> swerve.drive(
-                        AUTO_DRIVE_VOLTAGE_PERCANTAGE, 0, 0, true, true, true)))
-                        .withTimeout(AUTO_DRIVE_SECONDS)
-                        .andThen(scoreL1()).withName("autoDriveScoreL1Backup");
-        }
+    public Command pivotToAngleWithLeds(double angle) {
+        return Commands.parallel(
+                pivotCMDs.moveToAngle(angle),
+                ledsCMDs.staticColorWhenTrue(() -> pivot.isAtAngle(angle), Color.kGreen))
+            .withName("pivotToAngleWithLeds");
+    }
 
-        public Command pivotToAngleWithLeds(double angle) {
-                return Commands.parallel(
-                                pivotCMDs.moveToAngle(angle),
-                                ledsCMDs.staticColorWhenTrue(() -> pivot.isAtAngle(angle), Color.kGreen))
-                                .withName("pivotToAngleWithLeds");
-        }
+    public Command moveToL1() {
+        return pivotToAngleWithLeds(PIVOT_ANGLE_FOR_L1).withName("moveToL1");
+    }
 
-        public Command moveToL1() {
-                return pivotToAngleWithLeds(PIVOT_ANGLE_FOR_L1).withName("moveToL1");
-        }
+    public Command moveToL2() {
+        return pivotToAngleWithLeds(PIVOT_ANGLE_FOR_L2).withName("moveToL2");
+    }
 
-        public Command moveToL2() {
-                return pivotToAngleWithLeds(PIVOT_ANGLE_FOR_L2).withName("moveToL2");
-        }
+    public Command moveToL3() {
+        return pivotToAngleWithLeds(PIVOT_ANGLE_FOR_L3).withName("moveToL3");
+    }
 
-        public Command moveToL3() {
-                return pivotToAngleWithLeds(PIVOT_ANGLE_FOR_L3).withName("moveToL3");
-        }
+    public Command moveToRest() {
+        return pivotCMDs.moveToAngle(PIVOT_ANGLE_FOR_REST).finallyDo(pivot::stop)
+            .until(() -> pivot.isAtAngle(PIVOT_ANGLE_FOR_REST))
+            .andThen(Commands.waitUntil(
+                () -> Math.abs(pivot.getAngleDegrees() - PIVOT_ANGLE_FOR_REST) > PIVOT_ANGLE_RESTING_TOLARENCE))
+            .repeatedly()
+            .withName("moveToRest");
+    }
 
-        public Command moveToRest() {
-                return pivotCMDs.moveToAngle(PIVOT_ANGLE_FOR_REST).finallyDo(pivot::stop)
-                                .until(() -> pivot.isAtAngle(PIVOT_ANGLE_FOR_REST))
-                                .andThen(Commands.waitUntil(
-                                                () -> Math.abs(pivot.getAngleDegrees() - PIVOT_ANGLE_FOR_REST) > 17))
-                                .repeatedly()
-                                .withName("moveToRest");
-        }
+    public Command scoreL1() {
+        return gripperCMDs.spin(GRIPPER_BACK_L1_VOLTAGE, GRIPPER_RIGHT_L1_VOLTAGE, GRIPPER_LEFT_L1_VOLTAGE)
+            .withName("scoreL1");
+    }
 
-        public Command scoreL1() {
-                return gripperCMDs.spin(GRIPPER_BACK_L1_VOLTAGE, GRIPPER_RIGHT_L1_VOLTAGE, GRIPPER_LEFT_L1_VOLTAGE)
-                                .withName("scoreL1");
-        }
+    public Command scoreL3() {
+        return gripperCMDs.spin(GRIPPER_BACK_L3_VOLTAGE, GRIPPER_OUTTAKE_L3_VOLTAGE, GRIPPER_OUTTAKE_L3_VOLTAGE)
+            .withName("scoreL3");
+    }
 
-        public Command scoreL3() {
-                return gripperCMDs.spin(GRIPPER_BACK_L3_VOLTAGE, GRIPPER_OUTTAKE_L3_VOLTAGE, GRIPPER_OUTTAKE_L3_VOLTAGE)
-                                .withName("scoreL3");
-        }
+    public TunableCommand movePivotToAngleTuneable() {
+        return TunableCommand.wrap((tuneableTable) -> {
+            DoubleHolder angleHolder = tuneableTable.addNumber("angle", 0.0);
 
-        public TunableCommand movePivotToAngleTuneable() {
-                return TunableCommand.wrap((tuneableTable) -> {
-                        DoubleHolder angleHolder = tuneableTable.addNumber("angle", 0.0);
+            return pivotCMDs.moveToAngle(angleHolder::get).withName("getPivotAngleAndScore");
+        });
+    }
 
-                        return pivotCMDs.moveToAngle(angleHolder::get).withName("getPivotAngleAndScore");
-                });
-        }
+    public Command manualGripperController(DoubleSupplier speed) {
+        return gripperCMDs.manualController(
+            () -> speed.getAsDouble() * ManualControllers.GRIPPER_BACK_SPEED_MULTIPLAYER,
+            () -> speed.getAsDouble() * ManualControllers.GRIPPER_RIGHT_SPEED_MULTIPLAYER,
+            () -> speed.getAsDouble() * ManualControllers.GRIPPER_LEFT_SPEED_MULTIPLAYER);
+    }
 
-        public Command manualGripperController(DoubleSupplier speed) {
-                return gripperCMDs.manualController(
-                                () -> speed.getAsDouble() * ManualControllers.GRIPPER_BACK_SPEED_MULTIPLAYER,
-                                () -> speed.getAsDouble() * ManualControllers.GRIPPER_RIGHT_SPEED_MULTIPLAYER,
-                                () -> speed.getAsDouble() * ManualControllers.GRIPPER_LEFT_SPEED_MULTIPLAYER);
-        }
+    public Command manualFunnelController(DoubleSupplier speed) {
+        return funnelCMDs.manualController(
+            () -> speed.getAsDouble() * ManualControllers.FUNNEL_SPEED_MULTIPLAYER);
+    }
 
-        public Command manualFunnelController(DoubleSupplier speed) {
-                return funnelCMDs.manualController(
-                                () -> speed.getAsDouble() * ManualControllers.FUNNEL_SPEED_MULTIPLAYER);
-        }
+    public Command manualPivotController(DoubleSupplier speed) {
+        return pivotCMDs.manualController(
+            () -> speed.getAsDouble() * ManualControllers.PIVOT_SPEED_MULTIPLAYER);
+    }
 
-        public Command manualPivotController(DoubleSupplier speed) {
-                return pivotCMDs.manualController(
-                                () -> speed.getAsDouble() * ManualControllers.PIVOT_SPEED_MULTIPLAYER);
-        }
+    public Command manualConntroller(BooleanSupplier scoreL1, BooleanSupplier scoreL3,
+            DoubleSupplier pivotSpeed, DoubleSupplier funnelGripperSpeed) {
+        return Commands.parallel(
+            manualFunnelController(funnelGripperSpeed),
+            AllCommands.dynamicSwitchBetweenCommands(
+                () -> scoreL1.getAsBoolean() || scoreL3.getAsBoolean(),
+                AllCommands.dynamicSwitchBetweenCommands(
+                                scoreL1, scoreL3,
+                                scoreL1(), scoreL3()),
+                manualGripperController(funnelGripperSpeed)),
+            manualPivotController(pivotSpeed))
+            .withInterruptBehavior(InterruptionBehavior.kCancelIncoming)
+            .withName("manualConntroller");
+    }
 
-        public Command manualConntroller(BooleanSupplier scoreL1, BooleanSupplier scoreL3,
-                        DoubleSupplier pivotSpeed, DoubleSupplier funnelGripperSpeed) {
-                return Commands.parallel(
-                                manualFunnelController(funnelGripperSpeed),
-                                AllCommands.dynamicSwitchBetweenCommands(
-                                                () -> scoreL1.getAsBoolean() || scoreL3.getAsBoolean(),
-                                                AllCommands.dynamicSwitchBetweenCommands(
-                                                                scoreL1, scoreL3,
-                                                                scoreL1(), scoreL3()),
-                                                manualGripperController(funnelGripperSpeed)),
-                                manualPivotController(pivotSpeed))
-                                .withInterruptBehavior(InterruptionBehavior.kCancelIncoming);
-        }
+    public Command stopAll() {
+        return Commands.run(() -> {
+            gripper.stop();
+            pivot.stop();
+            funnel.stop();
+            leds.clear();
+        }, gripper, pivot, funnel)
+        .ignoringDisable(true)
+        .withName("stopAll");
+    }
 
-        public Command stopAll() {
-                return Commands.run(() -> {
-                        gripper.stop();
-                        pivot.stop();
-                        funnel.stop();
-                        leds.clear();
-                }, gripper, pivot, funnel);
-        }
+    public static Command dynamicSwitchBetweenCommands(BooleanSupplier condition, Command onTrue, Command onFalse) {
+        return dynamicSwitchBetweenCommands(condition, () -> !condition.getAsBoolean(), onTrue, onFalse);
+    }
 
-        public static Command dynamicSwitchBetweenCommands(BooleanSupplier condition, Command onTrue, Command onFalse) {
-                return dynamicSwitchBetweenCommands(condition, () -> !condition.getAsBoolean(), onTrue, onFalse);
-        }
-
-        public static Command dynamicSwitchBetweenCommands(BooleanSupplier switchToFirst,
-                        BooleanSupplier switchToSecond,
-                        Command first, Command second) {
-                return Commands.repeatingSequence(
-                                first.until(switchToSecond),
-                                second.until(switchToFirst));
-        }
+    public static Command dynamicSwitchBetweenCommands(BooleanSupplier switchToFirst,
+            BooleanSupplier switchToSecond,
+            Command first, Command second) {
+        return Commands.repeatingSequence(
+            first.until(switchToSecond),
+            second.until(switchToFirst));
+    }
 }
