@@ -15,7 +15,7 @@ public class Leds extends SubsystemBase {
 
     AddressableLEDBuffer ledsBuffer = new AddressableLEDBuffer(LEDS_LENGHT);
 
-    LEDPattern lastAppliedPatern = LEDPattern.solid(Color.kBlack);
+    LEDPattern lastAppliedPattern = LEDPattern.solid(Color.kBlack);
 
     LogFieldsTable fieldsTable = new LogFieldsTable(getName());
 
@@ -26,17 +26,17 @@ public class Leds extends SubsystemBase {
 
     @Override
     public void periodic() {
-        lastAppliedPatern.applyTo(ledsBuffer);
-        leds.setData(ledsBuffer);
         fieldsTable.recordOutput("current command", getCurrentCommand() != null ? getCurrentCommand().getName() : "None");
+        lastAppliedPattern.applyTo(ledsBuffer);
+        leds.setData(ledsBuffer);
     }
 
-    public void applyPatern(LEDPattern ledsPattern) {
-        lastAppliedPatern = ledsPattern;
+    public void applyPattern(LEDPattern ledsPattern) {
+        lastAppliedPattern = ledsPattern;
     }
 
     public void applyColor(Color color) {
-        applyPatern(LEDPattern.solid(color));
+        applyPattern(LEDPattern.solid(color));
     }
 
     public void clear() {
