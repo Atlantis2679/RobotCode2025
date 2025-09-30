@@ -8,10 +8,10 @@ import team2679.atlantiskit.logfields.LogFieldsTable;
 
 public abstract class GripperIO extends IOBase {
     public final BooleanSupplier isCoralIn = fields.addBoolean("isCoralIn", this::getIsCoralIn);
-    public final DoubleSupplier rightOuttakeMotorCurrent = fields.addDouble("rightOuttakeMotorCurrect",
-            this::getRightOuttakeMotorCurrent);
-    public final DoubleSupplier leftOuttakeMotorCurrent = fields.addDouble("leftOuttakeMotorCurrent",
-            this::getLeftOuttakeMotorCurrent);
+    public final DoubleSupplier rightMotorCurrent = fields.addDouble("rightMotorCurrect",
+            this::getRightMotorCurrent);
+    public final DoubleSupplier leftMotorCurrent = fields.addDouble("leftMotorCurrent",
+            this::getLeftMotorCurrent);
     public final DoubleSupplier backMotorCurrent = fields.addDouble("backMotorCurrent", this::getBackMotorCurrent);
 
     public GripperIO(LogFieldsTable fieldsTable) {
@@ -22,9 +22,9 @@ public abstract class GripperIO extends IOBase {
     
     protected abstract boolean getIsCoralIn();
     
-    protected abstract double getRightOuttakeMotorCurrent();
+    protected abstract double getRightMotorCurrent();
     
-    protected abstract double getLeftOuttakeMotorCurrent();
+    protected abstract double getLeftMotorCurrent();
     
     protected abstract double getBackMotorCurrent();
 
@@ -32,9 +32,9 @@ public abstract class GripperIO extends IOBase {
 
     public abstract void setBreakMotor(boolean isBreak);
 
-    public abstract void setRightOuttakeMotorVoltage(double voltage);
+    public abstract void setRightMotorVoltage(double voltage);
 
-    public abstract void setLeftOuttakeMotorVoltage(double voltage);
+    public abstract void setLeftMotorVoltage(double voltage);
 
     public abstract void setBackMotorVoltage(double voltage);
 }

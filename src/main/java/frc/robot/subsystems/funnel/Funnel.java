@@ -14,32 +14,29 @@ import frc.robot.subsystems.funnel.io.FunnelIOSparksMax;
 import static frc.robot.subsystems.funnel.FunnelConstants.*;
 
 public class Funnel extends SubsystemBase {
-    private final FunnelIO io;
+    private final FunnelIO io = Robot.isReal() ? new FunnelIOSparksMax(this.fieldsTable) : new FunnelIOSim(this.fieldsTable);
     private final LogFieldsTable fieldsTable = new LogFieldsTable(getName());
     private final Debouncer isCoralInDebouncer = new Debouncer(DEBOUNCER_SECONDS, DebounceType.kBoth);
 
-    public Funnel() {
-        fieldsTable.recordOutput("current command", getCurrentCommand() != null ? getCurrentCommand().getName() : "None");
-
-        io = Robot.isReal() ? new FunnelIOSparksMax(this.fieldsTable) : new FunnelIOSim(this.fieldsTable);
-    }
+    public Funnel() {}
 
     public void setMotorPercentageSpeed(double percentageSpeed) {
-        fieldsTable.recordOutput("precentage speed", percentageSpeed);
+        fieldsTable.recordOutput("demand precentage speed", percentageSpeed);
         io.setPercentageSpeed(MathUtil.clamp(percentageSpeed, -1, 1));
     }
+
     @Override
-    public void periodic(){
-        // fieldsTable.update();
+    public void periodic() {
+        fieldsTable.recordOutput("current command", getCurrentCommand() != null ? getCurrentCommand().getName() : "None");
         SmartDashboard.putBoolean("CoralInFunnel", getIsCoralIn());
         fieldsTable.recordOutput("isCoralIn", getIsCoralIn());
     }
+
     public boolean getIsCoralIn() {
         return isCoralInDebouncer.calculate(io.isCoralIn.getAsBoolean());
     }
 
     public void stop() {
-        fieldsTable.recordOutput("precentage speed", 0.0);
-        io.setPercentageSpeed(0);
+        setMotorPercentageSpeed(0);
     }
 }

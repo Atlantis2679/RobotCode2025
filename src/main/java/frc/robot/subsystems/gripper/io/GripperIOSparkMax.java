@@ -19,47 +19,47 @@ import frc.robot.RobotMap.CANBUS;
 import frc.robot.utils.AlertsFactory;
 
 public class GripperIOSparkMax extends GripperIO {
-    private final SparkMax rightOuttakeMotor = new SparkMax(CANBUS.GRIPPER_RIGHT_OUTTAKE_MOTOR_ID, MotorType.kBrushless);
-    private final SparkMax leftOuttakeMotor = new SparkMax(CANBUS.GRIPPER_LEFT_OUTTAKE_MOTOR_ID, MotorType.kBrushless);
+    private final SparkMax rightMotor = new SparkMax(CANBUS.GRIPPER_RIGHT_OUTTAKE_MOTOR_ID, MotorType.kBrushless);
+    private final SparkMax leftMotor = new SparkMax(CANBUS.GRIPPER_LEFT_OUTTAKE_MOTOR_ID, MotorType.kBrushless);
     private final SparkMax backMotor = new SparkMax(CANBUS.GRIPPER_BACK_MOTOR_ID, MotorType.kBrushless);
 
     private final DigitalInput beamBrake = new DigitalInput(GRIPPER_BEAM_BRAKE_ID);
 
-    private final SparkMaxConfig leftOuttakeMotorConfig = new SparkMaxConfig();
-    private final SparkMaxConfig rightOuttakeMotorConfig = new SparkMaxConfig();
+    private final SparkMaxConfig leftMotorConfig = new SparkMaxConfig();
+    private final SparkMaxConfig rightMotorConfig = new SparkMaxConfig();
     private final SparkMaxConfig backMotorConfig = new SparkMaxConfig();
 
-    private REVLibError leftOuttakeMotorConfigError;
-    private REVLibError rightOuttakeMotorConfigError;
+    private REVLibError leftMotorConfigError;
+    private REVLibError rightMotorConfigError;
     private REVLibError backMotorConfigError;
 
     public GripperIOSparkMax(LogFieldsTable fieldsTable) {
         super(fieldsTable);
 
-        rightOuttakeMotorConfig.smartCurrentLimit(OUTTAKE_MOTORS_MAX_CURRENT);
-        leftOuttakeMotorConfig.smartCurrentLimit(OUTTAKE_MOTORS_MAX_CURRENT);
+        rightMotorConfig.smartCurrentLimit(OUTTAKE_MOTORS_MAX_CURRENT);
+        leftMotorConfig.smartCurrentLimit(OUTTAKE_MOTORS_MAX_CURRENT);
         backMotorConfig.smartCurrentLimit(BACK_MOTOR_MAX_CURRENT);
 
-        rightOuttakeMotorConfig.idleMode(IdleMode.kCoast);
-        leftOuttakeMotorConfig.idleMode(IdleMode.kCoast);
+        rightMotorConfig.idleMode(IdleMode.kCoast);
+        leftMotorConfig.idleMode(IdleMode.kCoast);
         backMotorConfig.idleMode(IdleMode.kCoast);
 
-        leftOuttakeMotorConfig.inverted(true);
+        leftMotorConfig.inverted(true);
 
-        leftOuttakeMotorConfigError = leftOuttakeMotor.configure(leftOuttakeMotorConfig,
+        leftMotorConfigError = leftMotor.configure(leftMotorConfig,
                 ResetMode.kResetSafeParameters,
-                PersistMode.kPersistParameters);
-        rightOuttakeMotorConfigError = rightOuttakeMotor.configure(rightOuttakeMotorConfig,
+                PersistMode.kNoPersistParameters);
+        rightMotorConfigError = rightMotor.configure(rightMotorConfig,
                 ResetMode.kResetSafeParameters,
-                PersistMode.kPersistParameters);
+                PersistMode.kNoPersistParameters);
         backMotorConfigError = backMotor.configure(backMotorConfig, ResetMode.kResetSafeParameters,
-                PersistMode.kPersistParameters);
+                PersistMode.kNoPersistParameters);
         
-        AlertsFactory.revMotor(PeriodicAlertsGroup.defaultInstance, "Gripper: Left Motor",
-            () -> leftOuttakeMotorConfigError , leftOuttakeMotor::getWarnings, leftOuttakeMotor::getFaults);
-        AlertsFactory.revMotor(PeriodicAlertsGroup.defaultInstance, "Gripper: Right Motor",
-            () -> rightOuttakeMotorConfigError , rightOuttakeMotor::getWarnings, rightOuttakeMotor::getFaults);
-        AlertsFactory.revMotor(PeriodicAlertsGroup.defaultInstance, "Gripper: Left Motor",
+        AlertsFactory.revMotor(PeriodicAlertsGroup.defaultInstance, "Gripper: Left Motor config",
+            () -> leftMotorConfigError , leftMotor::getWarnings, leftMotor::getFaults);
+        AlertsFactory.revMotor(PeriodicAlertsGroup.defaultInstance, "Gripper: Right Motor config",
+            () -> rightMotorConfigError , rightMotor::getWarnings, rightMotor::getFaults);
+        AlertsFactory.revMotor(PeriodicAlertsGroup.defaultInstance, "Gripper: Back Motor config",
             () -> backMotorConfigError , backMotor::getWarnings, backMotor::getFaults);
 
     }
@@ -68,26 +68,26 @@ public class GripperIOSparkMax extends GripperIO {
 
     @Override
     public void setBreakMotor(boolean isBreak) {
-        rightOuttakeMotorConfig.idleMode(isBreak ? IdleMode.kBrake : IdleMode.kCoast);
-        leftOuttakeMotorConfig.idleMode(isBreak ? IdleMode.kBrake : IdleMode.kCoast);
+        rightMotorConfig.idleMode(isBreak ? IdleMode.kBrake : IdleMode.kCoast);
+        leftMotorConfig.idleMode(isBreak ? IdleMode.kBrake : IdleMode.kCoast);
         backMotorConfig.idleMode(isBreak ? IdleMode.kBrake : IdleMode.kCoast);
         
-        leftOuttakeMotorConfigError = leftOuttakeMotor.configure(leftOuttakeMotorConfig, ResetMode.kNoResetSafeParameters,
+        leftMotorConfigError = leftMotor.configure(leftMotorConfig, ResetMode.kNoResetSafeParameters,
                 PersistMode.kPersistParameters);
-        rightOuttakeMotorConfigError = rightOuttakeMotor.configure(rightOuttakeMotorConfig, ResetMode.kNoResetSafeParameters,
+        rightMotorConfigError = rightMotor.configure(rightMotorConfig, ResetMode.kNoResetSafeParameters,
                 PersistMode.kPersistParameters);
         backMotorConfigError = backMotor.configure(backMotorConfig, ResetMode.kNoResetSafeParameters,
                 PersistMode.kPersistParameters);
     }
 
     @Override
-    public void setRightOuttakeMotorVoltage(double voltage) {
-        rightOuttakeMotor.setVoltage(voltage);
+    public void setRightMotorVoltage(double voltage) {
+        rightMotor.setVoltage(voltage);
     }
 
     @Override
-    public void setLeftOuttakeMotorVoltage(double voltage) {
-        leftOuttakeMotor.setVoltage(voltage);
+    public void setLeftMotorVoltage(double voltage) {
+        leftMotor.setVoltage(voltage);
     }
 
     @Override
@@ -103,13 +103,13 @@ public class GripperIOSparkMax extends GripperIO {
     }
 
     @Override
-    protected double getRightOuttakeMotorCurrent() {
-        return rightOuttakeMotor.getOutputCurrent();
+    protected double getRightMotorCurrent() {
+        return rightMotor.getOutputCurrent();
     }
 
     @Override
-    protected double getLeftOuttakeMotorCurrent() {
-        return leftOuttakeMotor.getOutputCurrent();
+    protected double getLeftMotorCurrent() {
+        return leftMotor.getOutputCurrent();
     }
 
     @Override
