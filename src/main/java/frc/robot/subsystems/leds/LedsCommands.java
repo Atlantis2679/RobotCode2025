@@ -40,7 +40,7 @@ public class LedsCommands {
 
     public Command rainbow() {
         return leds.startEnd(() -> {
-            leds.applyPatern(LEDPattern.rainbow(RAINBOW_SATURATION, RAINBOW_VALUE)
+            leds.applyPattern(LEDPattern.rainbow(RAINBOW_SATURATION, RAINBOW_VALUE)
                     .scrollAtRelativeSpeed(Percent.per(Second).of(ANIMATION_PERCENTSGE_SPEED))
                     .atBrightness(Percent.of(ANIMATION_PERCENTAGE_BRIGHTNESS)));
         }, leds::clear).withName("rainbow");
@@ -48,7 +48,7 @@ public class LedsCommands {
 
     public Command bebeGradient() {
         return leds.startEnd(() -> {
-            leds.applyPatern(LEDPattern
+            leds.applyPattern(LEDPattern
                     .gradient(GradientType.kContinuous,
                             new Color("#091a79"),
                             new Color("#00bebe"),

@@ -13,7 +13,7 @@ public class PivotIOSim extends PivotIO {
             DCMotor.getNEO(1),
             JOINT_GEAR_RATIO,
             JKG_METERS_SQUARED,
-            ARM_LENGTH,
+            ARM_LENGTH_M,
             Math.toRadians(TURNING_MIN_DEGREES),
             Math.toRadians(TURNING_MAX_DEGREES),
             true,

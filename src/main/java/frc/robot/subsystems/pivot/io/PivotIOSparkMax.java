@@ -26,10 +26,10 @@ public class PivotIOSparkMax extends PivotIO {
         super(fieldsTable);
         config.smartCurrentLimit(PIVOT_CURRENT_LIMIT);
         config.idleMode(IdleMode.kBrake);
-        REVLibError configError = pivotMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        REVLibError configError = pivotMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
         encoder.setDutyCycleRange(0, 1);
 
-        AlertsFactory.revMotor(PeriodicAlertsGroup.defaultInstance, "Pivot Motor: ", () -> configError, pivotMotor::getWarnings, pivotMotor::getFaults);
+        AlertsFactory.revMotor(PeriodicAlertsGroup.defaultInstance, "Pivot config", () -> configError, pivotMotor::getWarnings, pivotMotor::getFaults);
     }
 
     // Inputs:

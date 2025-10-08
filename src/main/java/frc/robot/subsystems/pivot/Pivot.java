@@ -37,7 +37,7 @@ public class Pivot extends SubsystemBase implements Tunable {
     private final RotationalSensorHelper pivotRotationalHelper;
 
     private final TunableTrapezoidProfile pivotTrapezoid = new TunableTrapezoidProfile(
-            new TrapezoidProfile.Constraints(MAX_VELOCITY_DEG_PER_SEC, MAX_ACCELERATION));
+            new TrapezoidProfile.Constraints(MAX_VELOCITY_DEG_PER_SEC, MAX_ACCELERATION_DEG_PER_SEC_SQUARED));
 
     private PIDController pivotPidController = new PIDController(KP, KI, KD);
 

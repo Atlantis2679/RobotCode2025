@@ -40,26 +40,20 @@ public class Gripper extends SubsystemBase {
         io.setBreakMotor(false);
     }
 
-    public void setMotorsVoltages(double rightOuttakeVoltage, double leftOuttakeVoltage, double backMotorVoltage) {
-        fieldsTable.recordOutput("Right outtake voltage", rightOuttakeVoltage);
-        fieldsTable.recordOutput("Left outtake voltage", leftOuttakeVoltage);
-        fieldsTable.recordOutput("Back voltage", backMotorVoltage);
+    public void setMotorsVoltages(double rightVoltage, double leftVoltage, double backVoltage) {
+        fieldsTable.recordOutput("Right motor demand voltage", rightVoltage);
+        fieldsTable.recordOutput("Left motor demand voltage", leftVoltage);
+        fieldsTable.recordOutput("Back motor demand voltage", backVoltage);
 
-        io.setRightOuttakeMotorVoltage(
-                MathUtil.clamp(rightOuttakeVoltage, -OUTTAKE_MOTORS_MAX_VOLTAGE, OUTTAKE_MOTORS_MAX_VOLTAGE));
-        io.setLeftOuttakeMotorVoltage(
-                MathUtil.clamp(leftOuttakeVoltage, -OUTTAKE_MOTORS_MAX_VOLTAGE, OUTTAKE_MOTORS_MAX_VOLTAGE));
+        io.setRightMotorVoltage(
+                MathUtil.clamp(rightVoltage, -OUTTAKE_MOTORS_MAX_VOLTAGE, OUTTAKE_MOTORS_MAX_VOLTAGE));
+        io.setLeftMotorVoltage(
+                MathUtil.clamp(leftVoltage, -OUTTAKE_MOTORS_MAX_VOLTAGE, OUTTAKE_MOTORS_MAX_VOLTAGE));
         io.setBackMotorVoltage(
-            MathUtil.clamp(backMotorVoltage, -BACK_MOTOR_MAX_VOLTAGE, BACK_MOTOR_MAX_VOLTAGE));
+            MathUtil.clamp(backVoltage, -BACK_MOTOR_MAX_VOLTAGE, BACK_MOTOR_MAX_VOLTAGE));
     }
 
     public void stop() {
-        fieldsTable.recordOutput("Right outtake voltage", 0.0);
-        fieldsTable.recordOutput("Left outtake voltage", 0.0);
-        fieldsTable.recordOutput("Back voltage", 0.0);
-
-        io.setRightOuttakeMotorVoltage(0);
-        io.setLeftOuttakeMotorVoltage(0);
-        io.setBackMotorVoltage(0);
+        setMotorsVoltages(0, 0, 0);
     }
 }

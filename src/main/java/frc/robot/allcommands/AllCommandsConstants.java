@@ -15,9 +15,11 @@ public class AllCommandsConstants {
 
     public static final double PIVOT_ANGLE_FOR_INTAKE = -105;
     public static final double PIVOT_ANGLE_FOR_L1 = -80;
-    public static final double PIVOT_ANGLE_FOR_L2 = 17;//15
+    public static final double PIVOT_ANGLE_FOR_L2 = 17;
     public static final double PIVOT_ANGLE_FOR_L3 = 85;
     public static final double PIVOT_ANGLE_FOR_REST = -90;
+    
+    public static final double PIVOT_ANGLE_RESTING_TOLARENCE = 17;
 
     public final static int LEDS_BLINK_DEFAULT_SEC = 1;
 

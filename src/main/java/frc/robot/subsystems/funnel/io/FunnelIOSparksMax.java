@@ -28,9 +28,9 @@ public class FunnelIOSparksMax extends FunnelIO {
         motorConfig.smartCurrentLimit(MAX_CURRENT);
         motorConfig.idleMode(IdleMode.kCoast);
 
-        REVLibError motorConfigError = motor.configure(motorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        REVLibError motorConfigError = motor.configure(motorConfig, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
 
-        AlertsFactory.revMotor(PeriodicAlertsGroup.defaultInstance, "Funnel: Motor",
+        AlertsFactory.revMotor(PeriodicAlertsGroup.defaultInstance, "Funnel config",
             () -> motorConfigError, motor::getWarnings, motor::getFaults);
     }
     

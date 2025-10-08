@@ -120,10 +120,10 @@ public class RobotContainer {
         TunablesManager.add("pivot move to angle", (Tunable) tuneableMovePivotToAngle);
 
         operatorController.rightBumper().whileTrue(allCommands.manualConntroller(
-                operatorController.leftTrigger(),
-                operatorController.rightTrigger(),
-                operatorController::getRightY,
-                operatorController::getLeftY));
+            operatorController.leftTrigger(),
+            operatorController.rightTrigger(),
+            operatorController::getRightY,
+            operatorController::getLeftY));
 
         operatorController.start()
             .whileTrue(ledsCommands.rainbow().asProxy().unless(() -> leds.getCurrentCommand() != null));
@@ -133,12 +133,12 @@ public class RobotContainer {
         gripper.setDefaultCommand(allCommands.manualGripperController(operatorController::getLeftY));
         funnel.setDefaultCommand(allCommands.manualFunnelController(operatorController::getLeftY));
 
-        Command pivotDefaultRestLock = Commands
-                .runOnce(() -> pivot.setDefaultCommand(pivot.run(pivot::stop).finallyDo(() -> {
-                    if (DriverStation.isEnabled())
-                        pivot.setDefaultCommand(allCommands.moveToRest());
-                })))
-                .ignoringDisable(true);
+        Command pivotDefaultRestLock = Commands.runOnce(
+            () -> pivot.setDefaultCommand(pivot.run(pivot::stop).finallyDo(() -> {
+                if (DriverStation.isEnabled())
+                    pivot.setDefaultCommand(allCommands.moveToRest());
+                }
+            ))).ignoringDisable(true);
 
         new Trigger(DriverStation::isDSAttached).onFalse(pivotDefaultRestLock);
         new Trigger(DriverStation::isDisabled).onTrue(pivotDefaultRestLock);
@@ -153,7 +153,7 @@ public class RobotContainer {
         new EventTrigger("intake").onTrue(allCommands.intake());
         new EventTrigger("moveToL1").onTrue(allCommands.moveToL1());
         new EventTrigger("moveToL2").onTrue(allCommands.moveToL2());
-        new EventTrigger("rest").onTrue(Commands.runOnce(pivot::stop));
+        new EventTrigger("rest").onTrue(allCommands.moveToRest());
 
         autoChooser = AutoBuilder.buildAutoChooser();
 

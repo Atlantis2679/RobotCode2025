@@ -25,11 +25,6 @@ public abstract class SwerveModuleIO extends IOBase {
         public final DoubleSupplier TurnKI = fields.addDouble("Turn kI", this::getTurnKI);
         public final DoubleSupplier TurnKD = fields.addDouble("Turn kD", this::getTurnKD);
 
-        public final DoubleSupplier driveMotorTemperature = fields.addDouble(
-                        "driveMotorTemperature", this::getDriveMotorTemperature);
-        public final DoubleSupplier turnMotorTemperature = fields.addDouble(
-                        "turnMotorTemperature", this::getTurnMotorTemperature);
-
         public SwerveModuleIO(LogFieldsTable fieldsTable) {
                 super(fieldsTable);
         }
@@ -57,10 +52,6 @@ public abstract class SwerveModuleIO extends IOBase {
         protected abstract double getTurnKI();
 
         protected abstract double getTurnKD();
-
-        protected abstract double getDriveMotorTemperature();
-
-        protected abstract double getTurnMotorTemperature();
 
         // Outputs
 

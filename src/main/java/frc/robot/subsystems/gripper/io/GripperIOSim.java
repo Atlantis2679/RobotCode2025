@@ -21,11 +21,11 @@ public class GripperIOSim extends GripperIO {
     }
 
     @Override
-    public void setRightOuttakeMotorVoltage(double voltage) {
+    public void setRightMotorVoltage(double voltage) {
     }
 
     @Override
-    public void setLeftOuttakeMotorVoltage(double voltage) {
+    public void setLeftMotorVoltage(double voltage) {
     }
 
     @Override
@@ -33,12 +33,12 @@ public class GripperIOSim extends GripperIO {
     }
 
     @Override
-    protected double getRightOuttakeMotorCurrent() {
+    protected double getRightMotorCurrent() {
         return 0;
     }
 
     @Override
-    protected double getLeftOuttakeMotorCurrent() {
+    protected double getLeftMotorCurrent() {
         return 0;
     }
 

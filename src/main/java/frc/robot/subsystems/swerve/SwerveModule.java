@@ -4,7 +4,6 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import team2679.atlantiskit.logfields.LogFieldsTable;
-import team2679.atlantiskit.periodicalerts.PeriodicAlertsGroup;
 import team2679.atlantiskit.tunables.Tunable;
 import team2679.atlantiskit.tunables.TunableBuilder;
 import frc.robot.Robot;
@@ -40,16 +39,7 @@ public class SwerveModule implements Tunable {
                         absoluteAngleOffSetDegrees)
                 : new SwerveModuleIOFalcon(fieldsTable, driveMotorID, turnMotorID, encoderID, moduleNumber);
 
-        PeriodicAlertsGroup.defaultInstance.addWarningAlert(
-            () -> "Swerve Module " + positionName + " " + moduleNumber + " Drive Motor Temp: " + io.driveMotorTemperature.getAsDouble(),
-            () -> io.driveMotorTemperature.getAsDouble() > MODULE_TEMPERATORE_WARNING_THRESHOLD);
-
-        PeriodicAlertsGroup.defaultInstance.addWarningAlert(
-            () -> "Swerve Module " + positionName + " " + moduleNumber + " Turn Motor Temp: " + io.turnMotorTemperature.getAsDouble(),
-            () -> io.turnMotorTemperature.getAsDouble() > MODULE_TEMPERATORE_WARNING_THRESHOLD);
-        
         fieldsTable.update();
-
         
         absoluteAngleHelperDegrees = new RotationalSensorHelper(
                 io.absoluteTurnAngleRotations.getAsDouble() * 360,
