@@ -98,6 +98,10 @@ public class PoseEstimatorWithVision {
 
                 if (!isOnField(poseEstimate))
                     continue;
+                
+                if (trustLevel > VISION_TRUST_LEVEL_THRESHOLD) {
+                    continue;
+                }
 
                 cameraFieldsTable.recordOutput("Pose3d", poseEstimate);
                 cameraFieldsTable.recordOutput("Pose2d", poseEstimate.toPose2d());
@@ -134,8 +138,8 @@ public class PoseEstimatorWithVision {
                 PhotonUtils.getDistanceToPose(estimatedRobotPose.toPose2d(), tagsPoses[i].toPose2d()),
                 VISION_MIN_TAG_DISTANCE_TO_POSE_METERS);
             double ambiguityMultiplayer = 1 + tagsAmbiguitys[i];
-            if(ambiguityMultiplayer == 0) return -1;
-            trustLevel += (1 / tagEstimatedDistanceToPose * ambiguityMultiplayer);
+            if(ambiguityMultiplayer == 0) continue;
+            trustLevel += 1 / (tagEstimatedDistanceToPose * ambiguityMultiplayer);
         }
         return trustLevel != 0 ? 1 / trustLevel : -1;
     }

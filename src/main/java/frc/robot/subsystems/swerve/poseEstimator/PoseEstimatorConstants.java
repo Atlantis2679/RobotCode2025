@@ -30,6 +30,8 @@ public class PoseEstimatorConstants {
         public final static double STATE_TRUST_LEVEL_Y = 2.5; // Need to calibrate
         public final static double STATE_TRUST_LEVEL_ROTAION = 0.3; // Need to calibrate
 
+        public final static double VISION_TRUST_LEVEL_THRESHOLD = 1; // Decrease in order to fillter more poses
+
         public final static double MAX_VISION_Z_OFF = 0.3;
         public final static double MAX_ROTATION_OFF = Math.toDegrees(20);
 }
