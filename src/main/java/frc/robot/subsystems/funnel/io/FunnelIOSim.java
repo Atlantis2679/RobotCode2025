@@ -3,21 +3,14 @@ package frc.robot.subsystems.funnel.io;
 import team2679.atlantiskit.logfields.LogFieldsTable;
 
 public class FunnelIOSim extends FunnelIO {
-    public FunnelIOSim(LogFieldsTable fieldsTable) {
-        super(fieldsTable);
-    }
 
-    @Override
-    public void setPercentageSpeed(double percentageSpeed) {
-    }
+   public FunnelIOSim(LogFieldsTable logFieldsTable){
+      super(logFieldsTable);
+   }
+   protected boolean getBeamBreak() {
+      return false;
+   }
+   public void setVoltage(double voltage){}
 
-    @Override
-    protected boolean getIsCoralIn() {
-        return false;
-    }
-
-    @Override
-    protected double getCurrent() {
-        return 0;
-    }
+    
 }
