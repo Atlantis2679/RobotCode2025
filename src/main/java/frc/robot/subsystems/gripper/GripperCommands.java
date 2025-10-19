@@ -21,11 +21,11 @@ public class GripperCommands {
   }
 
   public Command inPut(){
-    return gripper.run(() -> gripper.setMotorsVolt(0, 0, 0));
+    return gripper.run(() -> gripper.setMotorsVolt(GripperConstants.InTakeRightMotorVolt, GripperConstants.InTakeLeftMotorVolt, GripperConstants.InTakeBackMotorVolt));
   }
 
   public Command manualController(DoubleSupplier doubleSupplierR, DoubleSupplier doubleSupplierL, DoubleSupplier doubleSupplierB){
-    return gripper.run(() -> gripper.setMotorsVolt(doubleSupplierR.getAsDouble(), doubleSupplierL.getAsDouble(), doubleSupplierB.getAsDouble()));
+    return gripper.run(() -> gripper.setMotorsVolt(doubleSupplierR.getAsDouble()*12, doubleSupplierL.getAsDouble()*12, doubleSupplierB.getAsDouble()*12));
   }
 
 }
