@@ -6,7 +6,7 @@ import team2679.atlantiskit.logfields.IOBase;
 import team2679.atlantiskit.logfields.LogFieldsTable;
 
 public abstract class FunnelIO extends IOBase {
-    public BooleanSupplier b = fields.addBoolean("beamBreak", this::getBeamBreak);
+    public BooleanSupplier beamBreak = fields.addBoolean("beamBreak", this::getBeamBreak);
     public FunnelIO(LogFieldsTable fieldsTable) {
         super(fieldsTable);
     }
