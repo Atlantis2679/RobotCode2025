@@ -1,8 +1,5 @@
 package frc.robot.subsystems.funnel;
 
-import java.util.function.Consumer;
-import java.util.function.Supplier;
-
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
@@ -16,11 +13,16 @@ public class Funnel extends SubsystemBase{
     private FunnelIO io = Robot.isReal() ? new FunnelIOSparkMax(logs) : new FunnelIOSim(logs);
     private Debouncer debouncer = new Debouncer(FunnelConstants.DebouncerDelay);
 
-    public void spin(double v){
+    public void setVoltage(double v){
         io.setVoltage(v);
     }
     public boolean getBeamBreak() {
         return this.debouncer.calculate(this.io.beamBreak.getAsBoolean());
     }
 
+    @Override
+    public void periodic() {
+        logs.recordOutput(getName(), io.beamBreak.getAsBoolean());
+    }
+    
 }

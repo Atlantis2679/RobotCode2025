@@ -7,9 +7,11 @@ import team2679.atlantiskit.logfields.LogFieldsTable;
 
 public abstract class FunnelIO extends IOBase {
     public BooleanSupplier beamBreak = fields.addBoolean("beamBreak", this::getBeamBreak);
+
     public FunnelIO(LogFieldsTable fieldsTable) {
         super(fieldsTable);
     }
+    
     protected abstract boolean getBeamBreak();
     public abstract void setVoltage(double voltage);
 }
