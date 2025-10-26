@@ -54,12 +54,12 @@ public class AllCommands {
             pivotCMDs.moveToAngle(PIVOT_ANGLE_FOR_INTAKE),
             Commands.sequence(
                 Commands.waitUntil(() -> pivot.isAtAngle(PIVOT_ANGLE_FOR_INTAKE)),
-                funnelCMDs.passCoral(FUNNEL_PRECENTAGE_SPEED)
+                funnelCMDs.setFunnelMotor(FUNNEL_VOLTAGE)
                     .alongWith(gripperCMDs.spin(
                         GRIPPER_BACK_LOADING_VOLTAGE,
                         GRIPPER_RIGHT_LOADING_VOLTAGE,
                         GRIPPER_LEFT_LOADING_VOLTAGE))))
-            .until(() -> !funnel.getIsCoralIn()
+            .until(() -> !funnel.getBeamBreak()
                             && gripper.getIsCoralIn())
             // Schedule to end the command without waiting for blink to finish
             .andThen(new ScheduleCommand(

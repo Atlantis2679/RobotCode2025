@@ -24,5 +24,10 @@ public class Funnel extends SubsystemBase{
     public void periodic() {
         logs.recordOutput(getName(), io.beamBreak.getAsBoolean());
     }
+
+    public void stop() {
+        this.setVoltage(0);
+    }
+    
     
 }
