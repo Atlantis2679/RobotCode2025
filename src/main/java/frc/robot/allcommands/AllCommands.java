@@ -56,7 +56,7 @@ public class AllCommands {
                                                 Commands.waitUntil(() -> pivot.isAtAngle(PIVOT_ANGLE_FOR_INTAKE)),
                                                 funnelCMDs.inPut(FUNNEL_VOLTAGE)
                                                                 .alongWith(gripperCMDs.inPut())))
-                                .until(() -> !funnel.getIsCoralDetectedPostDebouncer()
+                                .until(() -> !funnel.getisCoralInPostDebouncer()
                                                 && gripper.getisCoralInPostDebouncer())
                                 .andThen(new ScheduleCommand(
                                                 ledsCMDs.blink(Color.kBlue, LEDS_BLINK_DEFAULT_SEC)))

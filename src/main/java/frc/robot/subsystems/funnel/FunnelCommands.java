@@ -12,11 +12,11 @@ public class FunnelCommands {
   }
 
   public Command inPut(double volt){
-    return funnle.run(() -> funnle.setMotorVolt(volt));
+    return funnle.run(() -> funnle.setMotorPercentageSpeed(volt));
   }
 
   public Command manualConntroller(DoubleSupplier volt){
-    return funnle.run(() -> funnle.setMotorVolt(volt.getAsDouble()));
+    return funnle.run(() -> funnle.setMotorPercentageSpeed(volt.getAsDouble()));
   }
 
 }
