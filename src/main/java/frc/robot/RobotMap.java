@@ -19,6 +19,9 @@ public class RobotMap {
 
     public static final int PIVOT_ENCODER_ID = 1;
 
+    public static final int ELEVATOR_ENCODER_ID = 0;
+
+
     public final static int LEDS_ID = 9;
 
     public static class Controllers {
@@ -34,6 +37,8 @@ public class RobotMap {
         public static final int GRIPPER_BACK_MOTOR_ID = 12;
 
         public static final int PIVOT_MOTOR_ID = 11;
+
+        public static final int ELEVATOR_MOTOR_ID = 0;
     
         public class ModuleFL {
             public final static int DRIVE_MOTOR_ID = 20;

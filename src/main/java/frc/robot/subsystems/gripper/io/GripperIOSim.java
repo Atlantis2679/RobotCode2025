@@ -13,6 +13,20 @@ public class GripperIOSim extends GripperIO {
     protected boolean getIsCoralIn() {
         return false;
     }
+    @Override
+    protected double getRightMotorCurrent() {
+        return 0;
+    }
+
+    @Override
+    protected double getLeftMotorCurrent() {
+        return 0;
+    }
+
+    @Override
+    protected double getBackMotorCurrent() {
+        return 0;
+    }
 
     // Outputs:
 
@@ -30,20 +44,5 @@ public class GripperIOSim extends GripperIO {
 
     @Override
     public void setBackMotorVoltage(double voltage) {
-    }
-
-    @Override
-    protected double getRightMotorCurrent() {
-        return 0;
-    }
-
-    @Override
-    protected double getLeftMotorCurrent() {
-        return 0;
-    }
-
-    @Override
-    protected double getBackMotorCurrent() {
-        return 0;
     }
 }
