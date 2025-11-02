@@ -16,7 +16,7 @@ public class FunnelCommands {
   }
 
   public Command manualConntroller(DoubleSupplier volt){
-    return funnle.run(() -> funnle.setMotorPercentageSpeed(volt.getAsDouble()));
+    return funnle.run(() -> funnle.setMotorVolt(volt.getAsDouble()));
   }
 
 }
