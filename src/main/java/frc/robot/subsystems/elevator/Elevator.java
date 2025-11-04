@@ -24,7 +24,9 @@ public class Elevator extends SubsystemBase {
     fieldsTable.recordOutput("Motor demand voltage", voltage);
     io.setVoltage(voltage);
   }
-
+  public double getEncoderAngle(){
+      return io.getEncoderAngle();
+  }
   public void stop(){
     io.setVoltage(0);
   }

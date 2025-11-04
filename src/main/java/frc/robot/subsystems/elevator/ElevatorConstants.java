@@ -5,4 +5,8 @@
 package frc.robot.subsystems.elevator;
 
 /** Add your docs here. */
-public class ElevatorConstants {}
+public class ElevatorConstants {
+    public static final double CARRIAGE_LENGTH = 0;
+    public static final double MOTOR_HEIGHT = 0;
+
+}
