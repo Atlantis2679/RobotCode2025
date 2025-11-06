@@ -6,13 +6,15 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import edu.wpi.first.wpilibj.DigitalInput;
 import team2679.atlantiskit.logfields.LogFieldsTable;
 
+import static frc.robot.RobotMap.FUNNEL_BEAM_BRAKE_ID;
+
 public class FunnelIOSparkMax extends FunnelIO{
     
     private DigitalInput beambBreak;
     private SparkMax motor;
     public FunnelIOSparkMax(LogFieldsTable logFieldsTable){
         super(logFieldsTable);
-        this.beambBreak = new DigitalInput(1);
+        this.beambBreak = new DigitalInput(FUNNEL_BEAM_BRAKE_ID);
         this.motor = new SparkMax(10, MotorType.kBrushless);
     }
     public void setVoltage(double voltage){

@@ -138,6 +138,7 @@ public class AllCommands {
     public Command manualFunnelController(DoubleSupplier speed) {
         return funnelCMDs.manualController(
             () -> speed.getAsDouble() * ManualControllers.FUNNEL_SPEED_MULTIPLAYER);
+            
     }
 
     public Command manualPivotController(DoubleSupplier speed) {

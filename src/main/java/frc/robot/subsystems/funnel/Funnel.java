@@ -11,9 +11,10 @@ import team2679.atlantiskit.logfields.LogFieldsTable;
 public class Funnel extends SubsystemBase{
     private LogFieldsTable logs = new LogFieldsTable(getName());
     private FunnelIO io = Robot.isReal() ? new FunnelIOSparkMax(logs) : new FunnelIOSim(logs);
-    private Debouncer debouncer = new Debouncer(FunnelConstants.DebouncerDelay);
+    private Debouncer debouncer = new Debouncer(FunnelConstants.DEBOUNCER_DELAY);
 
     public void setVoltage(double v){
+        logs.recordOutput("demandVoltage", v);
         io.setVoltage(v);
     }
     public boolean getBeamBreak() {

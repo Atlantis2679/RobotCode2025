@@ -13,7 +13,7 @@ public class RobotMap {
     public static final String LEFT_FRONT_PHOTON_CAMERA_NAME = "FrontLeftCam";
     public static final String BACK_PHOTON_CAMERA_NAME = "BackCam";
     
-    public static final int GRIPPER_BEAM_BRAKE_ID = 0;
+    public static final int GRIPPER_BEAM_BRAKE_ID = 2;
 
     public static final int FUNNEL_BEAM_BRAKE_ID = 9;
 
