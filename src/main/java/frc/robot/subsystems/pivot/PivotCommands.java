@@ -23,6 +23,6 @@ public class PivotCommands {
   }
 
   public Command manualController(DoubleSupplier speed){
-    return moveToAngle(speed);
+    return pivot.run(() -> pivot.setPivotVolt(speed.getAsDouble()));
   }
 }

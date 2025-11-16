@@ -72,8 +72,7 @@ private final PivotIO io = new PivotIOSparkMax(fieldsTable);
   public double calcVolt(TrapezoidProfile.State goal){
     double res = 0;
     MathUtil.clamp(res, -PivotConstants.PIVOT_MAX_VOLTAGE , PivotConstants.PIVOT_MAX_VOLTAGE);
-    res += pivotTrapezoid.calculate(0.02, new State(sensorHelper.getAngle(), sensorHelper.getVelocity()), goal).velocity * 10;
-    res += pivotPidController.calculate(sensorHelper.getAngle()) * 10;
+    res += pivotPidController.calculate(pivotTrapezoid.calculate(0.02, new State(sensorHelper.getAngle(), sensorHelper.getVelocity()), goal).velocity);
     res += pivotFeedforward.calculate(Math.toRadians(sensorHelper.getAngle()), sensorHelper.getVelocity());
 
 

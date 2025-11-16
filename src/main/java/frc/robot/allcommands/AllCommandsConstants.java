@@ -17,7 +17,7 @@ public class AllCommandsConstants {
     public static final double PIVOT_ANGLE_FOR_L1 = -80;
     public static final double PIVOT_ANGLE_FOR_L2 = 17;//15
     public static final double PIVOT_ANGLE_FOR_L3 = 85;
-    public static final double PIVOT_ANGLE_FOR_REST = -90;
+    public static final double PIVOT_ANGLE_FOR_REST = 256;//-90
 
     public final static int LEDS_BLINK_DEFAULT_SEC = 1;
 
@@ -29,6 +29,6 @@ public class AllCommandsConstants {
         public static final double GRIPPER_LEFT_SPEED_MULTIPLAYER = 0.5;
         public static final double GRIPPER_RIGHT_SPEED_MULTIPLAYER = 0.5;
         public static final double GRIPPER_BACK_SPEED_MULTIPLAYER = 0.5;
-        public static final double PIVOT_SPEED_MULTIPLAYER = 0.5;
+        public static final double PIVOT_SPEED_MULTIPLAYER = 5;
     }
 }
