@@ -32,6 +32,10 @@ public class ElevatorIOSparkMax extends ElevatorIO{
   public double getLeftMotorCurrent() {
     return leftElevatorMotor.getOutputCurrent();
   }
+  @Override
+  public boolean getIsEncoderConnected() {
+    return encoder.isConnected();
+  }
 
   //Inputs:
 

@@ -21,7 +21,10 @@ public class ElevatorIOSim extends ElevatorIO{
   public double getLeftMotorCurrent() {
     return 0;
   }
-
+  @Override
+  public boolean getIsEncoderConnected() {
+    return true;
+  }
   //Inputs:
 
   @Override
