@@ -34,7 +34,7 @@ public class Elevator extends SubsystemBase {
 
   private TunableArmFeedforward pivotFeedforward = Robot.isSimulation()
             ? new TunableArmFeedforward(Sim.SIM_KS, Sim.SIM_KG, Sim.SIM_KV, Sim.SIM_KA)
-            : new TunableArmFeedforward(KS, KG, KV, KA);
+            : new TunableArmFeedforward(KS, KG, KV);
 
     private double maxAngle = MAX_ANGLE_DEGREES;
     private double minAngle = MIN_ANGLE_DEGREES;

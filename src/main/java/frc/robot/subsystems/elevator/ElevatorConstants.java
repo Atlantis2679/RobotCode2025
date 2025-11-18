@@ -20,7 +20,6 @@ public class ElevatorConstants {
     public static final double KS = 0;
     public static final double KG = 0;
     public static final double KV = 0;
-    public static final double KA = 0;
 
     public static final double MAX_ANGLE_DEGREES = 0;
     public static final double MIN_ANGLE_DEGREES = 0;
