@@ -50,7 +50,7 @@ public class PivotIOSparkMax extends PivotIO {
     }
 
     @Override
-    protected boolean getIsEncoderConnected() {
+    protected boolean isEncoderConnected() {
         return encoder.isConnected();
     }
 }

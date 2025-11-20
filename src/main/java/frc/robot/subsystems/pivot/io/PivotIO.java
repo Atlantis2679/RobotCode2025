@@ -9,7 +9,7 @@ import team2679.atlantiskit.logfields.LogFieldsTable;
 public abstract class PivotIO extends IOBase {
     public final DoubleSupplier motorCurrent = fields.addDouble("motor current", this::getMotorCurrent);
     public final DoubleSupplier angle = fields.addDouble("angle", this::getPivotAngleDegrees);
-    public final BooleanSupplier isEncoderConnected = fields.addBoolean("isEncoderConnected", this::getIsEncoderConnected);
+    public final BooleanSupplier isEncoderConnected = fields.addBoolean("isEncoderConnected", this::isEncoderConnected);
 
     public PivotIO(LogFieldsTable fieldsTable) {
         super(fieldsTable);
@@ -20,7 +20,7 @@ public abstract class PivotIO extends IOBase {
 
     protected abstract double getPivotAngleDegrees();
     
-    protected abstract boolean getIsEncoderConnected();
+    protected abstract boolean isEncoderConnected();
 
     // Outputs:
     public abstract void setVoltage(double voltage);
