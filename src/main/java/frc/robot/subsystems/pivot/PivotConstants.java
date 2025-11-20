@@ -30,11 +30,11 @@ public class PivotConstants {
         public static final double SIM_KV = 0;
         public static final double SIM_KG = 0;
 
-        public static final double JKG_METERS_SQUARED = 0;
-        public static final double JOINT_GEAR_RATIO = 0;
-        public static final double TURNING_MIN_DEGREES = 0;
-        public static final double TURNING_MAX_DEGREES = 0;    
+        public static final double JKG_METERS_SQUARED = 0.04;
+        public static final double JOINT_GEAR_RATIO = 60;
+        public static final double TURNING_MIN_DEGREES_DEG = 115;
+        public static final double TURNING_MAX_DEGREES_DEG = 110;    
 
-        public static final double ARM_LENGTH_M = 0;
+        public static final double ARM_LENGTH_M = 0.42;
     }
 }
