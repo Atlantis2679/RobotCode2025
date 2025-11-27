@@ -13,7 +13,7 @@ public class PivotConstants {
     public static final double MAX_ANGLE_DEGREES = 0; // was 120
     public static final double MIN_ANGLE_DEGREES = 0;
     public static final double ANGLE_TOLERENCE_DEGREES = 0;
-    public static final double KP = 0;
+    public static final double KP = 1;
     public static final double KI = 0;
     public static final double KD = 0;
 
