@@ -8,7 +8,7 @@ public class FunnelIOSim extends FunnelIO {
         super(logFieldsTable);
     }
 
-    //Output methods
+    //Output methods:
     @Override
     public boolean getBeamBreak(){
         return false;
