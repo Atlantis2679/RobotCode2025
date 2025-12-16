@@ -8,11 +8,19 @@ public class FunnelIOSim extends FunnelIO {
         super(logFieldsTable);
     }
 
+    //Output methods
     @Override
     public boolean getBeamBreak(){
         return false;
     }
 
+    @Override
+    public double getMotorCurrent(){
+        return 0;
+    }
+    
+    //Input methods:
+    public void setPrecentageSpeed(double speed){} 
 
 
 

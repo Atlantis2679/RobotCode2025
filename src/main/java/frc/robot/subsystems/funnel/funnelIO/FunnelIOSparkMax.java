@@ -31,6 +31,7 @@ public class FunnelIOSparkMax extends FunnelIO{
         AlertsFactory.revMotor(PeriodicAlertsGroup.defaultInstance, "Funnel Config", () -> motorConfigError, motor::getWarnings, motor::getFaults);
     }
 
+    //Output Methods:
     @Override
     protected boolean getBeamBreak(){
         return !beamBreak.get();
@@ -41,6 +42,7 @@ public class FunnelIOSparkMax extends FunnelIO{
         return motor.getOutputCurrent();
     }
 
+    //Input methods:
     @Override
     public void setPrecentageSpeed(double speed){
         motor.set(speed);
