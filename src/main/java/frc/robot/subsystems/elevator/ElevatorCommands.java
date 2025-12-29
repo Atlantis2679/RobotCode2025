@@ -20,12 +20,12 @@ public class ElevatorCommands {
     ValueHolder<TrapezoidProfile.State> referenceState = new ValueHolder<TrapezoidProfile.State>(null);
     return elevator.runOnce(() -> {
       elevator.resetPID();
-      referenceState.set(new TrapezoidProfile.State(elevator.getAngle(), elevator.getVelocity()));
+      referenceState.set(new TrapezoidProfile.State(elevator.getAngle(), elevator.ggetAngularVelocity()));
     }).andThen(elevator.run(() -> {
-      // if (referenceState.get().position == desiredAngleDeg.getAsDouble()
-      // && Math.abs(elevator.getAngleDegrees() - desiredAngleDeg.getAsDouble()) > 40)
-      // referenceState.set(new TrapezoidProfile.State(elevator.getAngleDegrees(),
-      // elevator.getVelocity()));
+      if (referenceState.get().position == desiredAngleDeg.getAsDouble()
+      && Math.abs(elevator.getHeight() - desiredAngleDeg.getAsDouble()) > 40)
+      referenceState.set(new TrapezoidProfile.State(elevator.getHeight(),
+      elevator.getAngularVelocity()));
 
       referenceState.set(elevator.calculateTrapezoidProfile(
           0.02,
@@ -42,14 +42,7 @@ public class ElevatorCommands {
   }
 
   public Command setHeight(double desiredHeight) {
-    double ratio = (desiredHeight - MOTOR_HEIGHT) / CARRIAGE_LENGTH;
-
-    // Safety clamp (acos only works for [-1, 1])
-    ratio = Math.max(-1.0, Math.min(1.0, ratio));
-
-    double angle = Math.acos(ratio) / (2 * Math.PI);
-
-    return moveToAngle(() -> angle);
+    return moveToAngle(() -> desiredHeight);
   }
 
   public Command manualController(DoubleSupplier elevatorSpeed) {

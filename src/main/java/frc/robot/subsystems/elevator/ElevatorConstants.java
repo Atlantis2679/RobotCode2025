@@ -10,8 +10,8 @@ public class ElevatorConstants {
     public static final double MOTOR_HEIGHT = 0;
 
     public static final double MAX_VOLTAGE = 0;
-    public static final double MAX_VELOCITY_DEG_PER_SEC = 0;
-    public static final double MAX_ACCELERATION_DEG_PER_SEC_SQUARED = 0;
+    public static final double MAX_VELOCITY_METERS_PER_SEC = 0;
+    public static final double MAX_ACCELERATION_METER_PER_SEC_SQUARED = 0;
 
     public static final double KP = 0;
     public static final double KI = 0;
@@ -29,5 +29,5 @@ public class ElevatorConstants {
 
     public static final double ANGLE_OFFSET = 0;
     public static final double ENCODER_CONNECTED_DEBAUNCER_SEC = 0;
-    public static final double ANGLE_TOLERENCE_DEGREES = 0;
+    public static final double HEIGHT_TOLERENCE = 0;
 }
