@@ -50,7 +50,7 @@ public class Pivot extends SubsystemBase implements Tunable {
 
     private double upperBound = UPPER_BOUND;
     private double lowerBound = LOWER_BOUND;
-    
+
     private final Debouncer encoderConnectedDebouncer = new Debouncer(ENCODER_CONNECTED_DEBAUNCER_SEC);
 
     public Pivot() {
@@ -60,7 +60,8 @@ public class Pivot extends SubsystemBase implements Tunable {
 
         TunablesManager.add("Pivot", (Tunable) this);
 
-        PeriodicAlertsGroup.defaultInstance.addErrorAlert(() -> "Pivot: Encoder Disconnected!", () -> !getEncoderConnectedDebouncer());
+        PeriodicAlertsGroup.defaultInstance.addErrorAlert(() -> "Pivot: Encoder Disconnected!",
+                () -> !getEncoderConnectedDebouncer());
     }
 
     @Override
@@ -68,9 +69,11 @@ public class Pivot extends SubsystemBase implements Tunable {
         pivotRotationalHelper.update(io.angle.getAsDouble());
         realVisualizer.update(getAngleDegrees());
 
-        fieldsTable.recordOutput("current command", getCurrentCommand() != null ? getCurrentCommand().getName() : "None");
-    
-        fieldsTable.recordOutput("defualt command", getDefaultCommand() != null ? getDefaultCommand().getName() : "None");
+        fieldsTable.recordOutput("current command",
+                getCurrentCommand() != null ? getCurrentCommand().getName() : "None");
+
+        fieldsTable.recordOutput("defualt command",
+                getDefaultCommand() != null ? getDefaultCommand().getName() : "None");
 
         fieldsTable.recordOutput("angle", getAngleDegrees());
         fieldsTable.recordOutput("velocity", pivotRotationalHelper.getVelocity());
@@ -78,8 +81,8 @@ public class Pivot extends SubsystemBase implements Tunable {
     }
 
     public void setPivotVoltage(double voltage) {
-        if((getAngleDegrees() > MAX_ANGLE_DEGREES && voltage > 0)
-            || (getAngleDegrees() < MIN_ANGLE_DEGREES && voltage < 0)) {
+        if ((getAngleDegrees() > MAX_ANGLE_DEGREES && voltage > 0)
+                || (getAngleDegrees() < MIN_ANGLE_DEGREES && voltage < 0)) {
             voltage = 0.0;
         }
         voltage = MathUtil.clamp(voltage, -MAX_VOLTAGE, MAX_VOLTAGE);
@@ -136,14 +139,14 @@ public class Pivot extends SubsystemBase implements Tunable {
         builder.addDoubleProperty("Pivot max angle", () -> maxAngle, (angle) -> maxAngle = angle);
         builder.addDoubleProperty("Pivot min angle", () -> minAngle, (angle) -> minAngle = angle);
         builder.addDoubleProperty("Pivot upper bound", () -> upperBound,
-            (newUpperBound) -> {
-                upperBound = newUpperBound;
-                pivotRotationalHelper.enableContinuousWrap(lowerBound, newUpperBound);
-            });
+                (newUpperBound) -> {
+                    upperBound = newUpperBound;
+                    pivotRotationalHelper.enableContinuousWrap(lowerBound, newUpperBound);
+                });
         builder.addDoubleProperty("Pivot lower bound", () -> lowerBound,
-            (newLowerBound) -> {
-                lowerBound = newLowerBound;
-                pivotRotationalHelper.enableContinuousWrap(newLowerBound, upperBound);
-            });
+                (newLowerBound) -> {
+                    lowerBound = newLowerBound;
+                    pivotRotationalHelper.enableContinuousWrap(newLowerBound, upperBound);
+                });
     }
 }

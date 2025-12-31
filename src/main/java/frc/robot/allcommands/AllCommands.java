@@ -12,6 +12,8 @@ import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 import team2679.atlantiskit.tunables.extensions.TunableCommand;
 import team2679.atlantiskit.valueholders.DoubleHolder;
 import frc.robot.allcommands.AllCommandsConstants.ManualControllers;
+import frc.robot.subsystems.elevator.Elevator;
+import frc.robot.subsystems.elevator.ElevatorCommands;
 import frc.robot.subsystems.funnel.Funnel;
 import frc.robot.subsystems.funnel.FunnelCommands;
 import frc.robot.subsystems.gripper.Gripper;
@@ -30,23 +32,27 @@ public class AllCommands {
     private final Funnel funnel;
     private final Swerve swerve;
     private final Leds leds;
+    private final Elevator elevator;
 
     private final GripperCommands gripperCMDs;
     private final PivotCommands pivotCMDs;
     private final FunnelCommands funnelCMDs;
     private final LedsCommands ledsCMDs;
+    private final ElevatorCommands elevatorCMDs;
 
-    public AllCommands(Gripper gripper, Pivot pivot, Funnel funnel, Swerve swerve, Leds leds) {
+    public AllCommands(Gripper gripper, Pivot pivot, Funnel funnel, Swerve swerve, Leds leds, Elevator elevator) {
         this.gripper = gripper;
         this.pivot = pivot;
         this.funnel = funnel;
         this.swerve = swerve;
         this.leds = leds;
+        this.elevator = elevator;
 
         this.gripperCMDs = new GripperCommands(gripper);
         this.pivotCMDs = new PivotCommands(pivot);
         this.funnelCMDs = new FunnelCommands(funnel);
         this.ledsCMDs = new LedsCommands(leds);
+        this.elevatorCMDs = new ElevatorCommands(elevator);
     }
 
     public Command intake() {
@@ -130,19 +136,31 @@ public class AllCommands {
 
     public Command manualGripperController(DoubleSupplier speed) {
         return gripperCMDs.manualController(
-            () -> speed.getAsDouble() * ManualControllers.GRIPPER_BACK_SPEED_MULTIPLAYER,
-            () -> speed.getAsDouble() * ManualControllers.GRIPPER_RIGHT_SPEED_MULTIPLAYER,
-            () -> speed.getAsDouble() * ManualControllers.GRIPPER_LEFT_SPEED_MULTIPLAYER);
+            () -> speed.getAsDouble() * ManualControllers.GRIPPER_BACK_SPEED_MULTIPLIER,
+            () -> speed.getAsDouble() * ManualControllers.GRIPPER_RIGHT_SPEED_MULTIPLIER,
+            () -> speed.getAsDouble() * ManualControllers.GRIPPER_LEFT_SPEED_MULTIPLIER);
     }
 
     public Command manualFunnelController(DoubleSupplier speed) {
         return funnelCMDs.manualController(
-            () -> speed.getAsDouble() * ManualControllers.FUNNEL_SPEED_MULTIPLAYER);
+            () -> speed.getAsDouble() * ManualControllers.FUNNEL_SPEED_MULTIPLIER);
     }
 
     public Command manualPivotController(DoubleSupplier speed) {
         return pivotCMDs.manualController(
-            () -> speed.getAsDouble() * ManualControllers.PIVOT_SPEED_MULTIPLAYER);
+            () -> speed.getAsDouble() * ManualControllers.PIVOT_SPEED_MULTIPLIER);
+    }
+    public Command manualElevatorController(DoubleSupplier speed) {
+        return elevatorCMDs.manualController(
+            () -> speed.getAsDouble() * ManualControllers.ELEVATOR_SPEED_MULTIPLIER);
+    }
+    public Command moveElevatorToRest() {
+        return elevatorCMDs.moveToHeight(ELEVATOR_HEIGHT_FOR_REST).finallyDo(elevator::stop)
+            .until(() -> elevator.isAtHeight(ELEVATOR_HEIGHT_FOR_REST))
+            .andThen(Commands.waitUntil(
+                () -> Math.abs(elevator.getHeight() - ELEVATOR_HEIGHT_FOR_REST) > ELEVATOR_HEIGHT_RESTING_TOLARENCE))
+            .repeatedly()
+            .withName("moveElevatorToRest");
     }
 
     public Command manualConntroller(BooleanSupplier scoreL1, BooleanSupplier scoreL3,

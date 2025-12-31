@@ -25,6 +25,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import team2679.atlantiskit.tunables.Tunable;
 import team2679.atlantiskit.tunables.TunablesManager;
 import team2679.atlantiskit.tunables.extensions.TunableCommand;
+import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.funnel.Funnel;
 import frc.robot.allcommands.AllCommands;
 import frc.robot.subsystems.gripper.Gripper;
@@ -41,6 +42,7 @@ public class RobotContainer {
     private final Pivot pivot = new Pivot();
     private final Gripper gripper = new Gripper();
     private final Leds leds = new Leds();
+    private final Elevator elevator = new Elevator();
 
     private final PowerDistribution pdh = new PowerDistribution();
 
@@ -50,10 +52,12 @@ public class RobotContainer {
             RobotMap.Controllers.DRIVER_PORT);
     private final NaturalXboxController operatorController = new NaturalXboxController(
             RobotMap.Controllers.OPERATOR_PORT);
+    private final NaturalXboxController testController = new NaturalXboxController(
+            RobotMap.Controllers.TEST_PORT);
 
     private final SwerveCommands swerveCommands = new SwerveCommands(swerve);
     private final LedsCommands ledsCommands = new LedsCommands(leds);
-    private final AllCommands allCommands = new AllCommands(gripper, pivot, funnel, swerve, leds);
+    private final AllCommands allCommands = new AllCommands(gripper, pivot, funnel, swerve, leds, elevator);
 
     public RobotContainer() {
         new Trigger(DriverStation::isDisabled).whileTrue(swerveCommands.stop()
@@ -83,7 +87,8 @@ public class RobotContainer {
         TunablesManager.add("Swerve/drive command", driveCommand.fullTunable());
         driverController.a().onTrue(new InstantCommand(swerve::resetYaw));
         driverController.x().onTrue(swerveCommands.xWheelLock());
-        driverController.b().onTrue(swerveCommands.driveToPosePID(() -> new Pose2d(swerve.getPose().getTranslation(), new Rotation2d(0))));
+        driverController.b().onTrue(
+                swerveCommands.driveToPosePID(() -> new Pose2d(swerve.getPose().getTranslation(), new Rotation2d(0))));
 
         TunableCommand alignToReef = swerveCommands.alignToReef(true);
         driverController.leftTrigger()
@@ -120,13 +125,13 @@ public class RobotContainer {
         TunablesManager.add("pivot move to angle", (Tunable) tuneableMovePivotToAngle);
 
         operatorController.rightBumper().whileTrue(allCommands.manualConntroller(
-            operatorController.leftTrigger(),
-            operatorController.rightTrigger(),
-            operatorController::getRightY,
-            operatorController::getLeftY));
+                operatorController.leftTrigger(),
+                operatorController.rightTrigger(),
+                operatorController::getRightY,
+                operatorController::getLeftY));
 
         operatorController.start()
-            .whileTrue(ledsCommands.rainbow().asProxy().unless(() -> leds.getCurrentCommand() != null));
+                .whileTrue(ledsCommands.rainbow().asProxy().unless(() -> leds.getCurrentCommand() != null));
 
         pivot.setDefaultCommand(allCommands.moveToRest());
 
@@ -134,14 +139,16 @@ public class RobotContainer {
         funnel.setDefaultCommand(allCommands.manualFunnelController(operatorController::getLeftY));
 
         Command pivotDefaultRestLock = Commands.runOnce(
-            () -> pivot.setDefaultCommand(pivot.run(pivot::stop).finallyDo(() -> {
-                if (DriverStation.isEnabled())
-                    pivot.setDefaultCommand(allCommands.moveToRest());
-                }
-            ))).ignoringDisable(true);
+                () -> pivot.setDefaultCommand(pivot.run(pivot::stop).finallyDo(() -> {
+                    if (DriverStation.isEnabled())
+                        pivot.setDefaultCommand(allCommands.moveToRest());
+                }))).ignoringDisable(true);
 
         new Trigger(DriverStation::isDSAttached).onFalse(pivotDefaultRestLock);
         new Trigger(DriverStation::isDisabled).onTrue(pivotDefaultRestLock);
+        
+        testController.rightBumper().whileTrue(allCommands.manualElevatorController(testController::getRightY));
+        elevator.setDefaultCommand(allCommands.moveElevatorToRest());
     }
 
     public void configureAuto() {
@@ -185,8 +192,10 @@ public class RobotContainer {
         });
     }
 
-    /* Backup for comp in case the normal PathPlanner auto will be disfunctional.
-     * Should be tested more and be used with cation.*/
+    /*
+     * Backup for comp in case the normal PathPlanner auto will be disfunctional.
+     * Should be tested more and be used with cation.
+     */
     public void configureBackupAuto() {
         autoChooser.addOption("Drive Forward No Score", allCommands.autoDrive());
         autoChooser.addOption("Drive Forward Score L1", allCommands.autoDriveScoreL1());

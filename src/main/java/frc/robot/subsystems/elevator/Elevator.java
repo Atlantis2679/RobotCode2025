@@ -4,6 +4,8 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.wpilibj.util.Color;
+import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
 import frc.robot.subsystems.elevator.io.ElevatorIO;
@@ -24,6 +26,11 @@ public class Elevator extends SubsystemBase {
   private final LogFieldsTable fieldsTable = new LogFieldsTable(getName());
 
   private final ElevatorIO io = Robot.isReal() ? new ElevatorIOSparkMax(fieldsTable) : new ElevatorIOSim(fieldsTable);
+
+  private final ElevatorVisualizer realVisualizer = new ElevatorVisualizer(fieldsTable, "Real Visualizer",
+      new Color8Bit(Color.kAqua));
+  private final ElevatorVisualizer desiredPivotVisualizer = new ElevatorVisualizer(fieldsTable, "Desired Visualizer",
+      new Color8Bit(Color.kYellow));
 
   private final RotationalSensorHelper elevatorRotationalSensorHelper;
 
@@ -50,6 +57,10 @@ public class Elevator extends SubsystemBase {
 
   @Override
   public void periodic() {
+    elevatorRotationalSensorHelper.update(io.getEncoderAngle());
+
+    realVisualizer.update(getHeight());
+
     fieldsTable.recordOutput("Encoder angle", io.getEncoderAngle());
     fieldsTable.recordOutput("Right motor current", io.getRightMotorCurrent());
     fieldsTable.recordOutput("Left motor current", io.getLeftMotorCurrent());
@@ -86,6 +97,7 @@ public class Elevator extends SubsystemBase {
   public double getAngularVelocity() {
     return elevatorRotationalSensorHelper.getVelocity();
   }
+
   public double getHeightVelocity() {
     return -CARRIAGE_LENGTH * 2 * Math.PI * Math.sin(getAngle() / 360 * 2 * Math.PI) * getAngularVelocity();
   }
@@ -97,6 +109,7 @@ public class Elevator extends SubsystemBase {
   public double calculateFeedForward(double desiredHeight, double desiredSpeed, boolean usePID) {
     fieldsTable.recordOutput("desired  height", desiredHeight);
     fieldsTable.recordOutput("desired speed", desiredSpeed);
+    desiredPivotVisualizer.update(desiredHeight);
     double speed = elevatorFeedforward.calculate(desiredHeight, desiredSpeed);
     if (usePID && !isAtHeight(desiredHeight)) {
       speed += elevatorPidController.calculate(getHeight(), desiredHeight);
