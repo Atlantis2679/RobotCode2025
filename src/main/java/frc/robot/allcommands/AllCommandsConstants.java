@@ -21,7 +21,7 @@ public class AllCommandsConstants {
     public static final double PIVOT_ANGLE_RESTING_TOLARENCE = 17;
 
     public static final double ELEVATOR_HEIGHT_FOR_REST = 0;
-    public static final double ELEVATOR_HEIGHT_RESTING_TOLARENCE = 17;
+    public static final double ELEVATOR_HEIGHT_RESTING_TOLARENCE = 0.5;
 
     public final static int LEDS_BLINK_DEFAULT_SEC = 1;
 

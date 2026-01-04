@@ -15,8 +15,6 @@ import frc.robot.subsystems.pivot.PivotConstants.Sim;
 import team2679.atlantiskit.helpers.RotationalSensorHelper;
 import team2679.atlantiskit.logfields.LogFieldsTable;
 import team2679.atlantiskit.periodicalerts.PeriodicAlertsGroup;
-import team2679.atlantiskit.tunables.Tunable;
-import team2679.atlantiskit.tunables.TunablesManager;
 import team2679.atlantiskit.tunables.extensions.TunableArmFeedforward;
 import team2679.atlantiskit.tunables.extensions.TunableTrapezoidProfile;
 
@@ -27,9 +25,9 @@ public class Elevator extends SubsystemBase {
 
   private final ElevatorIO io = Robot.isReal() ? new ElevatorIOSparkMax(fieldsTable) : new ElevatorIOSim(fieldsTable);
 
-  private final ElevatorVisualizer realVisualizer = new ElevatorVisualizer(fieldsTable, "Real Visualizer",
+  private final ElevatorVisualizer realVisualizer = new ElevatorVisualizer(fieldsTable, "elevator Real Visualizer",
       new Color8Bit(Color.kAqua));
-  private final ElevatorVisualizer desiredPivotVisualizer = new ElevatorVisualizer(fieldsTable, "Desired Visualizer",
+  private final ElevatorVisualizer desiredVisualizer = new ElevatorVisualizer(fieldsTable, "elevator desired Visualizer",
       new Color8Bit(Color.kYellow));
 
   private final RotationalSensorHelper elevatorRotationalSensorHelper;
@@ -49,21 +47,21 @@ public class Elevator extends SubsystemBase {
     fieldsTable.update();
     elevatorRotationalSensorHelper = new RotationalSensorHelper(io.encoderAngle.getAsDouble(), ANGLE_OFFSET);
 
-    TunablesManager.add("Elevator", (Tunable) this);
-
     PeriodicAlertsGroup.defaultInstance.addErrorAlert(() -> "Elevator: Encoder Disconnected!",
         () -> !getEncoderConnectedDebouncer());
   }
 
   @Override
   public void periodic() {
-    elevatorRotationalSensorHelper.update(io.getEncoderAngle());
+    elevatorRotationalSensorHelper.update(io.getEncoderAngle());//io.getEncoderAngle()
 
     realVisualizer.update(getHeight());
 
     fieldsTable.recordOutput("Encoder angle", io.getEncoderAngle());
+    fieldsTable.recordOutput("angle", getAngle());
     fieldsTable.recordOutput("Right motor current", io.getRightMotorCurrent());
     fieldsTable.recordOutput("Left motor current", io.getLeftMotorCurrent());
+    fieldsTable.recordOutput("elevator height", getHeight());
   }
 
   public void setVoltage(double voltage) {
@@ -99,7 +97,7 @@ public class Elevator extends SubsystemBase {
   }
 
   public double getHeightVelocity() {
-    return -CARRIAGE_LENGTH * 2 * Math.PI * Math.sin(getAngle() / 360 * 2 * Math.PI) * getAngularVelocity();
+    return CARRIAGE_LENGTH * 2 * Math.PI * Math.sin(getAngle() / 360 * 2 * Math.PI) * getAngularVelocity();
   }
 
   public boolean getEncoderConnectedDebouncer() {
@@ -109,7 +107,7 @@ public class Elevator extends SubsystemBase {
   public double calculateFeedForward(double desiredHeight, double desiredSpeed, boolean usePID) {
     fieldsTable.recordOutput("desired  height", desiredHeight);
     fieldsTable.recordOutput("desired speed", desiredSpeed);
-    desiredPivotVisualizer.update(desiredHeight);
+    desiredVisualizer.update(desiredHeight);
     double speed = elevatorFeedforward.calculate(desiredHeight, desiredSpeed);
     if (usePID && !isAtHeight(desiredHeight)) {
       speed += elevatorPidController.calculate(getHeight(), desiredHeight);

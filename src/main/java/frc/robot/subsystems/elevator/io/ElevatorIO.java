@@ -11,7 +11,7 @@ public abstract class ElevatorIO extends IOBase {
             this::getRightMotorCurrent);
     public final DoubleSupplier leftMotorCurrent = fields.addDouble("leftMotorCurrect",
             this::getLeftMotorCurrent);
-    public final DoubleSupplier encoderAngle = fields.addDouble("encoderAngle", this::getEncoderAngle);
+    public final DoubleSupplier height = fields.addDouble("elevatorHeight", this::getHeightMeters);
     public final BooleanSupplier isEncoderConnected = fields.addBoolean("isEncoderConnected", this::getIsEncoderConnected);
 
 
@@ -21,7 +21,7 @@ public abstract class ElevatorIO extends IOBase {
 
     // Outputs:
     
-    public abstract double getEncoderAngle();
+    public abstract double getHeightMeters();
     
     public abstract double getRightMotorCurrent();
 

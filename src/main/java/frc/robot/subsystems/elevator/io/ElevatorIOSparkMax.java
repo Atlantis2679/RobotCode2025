@@ -21,7 +21,7 @@ public class ElevatorIOSparkMax extends ElevatorIO{
   //Outputs:
 
   @Override
-  public double getEncoderAngle() {
+  public double getHeightMeters() {
     return encoder.get();
   }
   @Override

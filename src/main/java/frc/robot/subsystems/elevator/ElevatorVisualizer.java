@@ -11,8 +11,8 @@ public class ElevatorVisualizer {
   private final LogFieldsTable fieldsTable;
   private String name;
 
-  private final LoggedMechanism2d elevatorMech = new LoggedMechanism2d(0, 0);
-  private final LoggedMechanismRoot2d elevatorRoot = elevatorMech.getRoot("root", 0, 0);
+  private final LoggedMechanism2d elevatorMech = new LoggedMechanism2d(1.5, 1.5);
+  private final LoggedMechanismRoot2d elevatorRoot = elevatorMech.getRoot("root", 0.75, 0);
   private final LoggedMechanismLigament2d elevatorTower;
 
   ElevatorVisualizer(LogFieldsTable fieldsTable, String name, Color8Bit color) {
@@ -23,7 +23,8 @@ public class ElevatorVisualizer {
   }
 
   public void update(double height) {
-    elevatorTower.setLength(height);
+    elevatorTower.setLength(height + 0.3);
+    fieldsTable.recordOutput("vizualizer height", height);
     fieldsTable.recordOutput(name, elevatorMech);
   }
 }
