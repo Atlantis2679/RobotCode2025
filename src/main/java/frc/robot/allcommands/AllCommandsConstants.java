@@ -7,8 +7,8 @@ public class AllCommandsConstants {
     public static final double GRIPPER_LEFT_LOADING_VOLTAGE = 0.01;
     public static final double GRIPPER_RIGHT_LOADING_VOLTAGE = 0.01;
     public static final double GRIPPER_BACK_L1_VOLTAGE = 5;
-    public static final double GRIPPER_RIGHT_L1_VOLTAGE = 7.5;
-    public static final double GRIPPER_LEFT_L1_VOLTAGE = 2.2;
+    public static final double GRIPPER_RIGHT_L1_VOLTAGE = 10;//7.5
+    public static final double GRIPPER_LEFT_L1_VOLTAGE = 10;//2.2
     // public static final double GRIPPER_L2_VOLTAGE = 7;
     public static final double GRIPPER_OUTTAKE_L3_VOLTAGE = -10;
     public static final double GRIPPER_BACK_L3_VOLTAGE = -5;
@@ -28,9 +28,10 @@ public class AllCommandsConstants {
 
     public static class ManualControllers {
         public static final double FUNNEL_SPEED_MULTIPLAYER = 0.5;
-        public static final double GRIPPER_LEFT_SPEED_MULTIPLAYER = 0.5;
-        public static final double GRIPPER_RIGHT_SPEED_MULTIPLAYER = 0.5;
+        public static final double GRIPPER_LEFT_SPEED_MULTIPLAYER = 1; //0.5
+        public static final double GRIPPER_RIGHT_SPEED_MULTIPLAYER = 1;//0.5
         public static final double GRIPPER_BACK_SPEED_MULTIPLAYER = 0.5;
         public static final double PIVOT_SPEED_MULTIPLAYER = 0.5;
+        public static final double HOOD_SPEED_MULTIPLAYER = 0.5;
     }
 }

@@ -17,6 +17,8 @@ import frc.robot.subsystems.funnel.FunnelCommands;
 import frc.robot.subsystems.gripper.Gripper;
 import frc.robot.subsystems.leds.Leds;
 import frc.robot.subsystems.gripper.GripperCommands;
+import frc.robot.subsystems.hood.Hood;
+import frc.robot.subsystems.hood.HoodCommands;
 import frc.robot.subsystems.leds.LedsCommands;
 import frc.robot.subsystems.pivot.Pivot;
 import frc.robot.subsystems.pivot.PivotCommands;
@@ -28,24 +30,28 @@ public class AllCommands {
     private final Gripper gripper;
     private final Pivot pivot;
     private final Funnel funnel;
+    private final Hood hood;
     private final Swerve swerve;
     private final Leds leds;
 
     private final GripperCommands gripperCMDs;
     private final PivotCommands pivotCMDs;
     private final FunnelCommands funnelCMDs;
+    private final HoodCommands hoodCMDs;
     private final LedsCommands ledsCMDs;
 
-    public AllCommands(Gripper gripper, Pivot pivot, Funnel funnel, Swerve swerve, Leds leds) {
+    public AllCommands(Gripper gripper, Pivot pivot, Funnel funnel, Hood hood, Swerve swerve, Leds leds) {
         this.gripper = gripper;
         this.pivot = pivot;
         this.funnel = funnel;
+        this.hood = hood;
         this.swerve = swerve;
         this.leds = leds;
 
         this.gripperCMDs = new GripperCommands(gripper);
         this.pivotCMDs = new PivotCommands(pivot);
         this.funnelCMDs = new FunnelCommands(funnel);
+        this.hoodCMDs = new HoodCommands(hood);
         this.ledsCMDs = new LedsCommands(leds);
     }
 
@@ -84,8 +90,8 @@ public class AllCommands {
 
     public Command pivotToAngleWithLeds(double angle) {
         return Commands.parallel(
-                pivotCMDs.moveToAngle(angle),
-                ledsCMDs.staticColorWhenTrue(() -> pivot.isAtAngle(angle), Color.kGreen))
+                hoodCMDs.moveToAngle(angle),
+                ledsCMDs.staticColorWhenTrue(() -> hood.isAtAngle(angle), Color.kGreen))
             .withName("pivotToAngleWithLeds");
     }
 
@@ -145,8 +151,15 @@ public class AllCommands {
             () -> speed.getAsDouble() * ManualControllers.PIVOT_SPEED_MULTIPLAYER);
     }
 
+    public Command manualHoodController(DoubleSupplier speed) {
+        return hoodCMDs.manualController(
+            () -> speed.getAsDouble() * ManualControllers.HOOD_SPEED_MULTIPLAYER);
+    }
+
+
+
     public Command manualConntroller(BooleanSupplier scoreL1, BooleanSupplier scoreL3,
-            DoubleSupplier pivotSpeed, DoubleSupplier funnelGripperSpeed) {
+            DoubleSupplier hoodSpeed, DoubleSupplier funnelGripperSpeed) {
         return Commands.parallel(
             manualFunnelController(funnelGripperSpeed),
             AllCommands.dynamicSwitchBetweenCommands(
@@ -155,7 +168,7 @@ public class AllCommands {
                                 scoreL1, scoreL3,
                                 scoreL1(), scoreL3()),
                 manualGripperController(funnelGripperSpeed)),
-            manualPivotController(pivotSpeed))
+            manualHoodController(hoodSpeed))
             .withInterruptBehavior(InterruptionBehavior.kCancelIncoming)
             .withName("manualConntroller");
     }

@@ -28,6 +28,7 @@ import team2679.atlantiskit.tunables.extensions.TunableCommand;
 import frc.robot.subsystems.funnel.Funnel;
 import frc.robot.allcommands.AllCommands;
 import frc.robot.subsystems.gripper.Gripper;
+import frc.robot.subsystems.hood.Hood;
 import frc.robot.subsystems.leds.Leds;
 import frc.robot.subsystems.leds.LedsCommands;
 import frc.robot.subsystems.pivot.Pivot;
@@ -39,6 +40,7 @@ public class RobotContainer {
     private final Swerve swerve = new Swerve();
     private final Funnel funnel = new Funnel();
     private final Pivot pivot = new Pivot();
+    private final Hood hood = new Hood();
     private final Gripper gripper = new Gripper();
     private final Leds leds = new Leds();
 
@@ -53,7 +55,7 @@ public class RobotContainer {
 
     private final SwerveCommands swerveCommands = new SwerveCommands(swerve);
     private final LedsCommands ledsCommands = new LedsCommands(leds);
-    private final AllCommands allCommands = new AllCommands(gripper, pivot, funnel, swerve, leds);
+    private final AllCommands allCommands = new AllCommands(gripper, pivot, funnel, hood, swerve, leds);
 
     public RobotContainer() {
         new Trigger(DriverStation::isDisabled).whileTrue(swerveCommands.stop()

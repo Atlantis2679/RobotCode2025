@@ -31,7 +31,7 @@ public class Pivot extends SubsystemBase implements Tunable {
 
     private final PivotVisualizer realVisualizer = new PivotVisualizer(fieldsTable, "Real Visualizer",
             new Color8Bit(Color.kPurple));
-    private final PivotVisualizer desiredPivotVisualizer = new PivotVisualizer(fieldsTable, "Desired Visualizer",
+    private final PivotVisualizer desiredPivotVisualizer = new PivotVisualizer(fieldsTable, "pivot Desired Visualizer",
             new Color8Bit(Color.kYellow));
 
     private final RotationalSensorHelper pivotRotationalHelper;
